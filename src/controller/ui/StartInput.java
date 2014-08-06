@@ -209,7 +209,7 @@ public class StartInput extends JFrame implements Serializable
                 {
                     if (e != null) { // not initial setup
                         for (int i=0; i < Rules.LEAGUES.length; i++) {
-                            if (Rules.LEAGUES[i].leagueName.equals((String)league.getSelectedItem())) {
+                            if (Rules.LEAGUES[i].leagueName.equals(league.getSelectedItem())) {
                                 Rules.league = Rules.LEAGUES[i];
                                 break;
                             }
