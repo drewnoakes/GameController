@@ -45,12 +45,6 @@ public class Main
     
     private static Pattern IPV4_PATTERN = Pattern.compile("^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
 
-    private static final String HELP_TEMPLATE = "Usage: java -jar GameController.jar {options}"
-            + "\n  (-h | --help)                   display help"
-            + "\n  (-b | --broadcast) <address>    set broadcast ip (default is 255.255.255.255)"
-            + "\n  (-l | --league) %s%sselect league (default is spl)"
-            + "\n  (-w | --window)                 select window mode (default is fullscreen)"
-            + "\n";
     private static final String COMMAND_HELP = "--help";
     private static final String COMMAND_HELP_SHORT = "-h";
     private static final String DEFAULT_BROADCAST = "255.255.255.255";
@@ -94,16 +88,8 @@ public class Main
                 fullscreenMode = false;
                 continue parsing;
             }
-            String leagues = "";
-            for (Rules rules : Rules.LEAGUES) {
-                leagues += (leagues.equals("") ? "" : " | ") + rules.leagueDirectory;
-            }
-            if (leagues.contains("|")) {
-                leagues = "(" + leagues + ")";
-            }
-            System.out.printf(HELP_TEMPLATE, leagues, leagues.length() < 17
-                              ? "                ".substring(leagues.length())
-                              : "\n                                  ");
+
+            printUsage();
             System.exit(0);
         }
         
@@ -224,5 +210,26 @@ public class Main
         }
 
         System.exit(0);
+    }
+
+    private static void printUsage()
+    {
+        final String HELP_TEMPLATE = "Usage: java -jar GameController.jar {options}"
+                + "\n  (-h | --help)                   display help"
+                + "\n  (-b | --broadcast) <address>    set broadcast ip (default is 255.255.255.255)"
+                + "\n  (-l | --league) %s%sselect league (default is spl)"
+                + "\n  (-w | --window)                 select window mode (default is fullscreen)"
+                + "\n";
+
+        String leagues = "";
+        for (Rules rules : Rules.LEAGUES) {
+            leagues += (leagues.equals("") ? "" : " | ") + rules.leagueDirectory;
+        }
+        if (leagues.contains("|")) {
+            leagues = "(" + leagues + ")";
+        }
+        System.out.printf(HELP_TEMPLATE, leagues, leagues.length() < 17
+                          ? "                ".substring(leagues.length())
+                          : "\n                                  ");
     }
 }
