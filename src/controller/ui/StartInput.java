@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.io.Serializable;
+import java.util.concurrent.CountDownLatch;
 import javax.swing.*;
 
 
@@ -58,8 +59,8 @@ public class StartInput extends JFrame implements Serializable
     private static final String COLOR_CHANGE_LABEL = "Auto color change";
     private static final String START_LABEL = "Start";
     
-    /** If true, this GUI has finished and offers its input. */
-    public boolean finished = false;
+    /** A countdown latch which fires when the UI has been closed and the game should start. */
+    private CountDownLatch latch = new CountDownLatch(1);
 
     private StartOptions options;
 
@@ -79,12 +80,29 @@ public class StartInput extends JFrame implements Serializable
     private JButton start;
 
     /**
+     * Shows the StartInput dialog and blocks until the user clicks 'start' or closes the window.
+     *
+     * @param options the set of options to bind this UI to
+     */
+    public static void showDialog(StartOptions options)
+    {
+        StartInput input = new StartInput(options);
+        try {
+            // Block until the UI is done with
+            input.latch.await();
+        } catch (InterruptedException e) {
+            System.exit(1);
+        }
+        input.dispose();
+    }
+
+    /**
      * Creates a new StartInput.
      *
      * @param options the set of options to bind this UI to
      */
     @SuppressWarnings("unchecked")
-    public StartInput(final StartOptions options)
+    private StartInput(final StartOptions options)
     {
         super(WINDOW_TITLE);
 
@@ -250,7 +268,7 @@ public class StartInput extends JFrame implements Serializable
                     options.playOff = fulltime.isSelected() && fulltime.isVisible();
                     options.fullScreenMode = fullscreen.getState();
                     options.colorChangeAuto = autoColorChange.getState();
-                    finished = true;
+                    latch.countDown();
                 }});
                 
         league.getActionListeners()[league.getActionListeners().length - 1].actionPerformed(null);

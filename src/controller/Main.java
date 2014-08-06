@@ -75,15 +75,7 @@ public class Main
         }
 
         //collect the start parameters and put them into the first data.
-        StartInput input = new StartInput(options);
-        while (!input.finished) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                System.exit(0);
-            }
-        }
-        input.dispose();
+        StartInput.showDialog(options);
 
         AdvancedData data = new AdvancedData();
         data.team[0].teamNumber = options.teamNumberBlue;
