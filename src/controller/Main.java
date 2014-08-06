@@ -26,7 +26,8 @@ import javax.swing.*;
 
 /**
  * @author Michel Bartsch
- * 
+ * @author Drew Noakes https://drewnoakes.com
+ *
  * The program starts in this class.
  * The main components are initialised here.
  */
@@ -44,16 +45,8 @@ public class Main
     
     private static Pattern IPV4_PATTERN = Pattern.compile("^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
 
-    private static final String COMMAND_HELP = "--help";
-    private static final String COMMAND_HELP_SHORT = "-h";
     private static final String DEFAULT_BROADCAST = "255.255.255.255";
-    private static final String COMMAND_BROADCAST = "--broadcast";
-    private static final String COMMAND_BROADCAST_SHORT = "-b";
-    private static final String COMMAND_LEAGUE = "--league";
-    private static final String COMMAND_LEAGUE_SHORT = "-l";
-    private static final String COMMAND_WINDOW = "--window";
-    private static final String COMMAND_WINDOW_SHORT = "-w";
-    
+
     /**
      * The program starts here.
      * 
@@ -61,37 +54,8 @@ public class Main
      */
     public static void main(String[] args)
     {
-        //commands
-        String outBroadcastAddress = DEFAULT_BROADCAST;
-        boolean fullscreenMode = true;
-        
-        parsing:
-        for (int i=0; i<args.length; i++) {
-            if ((args.length > i+1)
-                    && ((args[i].equalsIgnoreCase(COMMAND_BROADCAST_SHORT))
-                    || (args[i].equalsIgnoreCase(COMMAND_BROADCAST)))
-                    && IPV4_PATTERN.matcher(args[++i]).matches()) {
-                outBroadcastAddress = args[i];
-                continue parsing;
-            } else if ((args.length > i+1)
-                    && ((args[i].equalsIgnoreCase(COMMAND_LEAGUE_SHORT))
-                    || (args[i].equalsIgnoreCase(COMMAND_LEAGUE))) ) {
-                i++;
-                for (int j=0; j < Rules.LEAGUES.length; j++) {
-                    if (Rules.LEAGUES[j].leagueDirectory.equals(args[i])) {
-                        Rules.league = Rules.LEAGUES[j];
-                        continue parsing;
-                    }
-                }
-            } else if (args[i].equals(COMMAND_WINDOW_SHORT) || args[i].equals(COMMAND_WINDOW)) {
-                fullscreenMode = false;
-                continue parsing;
-            }
+        StartOptions options = parseCommandLineArguments(args);
 
-            printUsage();
-            System.exit(0);
-        }
-        
         //application-lock
         final ApplicationLock applicationLock = new ApplicationLock("GameController");
         try {
@@ -111,7 +75,7 @@ public class Main
         }
 
         //collect the start parameters and put them into the first data.
-        StartInput input = new StartInput(fullscreenMode);
+        StartInput input = new StartInput(options);
         while (!input.finished) {
             try {
                 Thread.sleep(100);
@@ -119,18 +83,17 @@ public class Main
                 System.exit(0);
             }
         }
+        input.dispose();
 
         AdvancedData data = new AdvancedData();
-        for (int i=0; i<2; i++) {
-            data.team[i].teamNumber = (byte)input.outTeam[i];
-        }
-
-        data.colorChangeAuto = input.outAutoColorChange;
-        data.playoff = input.outFulltime;
+        data.team[0].teamNumber = options.teamNumberBlue;
+        data.team[1].teamNumber = options.teamNumberRed;
+        data.colorChangeAuto = options.colorChangeAuto;
+        data.playoff = options.playOff;
 
         try {
             //sender
-            Sender.initialize(outBroadcastAddress);
+            Sender.initialize(options.broadcastAddress);
             Sender sender = Sender.getInstance();
             sender.send(data);
             sender.start();
@@ -168,18 +131,15 @@ public class Main
         Log.toFile("League = "+Rules.league.leagueName);
         Log.toFile("Play-off = "+data.playoff);
         Log.toFile("Auto color change = "+data.colorChangeAuto);
-        Log.toFile("Using broadcast address " + outBroadcastAddress);
+        Log.toFile("Using broadcast address " + options.broadcastAddress);
 
         //ui
         ActionBoard.init();
         Log.state(data, Teams.getNames(false)[data.team[0].teamNumber] +" vs "+Teams.getNames(false)[data.team[1].teamNumber]);
-        GCGUI gui = new GUI(input.outFullscreen, data);
+        GCGUI gui = new GUI(options.fullScreenMode, data);
         new KeyboardListener();
         EventHandler.getInstance().setGUI(gui);
         gui.update(data);
-
-        //input dispose
-        input.dispose();
 
         //clock runs until window is closed
         Clock.getInstance().start();
@@ -209,6 +169,53 @@ public class Main
         }
 
         System.exit(0);
+    }
+
+    private static StartOptions parseCommandLineArguments(String[] args)
+    {
+        StartOptions options = new StartOptions();
+        options.broadcastAddress = DEFAULT_BROADCAST;
+        options.fullScreenMode = true;
+
+        Rules.league = Rules.LEAGUES[0];
+
+//        final String COMMAND_HELP = "--help";
+//        final String COMMAND_HELP_SHORT = "-h";
+        final String COMMAND_BROADCAST = "--broadcast";
+        final String COMMAND_BROADCAST_SHORT = "-b";
+        final String COMMAND_LEAGUE = "--league";
+        final String COMMAND_LEAGUE_SHORT = "-l";
+        final String COMMAND_WINDOW = "--window";
+        final String COMMAND_WINDOW_SHORT = "-w";
+
+        parsing:
+        for (int i=0; i<args.length; i++) {
+            boolean hasAnotherArg = args.length > i + 1;
+            if (hasAnotherArg) {
+                if ((args[i].equalsIgnoreCase(COMMAND_BROADCAST_SHORT) || args[i].equalsIgnoreCase(COMMAND_BROADCAST))
+                        && IPV4_PATTERN.matcher(args[++i]).matches()) {
+                    options.broadcastAddress = args[i];
+                    continue parsing;
+                } else if ((args[i].equalsIgnoreCase(COMMAND_LEAGUE_SHORT)
+                        || args[i].equalsIgnoreCase(COMMAND_LEAGUE))) {
+                    i++;
+                    for (int j=0; j < Rules.LEAGUES.length; j++) {
+                        if (Rules.LEAGUES[j].leagueDirectory.equals(args[i])) {
+                            Rules.league = Rules.LEAGUES[j];
+                            continue parsing;
+                        }
+                    }
+                }
+            } else if (args[i].equals(COMMAND_WINDOW_SHORT) || args[i].equals(COMMAND_WINDOW)) {
+                options.fullScreenMode = false;
+                continue parsing;
+            }
+
+            printUsage();
+            System.exit(0);
+        }
+
+        return options;
     }
 
     private static void printUsage()

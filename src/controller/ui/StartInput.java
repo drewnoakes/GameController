@@ -1,5 +1,6 @@
 package controller.ui;
 
+import controller.StartOptions;
 import data.Rules;
 import data.SPL;
 import data.SPLDropIn;
@@ -60,11 +61,7 @@ public class StartInput extends JFrame implements Serializable
     /** If true, this GUI has finished and offers its input. */
     public boolean finished = false;
 
-    /** The inputs that can be read from this GUI when it has finished. */
-    public int[] outTeam = {0, 0};
-    public boolean outFulltime;
-    public boolean outFullscreen;
-    public boolean outAutoColorChange;
+    private StartOptions options;
 
     /** All the components of this GUI. */
     private ImagePanel[] teamContainer = new ImagePanel[2];
@@ -84,12 +81,14 @@ public class StartInput extends JFrame implements Serializable
     /**
      * Creates a new StartInput.
      *
-     * @param fullscreenMode Whether the 'fullscreen' option should be initially checked
+     * @param options the set of options to bind this UI to
      */
     @SuppressWarnings("unchecked")
-    public StartInput(boolean fullscreenMode)
+    public StartInput(final StartOptions options)
     {
         super(WINDOW_TITLE);
+
+        this.options = options;
 
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         int width = gd.getDisplayMode().getWidth();
@@ -123,8 +122,8 @@ public class StartInput extends JFrame implements Serializable
                     {
                         return;
                     }
-                    outTeam[0] = Integer.valueOf(((String)selected).split(" \\(")[1].split("\\)")[0]);
-                    setTeamIcon(0, outTeam[0]);
+                    options.teamNumberBlue = Byte.valueOf(((String)selected).split(" \\(")[1].split("\\)")[0]);
+                    setTeamIcon(0, options.teamNumberBlue);
                     teamIconLabel[0].setIcon(teamIcon[0]);
                     teamIconLabel[0].repaint();
                     startEnabling();
@@ -141,8 +140,8 @@ public class StartInput extends JFrame implements Serializable
                     {
                         return;
                     }
-                    outTeam[1] = Integer.valueOf(((String)selected).split(" \\(")[1].split("\\)")[0]);
-                    setTeamIcon(1, outTeam[1]);
+                    options.teamNumberRed = Byte.valueOf(((String)selected).split(" \\(")[1].split("\\)")[0]);
+                    setTeamIcon(1, options.teamNumberRed);
                     teamIconLabel[1].setIcon(teamIcon[1]);
                     teamIconLabel[1].repaint();
                     startEnabling();
@@ -164,7 +163,7 @@ public class StartInput extends JFrame implements Serializable
 
         fullscreen = new Checkbox(FULLSCREEN_LABEL);
         fullscreen.setPreferredSize(new Dimension(FULLSCREEN_WIDTH, OPTIONS_HEIGHT));
-        fullscreen.setState(fullscreenMode);
+        fullscreen.setState(options.fullScreenMode);
         fullscreenPanel.add(fullscreen);
         
         autoColorChange = new Checkbox(COLOR_CHANGE_LABEL);
@@ -248,9 +247,9 @@ public class StartInput extends JFrame implements Serializable
         start.addActionListener(new ActionListener() {
             @Override
                 public void actionPerformed(ActionEvent e) {
-                    outFulltime = fulltime.isSelected() && fulltime.isVisible();
-                    outFullscreen = fullscreen.getState();
-                    outAutoColorChange = autoColorChange.getState();
+                    options.playOff = fulltime.isSelected() && fulltime.isVisible();
+                    options.fullScreenMode = fullscreen.getState();
+                    options.colorChangeAuto = autoColorChange.getState();
                     finished = true;
                 }});
                 
@@ -277,8 +276,11 @@ public class StartInput extends JFrame implements Serializable
                     team[i].addItem(names[j]);
                 }
             }
-            outTeam[i] = 0;
-            setTeamIcon(i, outTeam[i]);
+            if (i == 0)
+                options.teamNumberBlue = 0;
+            else
+                options.teamNumberRed = 0;
+            setTeamIcon(i, 0);
             teamIconLabel[i].setIcon(teamIcon[i]);
             teamIconLabel[i].repaint();
         }
@@ -349,7 +351,7 @@ public class StartInput extends JFrame implements Serializable
      */
     private void startEnabling()
     {
-        start.setEnabled(outTeam[0] != outTeam[1] &&
+        start.setEnabled(options.teamNumberBlue != options.teamNumberRed &&
                 (fulltime.isSelected() || nofulltime.isSelected() || !fulltime.isVisible()));
     }
 
