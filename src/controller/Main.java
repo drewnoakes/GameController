@@ -70,7 +70,7 @@ public class Main
     {
         //commands
         String outBroadcastAddress = DEFAULT_BROADCAST;
-        boolean windowMode = false;
+        boolean fullscreenMode = true;
         
         parsing:
         for (int i=0; i<args.length; i++) {
@@ -91,7 +91,7 @@ public class Main
                     }
                 }
             } else if (args[i].equals(COMMAND_WINDOW_SHORT) || args[i].equals(COMMAND_WINDOW)) {
-                windowMode = true;
+                fullscreenMode = false;
                 continue parsing;
             }
             String leagues = "";
@@ -126,7 +126,7 @@ public class Main
         }
 
         //collect the start parameters and put them into the first data.
-        StartInput input = new StartInput(!windowMode);
+        StartInput input = new StartInput(fullscreenMode);
         while (!input.finished) {
             try {
                 Thread.sleep(100);
