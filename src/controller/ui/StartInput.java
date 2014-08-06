@@ -14,12 +14,10 @@ import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
-import java.io.Serializable;
 import java.util.concurrent.CountDownLatch;
 import javax.swing.*;
 
@@ -29,10 +27,8 @@ import javax.swing.*;
  * 
  * This is only to be on starting the program to get starting input.
  */
-public class StartInput extends JFrame implements Serializable
+public class StartInput extends JFrame
 {
-    private static final long serialVersionUID = 1L;
-
     /**
      * Some constants defining this GUI`s appearance as their names say.
      * Feel free to change them and see what happens.
