@@ -65,12 +65,9 @@ public class StartInput extends JFrame
     private ImageIcon[] teamIcon = new ImageIcon[2];
     private JLabel[] teamIconLabel = new JLabel[2];
     private JComboBox[] team = new JComboBox[2];
-    private JPanel optionsLeft;
-    private JPanel optionsRight;
     private JComboBox league;
     private JRadioButton nofulltime;
     private JRadioButton fulltime;
-    private ButtonGroup fulltimeGroup;
     private Checkbox fullscreen;
     private Checkbox autoColorChange;
     private JButton start;
@@ -163,7 +160,7 @@ public class StartInput extends JFrame
             }
         );
 
-        optionsLeft = new JPanel();
+        JPanel optionsLeft = new JPanel();
         optionsLeft.setPreferredSize(new Dimension(WINDOW_WIDTH/2-2*STANDARD_SPACE, OPTIONS_CONTAINER_HEIGHT));
         optionsLeft.setLayout(new FlowLayout(FlowLayout.CENTER));
         add(optionsLeft);
@@ -186,7 +183,7 @@ public class StartInput extends JFrame
         autoColorChangePanel.add(autoColorChange);
         autoColorChange.setState(Rules.league.colorChangeAuto);
 
-        optionsRight = new JPanel();
+        JPanel optionsRight = new JPanel();
         optionsRight.setPreferredSize(new Dimension(WINDOW_WIDTH/2-2*STANDARD_SPACE, OPTIONS_CONTAINER_HEIGHT));
         add(optionsRight);
         Dimension optionsDim = new Dimension(WINDOW_WIDTH/3-2*STANDARD_SPACE, OPTIONS_HEIGHT);
@@ -239,7 +236,7 @@ public class StartInput extends JFrame
         nofulltime.setPreferredSize(optionsDim);
         fulltime = new JRadioButton();
         fulltime.setPreferredSize(optionsDim);
-        fulltimeGroup = new ButtonGroup();
+        ButtonGroup fulltimeGroup = new ButtonGroup();
         fulltimeGroup.add(nofulltime);
         fulltimeGroup.add(fulltime);
         optionsRight.add(nofulltime);
