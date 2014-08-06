@@ -216,7 +216,7 @@ public class Main
     {
         final String HELP_TEMPLATE = "Usage: java -jar GameController.jar {options}"
                 + "\n  (-h | --help)                   display help"
-                + "\n  (-b | --broadcast) <address>    set broadcast ip (default is 255.255.255.255)"
+                + "\n  (-b | --broadcast) <address>    set broadcast ip (default is %s)"
                 + "\n  (-l | --league) %s%sselect league (default is spl)"
                 + "\n  (-w | --window)                 select window mode (default is fullscreen)"
                 + "\n";
@@ -228,8 +228,11 @@ public class Main
         if (leagues.contains("|")) {
             leagues = "(" + leagues + ")";
         }
-        System.out.printf(HELP_TEMPLATE, leagues, leagues.length() < 17
-                          ? "                ".substring(leagues.length())
-                          : "\n                                  ");
+        System.out.printf(HELP_TEMPLATE,
+                DEFAULT_BROADCAST,
+                leagues,
+                leagues.length() < 17
+                    ? "                ".substring(leagues.length())
+                    : "\n                                  ");
     }
 }
