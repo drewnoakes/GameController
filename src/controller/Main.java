@@ -64,7 +64,7 @@ public class Main
     /**
      * The program starts here.
      * 
-     * @param args  This is ignored.
+     * @param args the array of command line arguments provided to the executable
      */
     public static void main(String[] args)
     {

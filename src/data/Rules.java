@@ -23,7 +23,7 @@ public abstract class Rules
     public static Rules league = LEAGUES[0];
     /** The league´s name this rules are for. */
     public String leagueName;
-    /** The league´s directory name with it´s teams and icons. */
+    /** The league´s directory name with its teams and icons. */
     public String leagueDirectory;
     /** How many robots are in a team. */
     public int teamSize;

@@ -25,7 +25,7 @@ import javax.swing.*;
 /**
  * @author Michel Bartsch
  * 
- * This is only to be on starting the programm to get starting input.
+ * This is only to be on starting the program to get starting input.
  */
 public class StartInput extends JFrame implements Serializable
 {
@@ -57,7 +57,7 @@ public class StartInput extends JFrame implements Serializable
     private static final String COLOR_CHANGE_LABEL = "Auto color change";
     private static final String START_LABEL = "Start";
     
-    /** If true, this GUI has finished and offers it`s input. */
+    /** If true, this GUI has finished and offers its input. */
     public boolean finished = false;
 
     /** The inputs that can be read from this GUI when it has finished. */
@@ -83,7 +83,8 @@ public class StartInput extends JFrame implements Serializable
 
     /**
      * Creates a new StartInput.
-     * @param args The parameters that the jar file was started with.
+     *
+     * @param fullscreenMode Whether the 'fullscreen' option should be initially checked
      */
     @SuppressWarnings("unchecked")
     public StartInput(boolean fullscreenMode)
@@ -259,7 +260,8 @@ public class StartInput extends JFrame implements Serializable
         pack();
         setVisible(true);
     }
-    /** Show in the combo box which teams are available for the selected league and competition*/
+
+    /** Show in the combo box which teams are available for the selected league and competition. */
     private void showAvailableTeams() 
     {
         for (int i=0; i < 2; i++) {
@@ -283,8 +285,7 @@ public class StartInput extends JFrame implements Serializable
     }
     
     /**
-     * Calculates an array that contains only the existing Teams of the
-     * current league.
+     * Calculates an array that contains only the existing Teams of the current league.
      * 
      * @return  Short teams array with numbers
      */ 
@@ -351,7 +352,7 @@ public class StartInput extends JFrame implements Serializable
         start.setEnabled(outTeam[0] != outTeam[1] &&
                 (fulltime.isSelected() || nofulltime.isSelected() || !fulltime.isVisible()));
     }
-    
+
     /**
      * @author Michel Bartsch
      * 

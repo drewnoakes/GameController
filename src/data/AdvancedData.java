@@ -166,8 +166,8 @@ public class AdvancedData extends GameControlData implements Cloneable
      * The number of seconds until a certion duration is over. The time
      * already passed is specified as a timestamp when it began.
      * @param millis The timestamp in ms.
-     * @param duration The full duration in s.
-     * @param The number of seconds that still remain from the duration.
+     * @param durationInSeconds The full duration in s.
+     * @return The number of seconds that still remain from the duration.
      *        Can be negative.
      */
     public int getRemainingSeconds(long millis, int durationInSeconds) {
