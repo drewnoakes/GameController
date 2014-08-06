@@ -13,7 +13,6 @@ import controller.ui.StartInput;
 import data.AdvancedData;
 import data.GameControlData;
 import data.Rules;
-import data.SPL;
 import data.Teams;
 
 import java.io.File;

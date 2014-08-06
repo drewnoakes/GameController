@@ -22,7 +22,6 @@ import javax.swing.JFrame;
 import common.Log;
 import data.GameControlData;
 import data.Rules;
-import data.SPL;
 import data.Teams;
 
 /**
