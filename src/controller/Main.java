@@ -28,7 +28,7 @@ import javax.swing.*;
 /**
  * @author Michel Bartsch
  * 
- * The programm starts in this class.
+ * The program starts in this class.
  * The main components are initialised here.
  */
 public class Main
@@ -62,7 +62,7 @@ public class Main
     private static final String COMMAND_WINDOW_SHORT = "-w";
     
     /**
-     * The programm starts here.
+     * The program starts here.
      * 
      * @param args  This is ignored.
      */
