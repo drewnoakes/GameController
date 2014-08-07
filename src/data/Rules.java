@@ -19,8 +19,26 @@ public abstract class Rules
         new HLAdult()
     };
     
-    /** The rules of the league playing. */
+    /** The rules that apply to the current game. */
     public static Rules league = LEAGUES[0];
+
+    /**
+     * Attempts to set the current league from the specified directory string.
+     *
+     * @param leagueDirectory the league directory name
+     * @return true if successful, otherwise false
+     */
+    public static boolean trySetLeague(String leagueDirectory)
+    {
+        for (int j=0; j < Rules.LEAGUES.length; j++) {
+            if (Rules.LEAGUES[j].leagueDirectory.equals(leagueDirectory)) {
+                Rules.league = Rules.LEAGUES[j];
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** The league´s name this rules are for. */
     public String leagueName;
     /** The league´s directory name with its teams and icons. */

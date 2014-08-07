@@ -173,36 +173,19 @@ public class Main
 
         Rules.league = Rules.LEAGUES[0];
 
-//        final String COMMAND_HELP = "--help";
-//        final String COMMAND_HELP_SHORT = "-h";
-        final String COMMAND_BROADCAST = "--broadcast";
-        final String COMMAND_BROADCAST_SHORT = "-b";
-        final String COMMAND_LEAGUE = "--league";
-        final String COMMAND_LEAGUE_SHORT = "-l";
-        final String COMMAND_WINDOW = "--window";
-        final String COMMAND_WINDOW_SHORT = "-w";
-
-        parsing:
         for (int i=0; i<args.length; i++) {
             boolean hasAnotherArg = args.length > i + 1;
             if (hasAnotherArg) {
-                if ((args[i].equalsIgnoreCase(COMMAND_BROADCAST_SHORT) || args[i].equalsIgnoreCase(COMMAND_BROADCAST))
-                        && IPV4_PATTERN.matcher(args[++i]).matches()) {
+                if ((args[i].equals("-b") || args[i].equals("--broadcast")) && IPV4_PATTERN.matcher(args[++i]).matches()) {
                     options.broadcastAddress = args[i];
-                    continue parsing;
-                } else if ((args[i].equalsIgnoreCase(COMMAND_LEAGUE_SHORT)
-                        || args[i].equalsIgnoreCase(COMMAND_LEAGUE))) {
-                    i++;
-                    for (int j=0; j < Rules.LEAGUES.length; j++) {
-                        if (Rules.LEAGUES[j].leagueDirectory.equals(args[i])) {
-                            Rules.league = Rules.LEAGUES[j];
-                            continue parsing;
-                        }
-                    }
+                    continue;
+                } else if (args[i].equals("-l") || args[i].equals("--league")) {
+                    if (Rules.trySetLeague(args[++i]))
+                        continue;
                 }
-            } else if (args[i].equals(COMMAND_WINDOW_SHORT) || args[i].equals(COMMAND_WINDOW)) {
+            } else if (args[i].equals("-w") || args[i].equals("--window")) {
                 options.fullScreenMode = false;
-                continue parsing;
+                continue;
             }
 
             printUsage();
