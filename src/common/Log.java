@@ -24,7 +24,7 @@ import java.util.LinkedList;
 public class Log
 {
     /** The instance of the singleton. */
-    private static Log instance = new Log();;
+    private static Log instance = new Log();
     
     /** The file to write into. */
     private FileWriter file;
