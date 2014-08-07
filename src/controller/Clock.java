@@ -54,6 +54,9 @@ public class Clock
                 thread.interrupt();
             }
         }
+
+        // clean interrupted status
+        Thread.interrupted();
     }
 
     public void stop()

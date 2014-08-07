@@ -126,7 +126,6 @@ public class Main
             Log.error("Error while trying to release the application lock.");
         }
 
-        Thread.interrupted(); // clean interrupted status
         try {
             sender.stop();
             returnReceiver.stop();
