@@ -43,7 +43,7 @@ import controller.action.ui.state.Initial;
 import controller.action.ui.state.Play;
 import controller.action.ui.state.Ready;
 import controller.action.ui.state.Set;
-import data.Rules;
+import rules.Rules;
 
 /**
  * This class actually holds static every instance of an action to get these

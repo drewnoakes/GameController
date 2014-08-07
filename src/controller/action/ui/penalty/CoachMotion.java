@@ -4,7 +4,7 @@ import common.Log;
 
 import data.AdvancedData;
 import data.PlayerInfo;
-import data.Rules;
+import rules.Rules;
 
 public class CoachMotion extends Penalty
 {

@@ -4,7 +4,7 @@ import controller.EventHandler;
 import controller.action.ActionBoard;
 import data.GameControlReturnData;
 import data.PlayerInfo;
-import data.Rules;
+import rules.Rules;
 
 /**
  * @author Marcel Steinbeck, Michel Bartsch

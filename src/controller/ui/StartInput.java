@@ -1,10 +1,10 @@
 package controller.ui;
 
 import controller.StartOptions;
-import data.Rules;
-import data.SPL;
-import data.SPLDropIn;
 import data.Teams;
+import rules.Rules;
+import rules.SPL;
+import rules.SPLDropIn;
 import java.awt.BorderLayout;
 import java.awt.Checkbox;
 import java.awt.Color;
@@ -320,7 +320,8 @@ public class StartInput extends JFrame
     }
 
     /** Show in the combo box which teams are available for the selected league and competition. */
-    private void showAvailableTeams() 
+    @SuppressWarnings("unchecked")
+    private void showAvailableTeams()
     {
         for (int i=0; i < 2; i++) {
             // Set background image according to active league

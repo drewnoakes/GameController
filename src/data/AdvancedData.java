@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import common.Log;
 import controller.action.ActionBoard;
+import rules.Rules;
 
 /**
  * @author Michel Bartsch

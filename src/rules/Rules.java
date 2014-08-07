@@ -1,4 +1,4 @@
-package data;
+package rules;
 
 import java.awt.Color;
 

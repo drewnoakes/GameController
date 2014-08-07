@@ -8,7 +8,7 @@ import common.Log;
 import data.AdvancedData;
 import data.GameControlData;
 import data.PlayerInfo;
-import data.Rules;
+import rules.Rules;
 
 /**
  *

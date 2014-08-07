@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import common.Log;
 
-import data.Rules;
+import rules.Rules;
 
 /**
  * @author Michel Bartsch

@@ -6,7 +6,7 @@ import controller.action.GCAction;
 import controller.action.ui.half.FirstHalf;
 import data.AdvancedData;
 import data.GameControlData;
-import data.Rules;
+import rules.Rules;
 
 
 /**

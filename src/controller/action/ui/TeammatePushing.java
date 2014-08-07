@@ -7,7 +7,7 @@ import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameControlData;
 import data.PlayerInfo;
-import data.Rules;
+import rules.Rules;
 
 public class TeammatePushing extends GCAction {
     

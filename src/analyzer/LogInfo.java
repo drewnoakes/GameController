@@ -1,7 +1,7 @@
 package analyzer;
 
 import common.Log;
-import data.Rules;
+import rules.Rules;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;

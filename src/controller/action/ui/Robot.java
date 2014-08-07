@@ -14,10 +14,10 @@ import controller.action.ui.penalty.ServiceHL;
 import controller.action.ui.penalty.Substitute;
 import data.AdvancedData;
 import data.AdvancedData.PenaltyQueueData;
-import data.HL;
 import data.PlayerInfo;
-import data.Rules;
-import data.SPL;
+import rules.HL;
+import rules.Rules;
+import rules.SPL;
 
 /**
  * @author Michel Bartsch

@@ -1,5 +1,8 @@
 package data;
 
+import rules.Rules;
+import rules.SPL;
+
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

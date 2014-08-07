@@ -1,6 +1,8 @@
 package data;
 
 import common.Log;
+import rules.Rules;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;

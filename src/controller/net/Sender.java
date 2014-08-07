@@ -3,7 +3,7 @@ package controller.net;
 import common.Log;
 import data.AdvancedData;
 import data.GameControlData;
-import data.Rules;
+import rules.Rules;
 
 import java.io.IOException;
 import java.net.*;

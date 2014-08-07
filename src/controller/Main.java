@@ -12,7 +12,7 @@ import controller.ui.KeyboardListener;
 import controller.ui.StartInput;
 import data.AdvancedData;
 import data.GameControlData;
-import data.Rules;
+import rules.Rules;
 import data.Teams;
 
 import java.io.File;

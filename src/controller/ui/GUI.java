@@ -31,11 +31,11 @@ import controller.net.RobotOnlineStatus;
 import controller.net.RobotWatcher;
 import data.AdvancedData;
 import data.GameControlData;
-import data.HL;
 import data.PlayerInfo;
-import data.Rules;
-import data.SPL;
 import data.Teams;
+import rules.HL;
+import rules.Rules;
+import rules.SPL;
 
 
 /**
