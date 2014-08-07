@@ -25,6 +25,14 @@ public class EventHandler
     /** The instance of the singleton. */
     private static EventHandler instance;
 
+    public static void initialise(Sender sender)
+    {
+        if (instance != null) {
+            throw new AssertionError("Singleton has already been initialised initialised.");
+        }
+        instance = new EventHandler(sender);
+    }
+
     /**
      * To get the singleton instance for public attribute access.
      *
@@ -33,7 +41,7 @@ public class EventHandler
     public synchronized static EventHandler getInstance()
     {
         if (instance == null) {
-            instance = new EventHandler();
+            throw new AssertionError("Singleton must be initialised.");
         }
         return instance;
     }
@@ -43,7 +51,7 @@ public class EventHandler
     /** This GUI`s update method will be called. */
     private GCGUI gui;
     /** The sender has a send method to update the data to send */
-    private Sender sender = Sender.getInstance();
+    private final Sender sender;
     /**
      * This is the current data. You should write into data only in actions
      * and than use the data giving as parameters. The data is not private,
@@ -63,7 +71,10 @@ public class EventHandler
     /**
      * Creates a new EventHandler.
      */
-    private EventHandler() {}
+    private EventHandler(Sender sender)
+    {
+        this.sender = sender;
+    }
     
     /**
      * Sets the GUI.

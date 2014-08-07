@@ -68,21 +68,25 @@ public class Main
         data.playoff = options.playOff;
         data.kickOffTeam = (byte)options.kickOffTeamIndex;
 
+        GameControlReturnDataReceiver returnReceiver;
+        Sender sender;
+
         try {
             //sender
-            Sender.initialize(options.broadcastAddress);
-            Sender.getInstance().addVersion(new NetworkProtocol8());
+            sender = new Sender(options.broadcastAddress);
+            sender.addVersion(new NetworkProtocol8());
             if (Rules.league.compatibilityToVersion7) {
-                Sender.getInstance().addVersion(new NetworkProtocol7());
+                sender.addVersion(new NetworkProtocol7());
             }
-            Sender.getInstance().send(data);
-            Sender.getInstance().start();
+            sender.send(data);
+            sender.start();
 
             //event-handler
+            EventHandler.initialise(sender);
             EventHandler.getInstance().data = data;
 
-            //receiver
-            GameControlReturnDataReceiver.getInstance().start();
+            returnReceiver = new GameControlReturnDataReceiver();
+            returnReceiver.start();
 
             if (Rules.league.isCoachAvailable) {
                 SPLCoachMessageReceiver spl = SPLCoachMessageReceiver.getInstance();
@@ -94,6 +98,7 @@ public class Main
                     "Error on configured port",
                     JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
+            return;
         }
 
         //log
@@ -125,8 +130,8 @@ public class Main
 
         Thread.interrupted(); // clean interrupted status
         try {
-            Sender.getInstance().stop();
-            GameControlReturnDataReceiver.getInstance().stop();
+            sender.stop();
+            returnReceiver.stop();
             SPLCoachMessageReceiver.getInstance().stop();
         } catch (InterruptedException e) {
             Log.error("Waiting for threads to shutdown was interrupted.");

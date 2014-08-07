@@ -14,44 +14,16 @@ import data.GameControlData;
 import data.GameControlReturnData;
 
 /**
+ * Asynchronously receives robot status packets via UDB broadcast.
+ *
+ * Client code must call start, then stop when no longer required.
+ *
+ * Received messages are passed to {@link RobotWatcher#update(data.GameControlReturnData)}.
  *
  * @author Marcel Steinbeck
- *
- * This class is used to receive a packet send by a robot on port {@link GameControlData#GAMECONTROLLER_RETURNDATA_PORT} via UDP
- * over broadcast.
- * If a package was received, this class will invoke {@link RobotWatcher#update(data.GameControlReturnData)} to update
- * the robots online status.
- *
- * This class is a singleton!
  */
 public class GameControlReturnDataReceiver
 {
-    /* SINGLETON MEMBERS ------------------------------------------------------------------- */
-
-    /** The instance of the singleton. */
-    private static GameControlReturnDataReceiver instance;
-
-    /**
-     * Returns the instance of the singleton. If the Receiver wasn't initialized once before, a new instance will
-     * be created and returned (lazy instantiation)
-     *
-     * @return  The instance of the Receiver
-     * @throws IllegalStateException if the first creation of the singleton throws an exception
-     */
-    public synchronized static GameControlReturnDataReceiver getInstance()
-    {
-        if (instance == null) {
-            try {
-                instance = new GameControlReturnDataReceiver();
-            } catch (SocketException e) {
-                throw new IllegalStateException("fatal: Error while setting up Receiver.", e);
-            }
-        }
-        return instance;
-    }
-
-    /* INSTANCE MEMBERS ------------------------------------------------------------------- */
-
     /** The used socket to receive the packages. */
     private final DatagramSocket datagramSocket;
 
@@ -63,7 +35,7 @@ public class GameControlReturnDataReceiver
      *
      * @throws SocketException the an error occurs while creating the socket
      */
-    private GameControlReturnDataReceiver() throws SocketException
+    public GameControlReturnDataReceiver() throws SocketException
     {
         datagramSocket = new DatagramSocket(null);
         datagramSocket.setReuseAddress(true);
