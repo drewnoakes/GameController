@@ -91,6 +91,7 @@ struct RoboCupGameControlData
   uint16_t secsRemaining;       // estimate of number of seconds remaining in the half
   uint16_t secondaryTime;       // number of seconds shown as secondary time (remaining ready, until free ball, etc)
   TeamInfo teams[2];
+  uint32_t gameControllerId;    // A randomly chosen number that is consistent throughout the lifespan of a game
 };
 
 // data structure header
