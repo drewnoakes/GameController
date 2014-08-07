@@ -33,7 +33,7 @@ import javax.swing.*;
 public class Main
 {
     /** The version of the GameController. Only used in log file. */
-    public static final String version = "GC2 1.2";
+    public static final String version = "GC2 1.3";
     
     /** Relative directory of where logs are stored */
     private final static String LOG_DIRECTORY = "logs";
