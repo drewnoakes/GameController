@@ -208,9 +208,8 @@ public class StartInput extends JFrame
         
         autoColorChange = new Checkbox(COLOR_CHANGE_LABEL);
         autoColorChange.setPreferredSize(new Dimension(FULLSCREEN_WIDTH, OPTIONS_HEIGHT));
-        autoColorChange.setState(Rules.league.colorChangeAuto);
+        autoColorChange.setState(options.colorChangeAuto);
         autoColorChangePanel.add(autoColorChange);
-        autoColorChange.setState(Rules.league.colorChangeAuto);
 
         JPanel optionsRight = new JPanel();
         optionsRight.setPreferredSize(new Dimension(WINDOW_WIDTH/2-2*STANDARD_SPACE, OPTIONS_CONTAINER_HEIGHT));
