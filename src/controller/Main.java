@@ -95,16 +95,8 @@ public class Main
         }
 
         //log
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-S");
-        
-        final File logDir = new File(LOG_DIRECTORY);
-        if (!logDir.exists() && !logDir.mkdirs()) {
-            Log.init("log_"+df.format(new Date(System.currentTimeMillis()))+".txt");
-        } else {
-            final File logFile = new File(logDir, 
-                "log_"+df.format(new Date(System.currentTimeMillis()))+".txt");
-            Log.init(logFile.getPath());
-        }
+        initialiseLogging();
+
         Log.toFile("League = "+Rules.league.leagueName);
         Log.toFile("Play-off = "+data.playoff);
         Log.toFile("Auto color change = "+data.colorChangeAuto);
@@ -167,6 +159,20 @@ public class Main
             System.exit(-1);
         }
         return applicationLock;
+    }
+
+    private static void initialiseLogging()
+    {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-S");
+
+        final File logDir = new File(LOG_DIRECTORY);
+        if (!logDir.exists() && !logDir.mkdirs()) {
+            Log.init("log_" + df.format(new Date(System.currentTimeMillis())) + ".txt");
+        } else {
+            final File logFile = new File(logDir,
+                "log_"+df.format(new Date(System.currentTimeMillis()))+".txt");
+            Log.init(logFile.getPath());
+        }
     }
 
     private static StartOptions parseCommandLineArguments(String[] args)
