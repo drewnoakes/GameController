@@ -82,6 +82,7 @@ public class Main
         data.team[1].teamNumber = options.teamNumberRed;
         data.colorChangeAuto = options.colorChangeAuto;
         data.playoff = options.playOff;
+        data.kickOffTeam = (byte)options.kickOffTeamIndex;
 
         try {
             //sender
@@ -168,6 +169,7 @@ public class Main
         StartOptions options = new StartOptions();
         options.broadcastAddress = DEFAULT_BROADCAST;
         options.fullScreenMode = true;
+        options.kickOffTeamIndex = -1;
 
         Rules.league = Rules.LEAGUES[0];
 

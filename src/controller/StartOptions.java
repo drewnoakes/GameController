@@ -16,6 +16,12 @@ public class StartOptions
     public boolean colorChangeAuto;
 
     /**
+     * Specifies which team has kick off.
+     * 0 for blue, 1 for red, -1 for unspecified.
+     */
+    public int kickOffTeamIndex;
+
+    /**
      * Whether this is a play off game (goes into extra time if needed.)
      *
      * This is known as a 'play-off' game in SPL, and a 'knock-out' game in the HL.

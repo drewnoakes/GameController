@@ -35,7 +35,7 @@ public class StartInput extends JFrame
      */
     private static final String WINDOW_TITLE = "GameController";
     private static final int WINDOW_WIDTH = 600;
-    private static final int WINDOW_HEIGHT = 450;
+    private static final int WINDOW_HEIGHT = 482;
     private static final int STANDARD_SPACE = 10;
     private static final int TEAMS_HEIGHT = 300;
     private static final int IMAGE_SIZE = 250;
@@ -54,7 +54,6 @@ public class StartInput extends JFrame
     private static final String FULLSCREEN_LABEL = "Fullscreen";
     private static final String COLOR_CHANGE_LABEL = "Auto color change";
     private static final String START_LABEL = "Start";
-    
     /** A countdown latch which fires when the UI has been closed and the game should start. */
     private CountDownLatch latch = new CountDownLatch(1);
 
@@ -65,6 +64,8 @@ public class StartInput extends JFrame
     private ImageIcon[] teamIcon = new ImageIcon[2];
     private JLabel[] teamIconLabel = new JLabel[2];
     private JComboBox[] team = new JComboBox[2];
+    private JRadioButton kickOffBlue;
+    private JRadioButton kickOffRed;
     private JComboBox league;
     private JRadioButton nofulltime;
     private JRadioButton fulltime;
@@ -159,6 +160,34 @@ public class StartInput extends JFrame
                 }
             }
         );
+
+        JPanel optionsKickOff = new JPanel();
+        kickOffBlue = new JRadioButton();
+        kickOffBlue.setText("Kick off blue");
+        kickOffRed = new JRadioButton();
+        kickOffRed.setText("Kick off red");
+        kickOffBlue.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startEnabling();
+            }});
+        kickOffRed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startEnabling();
+            }});
+        ButtonGroup kickOffGroup = new ButtonGroup();
+        kickOffGroup.add(kickOffBlue);
+        kickOffGroup.add(kickOffRed);
+        optionsKickOff.add(kickOffBlue);
+        optionsKickOff.add(kickOffRed);
+        if (options.kickOffTeamIndex == 0)
+            kickOffBlue.setSelected(true);
+        else if (options.kickOffTeamIndex == 1)
+            kickOffRed.setSelected(true);
+        optionsKickOff.setPreferredSize(new Dimension(WINDOW_WIDTH-2*STANDARD_SPACE, OPTIONS_HEIGHT));
+        optionsKickOff.setLayout(new FlowLayout(FlowLayout.CENTER));
+        add(optionsKickOff);
 
         JPanel optionsLeft = new JPanel();
         optionsLeft.setPreferredSize(new Dimension(WINDOW_WIDTH/2-2*STANDARD_SPACE, OPTIONS_CONTAINER_HEIGHT));
@@ -261,6 +290,12 @@ public class StartInput extends JFrame
                     options.playOff = fulltime.isSelected() && fulltime.isVisible();
                     options.fullScreenMode = fullscreen.getState();
                     options.colorChangeAuto = autoColorChange.getState();
+                    if (kickOffBlue.isSelected())
+                        options.kickOffTeamIndex = 0;
+                    else if (kickOffRed.isSelected())
+                        options.kickOffTeamIndex = 1;
+                    else
+                        throw new AssertionError("Start button should not be enabled if no kick off team selected.");
                     latch.countDown();
                 }});
                 
@@ -362,8 +397,10 @@ public class StartInput extends JFrame
      */
     private void startEnabling()
     {
-        start.setEnabled(options.teamNumberBlue != options.teamNumberRed &&
-                (fulltime.isSelected() || nofulltime.isSelected() || !fulltime.isVisible()));
+        boolean isEnabled = options.teamNumberBlue != options.teamNumberRed;
+        isEnabled &= fulltime.isSelected() || nofulltime.isSelected() || !fulltime.isVisible();
+        isEnabled &= kickOffBlue.isSelected() || kickOffRed.isSelected();
+        start.setEnabled(isEnabled);
     }
 
     /**
