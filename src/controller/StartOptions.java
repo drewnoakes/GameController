@@ -42,5 +42,14 @@ public class StartOptions
 
         return index == 0 ? teamNumberBlue : teamNumberRed;
     }
+
+    public void setTeamNumberByIndex(int index, byte teamNumber)
+    {
+        assert(index == 0 || index == 1);
+
+        if (index == 0)
+            teamNumberBlue = teamNumber;
+        else
+            teamNumberRed = teamNumber;
     }
 }

@@ -332,14 +332,26 @@ public class StartInput extends JFrame
             String[] names = getShortTeams();
             team[i].removeAllItems();
             if (Rules.league.dropInPlayerMode) {
+                // In SPL drop in games, there are only two teams (red and blue), plus we add team 0 (invisibles).
+                assert(names.length == 3);
                 team[i].addItem(names[0]);
                 team[i].addItem(names[i == 0 ?  1 : 2]);
+                // TODO support setting of drop-in team numbers from StartOptions (for now just set to zero)
+                options.setTeamNumberByIndex(i, (byte)0);
+                teamNumber = 0;
             } else {
+                boolean found = false;
                 for (int j=0; j < names.length; j++) {
                     team[i].addItem(names[j]);
                     // TODO this test is a bit ugly -- need a better (non-string) representation of teams
-                    if (names[j].contains("(" + options.teamNumberByIndex(i) + ")"))
+                    if (names[j].contains("(" + teamNumber + ")")) {
                         team[i].setSelectedIndex(j);
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    options.setTeamNumberByIndex(i, (byte)0);
+                    teamNumber = 0;
                 }
             }
 
