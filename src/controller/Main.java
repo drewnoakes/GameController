@@ -218,12 +218,12 @@ public class Main
     private static void printUsage()
     {
         final String HELP_TEMPLATE = "Usage: java -jar GameController.jar {options}"
-                + "\n  (-h | --help)                   display help"
-                + "\n  (-b | --broadcast) <address>    set broadcast ip (default is %s)"
+                + "\n  (-h | --help)                   show this help message"
+                + "\n  (-b | --broadcast) <address>    set broadcast ip address (default is %s)"
                 + "\n  (-t | --teams) <blue> <red>     set team numbers"
                 + "\n  (-k | --kickoff) <colour>       set kickoff team colour ('blue' or 'red')"
                 + "\n  (-l | --league) %s%sselect league (default is spl)"
-                + "\n  (-w | --window)                 select window mode (default is fullscreen)"
+                + "\n  (-w | --window)                 set window mode (default is fullscreen)"
                 + "\n";
 
         String leagues = "";
