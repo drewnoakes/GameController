@@ -310,8 +310,8 @@ public class StartInput extends JFrame
     private void showAvailableTeams() 
     {
         for (int i=0; i < 2; i++) {
-            teamContainer[i].setImage((
-                    new ImageIcon(ICONS_PATH+Rules.league.leagueDirectory+"/"+BACKGROUND_SIDE[i])).getImage());
+            String backgroundImagePath = ICONS_PATH + Rules.league.leagueDirectory + "/" + BACKGROUND_SIDE[i];
+            teamContainer[i].setImage(new ImageIcon(backgroundImagePath).getImage());
             team[i].removeAllItems();
             String[] names = getShortTeams();
             if (Rules.league.dropInPlayerMode) {
