@@ -102,18 +102,21 @@ public class StartInput extends JFrame
 
         this.options = options;
 
+        // Centre window on user's screen
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         int width = gd.getDisplayMode().getWidth();
         int height = gd.getDisplayMode().getHeight();
         setLocation((width-WINDOW_WIDTH)/2, (height-WINDOW_HEIGHT)/2);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setLayout(new FlowLayout(FlowLayout.CENTER, 0, STANDARD_SPACE));
-        
+
+        // Create the team selection panels
         String[] teams = getShortTeams();
         for (int i=0; i<2; i++) {
-            teamContainer[i] = new ImagePanel((
-                    new ImageIcon(ICONS_PATH+Rules.league.leagueDirectory+"/"+BACKGROUND_SIDE[i])).getImage());
+            String backgroundImagePath = ICONS_PATH + Rules.league.leagueDirectory + "/" + BACKGROUND_SIDE[i];
+            teamContainer[i] = new ImagePanel(new ImageIcon(backgroundImagePath).getImage());
             teamContainer[i].setPreferredSize(new Dimension(WINDOW_WIDTH/2-STANDARD_SPACE, TEAMS_HEIGHT));
             teamContainer[i].setOpaque(true);
             teamContainer[i].setLayout(new BorderLayout());
@@ -126,7 +129,7 @@ public class StartInput extends JFrame
         }
         team[0].addActionListener(new ActionListener()
             {
-            @Override
+                @Override
                 public void actionPerformed(ActionEvent e)
                 {
                     Object selected = team[0].getSelectedItem();
@@ -143,7 +146,7 @@ public class StartInput extends JFrame
         );
         team[1].addActionListener(new ActionListener()
             {
-            @Override
+                @Override
                 public void actionPerformed(ActionEvent e)
                 {
                     Object selected = team[1].getSelectedItem();
@@ -159,6 +162,7 @@ public class StartInput extends JFrame
             }
         );
 
+        // Create kick off selection controls
         JPanel optionsKickOff = new JPanel();
         kickOffBlue = new JRadioButton();
         kickOffBlue.setText("Kick off blue");
@@ -187,6 +191,7 @@ public class StartInput extends JFrame
         optionsKickOff.setLayout(new FlowLayout(FlowLayout.CENTER));
         add(optionsKickOff);
 
+        // Create the left-hand control panel, containing 'full screen' and 'auto colour change' options
         JPanel optionsLeft = new JPanel();
         optionsLeft.setPreferredSize(new Dimension(WINDOW_WIDTH/2-2*STANDARD_SPACE, OPTIONS_CONTAINER_HEIGHT));
         optionsLeft.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -209,6 +214,7 @@ public class StartInput extends JFrame
         autoColorChange.setState(options.colorChangeAuto);
         autoColorChangePanel.add(autoColorChange);
 
+        // Create the right-hand control panel, containing 'league' combo and 'normal vs knockout/playoff' radios
         JPanel optionsRight = new JPanel();
         optionsRight.setPreferredSize(new Dimension(WINDOW_WIDTH/2-2*STANDARD_SPACE, OPTIONS_CONTAINER_HEIGHT));
         add(optionsRight);
@@ -284,6 +290,7 @@ public class StartInput extends JFrame
                 nofulltime.setSelected(true);
         }
 
+        // Create the start button
         start = new JButton(START_LABEL);
         start.setPreferredSize(new Dimension(WINDOW_WIDTH/3-2*STANDARD_SPACE, START_HEIGHT));
         start.setEnabled(false);
@@ -302,9 +309,11 @@ public class StartInput extends JFrame
                         throw new AssertionError("Start button should not be enabled if no kick off team selected.");
                     latch.countDown();
                 }});
-                
+
+        // Trigger selection of the league
         league.getActionListeners()[league.getActionListeners().length - 1].actionPerformed(null);
 
+        // Set window size, perform layout, then show on screen
         getContentPane().setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         pack();
         setVisible(true);
