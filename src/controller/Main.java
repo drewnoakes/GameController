@@ -25,19 +25,16 @@ import javax.swing.*;
 
 
 /**
+ * Main class for the game controller application.
+ *
+ * Manages command line arguments and the lifetime of all sub-components.
+ *
  * @author Michel Bartsch
  * @author Drew Noakes https://drewnoakes.com
- *
- * The program starts in this class.
- * The main components are initialised here.
  */
 public class Main
 {
-    /**
-     * The version of the GameController.
-     * Actually there are no dependencies, but this should be the first thing
-     * to be written into the log file.
-     */
+    /** The version of the GameController. Only used in log file. */
     public static final String version = "GC2 1.2";
     
     /** Relative directory of where logs are stored */
