@@ -24,7 +24,7 @@ import data.GameControlReturnData;
  *
  * This class is a singleton!
  */
-public class GameControlReturnDataReceiver extends Thread
+public class GameControlReturnDataReceiver
 {
     /* SINGLETON MEMBERS ------------------------------------------------------------------- */
 
@@ -55,6 +55,9 @@ public class GameControlReturnDataReceiver extends Thread
     /** The used socket to receive the packages. */
     private final DatagramSocket datagramSocket;
 
+    /** The thread instance owned by this receiver class. */
+    private final GameControlReturnDataReceiverThread receiverThread;
+
     /**
      * Creates a new Receiver.
      *
@@ -66,28 +69,44 @@ public class GameControlReturnDataReceiver extends Thread
         datagramSocket.setReuseAddress(true);
         datagramSocket.setSoTimeout(500);
         datagramSocket.bind(new InetSocketAddress(GameControlData.GAMECONTROLLER_RETURNDATA_PORT));
+
+        receiverThread = new GameControlReturnDataReceiverThread();
     }
 
-    @Override
-    public void run() {
-       while (!isInterrupted()) {
-           final ByteBuffer buffer = ByteBuffer.wrap(new byte[Math.max(GameControlReturnData.SIZE, GameControlReturnData.SIZE1)]);
-           final GameControlReturnData player = new GameControlReturnData();
-           
-           final DatagramPacket packet = new DatagramPacket(buffer.array(), buffer.array().length);
+    public void start()
+    {
+        receiverThread.start();
+    }
 
-            try {
-                datagramSocket.receive(packet);
-                buffer.rewind();
-                if (player.fromByteArray(buffer)) {
-                    RobotWatcher.update(player);
+    public void stop() throws InterruptedException
+    {
+        receiverThread.interrupt();
+        receiverThread.join();
+    }
+
+    private class GameControlReturnDataReceiverThread extends Thread
+    {
+        @Override
+        public void run() {
+           while (!isInterrupted()) {
+               final ByteBuffer buffer = ByteBuffer.wrap(new byte[Math.max(GameControlReturnData.SIZE, GameControlReturnData.SIZE1)]);
+               final GameControlReturnData player = new GameControlReturnData();
+
+               final DatagramPacket packet = new DatagramPacket(buffer.array(), buffer.array().length);
+
+                try {
+                    datagramSocket.receive(packet);
+                    buffer.rewind();
+                    if (player.fromByteArray(buffer)) {
+                        RobotWatcher.update(player);
+                    }
+                } catch (SocketTimeoutException e) { // ignore, because we set a timeout
+                } catch (IOException e) {
+                    Log.error("something went wrong while receiving : " + e.getMessage());
                 }
-            } catch (SocketTimeoutException e) { // ignore, because we set a timeout
-            } catch (IOException e) {
-                Log.error("something went wrong while receiving : " + e.getMessage());
             }
-        }
 
-        datagramSocket.close();
+            datagramSocket.close();
+        }
     }
 }

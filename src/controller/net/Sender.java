@@ -19,7 +19,7 @@ import java.net.*;
  *
  * This class is a singleton!
  */
-public class Sender extends Thread
+public class Sender
 {
     /* SINGLETON MEMBERS ------------------------------------------------------------------- */
 
@@ -59,14 +59,17 @@ public class Sender extends Thread
 
     /* INSTANCE MEMBERS ------------------------------------------------------------------- */
 
-    /** The packet number that is increased with each packet sent. */
-    private byte packetNumber = 0;
+    /** The thread instance owned by this sender class. */
+    private final SenderThread senderThread;
 
     /** The socket, which is used to send the current game-state */
     private final DatagramSocket datagramSocket;
 
     /** The used inet-address (the broadcast address). */
     private final InetAddress group;
+
+    /** The packet number that is increased with each packet sent. */
+    private byte packetNumber = 0;
 
     /** The current deep copy of the game-state. */
     private AdvancedData data;
@@ -79,10 +82,11 @@ public class Sender extends Thread
      */
     private Sender(final String broadcastAddress) throws SocketException, UnknownHostException
     {
-        instance = this;
+        assert(instance == null);
 
-        this.datagramSocket = new DatagramSocket();
-        this.group = InetAddress.getByName(broadcastAddress);
+        datagramSocket = new DatagramSocket();
+        group = InetAddress.getByName(broadcastAddress);
+        senderThread = new SenderThread();
     }
 
     /**
@@ -96,46 +100,60 @@ public class Sender extends Thread
         this.data = (AdvancedData) data.clone();
     }
 
-    @Override
-    public void run()
+    public void start()
     {
-        while (!isInterrupted()) {
-            if (data != null) {
-                data.updateTimes();
-                data.packetNumber = packetNumber;
-                byte[] arr = data.toByteArray().array();
-                DatagramPacket packet = new DatagramPacket(arr, arr.length, group, GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
+        senderThread.start();
+    }
 
-                try {
-                    datagramSocket.send(packet);
-                    packetNumber++;
-                } catch (IOException e) {
-                    Log.error("Error while sending");
-                    e.printStackTrace();
-                }
-            }
+    public void stop() throws InterruptedException
+    {
+        senderThread.interrupt();
+        senderThread.join();
+    }
 
-            if (data != null) {
-                if (Rules.league.compatibilityToVersion7) {
-                    byte[] arr = data.toByteArray7().array();
-                    DatagramPacket packet = new DatagramPacket(arr, arr.length, group, GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
+    private class SenderThread extends Thread
+    {
+        @Override
+        public void run()
+        {
+            while (!isInterrupted()) {
+                if (data != null) {
+                    data.updateTimes();
+                    data.packetNumber = packetNumber;
+                    byte[] arr = data.toByteArray().array();
+                    DatagramPacket packet = new DatagramPacket(arr, arr.length, Sender.this.group, GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
 
                     try {
                         datagramSocket.send(packet);
+                        packetNumber++;
                     } catch (IOException e) {
                         Log.error("Error while sending");
                         e.printStackTrace();
                     }
                 }
+
+                if (data != null) {
+                    if (Rules.league.compatibilityToVersion7) {
+                        byte[] arr = data.toByteArray7().array();
+                        DatagramPacket packet = new DatagramPacket(arr, arr.length, Sender.this.group, GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
+
+                        try {
+                            datagramSocket.send(packet);
+                        } catch (IOException e) {
+                            Log.error("Error while sending");
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    interrupt();
+                }
             }
 
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                interrupt();
-            }
+            datagramSocket.close();
         }
-
-        datagramSocket.close();
     }
 }

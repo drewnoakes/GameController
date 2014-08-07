@@ -12,7 +12,7 @@ import common.Log;
 import controller.action.net.SPLCoachMessageReceived;
 import data.SPLCoachMessage;
 
-public class SPLCoachMessageReceiver extends Thread
+public class SPLCoachMessageReceiver
 {
     /* SINGLETON MEMBERS ------------------------------------------------------------------- */
 
@@ -34,34 +34,52 @@ public class SPLCoachMessageReceiver extends Thread
 
     private final DatagramSocket datagramSocket;
 
+    private final SPLCoachMessageReceiverThread receiverThread;
+
     private SPLCoachMessageReceiver() throws SocketException
     {
         datagramSocket = new DatagramSocket(null);
         datagramSocket.setReuseAddress(true);
         datagramSocket.setSoTimeout(500);
         datagramSocket.bind(new InetSocketAddress(SPLCoachMessage.SPL_COACH_MESSAGE_PORT));
+
+        receiverThread = new SPLCoachMessageReceiverThread();
     }
 
-    @Override
-    public void run()
+    public void start()
     {
-        while (!isInterrupted()) {
-            try {
-                final ByteBuffer buffer = ByteBuffer.wrap(new byte[SPLCoachMessage.SIZE]);
-                final DatagramPacket packet = new DatagramPacket(buffer.array(), buffer.array().length);
-                datagramSocket.receive(packet);
-                buffer.rewind();
+        receiverThread.start();
+    }
 
-                final SPLCoachMessage coach = new SPLCoachMessage();
-                if (coach.fromByteArray(buffer)) {
-                    new SPLCoachMessageReceived(coach).actionPerformed(null);
+    public void stop() throws InterruptedException
+    {
+        receiverThread.interrupt();
+        receiverThread.join();
+    }
+
+    private class SPLCoachMessageReceiverThread extends Thread
+    {
+        @Override
+        public void run()
+        {
+            while (!isInterrupted()) {
+                try {
+                    final ByteBuffer buffer = ByteBuffer.wrap(new byte[SPLCoachMessage.SIZE]);
+                    final DatagramPacket packet = new DatagramPacket(buffer.array(), buffer.array().length);
+                    datagramSocket.receive(packet);
+                    buffer.rewind();
+
+                    final SPLCoachMessage coach = new SPLCoachMessage();
+                    if (coach.fromByteArray(buffer)) {
+                        new SPLCoachMessageReceived(coach).actionPerformed(null);
+                    }
+                } catch (SocketTimeoutException e) { // ignore, because we set a timeout
+                } catch (IOException e) {
+                    Log.error("something went wrong while receiving the coach packages : " + e.getMessage());
                 }
-            } catch (SocketTimeoutException e) { // ignore, because we set a timeout
-            } catch (IOException e) {
-                Log.error("something went wrong while receiving the coach packages : " + e.getMessage());
             }
-        }
 
-        datagramSocket.close();
+            datagramSocket.close();
+        }
     }
 }

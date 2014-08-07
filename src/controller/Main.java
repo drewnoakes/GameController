@@ -118,14 +118,12 @@ public class Main
         } catch (IOException e) {
             Log.error("Error while trying to release the application lock.");
         }
-        Sender.getInstance().interrupt();
-        GameControlReturnDataReceiver.getInstance().interrupt();
-        SPLCoachMessageReceiver.getInstance().interrupt();
+
         Thread.interrupted(); // clean interrupted status
         try {
-            Sender.getInstance().join();
-            GameControlReturnDataReceiver.getInstance().join();
-            SPLCoachMessageReceiver.getInstance().join();
+            Sender.getInstance().stop();
+            GameControlReturnDataReceiver.getInstance().stop();
+            SPLCoachMessageReceiver.getInstance().stop();
         } catch (InterruptedException e) {
             Log.error("Waiting for threads to shutdown was interrupted.");
         }

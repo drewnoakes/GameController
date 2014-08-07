@@ -56,9 +56,8 @@ public class Main
      */
     public static void exit()
     {
-        listener.interrupt();
         try {
-            listener.join();
+            listener.stop();
         } catch (InterruptedException e) {
             Log.error("Waiting for listener to shutdown was interrupted.");
         }

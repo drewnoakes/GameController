@@ -15,10 +15,12 @@ import java.nio.ByteBuffer;
  * 
  * This class receives the GameControlData from the GameController.
  */
-public class Listener extends Thread
+public class Listener
 {
+    /** The thread instance owned by this listener class. */
+    private final ListenerThread listenerThread;
     /** The GUI to listen for, its update method will be called. */
-    private GUI gui;
+    private final GUI gui;
     /** Some attributes for receiving. */
     private DatagramSocket datagramSocket;
 
@@ -37,26 +39,42 @@ public class Listener extends Thread
             Log.error("Error on start listening to port " + GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
             System.exit(1);
         }
+
+        listenerThread = new ListenerThread();
     }
 
-    @Override
-    public void run()
+    public void start()
     {
-        while (!isInterrupted()) {
-            final ByteBuffer buffer = ByteBuffer.wrap(new byte[GameControlData.SIZE]);
-            final GameControlData data = new GameControlData();
+        listenerThread.start();
+    }
 
-            final DatagramPacket packet = new DatagramPacket(buffer.array(), buffer.array().length);
+    public void stop() throws InterruptedException
+    {
+        listenerThread.interrupt();
+        listenerThread.join();
+    }
 
-            try {
-                datagramSocket.receive(packet);
-                buffer.rewind();
-                if (data.fromByteArray(buffer)) {
-                    gui.update(data);
+    private class ListenerThread extends Thread
+    {
+        @Override
+        public void run()
+        {
+            while (!isInterrupted()) {
+                final ByteBuffer buffer = ByteBuffer.wrap(new byte[GameControlData.SIZE]);
+                final GameControlData data = new GameControlData();
+
+                final DatagramPacket packet = new DatagramPacket(buffer.array(), buffer.array().length);
+
+                try {
+                    datagramSocket.receive(packet);
+                    buffer.rewind();
+                    if (data.fromByteArray(buffer)) {
+                        gui.update(data);
+                    }
+                } catch (SocketTimeoutException e) { // ignore, because we set a timeout
+                } catch (IOException e) {
+                    Log.error("Error while listening to port " + GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
                 }
-            } catch (SocketTimeoutException e) { // ignore, because we set a timeout
-            } catch (IOException e) {
-                Log.error("Error while listening to port " + GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
             }
         }
     }
