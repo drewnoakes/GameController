@@ -267,7 +267,7 @@ public class GUI extends JFrame implements GCGUI
         {
             @Override
             public void windowClosing(WindowEvent e) {
-                Clock.getInstance().interrupt();
+                Clock.getInstance().stop();
             }
         });
         

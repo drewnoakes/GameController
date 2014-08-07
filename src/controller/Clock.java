@@ -3,10 +3,9 @@ package controller;
 import controller.action.ActionBoard;
 
 /**
+ * Periodically fires action ClockTick action at @{link ActionBoard.clock}.
  *
  * @author Michel Bartsch
- *
- * This class is no thread, it continous the main-thread and fires the action ClockTick.
  */
 public class Clock
 {
@@ -36,12 +35,15 @@ public class Clock
         }
         return instance;
     }
+
     /**
-     * Lets the Clock start to run.
+     * Blocks until @{link stop} is called, firing @{link ActionBoard.clock}
+     * every @{link HEARTBEAT} milliseconds.
      */
     public void start()
     {
         thread = Thread.currentThread();
+
         while (!thread.isInterrupted())
         {
             ActionBoard.clock.actionPerformed(null);
@@ -54,7 +56,7 @@ public class Clock
         }
     }
 
-    public void interrupt()
+    public void stop()
     {
         thread.interrupt();
     }

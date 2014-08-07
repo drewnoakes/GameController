@@ -32,7 +32,7 @@ public class Quit extends GCAction
     public void perform(AdvancedData data)
     {
         if (EventHandler.getInstance().lastUIEvent == this) {
-            Clock.getInstance().interrupt();
+            Clock.getInstance().stop();
         }
     }
     
