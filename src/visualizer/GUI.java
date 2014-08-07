@@ -456,8 +456,9 @@ public class GUI extends JFrame
         int offset = (width - g.getFontMetrics().stringWidth(s)) / 2;
         g.drawString(s, x+offset, y);
     }
-    
-    private void drawCoachMessages(Graphics g) {
+
+    private void drawCoachMessages(Graphics g)
+    {
         Graphics2D g2 = (Graphics2D) g; //need for setting the thickness of the line of the rectangles
 
         for (int i = 0; i < 2; i++) {
@@ -517,7 +518,8 @@ public class GUI extends JFrame
      *
      * @return Time formatted.
      */
-    private String formatTime(int seconds) {
+    private String formatTime(int seconds)
+    {
         int displaySeconds = Math.abs(seconds) % 60;
         int displayMinutes = Math.abs(seconds) / 60;
         return (seconds < 0 ? "-" : "") + String.format("%02d:%02d", displayMinutes, displaySeconds);

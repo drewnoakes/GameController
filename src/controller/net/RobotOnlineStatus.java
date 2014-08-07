@@ -5,6 +5,7 @@ package controller.net;
  *
  * These enum provides all online status of a robot
  */
-public enum RobotOnlineStatus {
+public enum RobotOnlineStatus
+{
     UNKNOWN, HIGH_LATENCY, ONLINE, OFFLINE
 }

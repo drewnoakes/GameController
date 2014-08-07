@@ -18,7 +18,7 @@ public class GameControlData implements Serializable
 {
     /** Some constants from the C-structure. */
     public static final int GAMECONTROLLER_RETURNDATA_PORT = 3838; // port to receive return-packets on
-    public static final int GAMECONTROLLER_GAMEDATA_PORT= 3838; // port to send game state packets to
+    public static final int GAMECONTROLLER_GAMEDATA_PORT = 3838; // port to send game state packets to
 
 
     public static final byte TEAM_BLUE = 0;
@@ -62,7 +62,7 @@ public class GameControlData implements Serializable
         String out = "";
         String temp;
         
-        out += "   Players per Team: "+playersPerTeam+"\n";
+        out += "     playersPerTeam: "+playersPerTeam+"\n";
         out += "          gameState: "+gameState+"\n";
         switch (firstHalf) {
             case C_TRUE:  temp = "true";  break;

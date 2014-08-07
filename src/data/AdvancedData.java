@@ -41,7 +41,7 @@ public class AdvancedData extends GameControlData implements Cloneable
     public long[][] whenPenalized = Rules.league.isCoachAvailable ? new long[2][Rules.league.teamSize+1] : new long[2][Rules.league.teamSize];
 
     /** Which players were already ejected? */
-    public boolean [][] ejected = Rules.league.isCoachAvailable ? new boolean[2][Rules.league.teamSize+1] : new boolean[2][Rules.league.teamSize];
+    public boolean[][] ejected = Rules.league.isCoachAvailable ? new boolean[2][Rules.league.teamSize+1] : new boolean[2][Rules.league.teamSize];
     
     /** Pushing counters for each team, 0:left side, 1:right side. */
     public int[] pushes = {0, 0};
@@ -92,7 +92,7 @@ public class AdvancedData extends GameControlData implements Cloneable
     public long timestampCoachPackage[] = {0, 0};
 
     /** Keep the coach messages*/
-    public  ArrayList<SPLCoachMessage> splCoachMessageQueue = new ArrayList<SPLCoachMessage>();
+    public ArrayList<SPLCoachMessage> splCoachMessageQueue = new ArrayList<SPLCoachMessage>();
 
     /**
      * Creates a new AdvancedData.
@@ -164,14 +164,15 @@ public class AdvancedData extends GameControlData implements Cloneable
     }
     
     /**
-     * The number of seconds until a certion duration is over. The time
+     * The number of seconds until a certain duration is over. The time
      * already passed is specified as a timestamp when it began.
      * @param millis The timestamp in ms.
      * @param durationInSeconds The full duration in s.
      * @return The number of seconds that still remain from the duration.
      *        Can be negative.
      */
-    public int getRemainingSeconds(long millis, int durationInSeconds) {
+    public int getRemainingSeconds(long millis, int durationInSeconds)
+    {
         return durationInSeconds - getSecondsSince(millis);
     }
 
@@ -384,18 +385,20 @@ public class AdvancedData extends GameControlData implements Cloneable
         }
     }
 
-    public class PenaltyQueueData  implements Serializable {
+    public class PenaltyQueueData implements Serializable
+    {
         public long whenPenalized;
         public byte penalty;
 
-        public PenaltyQueueData(long whenPenalized, byte penalty) {
+        public PenaltyQueueData(long whenPenalized, byte penalty)
+        {
             this.whenPenalized = whenPenalized;
             this.penalty = penalty;
         }
     }
 
-    public void addToPenaltyQueue(int side, long whenPenalized, byte penalty) {
+    public void addToPenaltyQueue(int side, long whenPenalized, byte penalty)
+    {
         penaltyQueueForSubPlayers.get(side).add(new PenaltyQueueData(whenPenalized, penalty));
     }
-
 }
