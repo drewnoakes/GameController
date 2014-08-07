@@ -6,10 +6,10 @@ package controller;
  */
 public class StartOptions
 {
-    /** Team number of the first (blue) team. */
+    /** Team number of the first (blue) team (index 0). */
     public byte teamNumberBlue;
 
-    /** Team number of the second (red) team. */
+    /** Team number of the second (red) team (index 1). */
     public byte teamNumberRed;
 
     /** Whether teams change colour at half time or not. */
@@ -22,7 +22,7 @@ public class StartOptions
     public int kickOffTeamIndex;
 
     /**
-     * Whether this is a play off game (goes into extra time if needed.)
+     * Whether this is a play off game (goes into extra time if needed).
      *
      * This is known as a 'play-off' game in SPL, and a 'knock-out' game in the HL.
      *
