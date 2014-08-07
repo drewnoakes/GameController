@@ -1,9 +1,6 @@
 package controller.net.protocol;
 
-import data.GameControlData;
-import data.PlayerInfo;
-import data.SPLCoachMessage;
-import data.TeamInfo;
+import data.*;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -76,7 +73,7 @@ public class NetworkProtocol9 extends NetworkProtocol
         buffer.put(versionNumber);
         buffer.put(packetNumber);
         buffer.put(data.playersPerTeam);
-        buffer.put(data.gameState);
+        buffer.put(data.gameState.getValue());
         buffer.put(data.firstHalf);
         buffer.put(data.kickOffTeam);
         buffer.put(data.secGameState);
@@ -113,7 +110,7 @@ public class NetworkProtocol9 extends NetworkProtocol
         buffer.get(); // packet number (ignored when decoding)
 
         data.playersPerTeam = buffer.get();
-        data.gameState = buffer.get();
+        data.gameState = GameState.fromValue(buffer.get());
         data.firstHalf = buffer.get();
         data.kickOffTeam = buffer.get();
         data.secGameState = buffer.get();

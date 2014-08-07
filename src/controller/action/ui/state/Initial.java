@@ -4,7 +4,7 @@ import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
-import data.GameControlData;
+import data.GameState;
 import rules.Rules;
 
 /**
@@ -31,14 +31,14 @@ public class Initial extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (data.gameState == GameControlData.STATE_INITIAL) {
+        if (data.gameState == GameState.Initial) {
             return;
         }
         if (Rules.league.returnRobotsInGameStoppages) {
             data.resetPenaltyTimes();
         }
         data.whenCurrentGameStateBegan = data.getTime();
-        data.gameState = GameControlData.STATE_INITIAL;
+        data.gameState = GameState.Initial;
         Log.state(data, "Initial");
     }
     
@@ -51,7 +51,7 @@ public class Initial extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameControlData.STATE_INITIAL)
+        return (data.gameState == GameState.Initial)
             || data.testmode;
     }
 }

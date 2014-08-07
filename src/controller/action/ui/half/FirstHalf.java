@@ -5,6 +5,7 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameControlData;
+import data.GameState;
 import rules.Rules;
 import data.TeamInfo;
 
@@ -37,7 +38,7 @@ public class FirstHalf extends GCAction
             data.secGameState = GameControlData.STATE2_NORMAL;
             changeSide(data);
             data.kickOffTeam = (data.leftSideKickoff ? data.team[0].teamColor : data.team[1].teamColor);
-            data.gameState = GameControlData.STATE_INITIAL;
+            data.gameState = GameState.Initial;
             // Don't set data.whenCurrentGameStateBegan, because it's used to count the pause
             Log.state(data, "1st Half");
         }

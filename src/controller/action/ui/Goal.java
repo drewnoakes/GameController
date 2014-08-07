@@ -6,6 +6,7 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameControlData;
+import data.GameState;
 import rules.Rules;
 
 
@@ -70,7 +71,7 @@ public class Goal extends GCAction
     public boolean isLegal(AdvancedData data)
     {
         return ((set == 1)
-              && (data.gameState == GameControlData.STATE_PLAYING)
+              && (data.gameState == GameState.Playing)
               && ( (data.secGameState != GameControlData.STATE2_PENALTYSHOOT)
                 || (data.kickOffTeam == data.team[side].teamColor)) )
             || data.testmode;

@@ -2,7 +2,7 @@ package controller.action.ui.penalty;
 
 import common.Log;
 import data.AdvancedData;
-import data.GameControlData;
+import data.GameState;
 import data.PlayerInfo;
 import rules.Rules;
 
@@ -40,8 +40,8 @@ public class Leaving extends Penalty
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameControlData.STATE_READY)
-            || (data.gameState == GameControlData.STATE_PLAYING)
+        return (data.gameState == GameState.Ready)
+            || (data.gameState == GameState.Playing)
             || (data.testmode);
     }
 }

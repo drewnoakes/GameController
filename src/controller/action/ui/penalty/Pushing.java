@@ -2,7 +2,7 @@ package controller.action.ui.penalty;
 
 import common.Log;
 import data.AdvancedData;
-import data.GameControlData;
+import data.GameState;
 import data.PlayerInfo;
 import rules.Rules;
 
@@ -27,7 +27,7 @@ public class Pushing extends Penalty
         player.penalty = PlayerInfo.PENALTY_SPL_PLAYER_PUSHING;
         data.whenPenalized[side][number] = data.getTime();
 
-        if (data.gameState == GameControlData.STATE_PLAYING) {
+        if (data.gameState == GameState.Playing) {
             data.pushes[side]++;
             for (int pushes : Rules.league.pushesToEjection) {
                 if (data.pushes[side] == pushes) {
@@ -50,8 +50,8 @@ public class Pushing extends Penalty
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameControlData.STATE_READY)
-            || (data.gameState == GameControlData.STATE_PLAYING) 
+        return (data.gameState == GameState.Ready)
+            || (data.gameState == GameState.Playing)
             || (data.testmode);
     }
 }

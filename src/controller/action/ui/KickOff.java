@@ -5,6 +5,7 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameControlData;
+import data.GameState;
 import rules.Rules;
 
 
@@ -46,7 +47,7 @@ public class KickOff extends GCAction
         if ((Rules.league.kickoffChoice)
                 && (data.secGameState == GameControlData.STATE2_NORMAL)
                 && (data.firstHalf == GameControlData.C_TRUE)
-                && (data.gameState == GameControlData.STATE_INITIAL)) {
+                && (data.gameState == GameState.Initial)) {
             data.leftSideKickoff = (side == 0);
         }
         Log.state(data, "Kickoff "+
@@ -66,7 +67,7 @@ public class KickOff extends GCAction
                 || ((Rules.league.kickoffChoice)
                     && (data.secGameState == GameControlData.STATE2_NORMAL)
                     && (data.firstHalf == GameControlData.C_TRUE)
-                    && (data.gameState == GameControlData.STATE_INITIAL))
+                    && (data.gameState == GameState.Initial))
                 || data.testmode;
     }
 }

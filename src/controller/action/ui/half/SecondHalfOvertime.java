@@ -5,7 +5,7 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameControlData;
-
+import data.GameState;
 
 /**
  * @author Michel Bartsch
@@ -40,7 +40,7 @@ public class SecondHalfOvertime extends GCAction
             }
             FirstHalf.changeSide(data);
             data.kickOffTeam = (data.leftSideKickoff ? data.team[0].teamColor : data.team[1].teamColor);
-            data.gameState = GameControlData.STATE_INITIAL;
+            data.gameState = GameState.Initial;
             Log.state(data, "2nd Half Extra Time");
         }
     }
@@ -57,7 +57,7 @@ public class SecondHalfOvertime extends GCAction
         return ((data.firstHalf != GameControlData.C_TRUE)
               && (data.secGameState == GameControlData.STATE2_OVERTIME))
             || ((data.secGameState == GameControlData.STATE2_OVERTIME)
-              && (data.gameState == GameControlData.STATE_FINISHED))
+              && (data.gameState == GameState.Finished))
             || (data.testmode);
     }
 }

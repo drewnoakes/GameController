@@ -25,12 +25,6 @@ public class GameControlData implements Serializable
     public static final byte TEAM_RED = 1;
     public static final byte DROPBALL = 2;
 
-    public static final byte STATE_INITIAL = 0;
-    public static final byte STATE_READY = 1;
-    public static final byte STATE_SET = 2;
-    public static final byte STATE_PLAYING = 3;
-    public static final byte STATE_FINISHED = 4;
-
     public static final byte STATE2_NORMAL = 0;
     public static final byte STATE2_PENALTYSHOOT = 1;
     public static final byte STATE2_OVERTIME = 2;
@@ -40,7 +34,7 @@ public class GameControlData implements Serializable
     public static final byte C_TRUE = 1;
 
     public byte playersPerTeam = (byte)Rules.league.teamSize;   // The number of players on a team
-    public byte gameState = STATE_INITIAL;                      // state of the game (STATE_READY, STATE_PLAYING, etc)
+    public GameState gameState = GameState.Initial;             // state of the game
     public byte firstHalf = C_TRUE;                             // 1 = game in first half, 0 otherwise
     public byte kickOffTeam = TEAM_BLUE;                        // the next team to kick off
     public byte secGameState = STATE2_NORMAL;                   // Extra state information - (STATE2_NORMAL, STATE2_PENALTYSHOOT, etc)
@@ -69,15 +63,7 @@ public class GameControlData implements Serializable
         String temp;
         
         out += "   Players per Team: "+playersPerTeam+"\n";
-        switch (gameState) {
-            case STATE_INITIAL:  temp = "initial"; break;
-            case STATE_READY:    temp = "ready";   break;
-            case STATE_SET:      temp = "set";     break;
-            case STATE_PLAYING:  temp = "playing"; break;
-            case STATE_FINISHED: temp = "finish";  break;
-            default: temp = "undefined("+gameState+")";
-        }
-        out += "          gameState: "+temp+"\n";
+        out += "          gameState: "+gameState+"\n";
         switch (firstHalf) {
             case C_TRUE:  temp = "true";  break;
             case C_FALSE: temp = "false"; break;

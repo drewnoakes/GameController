@@ -6,6 +6,7 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameControlData;
+import data.GameState;
 import rules.Rules;
 
 /**
@@ -45,11 +46,11 @@ public class TimeOut extends GCAction
             data.timeOutTaken[side] = true;
             if (data.previousSecGameState != GameControlData.STATE2_PENALTYSHOOT) {
                 data.kickOffTeam = data.team[side].teamColor == GameControlData.TEAM_BLUE ? GameControlData.TEAM_RED : GameControlData.TEAM_BLUE;
-            } else if (data.gameState == GameControlData.STATE_SET) {
+            } else if (data.gameState == GameState.Set) {
                 data.team[data.kickOffTeam == data.team[0].teamColor ? 0 : 1].penaltyShot--;
             }
             Log.setNextMessage("Timeout "+Rules.league.teamColorName[data.team[side].teamColor]);
-            data.gameState = -1; // something impossible to force execution of next call
+            data.gameState = null; // to force execution of next call
             ActionBoard.initial.perform(data);
         } else {
             data.secGameState = data.previousSecGameState;
@@ -72,12 +73,12 @@ public class TimeOut extends GCAction
     public boolean isLegal(AdvancedData data)
     {
       return data.timeOutActive[side]
-            || ((data.gameState == GameControlData.STATE_INITIAL ||
-                  data.gameState == GameControlData.STATE_READY ||
-                  data.gameState == GameControlData.STATE_SET)
+            || ((data.gameState == GameState.Initial ||
+                  data.gameState == GameState.Ready ||
+                  data.gameState == GameState.Set)
                 && !data.timeOutTaken[side]
                 && !data.timeOutActive[side == 0 ? 1 : 0]
-                && !(data.secGameState == GameControlData.STATE2_TIMEOUT))
+                && data.secGameState != GameControlData.STATE2_TIMEOUT)
             || data.testmode;
     }
 }

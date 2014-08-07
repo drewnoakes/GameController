@@ -5,6 +5,7 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameControlData;
+import data.GameState;
 import rules.Rules;
 
 
@@ -32,10 +33,10 @@ public class ClockTick extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (data.gameState == GameControlData.STATE_READY
+        if (data.gameState == GameState.Ready
                && data.getSecondsSince(data.whenCurrentGameStateBegan) >= Rules.league.readyTime) {
             ActionBoard.set.perform(data);
-        } else if (data.gameState == GameControlData.STATE_FINISHED) {
+        } else if (data.gameState == GameState.Finished) {
             Integer remainingPauseTime = data.getRemainingPauseTime();
             if (remainingPauseTime != null) {
                 if (data.firstHalf == GameControlData.C_TRUE && remainingPauseTime <= Rules.league.pauseTime / 2) {
@@ -62,12 +63,12 @@ public class ClockTick extends GCAction
     
     public boolean isClockRunning(AdvancedData data)
     {
-        boolean halfNotStarted = data.timeBeforeCurrentGameState == 0 && data.gameState != GameControlData.STATE_PLAYING;
-        return !((data.gameState == GameControlData.STATE_INITIAL)
-         || (data.gameState == GameControlData.STATE_FINISHED)
+        boolean halfNotStarted = data.timeBeforeCurrentGameState == 0 && data.gameState != GameState.Playing;
+        return !((data.gameState == GameState.Initial)
+         || (data.gameState == GameState.Finished)
          || (
-                ((data.gameState == GameControlData.STATE_READY)
-               || (data.gameState == GameControlData.STATE_SET))
+                ((data.gameState == GameState.Ready)
+               || (data.gameState == GameState.Set))
                 && ((data.playoff && Rules.league.playOffTimeStop) || halfNotStarted)
                 )
          || data.manPause)

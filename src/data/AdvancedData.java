@@ -221,10 +221,10 @@ public class AdvancedData extends GameControlData implements Cloneable
                 : Math.max(team[0].penaltyShot, team[1].penaltyShot) > regularNumberOfPenaltyShots
                 ? Rules.league.penaltyShotTimeSuddenDeath
                 : Rules.league.penaltyShotTime;
-        int timePlayed = gameState == STATE_INITIAL// during timeouts
-                || (gameState == STATE_READY || gameState == STATE_SET)
+        int timePlayed = gameState == GameState.Initial// during timeouts
+                || (gameState == GameState.Ready || gameState == GameState.Set)
                 && (playoff && Rules.league.playOffTimeStop || timeBeforeCurrentGameState == 0)
-                || gameState == STATE_FINISHED
+                || gameState == GameState.Finished
         ? (int) ((timeBeforeCurrentGameState + manRemainingGameTimeOffset + (manPlay ? System.currentTimeMillis() - manWhenClockChanged : 0)) / 1000)
                 : getSecondsSince(whenCurrentGameStateBegan - timeBeforeCurrentGameState - manRemainingGameTimeOffset);
         
@@ -238,12 +238,12 @@ public class AdvancedData extends GameControlData implements Cloneable
     public Integer getRemainingPauseTime()
     {
         if (secGameState == GameControlData.STATE2_NORMAL
-                && (gameState == STATE_INITIAL && firstHalf != C_TRUE && !timeOutActive[0] && !timeOutActive[1]
-                || gameState == STATE_FINISHED && firstHalf == C_TRUE)) {
+                && (gameState == GameState.Initial && firstHalf != C_TRUE && !timeOutActive[0] && !timeOutActive[1]
+                || gameState == GameState.Finished && firstHalf == C_TRUE)) {
             return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.pauseTime);
         } else if (Rules.league.pausePenaltyShootOutTime != 0 && playoff && team[0].score == team[1].score
-                && (gameState == STATE_INITIAL && secGameState == STATE2_PENALTYSHOOT && !timeOutActive[0] && !timeOutActive[1]
-                || gameState == STATE_FINISHED && firstHalf != C_TRUE)) {
+                && (gameState == GameState.Initial && secGameState == STATE2_PENALTYSHOOT && !timeOutActive[0] && !timeOutActive[1]
+                || gameState == GameState.Finished && firstHalf != C_TRUE)) {
             return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.pausePenaltyShootOutTime);
         } else {
             return null;
@@ -294,7 +294,7 @@ public class AdvancedData extends GameControlData implements Cloneable
         int penalty = team[side].player[number].penalty;
         assert penalty == PlayerInfo.PENALTY_MANUAL || penalty == PlayerInfo.PENALTY_SUBSTITUTE || Rules.league.penaltyTime[penalty] != -1;
         return penalty == PlayerInfo.PENALTY_MANUAL || penalty == PlayerInfo.PENALTY_SUBSTITUTE ? 0
-                : gameState == STATE_READY && Rules.league.returnRobotsInGameStoppages && whenPenalized[side][number] >= whenCurrentGameStateBegan
+                : gameState == GameState.Ready && Rules.league.returnRobotsInGameStoppages && whenPenalized[side][number] >= whenCurrentGameStateBegan
                 ? Rules.league.readyTime - getSecondsSince(whenCurrentGameStateBegan)
                 : Math.max(0, getRemainingSeconds(whenPenalized[side][number], Rules.league.penaltyTime[penalty]));
     }
@@ -329,15 +329,15 @@ public class AdvancedData extends GameControlData implements Cloneable
         if (kickOffTeam == DROPBALL) {
             timeKickOffBlocked = 0;
         }
-        if (gameState == STATE_INITIAL && (timeOutActive[0] || timeOutActive[1])) {
+        if (gameState == GameState.Initial && (timeOutActive[0] || timeOutActive[1])) {
             return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.timeOutTime);
         }
-        else if (gameState == STATE_INITIAL && (refereeTimeout)) {
+        else if (gameState == GameState.Initial && (refereeTimeout)) {
             return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.refereeTimeout);
         }
-        else if (gameState == STATE_READY) {
+        else if (gameState == GameState.Ready) {
             return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.readyTime);
-        } else if (gameState == STATE_PLAYING && secGameState != STATE2_PENALTYSHOOT
+        } else if (gameState == GameState.Playing && secGameState != STATE2_PENALTYSHOOT
                 && timeKickOffBlocked >= -timeKickOffBlockedOvertime) {
             if (timeKickOffBlocked > 0) {
                 return timeKickOffBlocked;

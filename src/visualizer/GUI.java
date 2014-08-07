@@ -21,6 +21,7 @@ import javax.swing.JFrame;
 
 import common.Log;
 import data.GameControlData;
+import data.GameState;
 import rules.Rules;
 import data.Teams;
 
@@ -333,13 +334,13 @@ public class GUI extends JFrame
         switch (data.secGameState) {
             case GameControlData.STATE2_NORMAL:
                 if (data.firstHalf == GameControlData.C_TRUE) {
-                    if (data.gameState == GameControlData.STATE_FINISHED) {
+                    if (data.gameState == GameState.Finished) {
                         state = "Half Time";
                     } else {
                         state = "First Half";
                     }
                 } else {
-                    if (data.gameState == GameControlData.STATE_INITIAL) {
+                    if (data.gameState == GameState.Initial) {
                         state = "Half Time";
                     } else {
                         state = "Second Half";
@@ -373,16 +374,7 @@ public class GUI extends JFrame
         int x = getSizeToWidth(0.4);
         int y = getSizeToHeight(0.81);
         int size = getSizeToWidth(0.2);
-        String state;
-        switch (data.gameState) {
-            case GameControlData.STATE_INITIAL:  state = "Initial"; break;
-            case GameControlData.STATE_READY:    state = "Ready";   break;
-            case GameControlData.STATE_SET:      state = "Set";     break;
-            case GameControlData.STATE_PLAYING:  state = "Playing"; break;
-            case GameControlData.STATE_FINISHED: state = "Finished";  break;
-            default: state = "";
-        }
-        drawCenteredString(g, state, x, y, size);
+        drawCenteredString(g, data.gameState.toString(), x, y, size);
     }
     
     /**

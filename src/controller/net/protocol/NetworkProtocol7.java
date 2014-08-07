@@ -54,7 +54,7 @@ public class NetworkProtocol7 extends NetworkProtocol
         buffer.put(GAMECONTROLLER_STRUCT_HEADER.getBytes(), 0, 4);
         buffer.putInt(versionNumber);
         buffer.put(data.playersPerTeam);
-        buffer.put(data.gameState);
+        buffer.put(data.gameState.getValue());
         buffer.put(data.firstHalf);
         buffer.put(data.kickOffTeam);
         buffer.put(data.secGameState);

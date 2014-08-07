@@ -2,7 +2,7 @@ package controller.action.ui.penalty;
 
 import common.Log;
 import data.AdvancedData;
-import data.GameControlData;
+import data.GameState;
 import data.PlayerInfo;
 import rules.Rules;
 
@@ -39,6 +39,6 @@ public class Attack extends Penalty
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameControlData.STATE_PLAYING) || data.testmode;
+        return (data.gameState == GameState.Playing) || data.testmode;
     } 
 }

@@ -5,6 +5,7 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameControlData;
+import data.GameState;
 import rules.Rules;
 
 
@@ -35,7 +36,7 @@ public class PenaltyShoot extends GCAction
         if (data.secGameState != GameControlData.STATE2_PENALTYSHOOT) {
             data.secGameState = GameControlData.STATE2_PENALTYSHOOT;
             // Don't set data.whenCurrentGameStateBegan, because it's used to count the pause
-            data.gameState = GameControlData.STATE_INITIAL;
+            data.gameState = GameState.Initial;
             data.timeBeforeCurrentGameState = 0;
             data.resetPenalties();
             if (Rules.league.timeOutPerHalf) {
@@ -57,7 +58,7 @@ public class PenaltyShoot extends GCAction
         return (data.secGameState == GameControlData.STATE2_PENALTYSHOOT)
           || (data.previousSecGameState == GameControlData.STATE2_PENALTYSHOOT)      
           || ((data.firstHalf != GameControlData.C_TRUE)
-            && (data.gameState == GameControlData.STATE_FINISHED)
+            && (data.gameState == GameState.Finished)
             && !(Rules.league.overtime
                 && (data.playoff)
                 && (data.secGameState == GameControlData.STATE2_NORMAL)

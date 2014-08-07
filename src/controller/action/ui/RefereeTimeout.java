@@ -7,6 +7,7 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameControlData;
+import data.GameState;
 
 public class RefereeTimeout extends GCAction
 {
@@ -23,15 +24,15 @@ public class RefereeTimeout extends GCAction
             data.secGameState = GameControlData.STATE2_TIMEOUT;
             data.refereeTimeout = true;
             Log.setNextMessage("Referee Timeout");
-            if (data.gameState == GameControlData.STATE_PLAYING) {
+            if (data.gameState == GameState.Playing) {
                 data.addTimeInCurrentState();
             }
             if (data.previousSecGameState == GameControlData.STATE2_PENALTYSHOOT 
-                    && (data.gameState == GameControlData.STATE_SET || data.gameState == GameControlData.STATE_PLAYING)) {
+                    && (data.gameState == GameState.Set || data.gameState == GameState.Playing)) {
                 data.team[data.kickOffTeam == data.team[0].teamColor ? 0 : 1].penaltyShot--;
             }
             
-            data.gameState = -1; //something impossible to force execution of next call
+            data.gameState = null; // to force execution of next call
             ActionBoard.initial.perform(data);
         } else {
             data.secGameState = data.previousSecGameState;
@@ -47,7 +48,7 @@ public class RefereeTimeout extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return data.gameState != GameControlData.STATE_FINISHED
+        return data.gameState != GameState.Finished
                 && !data.timeOutActive[0] && !data.timeOutActive[1];
     }
 

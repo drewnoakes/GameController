@@ -6,6 +6,7 @@ import controller.action.GCAction;
 import controller.action.ui.half.FirstHalf;
 import data.AdvancedData;
 import data.GameControlData;
+import data.GameState;
 import rules.Rules;
 
 
@@ -33,7 +34,7 @@ public class Set extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (data.gameState == GameControlData.STATE_SET) {
+        if (data.gameState == GameState.Set) {
             return;
         }
         if (Rules.league.returnRobotsInGameStoppages) {
@@ -46,16 +47,16 @@ public class Set extends GCAction
         
         if (data.secGameState == GameControlData.STATE2_PENALTYSHOOT) {
             data.timeBeforeCurrentGameState = 0;
-            if (data.gameState != GameControlData.STATE_INITIAL) {
+            if (data.gameState != GameState.Initial) {
                 data.kickOffTeam = data.kickOffTeam == GameControlData.TEAM_BLUE ? GameControlData.TEAM_RED : GameControlData.TEAM_BLUE;
                 FirstHalf.changeSide(data);
             }
 
-            if (data.gameState != GameControlData.STATE_PLAYING) {
+            if (data.gameState != GameState.Playing) {
                 data.team[data.team[0].teamColor == data.kickOffTeam ? 0 : 1].penaltyShot++;
             }
         }
-        data.gameState = GameControlData.STATE_SET;
+        data.gameState = GameState.Set;
         Log.state(data, "Set");
     }
     
@@ -68,10 +69,10 @@ public class Set extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameControlData.STATE_READY)
-            || (data.gameState == GameControlData.STATE_SET)
+        return (data.gameState == GameState.Ready)
+            || (data.gameState == GameState.Set)
             || ((data.secGameState == GameControlData.STATE2_PENALTYSHOOT)
-              && ((data.gameState != GameControlData.STATE_PLAYING)
+              && ((data.gameState != GameState.Playing)
                 || (Rules.league.penaltyShotRetries))
               && !data.timeOutActive[0]
               && !data.timeOutActive[1]

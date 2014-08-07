@@ -29,10 +29,7 @@ import controller.action.ActionBoard;
 import controller.action.GCAction;
 import controller.net.RobotOnlineStatus;
 import controller.net.RobotWatcher;
-import data.AdvancedData;
-import data.GameControlData;
-import data.PlayerInfo;
-import data.Teams;
+import data.*;
 import rules.HL;
 import rules.Rules;
 import rules.SPL;
@@ -816,7 +813,7 @@ public class GUI extends JFrame implements GCGUI
         clock.setText(formatTime(data.getRemainingGameTime()));
         Integer secondaryTime = data.getSecondaryTime(KICKOFF_BLOCKED_HIGHLIGHT_SECONDS - 1);
         if (secondaryTime != null) {
-            if (data.gameState == GameControlData.STATE_PLAYING) {
+            if (data.gameState == GameState.Playing) {
                 clockSub.setText(formatTime(Math.max(0, secondaryTime)));
                 clockSub.setForeground(secondaryTime <= 0
                         && clockSub.getForeground() != COLOR_HIGHLIGHT ? COLOR_HIGHLIGHT : Color.BLACK);
@@ -898,24 +895,20 @@ public class GUI extends JFrame implements GCGUI
         set.setEnabled(ActionBoard.set.isLegal(data));
         play.setEnabled(ActionBoard.play.isLegal(data));
         finish.setEnabled(ActionBoard.finish.isLegal(data));
-        switch (data.gameState) {
-            case GameControlData.STATE_INITIAL:
-                initial.setSelected(true);
-                break;
-            case GameControlData.STATE_READY:
-                ready.setSelected(true);
-                break;
-            case GameControlData.STATE_SET:
-                set.setSelected(true);
-                break;
-            case GameControlData.STATE_PLAYING:
-                play.setSelected(true);
-                break;
-            case GameControlData.STATE_FINISHED:
-                finish.setSelected(true);
-                break;
+
+        if (data.gameState == GameState.Initial) {
+            initial.setSelected(true);
+        } else if (data.gameState == GameState.Ready) {
+            ready.setSelected(true);
+        } else if (data.gameState == GameState.Set) {
+            set.setSelected(true);
+        } else if (data.gameState == GameState.Playing) {
+            play.setSelected(true);
+        } else if (data.gameState == GameState.Finished) {
+            finish.setSelected(true);
         }
-        highlight(finish, (data.gameState != GameControlData.STATE_FINISHED)
+
+        highlight(finish, (data.gameState != GameState.Finished)
                 && (data.getRemainingGameTime() <= FINISH_HIGHLIGHT_SECONDS)
                 && (finish.getBackground() != COLOR_HIGHLIGHT));
     }
@@ -972,8 +965,8 @@ public class GUI extends JFrame implements GCGUI
                     pushes[i].setText(PUSHES+": "+data.pushes[i]);
                 }
             } else {
-                pushes[i].setText((i == 0 && (data.gameState == GameControlData.STATE_SET
-                        || data.gameState == GameControlData.STATE_PLAYING) ? SHOT : SHOTS)+": "+data.team[i].penaltyShot);
+                pushes[i].setText((i == 0 && (data.gameState == GameState.Set
+                        || data.gameState == GameState.Playing) ? SHOT : SHOTS)+": "+data.team[i].penaltyShot);
             }
         }
     }
@@ -1090,7 +1083,7 @@ public class GUI extends JFrame implements GCGUI
     private void updateGlobalStuck(AdvancedData data)
     {
         for (int i=0; i<2; i++) {
-            if (data.gameState == GameControlData.STATE_PLAYING
+            if (data.gameState == GameState.Playing
                     && data.getRemainingSeconds(data.whenCurrentGameStateBegan, Rules.league.kickoffTime + Rules.league.minDurationBeforeStuck) > 0)
             {
                 if (data.kickOffTeam == data.team[i].teamColor)

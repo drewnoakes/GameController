@@ -5,7 +5,7 @@ import controller.EventHandler;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
-import data.GameControlData;
+import data.GameState;
 import data.PlayerInfo;
 import rules.Rules;
 
@@ -25,8 +25,8 @@ public class TeammatePushing extends GCAction {
     @Override
     public boolean isLegal(AdvancedData data) {
         return Rules.league.dropInPlayerMode
-               && (data.gameState == GameControlData.STATE_READY
-                || data.gameState == GameControlData.STATE_PLAYING)
+               && (data.gameState == GameState.Ready
+                || data.gameState == GameState.Playing)
                || data.testmode;
     }
 

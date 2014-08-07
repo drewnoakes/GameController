@@ -5,6 +5,7 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameControlData;
+import data.GameState;
 import rules.Rules;
 
 
@@ -41,7 +42,7 @@ public class FirstHalfOvertime extends GCAction
             }
             FirstHalf.changeSide(data);
             data.kickOffTeam = (data.leftSideKickoff ? data.team[0].teamColor : data.team[1].teamColor);
-            data.gameState = GameControlData.STATE_INITIAL;
+            data.gameState = GameState.Initial;
             Log.state(data, "1st Half Extra Time");
         }
     }
@@ -60,7 +61,7 @@ public class FirstHalfOvertime extends GCAction
                 || ((Rules.league.overtime)
                     && (data.playoff)
                     && (data.secGameState == GameControlData.STATE2_NORMAL)
-                    && (data.gameState == GameControlData.STATE_FINISHED)
+                    && (data.gameState == GameState.Finished)
                     && (data.firstHalf  != GameControlData.C_TRUE)
                     && (data.team[0].score == data.team[1].score)
                     && (data.team[0].score > 0))
