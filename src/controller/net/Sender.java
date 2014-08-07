@@ -117,6 +117,9 @@ public class Sender
         public void run()
         {
             while (!isInterrupted()) {
+                // Take a copy of the reference to prevent errors cause when data is modified while this thread is running
+                AdvancedData data = Sender.this.data;
+
                 if (data != null) {
                     data.updateTimes();
                     data.packetNumber = packetNumber;
