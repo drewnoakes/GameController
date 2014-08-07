@@ -130,8 +130,7 @@ public class StartInput extends JFrame
                 public void actionPerformed(ActionEvent e)
                 {
                     Object selected = team[0].getSelectedItem();
-                    if (selected == null)
-                    {
+                    if (selected == null) {
                         return;
                     }
                     options.teamNumberBlue = Byte.valueOf(((String)selected).split(" \\(")[1].split("\\)")[0]);
@@ -148,8 +147,7 @@ public class StartInput extends JFrame
                 public void actionPerformed(ActionEvent e)
                 {
                     Object selected = team[1].getSelectedItem();
-                    if (selected == null)
-                    {
+                    if (selected == null) {
                         return;
                     }
                     options.teamNumberRed = Byte.valueOf(((String)selected).split(" \\(")[1].split("\\)")[0]);
