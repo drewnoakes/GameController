@@ -170,6 +170,7 @@ public class Main
         options.broadcastAddress = DEFAULT_BROADCAST;
         options.fullScreenMode = true;
         options.kickOffTeamIndex = -1;
+        options.playOff = null;
 
         Rules.league = Rules.LEAGUES[0];
 
@@ -203,6 +204,17 @@ public class Main
                         continue;
                     }
                 }
+            } else if (args[i].equals("--knockout") || args[i].equals("--playoff")) {
+                if (hasAnotherArg) {
+                    String val = args[++i];
+                    if (val.equals("yes") || val.equals("true") || val.equals("1")) {
+                        options.playOff = true;
+                        continue;
+                    } else if (val.equals("no") || val.equals("false") || val.equals("0")) {
+                        options.playOff = false;
+                        continue;
+                    }
+                }
             } else if (args[i].equals("-w") || args[i].equals("--window")) {
                 options.fullScreenMode = false;
                 continue;
@@ -224,6 +236,7 @@ public class Main
                 + "\n  (-k | --kickoff) <colour>       set kickoff team colour ('blue' or 'red')"
                 + "\n  (-l | --league) %s%sselect league (default is spl)"
                 + "\n  (-w | --window)                 set window mode (default is fullscreen)"
+                + "\n  (--knockout | --playoff) <val>  set whether knockout/playoff game (yes/no)"
                 + "\n";
 
         String leagues = "";

@@ -280,6 +280,13 @@ public class StartInput extends JFrame
                 public void actionPerformed(ActionEvent e) {
                     startEnabling();
                 }});
+        if (options.playOff != null) {
+            if (options.playOff)
+                fulltime.setSelected(true);
+            else
+                nofulltime.setSelected(true);
+        }
+
         start = new JButton(START_LABEL);
         start.setPreferredSize(new Dimension(WINDOW_WIDTH/3-2*STANDARD_SPACE, START_HEIGHT));
         start.setEnabled(false);

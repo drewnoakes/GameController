@@ -25,8 +25,10 @@ public class StartOptions
      * Whether this is a play off game (goes into extra time if needed.)
      *
      * This is known as a 'play-off' game in SPL, and a 'knock-out' game in the HL.
+     *
+     * A null value indicates that no value has been specified so far.
      */
-    public boolean playOff;
+    public Boolean playOff;
 
     /** The UDP broadcast IP address. */
     public String broadcastAddress;
