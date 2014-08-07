@@ -14,29 +14,11 @@ import data.SPLCoachMessage;
 
 public class SPLCoachMessageReceiver
 {
-    /* SINGLETON MEMBERS ------------------------------------------------------------------- */
-
-    private static SPLCoachMessageReceiver instance;
-
-    public synchronized static SPLCoachMessageReceiver getInstance()
-    {
-        if (instance == null) {
-            try {
-                instance = new SPLCoachMessageReceiver();
-            } catch (SocketException e) {
-                throw new IllegalStateException("fatal: Error while setting up SPLCoachMessageReceiver.", e);
-            }
-        }
-        return instance;
-    }
-
-    /* INSTANCE MEMBERS ------------------------------------------------------------------- */
-
     private final DatagramSocket datagramSocket;
 
     private final SPLCoachMessageReceiverThread receiverThread;
 
-    private SPLCoachMessageReceiver() throws SocketException
+    public SPLCoachMessageReceiver() throws SocketException
     {
         datagramSocket = new DatagramSocket(null);
         datagramSocket.setReuseAddress(true);

@@ -67,6 +67,7 @@ public class Main
 
         GameControlReturnDataReceiver returnReceiver;
         Sender sender;
+        SPLCoachMessageReceiver splReceiver = null;
 
         try {
             //sender
@@ -86,8 +87,8 @@ public class Main
             returnReceiver.start();
 
             if (Rules.league.isCoachAvailable) {
-                SPLCoachMessageReceiver spl = SPLCoachMessageReceiver.getInstance();
-                spl.start();
+                splReceiver = new SPLCoachMessageReceiver();
+                splReceiver.start();
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
@@ -129,7 +130,8 @@ public class Main
         try {
             sender.stop();
             returnReceiver.stop();
-            SPLCoachMessageReceiver.getInstance().stop();
+            if (splReceiver != null)
+                splReceiver.stop();
         } catch (InterruptedException e) {
             Log.error("Waiting for threads to shutdown was interrupted.");
         }
