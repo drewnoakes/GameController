@@ -110,7 +110,7 @@ public class GUI extends JFrame implements GCGUI
     private static final int TIME_SUB_FONT_SIZE = 40;
     private static final int TIMEOUT_FONT_SIZE = 14;
     private static final int STATE_FONT_SIZE = 12;
-    private static final String WINDOW_TITLE = "GameController";
+    private static final String WINDOW_TITLE = "RoboCup Game Controller";
     private static final String ICONS_PATH = "config/icons/";
     private static final String[][] BACKGROUND_SIDE = {{"robot_left_blue.png",
                                                         "robot_left_red.png"},

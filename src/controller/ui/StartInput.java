@@ -33,7 +33,7 @@ public class StartInput extends JFrame
      * Some constants defining this GUI`s appearance as their names say.
      * Feel free to change them and see what happens.
      */
-    private static final String WINDOW_TITLE = "GameController";
+    private static final String WINDOW_TITLE = "RoboCup Game Controller";
     private static final int WINDOW_WIDTH = 600;
     private static final int WINDOW_HEIGHT = 482;
     private static final int STANDARD_SPACE = 10;
