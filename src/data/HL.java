@@ -14,7 +14,7 @@ public class HL extends Rules
     {
         /** The league´s name this rules are for. */
         leagueName = "HL Kid";
-        /** The league´s directory name with it´s teams and icons. */
+        /** The league´s directory name with its teams and icons. */
         leagueDirectory = "hl_kid";
         /** How many robots are in a team. */
         teamSize = 6; 
@@ -68,11 +68,11 @@ public class HL extends Rules
         timeOutTime = 2*60;
         /** One time-out per half? */
         timeOutPerHalf = true;
-        /** On how many pushings is a robot ejected. */
+        /** On how many pushes is a robot ejected. */
         pushesToEjection = new int[] {};
         /** Defines if the option for a referee timeout is available */
         isRefereeTimeoutAvailable = false;
-        /** Defines if coach is available **/
+        /** Defines if coach is available. */
         isCoachAvailable = false;
         /** Allowed to compensate for lost time? */
         lostTime = false;

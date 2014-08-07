@@ -149,7 +149,7 @@ public class GUI extends JFrame implements ListSelectionListener
     }
     
     /**
-     * Moves all logs which are not seleted (unchecked) in the list to
+     * Moves all logs which are not selected (unchecked) in the list to
      * another directory.
      */
     private void clean()
@@ -169,7 +169,7 @@ public class GUI extends JFrame implements ListSelectionListener
     }
     
     /**
-     * Analize all logs which are selected (checked) in the list to create
+     * Analyze all logs which are selected (checked) in the list to create
      * the statistic output file.
      */
     private void analyze()

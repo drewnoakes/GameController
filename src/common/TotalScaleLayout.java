@@ -83,7 +83,7 @@ public class TotalScaleLayout implements LayoutManager
 
     /**
      * Because all of the Components`s sizes are adapted to the containers size
-     * this will allways return the size of the container when the layout was
+     * this will always return the size of the container when the layout was
      * created.
      * 
      * @param parent      Container this layout belongs to.
@@ -98,7 +98,7 @@ public class TotalScaleLayout implements LayoutManager
 
     /**
      * Because all of the Components`s sizes are adapted to the containers size
-     * this will allways return the size of the container when the layout was
+     * this will always return the size of the container when the layout was
      * created.
      * 
      * @param parent      Container this layout belongs to.

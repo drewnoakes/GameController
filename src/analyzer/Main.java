@@ -25,7 +25,7 @@ public class Main
     public static FileWriter writer;
     
     /**
-     * The programm starts here.
+     * The program starts here.
      * 
      * @param args  This is ignored.
      */

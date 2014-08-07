@@ -99,9 +99,9 @@ public abstract class Rules
     public boolean isRefereeTimeoutAvailable;
     /** One time-out per half? */
     public boolean timeOutPerHalf;
-    /** On how many pushings is a robot ejected. */
+    /** On how many pushes is a robot ejected. */
     public int[] pushesToEjection;
-    /** Defines if coach is available **/
+    /** Defines if coach is available. */
     public boolean isCoachAvailable;
     /** Allowed to compensate for lost time? */
     public boolean lostTime;

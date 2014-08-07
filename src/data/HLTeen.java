@@ -12,7 +12,7 @@ public class HLTeen extends HL
     {
         /** The league´s name this rules are for. */
         leagueName = "HL Teen";
-        /** The league´s directory name with it´s teams and icons. */
+        /** The league´s directory name with its teams and icons. */
         leagueDirectory = "hl_teen";
         /** How many robots are in a team. */
         teamSize = 4;

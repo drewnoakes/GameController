@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
  * 
  * This is an abstract class every action needs to extend to provide the
  * basic features. By extending this it also becomes an ActionListener,
- * wich is needed to add them to GUI buttons.
+ * which is needed to add them to GUI buttons.
  */
 public abstract class GCAction implements ActionListener
 {

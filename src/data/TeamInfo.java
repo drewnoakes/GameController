@@ -8,7 +8,7 @@ import java.nio.ByteOrder;
 /**
  * @author Michel Bartsch
  * 
- * This class is part of the data wich are send to the robots.
+ * This class is part of the data which are send to the robots.
  * It just represents this data, reads and writes between C-structure and
  * Java, nothing more.
  */
@@ -131,7 +131,7 @@ public class TeamInfo implements Serializable
         switch (teamColor) {
             case GameControlData.TEAM_BLUE: temp = "blue"; break;
             case GameControlData.TEAM_RED:  temp = "red";  break;
-            default: temp = "undefinied("+teamColor+")";
+            default: temp = "undefined("+teamColor+")";
         }
         out += "          teamColor: "+temp+"\n";
         out += "              score: "+score+"\n";

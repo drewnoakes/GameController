@@ -12,7 +12,7 @@ public class HLAdult extends HL
     {
         /** The league´s name this rules are for. */
         leagueName = "HL Adult";
-        /** The league´s directory name with it´s teams and icons. */
+        /** The league´s directory name with its teams and icons. */
         leagueDirectory = "hl_adult";
         /** How many robots are in a team. */
         teamSize = 2;
@@ -20,7 +20,7 @@ public class HLAdult extends HL
         robotsPlaying = 1;
         /** If the game starts with penalty-shoots. */
         startWithPenalty = true;
-       /** Time in seconds one penalty shoot is long. */
+        /** Time in seconds one penalty shoot is long. */
         penaltyShotTime = (int)(2.5*60);
     }
 }

@@ -11,7 +11,7 @@ import data.Rules;
  * 
  * You can ask this class about the robots online-status.
  * 
- * This class is a sigleton!
+ * This class is a singleton!
  */
 public class RobotWatcher
 {
@@ -20,7 +20,7 @@ public class RobotWatcher
 
     /** A timestamp when the last reply from each robot was received. */
     private long [][] robotsLastAnswer = Rules.league.isCoachAvailable ? new long[2][Rules.league.teamSize+1] : new long[2][Rules.league.teamSize];
-    /** Last message reeived from each robot.
+    /** Last message received from each robot.
      *  Look at GameControlReturnData for information about messages */
     private int [][] robotsLastMessage = Rules.league.isCoachAvailable ? new int[2][Rules.league.teamSize+1] : new int[2][Rules.league.teamSize];
     /** The calculated information about the online-status. */
@@ -28,7 +28,7 @@ public class RobotWatcher
 
     /** What the constants name says. */
     private final static int MILLIS_UNTIL_ROBOT_IS_OFFLINE = 4*1000;
-    private final static int MILLIS_UNTIL_ROBOT_HAS_HIGH_LATANCY = 2*1000;
+    private final static int MILLIS_UNTIL_ROBOT_HAS_HIGH_LATENCY = 2*1000;
 
     /**
      * Creates a new RobotWatcher.
@@ -47,7 +47,7 @@ public class RobotWatcher
     }
     
     /**
-     * Recieves robot´s answers to update corresponding timestamps and fire
+     * Receives robot´s answers to update corresponding timestamps and fire
      * actions caused manual on the robot.
      * 
      * @param gameControlReturnData     The robot`s answer.
@@ -101,7 +101,7 @@ public class RobotWatcher
                             instance.status[i][Rules.league.teamSize] = RobotOnlineStatus.UNKNOWN;
                         }
                     }
-                } else if (currentTime - instance.robotsLastAnswer[i][j] > MILLIS_UNTIL_ROBOT_HAS_HIGH_LATANCY) {
+                } else if (currentTime - instance.robotsLastAnswer[i][j] > MILLIS_UNTIL_ROBOT_HAS_HIGH_LATENCY) {
                     instance.status[i][j] = RobotOnlineStatus.HIGH_LATENCY;
                 } else {
                     instance.status[i][j] = RobotOnlineStatus.ONLINE;

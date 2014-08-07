@@ -21,7 +21,7 @@ public class Parser
     /* This prefix will be placed at the beginning of every logInfo´s log line,
      which was made undone by an undo*/
     private static final String UNDONE_PREFIX = "<undone>";
-    /* The seperator used for the output within a row. */
+    /* The separator used for the output within a row. */
     private static final String OUT_SEP = ",";
     /* The output´s date format (date-time) */
     public static final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
@@ -80,7 +80,7 @@ public class Parser
     
      /**
      * Parsing a log to get some information and place the undone-prefix,
-     * so this is needded before parsing for statistics. The information
+     * so this is needed before parsing for statistics. The information
      * will be written into the LogInfo instance.
      * 
      * @param log   The log to parse.

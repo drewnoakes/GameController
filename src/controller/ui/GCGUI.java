@@ -8,7 +8,7 @@ import data.AdvancedData;
  * @author Michel Bartsch
  *
  * This inteface is for a GUI.
- * Evertimes the model changes the update method will be called with the new
+ * Every time the model changes the update method will be called with the new
  * model as data.
  * 
  * In additional a GUI can get the last action that caused the change from
@@ -18,8 +18,7 @@ import data.AdvancedData;
 public interface GCGUI
 {   
     /**
-     * Called evertimes the model has changed, so the GUI can update it´s
-     * view.
+     * Called every time the model has changed, so the GUI can update its view.
      * 
      * @param data  The Model to view.
      */

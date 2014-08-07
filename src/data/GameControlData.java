@@ -8,7 +8,7 @@ import java.nio.ByteOrder;
 /**
  * @author Michel Bartsch
  * 
- * This class is part of the data wich are send to the robots.
+ * This class is part of the data which are send to the robots.
  * It just represents this data, reads and writes between C-structure and
  * Java, nothing more.
  */
@@ -209,19 +209,19 @@ public class GameControlData implements Serializable
             case STATE_SET:      temp = "set";     break;
             case STATE_PLAYING:  temp = "playing"; break;
             case STATE_FINISHED: temp = "finish";  break;
-            default: temp = "undefinied("+gameState+")";
+            default: temp = "undefined("+gameState+")";
         }
         out += "          gameState: "+temp+"\n";
         switch (firstHalf) {
             case C_TRUE:  temp = "true";  break;
             case C_FALSE: temp = "false"; break;
-            default: temp = "undefinied("+firstHalf+")";
+            default: temp = "undefined("+firstHalf+")";
         }
         out += "          firstHalf: "+temp+"\n";
         switch (kickOffTeam) {
             case TEAM_BLUE: temp = "blue"; break;
             case TEAM_RED:  temp = "red";  break;
-            default: temp = "undefinied("+kickOffTeam+")";
+            default: temp = "undefined("+kickOffTeam+")";
         }
         out += "        kickOffTeam: "+temp+"\n";
         switch (secGameState) {
@@ -229,13 +229,13 @@ public class GameControlData implements Serializable
             case STATE2_PENALTYSHOOT: temp = "penaltyshoot";  break;
             case STATE2_OVERTIME:     temp = "overtime";  break;
             case STATE2_TIMEOUT:     temp = "timeout";  break;
-            default: temp = "undefinied("+secGameState+")";
+            default: temp = "undefined("+secGameState+")";
         }
         out += "       secGameState: "+temp+"\n";
         switch (dropInTeam) {
             case TEAM_BLUE: temp = "blue"; break;
             case TEAM_RED:  temp = "red";  break;
-            default: temp = "undefinied("+dropInTeam+")";
+            default: temp = "undefined("+dropInTeam+")";
         }
         out += "         dropInTeam: "+temp+"\n";
         out += "         dropInTime: "+dropInTime+"\n";

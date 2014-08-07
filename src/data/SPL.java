@@ -14,7 +14,7 @@ public class SPL extends Rules
     {
         /** The league´s name this rules are for. */
         leagueName = "SPL";
-        /** The league´s directory name with it´s teams and icons. */
+        /** The league´s directory name with its teams and icons. */
         leagueDirectory = "spl";
         /** How many robots are in a team. */
         teamSize = 6; // 5 players + 1 sub
@@ -72,9 +72,9 @@ public class SPL extends Rules
         isRefereeTimeoutAvailable = true;
         /** One time-out per half? */
         timeOutPerHalf = false;
-        /** On how many pushings is a robot ejected. */
+        /** On how many pushes is a robot ejected. */
         pushesToEjection = new int[] {4, 6, 8, 10, 12};
-        /** Defines if coach is available **/
+        /** Defines if coach is available. */
         isCoachAvailable = true;
         /** Allowed to compensate for lost time? */
         lostTime = true;

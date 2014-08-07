@@ -250,7 +250,7 @@ public class GUI extends JFrame implements GCGUI
      * @param fullscreen    If true, the GUI tries to start using the full
      *                      size of the screen. Actually this means changing
      *                      the display`s resolution to the GUI`s size.
-     * @param data      The startig data.
+     * @param data      The starting data.
      */
     public GUI(boolean fullscreen, AdvancedData data)
     {
@@ -1152,18 +1152,18 @@ public class GUI extends JFrame implements GCGUI
                 : ActionBoard.coachMotion.isLegal(data));
         pen[9].setEnabled(ActionBoard.substitute.isLegal(data));
         
-        GCAction hightlightEvent = EventHandler.getInstance().lastUIEvent;
-        pen[0].setSelected(hightlightEvent == ActionBoard.pushing);
-        pen[1].setSelected(hightlightEvent == ActionBoard.leaving);
-        pen[2].setSelected(hightlightEvent == ActionBoard.fallen);
-        pen[3].setSelected(hightlightEvent == ActionBoard.inactive);
-        pen[4].setSelected(hightlightEvent == ActionBoard.defender);
-        pen[5].setSelected(hightlightEvent == ActionBoard.holding);
-        pen[6].setSelected(hightlightEvent == ActionBoard.hands);
-        pen[7].setSelected(hightlightEvent == ActionBoard.pickUp);
-        pen[8].setSelected(Rules.league.dropInPlayerMode ? hightlightEvent == ActionBoard.teammatePushing
-                : hightlightEvent == ActionBoard.coachMotion);
-        pen[9].setSelected(hightlightEvent == ActionBoard.substitute);
+        GCAction highlightEvent = EventHandler.getInstance().lastUIEvent;
+        pen[0].setSelected(highlightEvent == ActionBoard.pushing);
+        pen[1].setSelected(highlightEvent == ActionBoard.leaving);
+        pen[2].setSelected(highlightEvent == ActionBoard.fallen);
+        pen[3].setSelected(highlightEvent == ActionBoard.inactive);
+        pen[4].setSelected(highlightEvent == ActionBoard.defender);
+        pen[5].setSelected(highlightEvent == ActionBoard.holding);
+        pen[6].setSelected(highlightEvent == ActionBoard.hands);
+        pen[7].setSelected(highlightEvent == ActionBoard.pickUp);
+        pen[8].setSelected(Rules.league.dropInPlayerMode ? highlightEvent == ActionBoard.teammatePushing
+                : highlightEvent == ActionBoard.coachMotion);
+        pen[9].setSelected(highlightEvent == ActionBoard.substitute);
     }
     
     /**
@@ -1181,14 +1181,14 @@ public class GUI extends JFrame implements GCGUI
         pen[5].setEnabled(ActionBoard.serviceHL.isLegal(data));
         pen[6].setEnabled(ActionBoard.substitute.isLegal(data));
 
-        GCAction hightlightEvent = EventHandler.getInstance().lastUIEvent;
-        pen[0].setSelected(hightlightEvent == ActionBoard.ballManipulation);
-        pen[1].setSelected(hightlightEvent == ActionBoard.pushing);
-        pen[2].setSelected(hightlightEvent == ActionBoard.attack);
-        pen[3].setSelected(hightlightEvent == ActionBoard.defense);
-        pen[4].setSelected(hightlightEvent == ActionBoard.pickUpHL);
-        pen[5].setSelected(hightlightEvent == ActionBoard.serviceHL);
-        pen[6].setSelected(hightlightEvent == ActionBoard.substitute);
+        GCAction highlightEvent = EventHandler.getInstance().lastUIEvent;
+        pen[0].setSelected(highlightEvent == ActionBoard.ballManipulation);
+        pen[1].setSelected(highlightEvent == ActionBoard.pushing);
+        pen[2].setSelected(highlightEvent == ActionBoard.attack);
+        pen[3].setSelected(highlightEvent == ActionBoard.defense);
+        pen[4].setSelected(highlightEvent == ActionBoard.pickUpHL);
+        pen[5].setSelected(highlightEvent == ActionBoard.serviceHL);
+        pen[6].setSelected(highlightEvent == ActionBoard.substitute);
     }
     
     /**

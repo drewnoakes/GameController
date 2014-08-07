@@ -12,7 +12,7 @@ public class Clock
 {
     /**
      * The time in millis to sleep before next ClockTick. This does not mean
-     * it fires after this time, it will allways take some more millis depending
+     * it fires after this time, it will always take some more millis depending
      * on the performance.
      */
     public static final int HEARTBEAT = 500; // 2Hz

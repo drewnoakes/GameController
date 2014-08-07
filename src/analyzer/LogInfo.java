@@ -15,7 +15,7 @@ import java.util.LinkedList;
  * @author Michel Bartsch
  * 
  * Instances of this class represent a log file. It can analyze some basic
- * information of it´s log to guess, if it was made by a real game.
+ * information of its log to guess if it was made by a real game.
  */
 public class LogInfo
 {
@@ -34,7 +34,7 @@ public class LogInfo
     public File file;
     /* The version information found in the log. */
     public String version;
-    /* The league this log´s game was layed in. */
+    /* The league this log´s game was played in. */
     public Rules league;
     /* If the teams have kept there team colors during the game. */
     public boolean keepColors = false;
@@ -98,7 +98,7 @@ public class LogInfo
     }
     
     /**
-     * Makes a guess if this is a real game´s log based on it´s version.
+     * Makes a guess if this is a real game´s log based on its version.
      * 
      * @return  True, if this looks like a real game´s log or false, if not.
      */
@@ -108,7 +108,7 @@ public class LogInfo
     }
     
     /**
-     * Makes a guess if this is a real game´s log based on it´s league.
+     * Makes a guess if this is a real game´s log based on its league.
      * 
      * @return  True, if this looks like a real game´s log or false, if not.
      */
@@ -130,7 +130,7 @@ public class LogInfo
     }
     
     /**
-     * Makes a guess if this is a real game´s log based on it´s duration.
+     * Makes a guess if this is a real game´s log based on its duration.
      * 
      * @return  True, if this looks like a real game´s log or false, if not.
      */

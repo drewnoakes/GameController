@@ -8,7 +8,7 @@ import java.nio.ByteOrder;
 /**
  * @author Michel Bartsch
  * 
- * This class is part of the data wich are send to the robots.
+ * This class is part of the data which are send to the robots.
  * It just represents this data, reads and writes between C-structure and
  * Java, nothing more.
  */

@@ -427,9 +427,9 @@ public class GUI extends JFrame
     }
     
     /**
-     * This is used to scale sizes depending on the visuaizers width.
+     * This is used to scale sizes depending on the visualizer's width.
      * 
-     * @param size  A size between 0.0 (nothing) and 1.0 (full viualizers width).
+     * @param size  A size between 0.0 (nothing) and 1.0 (full visualizer's width).
      * 
      * @return A size in pixel.
      */
@@ -439,9 +439,9 @@ public class GUI extends JFrame
     }
     
     /**
-     * This is used to scale sizes depending on the visuaizers height.
+     * This is used to scale sizes depending on the visualizer's height.
      * 
-     * @param size  A size between 0.0 (nothing) and 1.0 (full viualizers height).
+     * @param size  A size between 0.0 (nothing) and 1.0 (full visualizer's height).
      * 
      * @return A size in pixel.
      */
@@ -523,7 +523,7 @@ public class GUI extends JFrame
      *
      * @param seconds   Time to format in seconds.
      *
-     * @return Time formated.
+     * @return Time formatted.
      */
     private String formatTime(int seconds) {
         int displaySeconds = Math.abs(seconds) % 60;

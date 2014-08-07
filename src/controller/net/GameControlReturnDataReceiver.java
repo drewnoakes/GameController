@@ -22,7 +22,7 @@ import data.GameControlReturnData;
  * If a package was received, this class will invoke {@link RobotWatcher#update(data.GameControlReturnData)} to update
  * the robots online status.
  *
- * This class is a sigleton!
+ * This class is a singleton!
  */
 public class GameControlReturnDataReceiver extends Thread
 {

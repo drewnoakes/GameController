@@ -19,7 +19,7 @@ import javax.imageio.ImageIO;
  * This class provides the icons and names including unique teamNumbers of all
  * teams written in the config file.
  * 
- * This class is a sigleton!
+ * This class is a singleton!
  */
 public class Teams
 {
@@ -106,7 +106,7 @@ public class Teams
     
     /**
      * Reads the names of all teams in the config file.
-     * You dont need to use this because the getNames method automatically
+     * You don't need to use this because the getNames method automatically
      * uses this if needed.
      */
     public static void readNames()
@@ -163,7 +163,7 @@ public class Teams
     
     /**
      * Loads a team`s icon.
-     * You dont need to use this because the getIcon method automatically
+     * You don't need to use this because the getIcon method automatically
      * uses this if needed.
      * @param team Number of the team which icon should be read.
      */

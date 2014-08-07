@@ -46,17 +46,17 @@ import controller.action.ui.state.Set;
 import data.Rules;
 
 /**
- * @author Michel Bartsch
- * 
  * This class actually holds static every instance of an action to get these
- * actions where ever you want to execute or identify them.
- * It may be usefull to have instances of actions that are not listed here,
+ * actions wherever you want to execute or identify them.
+ * It may be useful to have instances of actions that are not listed here,
  * that would be ok but for basic features it should not be needed.
- * Because of multi-thredding you should not take actions from here to write
- * into their attributes. However, you should allways avoid writing in
+ * Because of multi-threading you should not take actions from here to write
+ * into their attributes. However, you should always avoid writing in
  * action`s attributes except in their constructor.
- * 
- * You can read a detailed description of each action in it`s class.
+ *
+ * You can read a detailed description of each action in its class.
+ *
+ * @author Michel Bartsch
  */
 public class ActionBoard
 {   
