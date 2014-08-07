@@ -14,16 +14,9 @@ import data.SPLCoachMessage;
 
 public class SPLCoachMessageReceiver extends Thread
 {
-    private static SPLCoachMessageReceiver instance;
-    private final DatagramSocket datagramSocket;
+    /* SINGLETON MEMBERS ------------------------------------------------------------------- */
 
-    private SPLCoachMessageReceiver() throws SocketException
-    {
-        datagramSocket = new DatagramSocket(null);
-        datagramSocket.setReuseAddress(true);
-        datagramSocket.setSoTimeout(500);
-        datagramSocket.bind(new InetSocketAddress(SPLCoachMessage.SPL_COACH_MESSAGE_PORT));
-    }
+    private static SPLCoachMessageReceiver instance;
 
     public synchronized static SPLCoachMessageReceiver getInstance()
     {
@@ -35,6 +28,18 @@ public class SPLCoachMessageReceiver extends Thread
             }
         }
         return instance;
+    }
+
+    /* INSTANCE MEMBERS ------------------------------------------------------------------- */
+
+    private final DatagramSocket datagramSocket;
+
+    private SPLCoachMessageReceiver() throws SocketException
+    {
+        datagramSocket = new DatagramSocket(null);
+        datagramSocket.setReuseAddress(true);
+        datagramSocket.setSoTimeout(500);
+        datagramSocket.bind(new InetSocketAddress(SPLCoachMessage.SPL_COACH_MESSAGE_PORT));
     }
 
     @Override

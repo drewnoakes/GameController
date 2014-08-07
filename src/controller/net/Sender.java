@@ -21,34 +21,10 @@ import java.net.*;
  */
 public class Sender extends Thread
 {
+    /* SINGLETON MEMBERS ------------------------------------------------------------------- */
+
     /** The instance of the singleton. */
     private static Sender instance;
-
-    /** The packet number that is increased with each packet sent. */
-    private byte packetNumber = 0;
-    
-    /** The socket, which is used to send the current game-state */
-    private final DatagramSocket datagramSocket;
-
-    /** The used inet-address (the broadcast address). */
-    private final InetAddress group;
-
-    /** The current deep copy of the game-state. */
-    private AdvancedData data;
-
-    /**
-     * Creates a new Sender.
-     *
-     * @throws SocketException      if an error occurs while creating the socket
-     * @throws UnknownHostException if the used inet-address is not valid
-     */
-    private Sender(final String broadcastAddress) throws SocketException, UnknownHostException
-    {
-        instance = this;
-
-        this.datagramSocket = new DatagramSocket();
-        this.group = InetAddress.getByName(broadcastAddress);
-    }
 
     /**
      * Initialises the Sender. This needs to be called before {@link #getInstance()} is available.
@@ -79,6 +55,34 @@ public class Sender extends Thread
         } else {
             return instance;
         }
+    }
+
+    /* INSTANCE MEMBERS ------------------------------------------------------------------- */
+
+    /** The packet number that is increased with each packet sent. */
+    private byte packetNumber = 0;
+
+    /** The socket, which is used to send the current game-state */
+    private final DatagramSocket datagramSocket;
+
+    /** The used inet-address (the broadcast address). */
+    private final InetAddress group;
+
+    /** The current deep copy of the game-state. */
+    private AdvancedData data;
+
+    /**
+     * Creates a new Sender.
+     *
+     * @throws SocketException      if an error occurs while creating the socket
+     * @throws UnknownHostException if the used inet-address is not valid
+     */
+    private Sender(final String broadcastAddress) throws SocketException, UnknownHostException
+    {
+        instance = this;
+
+        this.datagramSocket = new DatagramSocket();
+        this.group = InetAddress.getByName(broadcastAddress);
     }
 
     /**

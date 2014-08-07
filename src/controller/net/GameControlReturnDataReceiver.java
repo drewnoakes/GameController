@@ -26,24 +26,10 @@ import data.GameControlReturnData;
  */
 public class GameControlReturnDataReceiver extends Thread
 {
+    /* SINGLETON MEMBERS ------------------------------------------------------------------- */
+
     /** The instance of the singleton. */
     private static GameControlReturnDataReceiver instance;
-
-    /** The used socket to receive the packages. */
-    private final DatagramSocket datagramSocket;
-
-    /**
-     * Creates a new Receiver.
-     *
-     * @throws SocketException the an error occurs while creating the socket
-     */
-    private GameControlReturnDataReceiver() throws SocketException
-    {
-        datagramSocket = new DatagramSocket(null);
-        datagramSocket.setReuseAddress(true);
-        datagramSocket.setSoTimeout(500);
-        datagramSocket.bind(new InetSocketAddress(GameControlData.GAMECONTROLLER_RETURNDATA_PORT));
-    }
 
     /**
      * Returns the instance of the singleton. If the Receiver wasn't initialized once before, a new instance will
@@ -62,6 +48,24 @@ public class GameControlReturnDataReceiver extends Thread
             }
         }
         return instance;
+    }
+
+    /* INSTANCE MEMBERS ------------------------------------------------------------------- */
+
+    /** The used socket to receive the packages. */
+    private final DatagramSocket datagramSocket;
+
+    /**
+     * Creates a new Receiver.
+     *
+     * @throws SocketException the an error occurs while creating the socket
+     */
+    private GameControlReturnDataReceiver() throws SocketException
+    {
+        datagramSocket = new DatagramSocket(null);
+        datagramSocket.setReuseAddress(true);
+        datagramSocket.setSoTimeout(500);
+        datagramSocket.bind(new InetSocketAddress(GameControlData.GAMECONTROLLER_RETURNDATA_PORT));
     }
 
     @Override

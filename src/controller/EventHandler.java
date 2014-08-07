@@ -20,9 +20,26 @@ import java.awt.EventQueue;
  */
 public class EventHandler
 {
+    /* SINGLETON MEMBERS ------------------------------------------------------------------- */
+
     /** The instance of the singleton. */
     private static EventHandler instance;
-    
+
+    /**
+     * To get the singleton instance for public attribute access.
+     *
+     * @return The singleton`s instance.
+     */
+    public synchronized static EventHandler getInstance()
+    {
+        if (instance == null) {
+            instance = new EventHandler();
+        }
+        return instance;
+    }
+
+    /* INSTANCE MEMBERS ------------------------------------------------------------------- */
+
     /** This GUI`s update method will be called. */
     private GCGUI gui;
     /** The sender has a send method to update the data to send */
@@ -47,19 +64,6 @@ public class EventHandler
      * Creates a new EventHandler.
      */
     private EventHandler() {}
-    
-    /**
-     * To get the singleton instance for public attribute access.
-     * 
-     * @return The singleton`s instance.
-     */
-    public synchronized static EventHandler getInstance()
-    {
-        if (instance == null) {
-            instance = new EventHandler();
-        }
-        return instance;
-    }
     
     /**
      * Sets the GUI.
