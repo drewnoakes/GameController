@@ -24,7 +24,7 @@ public class SPLCoachMessageReceiver extends Thread
             try {
                 instance = new SPLCoachMessageReceiver();
             } catch (SocketException e) {
-                throw new IllegalStateException("fatal: Error while setting up Receiver.", e);
+                throw new IllegalStateException("fatal: Error while setting up SPLCoachMessageReceiver.", e);
             }
         }
         return instance;
