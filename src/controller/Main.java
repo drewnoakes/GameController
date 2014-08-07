@@ -71,16 +71,14 @@ public class Main
         try {
             //sender
             Sender.initialize(options.broadcastAddress);
-            Sender sender = Sender.getInstance();
-            sender.send(data);
-            sender.start();
+            Sender.getInstance().send(data);
+            Sender.getInstance().start();
 
             //event-handler
             EventHandler.getInstance().data = data;
 
             //receiver
-            GameControlReturnDataReceiver receiver = GameControlReturnDataReceiver.getInstance();
-            receiver.start();
+            GameControlReturnDataReceiver.getInstance().start();
 
             if (Rules.league.isCoachAvailable) {
                 SPLCoachMessageReceiver spl = SPLCoachMessageReceiver.getInstance();
