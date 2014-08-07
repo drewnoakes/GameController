@@ -56,23 +56,7 @@ public class Main
     {
         StartOptions options = parseCommandLineArguments(args);
 
-        //application-lock
-        final ApplicationLock applicationLock = new ApplicationLock("GameController");
-        try {
-            if (!applicationLock.acquire()) {
-                JOptionPane.showMessageDialog(null,
-                        "An instance of GameController already exists.",
-                        "Multiple instances",
-                        JOptionPane.WARNING_MESSAGE);
-                System.exit(0);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                    "Error while trying to acquire the application lock.",
-                    "IOError",
-                    JOptionPane.ERROR_MESSAGE);
-            System.exit(-1);
-        }
+        ApplicationLock applicationLock = getApplicationLock();
 
         //collect the start parameters and put them into the first data.
         StartInput.showDialog(options);
@@ -162,6 +146,27 @@ public class Main
         }
 
         System.exit(0);
+    }
+
+    private static ApplicationLock getApplicationLock()
+    {
+        final ApplicationLock applicationLock = new ApplicationLock("GameController");
+        try {
+            if (!applicationLock.acquire()) {
+                JOptionPane.showMessageDialog(null,
+                        "An instance of GameController already exists.",
+                        "Multiple instances",
+                        JOptionPane.WARNING_MESSAGE);
+                System.exit(0);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,
+                    "Error while trying to acquire the application lock.",
+                    "IOError",
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
+        }
+        return applicationLock;
     }
 
     private static StartOptions parseCommandLineArguments(String[] args)
