@@ -1,6 +1,8 @@
 package visualizer;
 
 import common.Log;
+import controller.net.protocol.NetworkProtocol;
+import controller.net.protocol.NetworkProtocol8;
 import data.GameControlData;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -21,6 +23,9 @@ public class Listener
     private final ListenerThread listenerThread;
     /** The GUI to listen for, its update method will be called. */
     private final GUI gui;
+    /** The protocol we are listening to. */
+    private final NetworkProtocol networkProtocol;
+
     /** Some attributes for receiving. */
     private DatagramSocket datagramSocket;
 
@@ -39,6 +44,8 @@ public class Listener
             Log.error("Error on start listening to port " + GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
             System.exit(1);
         }
+
+        networkProtocol = new NetworkProtocol8();
 
         listenerThread = new ListenerThread();
     }
@@ -60,15 +67,15 @@ public class Listener
         public void run()
         {
             while (!isInterrupted()) {
-                final ByteBuffer buffer = ByteBuffer.wrap(new byte[GameControlData.SIZE]);
-                final GameControlData data = new GameControlData();
+                final ByteBuffer buffer = ByteBuffer.wrap(new byte[networkProtocol.getMessageSize()]);
 
                 final DatagramPacket packet = new DatagramPacket(buffer.array(), buffer.array().length);
 
                 try {
                     datagramSocket.receive(packet);
                     buffer.rewind();
-                    if (data.fromByteArray(buffer)) {
+                    final GameControlData data = networkProtocol.fromBytes(buffer);
+                    if (data != null) {
                         gui.update(data);
                     }
                 } catch (SocketTimeoutException e) { // ignore, because we set a timeout

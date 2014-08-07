@@ -3,16 +3,16 @@ package data;
 import rules.Rules;
 
 import java.io.Serializable;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 
 /**
+ * Models the state of the game at a given moment.
+ *
+ * This class's representation is independent of any particular network protocol, though in
+ * practice there are many similarities.
+ *
  * @author Michel Bartsch
- * 
- * This class is part of the data which are send to the robots.
- * It just represents this data, reads and writes between C-structure and
- * Java, nothing more.
+ * @author Drew Noakes https://drewnoakes.com
  */
 public class GameControlData implements Serializable
 {
@@ -40,55 +40,17 @@ public class GameControlData implements Serializable
     
     public static final byte C_FALSE = 0;
     public static final byte C_TRUE = 1;
-    
-    
-    /** The size in bytes this class has packed. */
-    public static final int SIZE =
-            4 + // header
-            1 + // version
-            1 + // packet number
-            1 + // numPlayers
-            1 + // gameState
-            1 + // firstHalf
-            1 + // kickOffTeam
-            1 + // secGameState
-            1 + // dropInTeam
-            2 + // dropInTime
-            2 + // secsRemaining
-            2 + // secondaryTime
-            2 * TeamInfo.SIZE;
-    
-    /** The size in bytes this class has packed for protocol version 7. */
-    public static final int SIZE7 =
-            4 + // header
-            4 + // version
-            1 + // numPlayers
-            1 + // gameState
-            1 + // firstHalf
-            1 + // kickOffTeam
-            1 + // secGameState
-            1 + // dropInTeam
-            2 + // dropInTime
-            4 + // secsRemaining
-            2 * TeamInfo.SIZE7;
 
-    //this is streamed
-    // GAMECONTROLLER_STRUCT_HEADER                             // header to identify the structure
-    // GAMECONTROLLER_STRUCT_VERSION                            // version of the data structure
-    public byte packetNumber = 0;
     public byte playersPerTeam = (byte)Rules.league.teamSize;   // The number of players on a team
     public byte gameState = STATE_INITIAL;                      // state of the game (STATE_READY, STATE_PLAYING, etc)
     public byte firstHalf = C_TRUE;                             // 1 = game in first half, 0 otherwise
     public byte kickOffTeam = TEAM_BLUE;                        // the next team to kick off
     public byte secGameState = STATE2_NORMAL;                   // Extra state information - (STATE2_NORMAL, STATE2_PENALTYSHOOT, etc)
     public byte dropInTeam;                                     // team that caused last drop in
-    protected short dropInTime = -1;                            // number of seconds passed since the last drop in. -1 before first dropin
+    public short dropInTime = -1;                               // number of seconds passed since the last drop in. -1 before first dropin
     public short secsRemaining = (short) Rules.league.halfTime; // estimate of number of seconds remaining in the half
     public short secondaryTime = 0;                             // sub-time (remaining in ready state etc.) in seconds
     public TeamInfo[] team = new TeamInfo[2];
-    
-    
-    
     
     /**
      * Creates a new GameControlData.
@@ -102,99 +64,6 @@ public class GameControlData implements Serializable
         team[1].teamColor = TEAM_RED;
     }
     
-    /**
-     * Returns the corresponding byte-stream of the state of this object.
-     *
-     * @return  the corresponding byte-stream of the state of this object
-     */
-    public ByteBuffer toByteArray()
-    {
-        ByteBuffer buffer = ByteBuffer.allocate(SIZE);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-        buffer.put(GAMECONTROLLER_STRUCT_HEADER.getBytes(), 0, 4);
-        buffer.put(GAMECONTROLLER_STRUCT_VERSION);
-        buffer.put(packetNumber);
-        buffer.put(playersPerTeam);
-        buffer.put(gameState);
-        buffer.put(firstHalf);
-        buffer.put(kickOffTeam);
-        buffer.put(secGameState);
-        buffer.put(dropInTeam);
-        buffer.putShort(dropInTime);
-        buffer.putShort(secsRemaining);
-        buffer.putShort(secondaryTime);
-        for (TeamInfo aTeam : team) {
-            buffer.put(aTeam.toByteArray());
-        }
-       
-        return buffer;
-    }
-
-    /**
-     * Returns the corresponding byte-stream of the state of this object in
-     * the format of protocol version 7.
-     *
-     * @return  the corresponding byte-stream of the state of this object
-     */
-    public ByteBuffer toByteArray7()
-    {
-        ByteBuffer buffer = ByteBuffer.allocate(SIZE7);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-        buffer.put(GAMECONTROLLER_STRUCT_HEADER.getBytes(), 0, 4);
-        buffer.putInt(7); // version = 7
-        buffer.put(playersPerTeam);
-        buffer.put(gameState);
-        buffer.put(firstHalf);
-        buffer.put(kickOffTeam);
-        buffer.put(secGameState);
-        buffer.put(dropInTeam);
-        buffer.putShort(dropInTime);
-        buffer.putInt(secsRemaining);
-
-        // in version 7, the broadcasted team data was sorted by team color
-        if (team[0].teamColor == TEAM_BLUE) {
-            buffer.put(team[0].toByteArray7());
-            buffer.put(team[1].toByteArray7());
-        } else {
-            buffer.put(team[1].toByteArray7());
-            buffer.put(team[0].toByteArray7());
-        }
-
-        return buffer;
-    }
-    
-    /**
-     * Unpacking the C-structure to the Java class.
-     * 
-     * @param buffer    The buffered C-structure.
-     * @return Whether the structure was well formed. That is, it must have the proper 
-     *          {@link #GAMECONTROLLER_STRUCT_VERSION} set.
-     */
-    public boolean fromByteArray(ByteBuffer buffer)
-    {
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-        byte[] header = new byte[4];
-        buffer.get(header, 0, 4);
-        if (buffer.get() != GAMECONTROLLER_STRUCT_VERSION) {
-            return false;
-        }
-        packetNumber = buffer.get(); 
-        playersPerTeam = buffer.get();
-        gameState = buffer.get();
-        firstHalf = buffer.get();
-        kickOffTeam = buffer.get();
-        secGameState = buffer.get();
-        dropInTeam = buffer.get();
-        dropInTime = buffer.getShort();
-        secsRemaining = buffer.getShort();
-        secondaryTime = buffer.getShort();
-        for (TeamInfo t : team) {
-            t.fromByteArray(buffer);
-        }
-        
-        return true;
-    }
-    
     @Override
     public String toString()
     {
@@ -203,7 +72,6 @@ public class GameControlData implements Serializable
         
         out += "             Header: "+GAMECONTROLLER_STRUCT_HEADER+"\n";
         out += "            Version: "+GAMECONTROLLER_STRUCT_VERSION+"\n";
-        out += "      Packet Number: "+(packetNumber & 0xFF)+"\n";
         out += "   Players per Team: "+playersPerTeam+"\n";
         switch (gameState) {
             case STATE_INITIAL:  temp = "initial"; break;

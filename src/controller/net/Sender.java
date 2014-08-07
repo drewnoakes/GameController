@@ -1,12 +1,14 @@
 package controller.net;
 
 import common.Log;
+import controller.net.protocol.NetworkProtocol;
 import data.AdvancedData;
 import data.GameControlData;
-import rules.Rules;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Marcel Steinbeck
@@ -68,8 +70,7 @@ public class Sender
     /** The used inet-address (the broadcast address). */
     private final InetAddress group;
 
-    /** The packet number that is increased with each packet sent. */
-    private byte packetNumber = 0;
+    private final List<NetworkProtocol> versions = new ArrayList<NetworkProtocol>();
 
     /** The current deep copy of the game-state. */
     private AdvancedData data;
@@ -87,6 +88,11 @@ public class Sender
         datagramSocket = new DatagramSocket();
         group = InetAddress.getByName(broadcastAddress);
         senderThread = new SenderThread();
+    }
+
+    public void addVersion(NetworkProtocol version)
+    {
+        versions.add(version);
     }
 
     /**
@@ -122,26 +128,13 @@ public class Sender
 
                 if (data != null) {
                     data.updateTimes();
-                    data.packetNumber = packetNumber;
-                    byte[] arr = data.toByteArray().array();
-                    DatagramPacket packet = new DatagramPacket(arr, arr.length, Sender.this.group, GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
 
-                    try {
-                        datagramSocket.send(packet);
-                        packetNumber++;
-                    } catch (IOException e) {
-                        Log.error("Error while sending");
-                        e.printStackTrace();
-                    }
-                }
-
-                if (data != null) {
-                    if (Rules.league.compatibilityToVersion7) {
-                        byte[] arr = data.toByteArray7().array();
-                        DatagramPacket packet = new DatagramPacket(arr, arr.length, Sender.this.group, GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
-
+                    for (NetworkProtocol version : versions) {
+                        byte[] bytes = version.toBytes(data);
+                        DatagramPacket packet = new DatagramPacket(bytes, bytes.length, Sender.this.group, GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
                         try {
                             datagramSocket.send(packet);
+                            version.incrementPacketNumber();
                         } catch (IOException e) {
                             Log.error("Error while sending");
                             e.printStackTrace();
@@ -150,6 +143,7 @@ public class Sender
                 }
 
                 try {
+                    // Game Controller publishes its messages with this frequency
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
                     interrupt();

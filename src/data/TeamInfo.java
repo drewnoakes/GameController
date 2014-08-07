@@ -1,16 +1,16 @@
 package data;
 
 import java.io.Serializable;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 
 /**
+ * Models the state of a team at a given moment.
+ *
+ * This class's representation is independent of any particular network protocol, though in
+ * practice there are many similarities.
+ *
  * @author Michel Bartsch
- * 
- * This class is part of the data which are send to the robots.
- * It just represents this data, reads and writes between C-structure and
- * Java, nothing more.
+ * @author Drew Noakes https://drewnoakes.com
  */
 public class TeamInfo implements Serializable
 {
@@ -20,26 +20,7 @@ public class TeamInfo implements Serializable
      * playersPerTeam in GameControlData is less.
      */
     public static final byte MAX_NUM_PLAYERS = 11;
-    
-    /** The size in bytes this class has packed. */
-    public static final int SIZE =
-            1 + // teamNumber
-            1 + // teamColor
-            1 + // score
-            1 + // penaltyShot
-            2 + // singleShots
-            SPLCoachMessage.SPL_COACH_MESSAGE_SIZE + // coach's message
-            (MAX_NUM_PLAYERS + 1) * PlayerInfo.SIZE; // +1 for the coach
 
-    /** The size in bytes this class has packed for version 7. */
-    public static final int SIZE7 =
-            1 + // teamNumber
-            1 + // teamColor
-            1 + // goal color
-            1 + // score
-            (MAX_NUM_PLAYERS) * PlayerInfo.SIZE7;
-
-    //this is streamed
     public byte teamNumber;                                         // unique team number
     public byte teamColor;                                          // colour of the team
     public byte score;                                              // team's score
@@ -58,69 +39,7 @@ public class TeamInfo implements Serializable
             player[i] = new PlayerInfo();
         }
     }
-    
-    /**
-     * Packing this Java class to the C-structure to be send.
-     * @return Byte array representing the C-structure.
-     */
-    public byte[] toByteArray()
-    {
-        ByteBuffer buffer = ByteBuffer.allocate(SIZE);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-        buffer.put(teamNumber);
-        buffer.put(teamColor);
-        buffer.put(score);
-        buffer.put(penaltyShot);
-        buffer.putShort(singleShots);
-        buffer.put(coachMessage);
-        buffer.put(coach.toByteArray());
-        for (int i=0; i<MAX_NUM_PLAYERS; i++) {
-            buffer.put(player[i].toByteArray());
-        }
 
-        return buffer.array();
-    }
-
-    /**
-     * Packing this Java class to the C-structure to be send, using version 7
-     * of the protocol.
-     * @return Byte array representing the C-structure.
-     */
-    public byte[] toByteArray7()
-    {
-        ByteBuffer buffer = ByteBuffer.allocate(SIZE7);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-        buffer.put(teamNumber);
-        buffer.put(teamColor);
-        buffer.put((byte) 1); // goal color is always yellow
-        buffer.put(score);
-        for (int i=0; i<MAX_NUM_PLAYERS; i++) {
-            buffer.put(player[i].toByteArray7());
-        }
-
-        return buffer.array();
-    }
-    
-    /**
-     * Unpacking the C-structure to the Java class.
-     * 
-     * @param buffer    The buffered C-structure.
-     */
-    public void fromByteArray(ByteBuffer buffer)
-    {
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-        teamNumber = buffer.get();
-        teamColor = buffer.get();
-        score = buffer.get();
-        penaltyShot = buffer.get();
-        singleShots = buffer.getShort();
-        buffer.get(coachMessage);
-        coach.fromByteArray(buffer);
-        for (PlayerInfo p : player) {
-            p.fromByteArray(buffer);
-        }
-    }
-    
     @Override
     public String toString()
     {

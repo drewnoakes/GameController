@@ -3,9 +3,9 @@ package controller;
 import common.ApplicationLock;
 import common.Log;
 import controller.action.ActionBoard;
-import controller.net.GameControlReturnDataReceiver;
-import controller.net.SPLCoachMessageReceiver;
-import controller.net.Sender;
+import controller.net.*;
+import controller.net.protocol.NetworkProtocol7;
+import controller.net.protocol.NetworkProtocol8;
 import controller.ui.GCGUI;
 import controller.ui.GUI;
 import controller.ui.KeyboardListener;
@@ -71,6 +71,10 @@ public class Main
         try {
             //sender
             Sender.initialize(options.broadcastAddress);
+            Sender.getInstance().addVersion(new NetworkProtocol8());
+            if (Rules.league.compatibilityToVersion7) {
+                Sender.getInstance().addVersion(new NetworkProtocol7());
+            }
             Sender.getInstance().send(data);
             Sender.getInstance().start();
 

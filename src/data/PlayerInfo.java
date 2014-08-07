@@ -4,16 +4,16 @@ import rules.Rules;
 import rules.SPL;
 
 import java.io.Serializable;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 
 /**
+ * Models the state of a player at a given moment.
+ *
+ * This class's representation is independent of any particular network protocol, though in
+ * practice there are many similarities.
+ *
  * @author Michel Bartsch
- * 
- * This class is part of the data which are send to the robots.
- * It just represents this data, reads and writes between C-structure and
- * Java, nothing more.
+ * @author Drew Noakes https://drewnoakes.com
  */
 public class PlayerInfo implements Serializable
 {
@@ -39,60 +39,10 @@ public class PlayerInfo implements Serializable
 
     public static final byte PENALTY_SUBSTITUTE = 14;
     public static final byte PENALTY_MANUAL = 15;
-    
-    /** The size in bytes this class has packed. */
-    public static final int SIZE =
-            1 + // penalty
-            1;  // secsToUnpen
 
-    /** The size in bytes this class has packed in version 7. */
-    public static final int SIZE7 =
-            2 + // penalty
-            2;  // secsToUnpen
-
-    //this is streamed
     public byte penalty = PENALTY_NONE; // penalty state of the player
     public byte secsTillUnpenalised;    // estimate of time till unpenalised
-    
-    /**
-     * Packing this Java class to the C-structure to be send.
-     * @return Byte array representing the C-structure.
-     */
-    public byte[] toByteArray()
-    {
-        ByteBuffer buffer = ByteBuffer.allocate(SIZE);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-        buffer.put(penalty);
-        buffer.put(secsTillUnpenalised);
-        return buffer.array();
-    }
 
-    /**
-     * Packing this Java class to the C-structure to be send, using version 7
-     * of the protocol.
-     * @return Byte array representing the C-structure.
-     */
-    public byte[] toByteArray7()
-    {
-        ByteBuffer buffer = ByteBuffer.allocate(SIZE7);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-        buffer.putShort(penalty);
-        buffer.putShort(secsTillUnpenalised);
-        return buffer.array();
-    }
-
-    /**
-     * Unpacking the C-structure to the Java class.
-     * 
-     * @param buffer    The buffered C-structure.
-     */
-    public void fromByteArray(ByteBuffer buffer)
-    {
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-        penalty = buffer.get();
-        secsTillUnpenalised = buffer.get();
-    }
-    
     @Override
     public String toString()
     {
