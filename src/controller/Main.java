@@ -192,6 +192,17 @@ public class Main
                     options.teamNumberRed = Byte.parseByte(args[++i]);
                     continue;
                 }
+            } else if (args[i].equals("-k") || args[i].equals("--kickoff")) {
+                if (hasAnotherArg) {
+                    String colour = args[++i];
+                    if (colour.equals("blue")) {
+                        options.kickOffTeamIndex = 0;
+                        continue;
+                    } else if (colour.equals("red")) {
+                        options.kickOffTeamIndex = 1;
+                        continue;
+                    }
+                }
             } else if (args[i].equals("-w") || args[i].equals("--window")) {
                 options.fullScreenMode = false;
                 continue;
@@ -210,6 +221,7 @@ public class Main
                 + "\n  (-h | --help)                   display help"
                 + "\n  (-b | --broadcast) <address>    set broadcast ip (default is %s)"
                 + "\n  (-t | --teams) <blue> <red>     set team numbers"
+                + "\n  (-k | --kickoff) <colour>       set kickoff team colour ('blue' or 'red')"
                 + "\n  (-l | --league) %s%sselect league (default is spl)"
                 + "\n  (-w | --window)                 select window mode (default is fullscreen)"
                 + "\n";
