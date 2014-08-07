@@ -310,28 +310,45 @@ public class StartInput extends JFrame
     private void showAvailableTeams() 
     {
         for (int i=0; i < 2; i++) {
+            // Set background image according to active league
             String backgroundImagePath = ICONS_PATH + Rules.league.leagueDirectory + "/" + BACKGROUND_SIDE[i];
             teamContainer[i].setImage(new ImageIcon(backgroundImagePath).getImage());
-            team[i].removeAllItems();
+
+            // Determine the team number, or use zero if unspecified at this point
+            int teamNumber = options.teamNumberByIndex(i);
+            if (teamNumber == -1)
+                teamNumber = 0;
+
+            // Suspend change notification on combo during population
+            assert(team[i].getActionListeners().length == 1);
+            ActionListener actionListener = team[i].getActionListeners()[0];
+            team[i].removeActionListener(actionListener);
+
+            // Populate combo box
             String[] names = getShortTeams();
+            team[i].removeAllItems();
             if (Rules.league.dropInPlayerMode) {
                 team[i].addItem(names[0]);
                 team[i].addItem(names[i == 0 ?  1 : 2]);
             } else {
                 for (int j=0; j < names.length; j++) {
                     team[i].addItem(names[j]);
+                    // TODO this test is a bit ugly -- need a better (non-string) representation of teams
+                    if (names[j].contains("(" + options.teamNumberByIndex(i) + ")"))
+                        team[i].setSelectedIndex(j);
                 }
             }
-            if (i == 0)
-                options.teamNumberBlue = 0;
-            else
-                options.teamNumberRed = 0;
-            setTeamIcon(i, 0);
+
+            // Reinstate change notification
+            team[i].addActionListener(actionListener);
+
+            // Set team icon
+            setTeamIcon(i, teamNumber);
             teamIconLabel[i].setIcon(teamIcon[i]);
             teamIconLabel[i].repaint();
         }
     }
-    
+
     /**
      * Calculates an array that contains only the existing Teams of the current league.
      * 

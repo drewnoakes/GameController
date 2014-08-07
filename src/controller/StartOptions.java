@@ -33,4 +33,9 @@ public class StartOptions
 
     /** Whether the application should appear in full screen. */
     public boolean fullScreenMode;
+
+    public byte teamNumberByIndex(int i)
+    {
+        return i == 0 ? teamNumberBlue : teamNumberRed;
+    }
 }
