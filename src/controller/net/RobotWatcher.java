@@ -16,7 +16,7 @@ import rules.Rules;
 public class RobotWatcher
 {
     /** The instance of the singleton. */
-    private static RobotWatcher instance = new RobotWatcher();
+    private static final RobotWatcher instance = new RobotWatcher();
 
     /** A timestamp when the last reply from each robot was received. */
     private long [][] robotsLastAnswer = Rules.league.isCoachAvailable ? new long[2][Rules.league.teamSize+1] : new long[2][Rules.league.teamSize];
