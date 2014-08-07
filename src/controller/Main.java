@@ -176,15 +176,22 @@ public class Main
         for (int i=0; i<args.length; i++) {
             boolean hasAnotherArg = args.length > i + 1;
             boolean hasAnotherTwoArgs = args.length > i + 2;
-            if (hasAnotherArg && (args[i].equals("-b") || args[i].equals("--broadcast")) && IPV4_PATTERN.matcher(args[++i]).matches()) {
-                options.broadcastAddress = args[i];
-                continue;
-            } else if (hasAnotherArg && (args[i].equals("-l") || args[i].equals("--league")) && Rules.trySetLeague(args[++i])) {
-                continue;
-            } else if (hasAnotherTwoArgs && (args[i].equals("-t") || args[i].equals("--teams"))) {
-                options.teamNumberBlue = Byte.parseByte(args[++i]);
-                options.teamNumberRed = Byte.parseByte(args[++i]);
-                continue;
+            // Dispatch based on argument string.
+            // This would be nicer if using Java 1.7 which supports switching on strings.
+            if (args[i].equals("-b") || args[i].equals("--broadcast")) {
+                if (hasAnotherArg && IPV4_PATTERN.matcher(args[++i]).matches()) {
+                    options.broadcastAddress = args[i];
+                    continue;
+                }
+            } else if (args[i].equals("-l") || args[i].equals("--league")) {
+                if (hasAnotherArg && Rules.trySetLeague(args[++i]))
+                    continue;
+            } else if (args[i].equals("-t") || args[i].equals("--teams")) {
+                if (hasAnotherTwoArgs) {
+                    options.teamNumberBlue = Byte.parseByte(args[++i]);
+                    options.teamNumberRed = Byte.parseByte(args[++i]);
+                    continue;
+                }
             } else if (args[i].equals("-w") || args[i].equals("--window")) {
                 options.fullScreenMode = false;
                 continue;
