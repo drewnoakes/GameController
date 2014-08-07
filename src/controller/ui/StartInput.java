@@ -365,16 +365,16 @@ public class StartInput extends JFrame
         String[] fullTeams = Teams.getNames(true);
         String[] out;
         int k = 0;
-        for (int j=0; j<fullTeams.length; j++) {
-            if (fullTeams[j] != null) {
+        for (String fullTeam : fullTeams) {
+            if (fullTeam != null) {
                 k++;
             }
         }
         out = new String[k];
         k = 0;
-        for (int j=0; j<fullTeams.length; j++) {
-            if (fullTeams[j] != null) {
-                out[k++] = fullTeams[j];
+        for (String fullTeam : fullTeams) {
+            if (fullTeam != null) {
+                out[k++] = fullTeam;
             }
         }
 

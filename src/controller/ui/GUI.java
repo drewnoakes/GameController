@@ -1270,14 +1270,14 @@ public class GUI extends JFrame implements GCGUI
         set.setFont(stateFont);
         play.setFont(stateFont);
         finish.setFont(stateFont);
-        for (int i=0; i<pen.length; i++) {
-            pen[i].setFont(standardFont);
+        for (JToggleButton penaltyButton : pen) {
+            penaltyButton.setFont(standardFont);
         }
         if (dropBall != null) {
             dropBall.setFont(standardFont);
         }
-        for (int i=0; i<undo.length; i++) {
-            undo[i].setFont(timeoutFont);
+        for (JToggleButton undoButton : undo) {
+            undoButton.setFont(timeoutFont);
         }
         cancelUndo.setFont(standardFont);
     }

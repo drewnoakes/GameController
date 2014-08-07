@@ -217,15 +217,15 @@ public class GUI extends JFrame
         int x = getSizeToWidth(0.08);
         int y = getSizeToHeight(0.3);
         String[] out = data.toString().split("\n");
-        for (int i=0; i<out.length; i++) {
-            g.drawString(out[i], x, y);
-            y += testFont.getSize()*1.2;
+        for (String o : out) {
+            g.drawString(o, x, y);
+            y += testFont.getSize() * 1.2;
         }
         for (int j=0; j<2; j++) {
             out = data.team[j].toString().split("\n");
-            for (int i=0; i<out.length; i++) {
-                g.drawString(out[i], x, y);
-                y += testFont.getSize()*1.2;
+            for (String o : out) {
+                g.drawString(o, x, y);
+                y += testFont.getSize() * 1.2;
             }
         }
         
@@ -234,9 +234,9 @@ public class GUI extends JFrame
             y = getSizeToHeight(0.2);
             for (int j=0; j<data.team[i].player.length; j++) {
                 out = data.team[i].player[j].toString().split("\n");
-                for (int k=0; k<out.length; k++) {
-                    g.drawString(out[k], x, y);
-                    y += testFont.getSize()*1.2;
+                for (String o : out) {
+                    g.drawString(o, x, y);
+                    y += testFont.getSize() * 1.2;
                 }
             }
             x = getSizeToWidth(0.64);

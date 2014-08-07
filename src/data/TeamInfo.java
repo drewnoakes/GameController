@@ -116,8 +116,8 @@ public class TeamInfo implements Serializable
         singleShots = buffer.getShort();
         buffer.get(coachMessage);
         coach.fromByteArray(buffer);
-        for (int i=0; i<player.length; i++) {
-            player[i].fromByteArray(buffer);
+        for (PlayerInfo p : player) {
+            p.fromByteArray(buffer);
         }
     }
     
