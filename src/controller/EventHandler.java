@@ -95,24 +95,20 @@ public class EventHandler
      */
     public void register(final GCAction event)
     {
-        if (EventQueue.isDispatchThread()) {
-            // current thread is dispatcher, no need to use EventQueue
-            if (event.isLegal(data)) {
-                event.perform(data);
-                update(event);
-            }
-        } else {
-            // force all threads to perform action in GUI-thread, using
-            // invokeLater to avoid deadlocks...
+        // Ensure we are running on the GUI thread
+        if (!EventQueue.isDispatchThread()) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    if (event.isLegal(data)) {
-                        event.perform(data);
-                        update(event);
-                    }
+                    register(event);
                 }
             });
+            return;
+        }
+
+        if (event.isLegal(data)) {
+            event.perform(data);
+            update(event);
         }
     }
     
