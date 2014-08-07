@@ -57,7 +57,7 @@ public class NetworkProtocol8 extends NetworkProtocol
         ByteBuffer buffer = ByteBuffer.allocate(getMessageSize());
         buffer.order(ByteOrder.LITTLE_ENDIAN);
 
-        buffer.put(GameControlData.GAMECONTROLLER_STRUCT_HEADER.getBytes(), 0, 4);
+        buffer.put(GAMECONTROLLER_STRUCT_HEADER.getBytes(), 0, 4);
         buffer.put(versionNumber);
         buffer.put(packetNumber);
         buffer.put(data.playersPerTeam);

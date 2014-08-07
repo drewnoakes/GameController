@@ -20,8 +20,6 @@ public class GameControlData implements Serializable
     public static final int GAMECONTROLLER_RETURNDATA_PORT = 3838; // port to receive return-packets on
     public static final int GAMECONTROLLER_GAMEDATA_PORT= 3838; // port to send game state packets to
 
-    public static final String GAMECONTROLLER_STRUCT_HEADER = "RGme";
-    public static final byte GAMECONTROLLER_STRUCT_VERSION = 8;
 
     public static final byte TEAM_BLUE = 0;
     public static final byte TEAM_RED = 1;
@@ -70,8 +68,6 @@ public class GameControlData implements Serializable
         String out = "";
         String temp;
         
-        out += "             Header: "+GAMECONTROLLER_STRUCT_HEADER+"\n";
-        out += "            Version: "+GAMECONTROLLER_STRUCT_VERSION+"\n";
         out += "   Players per Team: "+playersPerTeam+"\n";
         switch (gameState) {
             case STATE_INITIAL:  temp = "initial"; break;

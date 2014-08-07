@@ -11,6 +11,8 @@ import java.nio.ByteBuffer;
  */
 public abstract class NetworkProtocol
 {
+    protected static final String GAMECONTROLLER_STRUCT_HEADER = "RGme";
+
     protected final byte versionNumber;
 
     protected byte packetNumber = 0;
