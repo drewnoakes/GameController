@@ -25,6 +25,9 @@ public class Goal extends GCAction
     public Goal(int side, int set)
     {
         super(ActionType.UI);
+
+        assert(set == 1 || set == -1);
+
         this.side = side;
         this.set = set;
     }

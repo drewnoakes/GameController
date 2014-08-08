@@ -25,6 +25,7 @@ public class Undo extends GCAction
     public Undo(int states)
     {
         super(ActionType.UI);
+        assert(states > 0);
         this.states = states;
     }
 
