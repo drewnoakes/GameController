@@ -78,7 +78,7 @@ public enum Penalty
                 case 14: return Substitute;
                 case 15: return Manual;
                 default:
-                    throw new AssertionError("Invalid enum value: " + value);
+                    throw new AssertionError("Invalid Penalty enum value: " + value);
             }
         } else {
             switch (value) {
@@ -92,7 +92,7 @@ public enum Penalty
                 case 14: return Substitute;
                 case 15: return Manual;
                 default:
-                    throw new AssertionError("Invalid enum value: " + value);
+                    throw new AssertionError("Invalid Penalty enum value: " + value);
             }
         }
     }

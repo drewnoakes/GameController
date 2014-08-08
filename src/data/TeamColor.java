@@ -39,7 +39,7 @@ public enum TeamColor
             case 1: return Red;
             case 2: return null; // special handling for 'drop ball' value
             default:
-                throw new AssertionError("Invalid enum value: " + value);
+                throw new AssertionError("Invalid TeamColor enum value: " + value);
         }
     }
 

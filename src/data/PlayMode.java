@@ -60,7 +60,7 @@ public enum PlayMode
             case 3: return Playing;
             case 4: return Finished;
             default:
-                throw new AssertionError("Invalid enum value: " + value);
+                throw new AssertionError("Invalid PlayMode enum value: " + value);
         }
     }
 }

@@ -33,7 +33,7 @@ public enum SecondaryGameState
             case 2: return Overtime;
             case 3: return Timeout;
             default:
-                throw new AssertionError("Invalid enum value: " + value);
+                throw new AssertionError("Invalid SecondaryGameState enum value: " + value);
         }
     }
 }
