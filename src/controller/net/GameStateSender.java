@@ -6,7 +6,6 @@ import controller.Config;
 import controller.net.protocol.GameStateProtocol;
 import data.GameState;
 
-import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;

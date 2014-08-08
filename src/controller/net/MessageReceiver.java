@@ -12,7 +12,6 @@ import java.util.List;
 
 import common.Log;
 import controller.net.protocol.ReceivingProtocol;
-import data.RobotMessage;
 
 /**
  * Asynchronously receives messages via UDP broadcast.

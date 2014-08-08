@@ -1,10 +1,6 @@
 package data;
 
 import java.io.Serializable;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
-import controller.EventHandler;
 
 /**
  * A message received from the coach, and to be sent out to players after some delay.
