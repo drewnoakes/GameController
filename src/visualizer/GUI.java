@@ -61,7 +61,7 @@ public class GUI extends JFrame
     private static final double TEST_FONT_SIZE = 0.01;
     private static final String CONFIG_PATH = "config/";
     private static final String BACKGROUND = "background";
-    private static final String WAITING_FOR_PACKAGE = "waiting for package...";
+    private static final String WAITING_FOR_PACKET = "waiting for data packet...";
 
     /** Available screens on the current computer. */
     private static final GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
@@ -197,7 +197,7 @@ public class GUI extends JFrame
         g.drawImage(background, 0, 0, null);
         
         if (state == null) {
-            drawNoPackage(g);
+            drawNoPacket(g);
         } else if (testmode) {
             drawTestmode(g);
         } else {
@@ -213,19 +213,19 @@ public class GUI extends JFrame
     }
     
     /**
-     * This draws something to inform that there is no package to draw.
+     * This draws something to inform that there is no packet to draw.
      * 
      * @param g  The graphics object to draw on.
      */
-    private void drawNoPackage(Graphics g)
+    private void drawNoPacket(Graphics g)
     {
         g.setColor(Color.BLACK);
         g.setFont(testFont);
-        g.drawString(WAITING_FOR_PACKAGE, (int)(0.2*getWidth()), (int)(0.3*getHeight()));
+        g.drawString(WAITING_FOR_PACKET, (int)(0.2*getWidth()), (int)(0.3*getHeight()));
     }
     
     /**
-     * This draws everything in the package in a simple way, just for testing.
+     * This draws everything in the packet in a simple way, just for testing.
      * 
      * @param g  The graphics object to draw on.
      */

@@ -54,14 +54,14 @@ public:
   bool bind(const char* addr, int port);
 
   /**
-  * The function tries to read a package from a socket.
+  * The function tries to read a packet from a socket.
   * @return Number of bytes received or -1 in case of an error.
   */
   int read(char* data, int len);
 
   /**
-  * The function writes a package to a socket.
-  * @return True if the package was written.
+  * The function writes a packet to a socket.
+  * @return True if the packet was written.
   */
   bool write(const char* data, const int len);
 

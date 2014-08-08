@@ -88,8 +88,8 @@ public class GameState extends GameStateSnapshot implements Cloneable
     /** Keeps the penalties for the players if there are substituted. */
     public final ArrayList<ArrayList<PenaltyQueueData>> penaltyQueueForSubPlayers = new ArrayList<ArrayList<PenaltyQueueData>>();
 
-    /** Keep the timestamp when a coach message was received*/
-    public final long[] timestampCoachMessage = {0, 0};
+    /** The timestamps of when coach messages were received. */
+    public final long timestampCoachMessage[] = {0, 0};
 
     /** Keep the coach messages. */
     public final ArrayList<SPLCoachMessage> splCoachMessageQueue = new ArrayList<SPLCoachMessage>();
