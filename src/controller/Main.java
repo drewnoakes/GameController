@@ -12,7 +12,6 @@ import controller.ui.GUI;
 import controller.ui.KeyboardListener;
 import controller.ui.StartInput;
 import data.AdvancedData;
-import data.GameControlData;
 import data.TeamColor;
 import rules.Rules;
 import data.Teams;
@@ -95,7 +94,7 @@ public class Main
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
-                    "Error while setting up GameController on port: " + GameControlData.GAMECONTROLLER_RETURNDATA_PORT + ".",
+                    "Error while setting up GameController on port: " + Config.RETURN_DATA_PORT + ".",
                     "Error on configured port",
                     JOptionPane.ERROR_MESSAGE);
             System.exit(-1);

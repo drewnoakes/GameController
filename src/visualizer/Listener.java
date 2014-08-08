@@ -1,6 +1,7 @@
 package visualizer;
 
 import common.Log;
+import controller.Config;
 import controller.net.protocol.NetworkProtocol;
 import controller.net.protocol.NetworkProtocol8;
 import data.GameControlData;
@@ -39,9 +40,9 @@ public class Listener
             datagramSocket = new DatagramSocket(null);
             datagramSocket.setReuseAddress(true);
             datagramSocket.setSoTimeout(500);
-            datagramSocket.bind(new InetSocketAddress(GameControlData.GAMECONTROLLER_GAMEDATA_PORT));
+            datagramSocket.bind(new InetSocketAddress(Config.GAME_DATA_PORT));
         } catch (SocketException e) {
-            Log.error("Error on start listening to port " + GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
+            Log.error("Error on start listening to port " + Config.GAME_DATA_PORT);
             System.exit(1);
         }
 
@@ -80,7 +81,7 @@ public class Listener
                     }
                 } catch (SocketTimeoutException e) { // ignore, because we set a timeout
                 } catch (IOException e) {
-                    Log.error("Error while listening to port " + GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
+                    Log.error("Error while listening to port " + Config.GAME_DATA_PORT);
                 }
             }
         }

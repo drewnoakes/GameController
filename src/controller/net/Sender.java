@@ -1,6 +1,7 @@
 package controller.net;
 
 import common.Log;
+import controller.Config;
 import controller.net.protocol.NetworkProtocol;
 import data.AdvancedData;
 import data.GameControlData;
@@ -12,7 +13,7 @@ import java.util.List;
 
 /**
  * This class is used to send the current {@link GameControlData} (game-state) to all robots every 500 ms.
- * The package will be send via UDP on port {@link GameControlData#GAMECONTROLLER_GAMEDATA_PORT} over broadcast.
+ * The packet will be sent via UDP broadcast on port {@link Config#GAME_DATA_PORT}.
  *
  * To prevent race-conditions (the sender is executed in its thread-context), the sender creates a deep copy
  * of {@link GameControlData} via {@link AdvancedData#clone()}.
@@ -90,7 +91,7 @@ public class Sender
 
                     for (NetworkProtocol version : versions) {
                         byte[] bytes = version.toBytes(data);
-                        DatagramPacket packet = new DatagramPacket(bytes, bytes.length, Sender.this.group, GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
+                        DatagramPacket packet = new DatagramPacket(bytes, bytes.length, Sender.this.group, Config.GAME_DATA_PORT);
                         try {
                             datagramSocket.send(packet);
                             version.incrementPacketNumber();
@@ -102,8 +103,7 @@ public class Sender
                 }
 
                 try {
-                    // Game Controller publishes its messages with this frequency
-                    Thread.sleep(500);
+                    Thread.sleep(Config.GAME_DATA_SEND_PERIOD_MILLIS);
                 } catch (InterruptedException e) {
                     interrupt();
                 }

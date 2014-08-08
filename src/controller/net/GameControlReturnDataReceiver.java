@@ -9,8 +9,7 @@ import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 
 import common.Log;
-
-import data.GameControlData;
+import controller.Config;
 import data.GameControlReturnData;
 
 /**
@@ -40,7 +39,7 @@ public class GameControlReturnDataReceiver
         datagramSocket = new DatagramSocket(null);
         datagramSocket.setReuseAddress(true);
         datagramSocket.setSoTimeout(500);
-        datagramSocket.bind(new InetSocketAddress(GameControlData.GAMECONTROLLER_RETURNDATA_PORT));
+        datagramSocket.bind(new InetSocketAddress(Config.RETURN_DATA_PORT));
 
         receiverThread = new GameControlReturnDataReceiverThread();
     }
