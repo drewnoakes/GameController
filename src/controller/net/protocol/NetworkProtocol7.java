@@ -3,6 +3,7 @@ package controller.net.protocol;
 import data.GameControlData;
 import data.TeamColor;
 import data.TeamInfo;
+import rules.Rules;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -54,7 +55,7 @@ public class NetworkProtocol7 extends NetworkProtocol
 
         buffer.put(GAMECONTROLLER_STRUCT_HEADER.getBytes(), 0, 4);
         buffer.putInt(versionNumber);
-        buffer.put(data.playersPerTeam);
+        buffer.put((byte)Rules.league.teamSize);
         buffer.put(data.gameState.getValue());
         buffer.put(data.firstHalf ? (byte)1 : 0);
         buffer.put(data.kickOffTeam == null ? 2 : data.kickOffTeam.getValue());

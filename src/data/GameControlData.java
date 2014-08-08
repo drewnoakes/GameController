@@ -19,7 +19,6 @@ public class GameControlData implements Serializable
     public static final int GAMECONTROLLER_RETURNDATA_PORT = 3838; // port to receive return-packets on
     public static final int GAMECONTROLLER_GAMEDATA_PORT = 3838; // port to send game state packets to
 
-    public byte playersPerTeam = (byte)Rules.league.teamSize;
     /** Primary state of the game. */
     public GameState gameState = GameState.Initial;
     /** Whether the game is currently in the first half. Applies to both normal time and overtime. */
@@ -58,8 +57,7 @@ public class GameControlData implements Serializable
     @Override
     public String toString()
     {
-        return "     playersPerTeam: " + playersPerTeam + '\n' +
-               "          gameState: " + gameState + '\n' +
+        return "          gameState: " + gameState + '\n' +
                "          firstHalf: " + (firstHalf ? "true" : "false") + '\n' +
                "        kickOffTeam: " + kickOffTeam + '\n' +
                "       secGameState: " + secGameState + '\n' +
