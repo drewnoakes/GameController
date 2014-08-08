@@ -5,7 +5,6 @@ import controller.action.GCAction;
 import controller.net.RobotWatcher;
 import data.AdvancedData;
 import data.Penalty;
-import data.PlayerInfo;
 import data.SPLCoachMessage;
 
 public class SPLCoachMessageReceived extends GCAction

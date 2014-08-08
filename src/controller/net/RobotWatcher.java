@@ -4,7 +4,6 @@ import controller.EventHandler;
 import controller.action.ActionBoard;
 import data.GameControlReturnData;
 import data.Penalty;
-import data.PlayerInfo;
 import rules.Rules;
 
 /**

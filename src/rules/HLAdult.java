@@ -1,7 +1,5 @@
 package rules;
 
-import rules.HL;
-
 /**
  *
  * @author Michel-Zen

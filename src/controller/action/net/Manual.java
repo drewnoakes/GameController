@@ -6,7 +6,6 @@ import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameState;
 import data.Penalty;
-import data.PlayerInfo;
 
 /**
  * @author Michel Bartsch
