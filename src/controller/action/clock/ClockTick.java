@@ -4,7 +4,6 @@ import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
-import data.GameControlData;
 import data.GameState;
 import rules.Rules;
 

@@ -3,7 +3,6 @@ package controller.ui;
 import controller.EventHandler;
 import controller.action.ActionBoard;
 import controller.action.GCAction;
-import data.GameControlData;
 import data.TeamColor;
 import rules.HL;
 import rules.Rules;

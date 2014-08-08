@@ -5,8 +5,6 @@ import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.*;
-import rules.Rules;
-
 
 /**
  * @author Michel Bartsch

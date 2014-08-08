@@ -1,8 +1,5 @@
 package rules;
 
-import java.awt.Color;
-
-
 /**
  * @author Michel Bartsch
  * 

@@ -8,7 +8,6 @@ import common.Log;
 import data.AdvancedData;
 import data.GameState;
 import data.PlayerInfo;
-import rules.Rules;
 
 /**
  *
