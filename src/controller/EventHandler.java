@@ -87,9 +87,9 @@ public class EventHandler
     }
     
     /**
-     * Very important method called automatically by every action in it`s
-     * actionPerformed method to later call it`s perform method in the
-     * GUI-Thread.
+     * Very important method called automatically by every action in its
+     * @{link GCAction#actionPerformed} method to later call its
+     * @{link GCAction#perform} method in the GUI-Thread.
      * 
      * @param event     The action calling.
      */

@@ -97,9 +97,9 @@ private:
   bool previousChestButtonPressed; /**< Whether the chest button was pressed during the previous cycle. */
   bool previousLeftFootButtonPressed; /**< Whether the left foot bumper was pressed during the previous cycle. */
   bool previousRightFootButtonPressed; /**< Whether the right foot bumper was pressed during the previous cycle. */
-  unsigned whenChestButtonStateChanged; /**< When last state change of the chest button occured (DCM time). */
-  unsigned whenLeftFootButtonStateChanged; /**< When last state change of the left foot bumper occured (DCM time). */
-  unsigned whenRightFootButtonStateChanged; /**< When last state change of the right foot bumper occured (DCM time). */
+  unsigned whenChestButtonStateChanged; /**< When last state change of the chest button occurred (DCM time). */
+  unsigned whenLeftFootButtonStateChanged; /**< When last state change of the left foot bumper occurred (DCM time). */
+  unsigned whenRightFootButtonStateChanged; /**< When last state change of the right foot bumper occurred (DCM time). */
   unsigned whenPacketWasReceived; /**< When the last GameController packet was received (DCM time). */
   unsigned whenPacketWasSent; /**< When the last return packet was sent to the GameController (DCM time). */
 

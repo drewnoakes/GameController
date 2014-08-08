@@ -7,7 +7,7 @@ import controller.action.GCAction;
 import data.*;
 
 /**
- * This action means that a team has scored or it`s score is to be decreased.
+ * This action means that a team has scored or its score is to be decreased.
  *
  * @author Michel Bartsch
  */

@@ -8,7 +8,7 @@ import data.AdvancedData;
 import data.PlayMode;
 
 /**
- * This action means that a global game stuck has occured.
+ * This action means that a global game stuck has occurred.
  *
  * @author Michel Bartsch
  */

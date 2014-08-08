@@ -754,7 +754,7 @@ public class GUI extends JFrame implements GCGUI
 
     /**
      * This is called by the EventHandler after an action has been performed.
-     * Here the GUI should update it`s view based on the data parameter.
+     * Here the GUI should update its view based on the data parameter.
      * There are three additional sources of information that can be used here:
      *  1. The RobotWatcher, you can ask him for the robots online-status.
      *  2. The last events from the EventHandler, but you should try to avoid

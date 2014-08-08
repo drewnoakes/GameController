@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.util.LinkedList;
 
 /**
- * The log-analyzer-programm starts in this class.
+ * The log-analyzer-program starts in this class.
  * The main components are initialised here.
  *
  * @author Michel Bartsch

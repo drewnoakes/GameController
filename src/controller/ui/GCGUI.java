@@ -4,7 +4,8 @@ import data.AdvancedData;
 
 
 /**
- * This inteface is for a GUI.
+ * This interface is for a GUI.
+ *
  * Every time the model changes the update method will be called with the new
  * model as data.
  *

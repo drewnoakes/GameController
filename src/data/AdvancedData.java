@@ -14,7 +14,7 @@ import rules.Rules;
 
 /**
  * This class extends the GameControlData that is send to the robots. It
- * contains all the additional informations the GameControler needs to
+ * contains all the additional information the GameController needs to
  * represent a state of the game, for example time in millis.
  *
  * There are no synchronized get and set methods because in this architecture

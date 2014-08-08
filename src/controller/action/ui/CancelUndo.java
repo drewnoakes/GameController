@@ -9,7 +9,7 @@ import data.AdvancedData;
  * Cancels an undo action in progress.
  * This a dummy action, because the undo buttons track
  * whether they created the previous event, and this is
- * one possibilty to generate a different event.
+ * one possibility to generate a different event.
  *
  * @author Thomas Roefer
  */

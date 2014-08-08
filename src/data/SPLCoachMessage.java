@@ -13,9 +13,9 @@ public class SPLCoachMessage implements Serializable
     private static final String SPL_COACH_MESSAGE_STRUCT_HEADER = "SPLC";
     private static final int SPL_COACH_MESSAGE_STRUCT_VERSION = 2;
     public static final int SPL_COACH_MESSAGE_SIZE = 40;
-    public static final long SPL_COACH_MESSAGE_RECEIVE_INTERVALL = 10000; // in ms
-    private static final long SPL_COACH_MESSAGE_MIN_SEND_INTERVALL = 3000; // in ms
-    private static final long SPL_COACH_MESSAGE_MAX_SEND_INTERVALL = 6000; // in ms
+    public static final long SPL_COACH_MESSAGE_RECEIVE_INTERVAL = 10000; // in ms
+    private static final long SPL_COACH_MESSAGE_MIN_SEND_INTERVAL = 3000; // in ms
+    private static final long SPL_COACH_MESSAGE_MAX_SEND_INTERVAL = 6000; // in ms
     public static final int SIZE = 4 // header size
                                    + 1 // byte for the version
                                    + 1 // team number
@@ -29,7 +29,7 @@ public class SPLCoachMessage implements Serializable
 
     public SPLCoachMessage()
     {
-        sendTime = generateSendIntervallForSPLCoachMessage() + System.currentTimeMillis();
+        sendTime = generateSendIntervalForSPLCoachMessage() + System.currentTimeMillis();
     }
 
     public byte[] toByteArray()
@@ -79,10 +79,10 @@ public class SPLCoachMessage implements Serializable
         return remainingTime > 0 ? remainingTime : 0;
     }
 
-    private long generateSendIntervallForSPLCoachMessage()
+    private long generateSendIntervalForSPLCoachMessage()
     {
-        return (long) (Math.random() * (SPLCoachMessage.SPL_COACH_MESSAGE_MAX_SEND_INTERVALL
-                - SPLCoachMessage.SPL_COACH_MESSAGE_MIN_SEND_INTERVALL))
-                + SPLCoachMessage.SPL_COACH_MESSAGE_MIN_SEND_INTERVALL;
+        return (long) (Math.random() * (SPLCoachMessage.SPL_COACH_MESSAGE_MAX_SEND_INTERVAL
+                - SPLCoachMessage.SPL_COACH_MESSAGE_MIN_SEND_INTERVAL))
+                + SPLCoachMessage.SPL_COACH_MESSAGE_MIN_SEND_INTERVAL;
     }
 }
