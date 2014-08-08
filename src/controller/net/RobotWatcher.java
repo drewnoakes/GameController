@@ -3,6 +3,7 @@ package controller.net;
 import controller.EventHandler;
 import controller.action.ActionBoard;
 import data.GameControlReturnData;
+import data.Penalty;
 import data.PlayerInfo;
 import rules.Rules;
 
@@ -37,7 +38,7 @@ public class RobotWatcher
     {
         for (int i  = 0; i < 2; i++) {
             for (int j = 0; j < Rules.league.teamSize; j++) {
-                robotsLastMessage[i][j] = PlayerInfo.PENALTY_NONE;
+                robotsLastMessage[i][j] = Penalty.None.getValue();
                 status[i][j] = RobotOnlineStatus.UNKNOWN;
             }
             if (Rules.league.isCoachAvailable) {
@@ -70,10 +71,10 @@ public class RobotWatcher
         if (instance.robotsLastMessage[team][number-1] != gameControlReturnData.message) {
             instance.robotsLastMessage[team][number-1] = gameControlReturnData.message;
             if ((gameControlReturnData.message == GameControlReturnData.GAMECONTROLLER_RETURN_MSG_MAN_PENALISE)
-                    && (EventHandler.getInstance().data.team[team].player[number-1].penalty == PlayerInfo.PENALTY_NONE)) {
+                    && (EventHandler.getInstance().data.team[team].player[number-1].penalty == Penalty.None)) {
                 ActionBoard.manualPen[team][number-1].actionPerformed(null);
             } else if ((gameControlReturnData.message == GameControlReturnData.GAMECONTROLLER_RETURN_MSG_MAN_UNPENALISE)
-                    && (EventHandler.getInstance().data.team[team].player[number-1].penalty != PlayerInfo.PENALTY_NONE)) {
+                    && (EventHandler.getInstance().data.team[team].player[number-1].penalty != Penalty.None)) {
                 ActionBoard.manualUnpen[team][number-1].actionPerformed(null);
             }
         }

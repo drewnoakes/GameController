@@ -6,14 +6,11 @@ import common.Log;
 import controller.EventHandler;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import controller.action.ui.penalty.CoachMotion;
-import controller.action.ui.penalty.Penalty;
-import controller.action.ui.penalty.PickUp;
-import controller.action.ui.penalty.PickUpHL;
-import controller.action.ui.penalty.ServiceHL;
-import controller.action.ui.penalty.Substitute;
+import controller.action.ui.penalty.*;
+import controller.action.ui.penalty.PenaltyAction;
 import data.AdvancedData;
 import data.AdvancedData.PenaltyQueueData;
+import data.Penalty;
 import data.PlayerInfo;
 import rules.HL;
 import rules.Rules;
@@ -54,13 +51,13 @@ public class Robot extends GCAction
     public void perform(AdvancedData data)
     {
         PlayerInfo player = data.team[side].player[number];
-        if (player.penalty == PlayerInfo.PENALTY_SUBSTITUTE && !isCoach(data)) {
+        if (player.penalty == Penalty.Substitute && !isCoach(data)) {
             ArrayList<PenaltyQueueData> playerInfoList = data.penaltyQueueForSubPlayers.get(side);
             if (playerInfoList.isEmpty()) {
                 if (Rules.league instanceof HL) {
-                    player.penalty = PlayerInfo.PENALTY_NONE;
+                    player.penalty = Penalty.None;
                 } else {
-                    player.penalty = PlayerInfo.PENALTY_SPL_REQUEST_FOR_PICKUP;
+                    player.penalty = Penalty.SplRequestForPickup;
                 }
                 data.whenPenalized[side][number] = data.getTime();
             } else {
@@ -71,12 +68,12 @@ public class Robot extends GCAction
             }
             Log.state(data, "Entering Player " + data.team[side].teamColor + " " + (number+1));
         }
-        else if (EventHandler.getInstance().lastUIEvent instanceof Penalty || EventHandler.getInstance().lastUIEvent instanceof TeammatePushing) {
+        else if (EventHandler.getInstance().lastUIEvent instanceof PenaltyAction || EventHandler.getInstance().lastUIEvent instanceof TeammatePushing) {
             EventHandler.getInstance().lastUIEvent.performOn(data, player, side, number);
         }
-        else if (player.penalty != PlayerInfo.PENALTY_NONE) {
+        else if (player.penalty != Penalty.None) {
             Log.state(data, "Unpenalised " + data.team[side].teamColor + " " + (number+1));
-            player.penalty = PlayerInfo.PENALTY_NONE;
+            player.penalty = Penalty.None;
         }
     }
     
@@ -90,31 +87,31 @@ public class Robot extends GCAction
     public boolean isLegal(AdvancedData data)
     {
         return !data.ejected[side][number]
-                && (!(EventHandler.getInstance().lastUIEvent instanceof Penalty)
-                && data.team[side].player[number].penalty != PlayerInfo.PENALTY_NONE
+                && (!(EventHandler.getInstance().lastUIEvent instanceof PenaltyAction)
+                && data.team[side].player[number].penalty != Penalty.None
                 && (data.getRemainingPenaltyTime(side, number) == 0 || Rules.league instanceof HL)
-                && (data.team[side].player[number].penalty != PlayerInfo.PENALTY_SUBSTITUTE || data.getNumberOfRobotsInPlay(side) < Rules.league.robotsPlaying)
+                && (data.team[side].player[number].penalty != Penalty.Substitute || data.getNumberOfRobotsInPlay(side) < Rules.league.robotsPlaying)
                 && !isCoach(data)
                 || EventHandler.getInstance().lastUIEvent instanceof PickUpHL
-                && data.team[side].player[number].penalty != PlayerInfo.PENALTY_HL_SERVICE
-                && data.team[side].player[number].penalty != PlayerInfo.PENALTY_SUBSTITUTE
+                && data.team[side].player[number].penalty != Penalty.HLService
+                && data.team[side].player[number].penalty != Penalty.Substitute
                 || EventHandler.getInstance().lastUIEvent instanceof ServiceHL
-                && data.team[side].player[number].penalty != PlayerInfo.PENALTY_HL_SERVICE
-                && data.team[side].player[number].penalty != PlayerInfo.PENALTY_SUBSTITUTE
+                && data.team[side].player[number].penalty != Penalty.HLService
+                && data.team[side].player[number].penalty != Penalty.Substitute
                 || (EventHandler.getInstance().lastUIEvent instanceof PickUp && Rules.league instanceof SPL)
-                && data.team[side].player[number].penalty != PlayerInfo.PENALTY_SPL_REQUEST_FOR_PICKUP
-                && data.team[side].player[number].penalty != PlayerInfo.PENALTY_SUBSTITUTE
+                && data.team[side].player[number].penalty != Penalty.SplRequestForPickup
+                && data.team[side].player[number].penalty != Penalty.Substitute
                 || EventHandler.getInstance().lastUIEvent instanceof Substitute
-                && data.team[side].player[number].penalty != PlayerInfo.PENALTY_SUBSTITUTE
+                && data.team[side].player[number].penalty != Penalty.Substitute
                 && (!isCoach(data) && (!(Rules.league instanceof SPL) || number != 0))
                 || (EventHandler.getInstance().lastUIEvent instanceof CoachMotion)
-                    && (isCoach(data) && (data.team[side].coach.penalty != PlayerInfo.PENALTY_SPL_COACH_MOTION))
-                || data.team[side].player[number].penalty == PlayerInfo.PENALTY_NONE
-                    && (EventHandler.getInstance().lastUIEvent instanceof Penalty)
+                    && (isCoach(data) && (data.team[side].coach.penalty != Penalty.SplCoachMotion))
+                || data.team[side].player[number].penalty == Penalty.None
+                    && (EventHandler.getInstance().lastUIEvent instanceof PenaltyAction)
                     && !(EventHandler.getInstance().lastUIEvent instanceof CoachMotion)
                     && !(EventHandler.getInstance().lastUIEvent instanceof Substitute)
                     && (!isCoach(data))
-                || (data.team[side].player[number].penalty == PlayerInfo.PENALTY_NONE) 
+                || (data.team[side].player[number].penalty == Penalty.None)
                     && (EventHandler.getInstance().lastUIEvent instanceof TeammatePushing))
                 || data.testmode;
     }

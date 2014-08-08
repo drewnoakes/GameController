@@ -5,6 +5,7 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameState;
+import data.Penalty;
 import data.PlayerInfo;
 
 /**
@@ -48,7 +49,7 @@ public class Manual extends GCAction
     public void perform(AdvancedData data)
     {
         if (!unpen) {
-            data.team[side].player[number].penalty = PlayerInfo.PENALTY_MANUAL;
+            data.team[side].player[number].penalty = Penalty.Manual;
             data.whenPenalized[side][number] = data.getTime();
             if((data.gameState != GameState.Initial)
                     && (data.gameState != GameState.Finished)){
@@ -57,7 +58,7 @@ public class Manual extends GCAction
                         + " " + (number+1));
             }
         } else {
-            data.team[side].player[number].penalty = PlayerInfo.PENALTY_NONE;
+            data.team[side].player[number].penalty = Penalty.None;
             if((data.gameState != GameState.Initial)
                     && (data.gameState != GameState.Finished)){
                 Log.state(data, "Manually Unpenalised "+

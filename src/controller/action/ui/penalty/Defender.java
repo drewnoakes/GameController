@@ -3,6 +3,7 @@ package controller.action.ui.penalty;
 import common.Log;
 import data.AdvancedData;
 import data.GameState;
+import data.Penalty;
 import data.PlayerInfo;
 
 /**
@@ -10,7 +11,7 @@ import data.PlayerInfo;
  * 
  * This action means that the illegal defender penalty has been selected.
  */
-public class Defender extends Penalty
+public class Defender extends PenaltyAction
 {
     /**
      * Performs this action`s penalty on a selected player.
@@ -23,7 +24,7 @@ public class Defender extends Penalty
     @Override
     public void performOn(AdvancedData data, PlayerInfo player, int side, int number)
     {
-        player.penalty = PlayerInfo.PENALTY_SPL_ILLEGAL_DEFENDER;
+        player.penalty = Penalty.SplIllegalDefender;
         data.whenPenalized[side][number] = data.getTime();
         Log.state(data, "Illegal Defender " + data.team[side].teamColor + " " + (number+1));
     }
@@ -37,6 +38,6 @@ public class Defender extends Penalty
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameState.Playing) || data.testmode;
+        return data.gameState == GameState.Playing || data.testmode;
     }
 }

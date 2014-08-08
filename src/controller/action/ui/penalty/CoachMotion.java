@@ -3,10 +3,11 @@ package controller.action.ui.penalty;
 import common.Log;
 
 import data.AdvancedData;
+import data.Penalty;
 import data.PlayerInfo;
 import rules.Rules;
 
-public class CoachMotion extends Penalty
+public class CoachMotion extends PenaltyAction
 {
     /**
      * Performs this action`s penalty on a selected player.
@@ -20,7 +21,7 @@ public class CoachMotion extends Penalty
     public void performOn(AdvancedData data, PlayerInfo player, int side, int number)
     {
         data.whenPenalized[side][number] = data.getTime();
-        data.team[side].coach.penalty = PlayerInfo.PENALTY_SPL_COACH_MOTION;
+        data.team[side].coach.penalty = Penalty.SplCoachMotion;
         data.ejected[side][number] = true;
         Log.state(data, "Coach Motion " + data.team[side].teamColor);
     }

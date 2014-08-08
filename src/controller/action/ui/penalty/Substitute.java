@@ -2,6 +2,7 @@ package controller.action.ui.penalty;
 
 import common.Log;
 import data.AdvancedData;
+import data.Penalty;
 import data.PlayerInfo;
 import rules.Rules;
 
@@ -10,7 +11,7 @@ import rules.Rules;
  * 
  * This action means that the substitution player penalty has been selected.
  */
-public class Substitute extends Penalty
+public class Substitute extends PenaltyAction
 {
     /**
      * Performs this action`s penalty on a selected player.
@@ -23,11 +24,11 @@ public class Substitute extends Penalty
     @Override
     public void performOn(AdvancedData data, PlayerInfo player, int side, int number)
     {
-        if (player.penalty != PlayerInfo.PENALTY_NONE) {
+        if (player.penalty != Penalty.None) {
             data.addToPenaltyQueue(side, data.whenPenalized[side][number], player.penalty);
         }
-        
-        player.penalty = PlayerInfo.PENALTY_SUBSTITUTE;
+
+        player.penalty = Penalty.Substitute;
         data.whenPenalized[side][number] = data.getTime();
         Log.state(data, "Leaving Player " + data.team[side].teamColor + " " + (number+1));
     }

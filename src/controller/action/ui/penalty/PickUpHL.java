@@ -2,13 +2,14 @@ package controller.action.ui.penalty;
 
 import common.Log;
 import data.AdvancedData;
+import data.Penalty;
 import data.PlayerInfo;
 
 /**
  *
  * @author Michel-Zen
  */
-public class PickUpHL extends Penalty
+public class PickUpHL extends PenaltyAction
 {
     /**
      * Performs this action`s penalty on a selected player.
@@ -21,11 +22,11 @@ public class PickUpHL extends Penalty
     @Override
     public void performOn(AdvancedData data, PlayerInfo player, int side, int number)
     {
-        if (player.penalty == PlayerInfo.PENALTY_NONE) {
+        if (player.penalty == Penalty.None) {
             data.whenPenalized[side][number] = data.getTime();
         }
 
-        player.penalty = PlayerInfo.PENALTY_HL_PICKUP_OR_INCAPABLE;
+        player.penalty = Penalty.HLPickupOrIncapable;
         Log.state(data, "Request for PickUp / Incapable Player " + data.team[side].teamColor+ " " + (number+1));
     }
 

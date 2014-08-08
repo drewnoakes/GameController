@@ -92,7 +92,7 @@ public class NetworkProtocol7 extends NetworkProtocol
 
         // Write player data
         for (int i=0; i < TeamInfo.MAX_NUM_PLAYERS; i++) {
-            buffer.putShort(teamInfo.player[i].penalty);
+            buffer.putShort(teamInfo.player[i].penalty.getValue());
             buffer.putShort(teamInfo.player[i].secsTillUnpenalised);
         }
     }

@@ -3,6 +3,7 @@ package controller.action.ui.penalty;
 import common.Log;
 
 import data.AdvancedData;
+import data.Penalty;
 import data.PlayerInfo;
 
 /**
@@ -10,7 +11,7 @@ import data.PlayerInfo;
  * 
  * This action means that the request for pickup penalty has been selected.
  */
-public class PickUp extends Penalty
+public class PickUp extends PenaltyAction
 {
     /**
      * Performs this action`s penalty on a selected player.
@@ -23,11 +24,11 @@ public class PickUp extends Penalty
     @Override
     public void performOn(AdvancedData data, PlayerInfo player, int side, int number)
     {
-        if (player.penalty == PlayerInfo.PENALTY_NONE) {
+        if (player.penalty == Penalty.None) {
             data.whenPenalized[side][number] = data.getTime();
         }
-        
-        player.penalty = PlayerInfo.PENALTY_SPL_REQUEST_FOR_PICKUP;
+
+        player.penalty = Penalty.SplRequestForPickup;
         Log.state(data, "Request for PickUp " + data.team[side].teamColor + " " + (number+1));
     }
     

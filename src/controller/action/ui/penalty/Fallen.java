@@ -3,6 +3,7 @@ package controller.action.ui.penalty;
 import common.Log;
 import data.AdvancedData;
 import data.GameState;
+import data.Penalty;
 import data.PlayerInfo;
 
 /**
@@ -10,7 +11,7 @@ import data.PlayerInfo;
  * 
  * This action means that the fallen robot penalty has been selected.
  */
-public class Fallen extends Penalty
+public class Fallen extends PenaltyAction
 {
     /**
      * Performs this action`s penalty on a selected player.
@@ -23,7 +24,7 @@ public class Fallen extends Penalty
     @Override
     public void performOn(AdvancedData data, PlayerInfo player, int side, int number)
     {
-        player.penalty = PlayerInfo.PENALTY_SPL_OBSTRUCTION;
+        player.penalty = Penalty.SplObstruction;
         data.whenPenalized[side][number] = data.getTime();
         Log.state(data, "Fallen Robot " + data.team[side].teamColor + " " + (number+1));
     }
@@ -37,9 +38,9 @@ public class Fallen extends Penalty
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameState.Ready)
-            || (data.gameState == GameState.Playing)
-            || (data.gameState == GameState.Set)
-            || (data.testmode);
+        return data.gameState == GameState.Ready
+            || data.gameState == GameState.Playing
+            || data.gameState == GameState.Set
+            || data.testmode;
     }
 }

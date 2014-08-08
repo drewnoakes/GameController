@@ -3,13 +3,14 @@ package controller.action.ui.penalty;
 import common.Log;
 import data.AdvancedData;
 import data.GameState;
+import data.Penalty;
 import data.PlayerInfo;
 
 /**
  *
  * @author Michel-Zen
  */
-public class Defense extends Penalty
+public class Defense extends PenaltyAction
 {
     /**
      * Performs this action`s penalty on a selected player.
@@ -22,7 +23,7 @@ public class Defense extends Penalty
     @Override
     public void performOn(AdvancedData data, PlayerInfo player, int side, int number)
     {
-        player.penalty = PlayerInfo.PENALTY_HL_ILLEGAL_DEFENSE;
+        player.penalty = Penalty.HLIllegalDefense;
         data.whenPenalized[side][number] = data.getTime();
         Log.state(data, "Illegal Defense " + data.team[side].teamColor + " " + (number+1));
     }
@@ -36,6 +37,6 @@ public class Defense extends Penalty
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameState.Playing) || data.testmode;
+        return data.gameState == GameState.Playing || data.testmode;
     }
 }

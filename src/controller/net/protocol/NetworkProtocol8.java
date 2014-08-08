@@ -110,10 +110,10 @@ public class NetworkProtocol8 extends NetworkProtocol
             t.penaltyShot = buffer.get();
             t.singleShots = buffer.getShort();
             buffer.get(t.coachMessage);
-            t.coach.penalty = buffer.get();
+            t.coach.penalty = Penalty.fromValue(buffer.get());
             t.coach.secsTillUnpenalised = buffer.get();
             for (PlayerInfo p : t.player) {
-                p.penalty = buffer.get();
+                p.penalty = Penalty.fromValue(buffer.get());
                 p.secsTillUnpenalised = buffer.get();
             }
         }
@@ -139,7 +139,7 @@ public class NetworkProtocol8 extends NetworkProtocol
 
     private static void writePlayerInfo(ByteBuffer buffer, PlayerInfo playerInfo)
     {
-        buffer.put(playerInfo.penalty);
+        buffer.put(playerInfo.penalty.getValue());
         buffer.put(playerInfo.secsTillUnpenalised);
     }
 }

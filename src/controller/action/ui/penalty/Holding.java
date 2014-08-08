@@ -3,6 +3,7 @@ package controller.action.ui.penalty;
 import common.Log;
 import data.AdvancedData;
 import data.GameState;
+import data.Penalty;
 import data.PlayerInfo;
 
 /**
@@ -10,7 +11,7 @@ import data.PlayerInfo;
  * 
  * This action means that the ball holding penalty has been selected.
  */
-public class Holding extends Penalty
+public class Holding extends PenaltyAction
 {
     /**
      * Performs this action`s penalty on a selected player.
@@ -23,7 +24,7 @@ public class Holding extends Penalty
     @Override
     public void performOn(AdvancedData data, PlayerInfo player, int side, int number)
     {
-        player.penalty = PlayerInfo.PENALTY_SPL_BALL_HOLDING;
+        player.penalty = Penalty.SplBallHolding;
         data.whenPenalized[side][number] = data.getTime();
         Log.state(data, "Ball Holding " + data.team[side].teamColor + " " + (number+1));
     }
@@ -37,6 +38,6 @@ public class Holding extends Penalty
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameState.Playing) || data.testmode;
+        return data.gameState == GameState.Playing || data.testmode;
     }
 }

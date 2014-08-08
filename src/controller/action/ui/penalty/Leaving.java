@@ -3,6 +3,7 @@ package controller.action.ui.penalty;
 import common.Log;
 import data.AdvancedData;
 import data.GameState;
+import data.Penalty;
 import data.PlayerInfo;
 
 /**
@@ -10,7 +11,7 @@ import data.PlayerInfo;
  * 
  * This action means that the leaving the field penalty has been selected.
  */
-public class Leaving extends Penalty
+public class Leaving extends PenaltyAction
 {
     /**
      * Performs this action`s penalty on a selected player.
@@ -23,7 +24,7 @@ public class Leaving extends Penalty
     @Override
     public void performOn(AdvancedData data, PlayerInfo player, int side, int number)
     {
-        player.penalty = PlayerInfo.PENALTY_SPL_LEAVING_THE_FIELD;
+        player.penalty = Penalty.SplLeavingTheField;
         data.whenPenalized[side][number] = data.getTime();
         Log.state(data, "Leaving the Field " + data.team[side].teamColor + " " + (number+1));
     }
@@ -37,8 +38,8 @@ public class Leaving extends Penalty
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameState.Ready)
-            || (data.gameState == GameState.Playing)
-            || (data.testmode);
+        return data.gameState == GameState.Ready
+            || data.gameState == GameState.Playing
+            || data.testmode;
     }
 }
