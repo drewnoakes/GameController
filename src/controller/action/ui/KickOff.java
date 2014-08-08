@@ -3,7 +3,7 @@ package controller.action.ui;
 import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
+import data.GameState;
 import data.Period;
 import data.PlayMode;
 import rules.Rules;
@@ -38,7 +38,7 @@ public class KickOff extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         if (data.kickOffTeam == data.team[side].teamColor) {
             return;
@@ -60,7 +60,7 @@ public class KickOff extends GCAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return data.kickOffTeam == data.team[side].teamColor
                 || (Rules.league.kickoffChoice

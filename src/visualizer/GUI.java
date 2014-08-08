@@ -20,7 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import common.Log;
-import data.GameState;
+import data.GameStateSnapshot;
 import data.Period;
 import data.PlayMode;
 import rules.Rules;
@@ -58,7 +58,7 @@ public class GUI extends JFrame
     /** If testmode is on to just display whole GameState. */
     private boolean testmode = false;
     /** The last data received to show. */
-    private GameState data = null;
+    private GameStateSnapshot data = null;
     /** The background. */
     private BufferedImage background;
     
@@ -152,7 +152,7 @@ public class GUI extends JFrame
      * 
      * @param data  The GameState to show.
      */
-    public synchronized void update(GameState data)
+    public synchronized void update(GameStateSnapshot data)
     {
         this.data = data;
         do {

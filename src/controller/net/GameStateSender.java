@@ -3,7 +3,7 @@ package controller.net;
 import common.Log;
 import controller.Config;
 import controller.net.protocol.GameStateProtocol;
-import data.AdvancedData;
+import data.GameState;
 
 import java.io.IOException;
 import java.net.*;
@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class is used to send the current {@link data.GameState} (game-state) to all robots every 500 ms.
+ * This class is used to send the current {@link data.GameState} to all robots every 500 ms.
  * The packet will be sent via UDP broadcast on port {@link Config#GAME_STATE_PORT}.
  *
  * To prevent race-conditions (the sender is executed in its thread-context), the sender creates a deep copy
- * of {@link data.GameState} via {@link AdvancedData#clone()}.
+ * of {@link data.GameState} via {@link data.GameState#clone()}.
  *
  * @author Marcel Steinbeck
  * @author Drew Noakes https://drewnoakes.com
@@ -34,7 +34,7 @@ public class GameStateSender
     private final List<GameStateProtocol> protocols = new ArrayList<GameStateProtocol>();
 
     /** The current deep copy of the game-state. */
-    private AdvancedData data;
+    private GameState data;
 
     /**
      * Creates a new GameStateSender.
@@ -56,13 +56,13 @@ public class GameStateSender
 
     /**
      * Sets the current game-state to send. Creates a clone of data to prevent race-conditions.
-     * See {@link AdvancedData#clone()}.
+     * See {@link data.GameState#clone()}.
      *
      * @param data the current game-state to send to all robots
      */
-    public void send(AdvancedData data)
+    public void send(GameState data)
     {
-        this.data = (AdvancedData) data.clone();
+        this.data = (GameState) data.clone();
     }
 
     public void start()
@@ -83,7 +83,7 @@ public class GameStateSender
         {
             while (!isInterrupted()) {
                 // Take a copy of the reference to prevent errors cause when data is modified while this thread is running
-                AdvancedData data = GameStateSender.this.data;
+                GameState data = GameStateSender.this.data;
 
                 if (data != null) {
                     data.updateTimes();

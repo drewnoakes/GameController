@@ -4,8 +4,7 @@ import common.Log;
 import controller.EventHandler;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
-
+import data.GameState;
 
 /**
  * This action means that the operator wants to go back in the timeline.
@@ -38,7 +37,7 @@ public class Undo extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         if ((EventHandler.getInstance().lastUIEvent == this)
          && (!executed) ) {
@@ -56,7 +55,7 @@ public class Undo extends GCAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return true;
     }

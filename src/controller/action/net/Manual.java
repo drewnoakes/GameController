@@ -3,7 +3,7 @@ package controller.action.net;
 import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
+import data.GameState;
 import data.PlayMode;
 import data.Penalty;
 
@@ -45,7 +45,7 @@ public class Manual extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         if (!unpen) {
             data.team[side].player[number].penalty = Penalty.Manual;
@@ -74,7 +74,7 @@ public class Manual extends GCAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return true;
     }

@@ -4,7 +4,7 @@ import common.Log;
 
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
+import data.GameState;
 import data.PlayMode;
 
 public class IncGameClock extends GCAction
@@ -15,14 +15,14 @@ public class IncGameClock extends GCAction
     }
 
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         data.timeBeforeCurrentPlayMode -= 1000*60;
         Log.state(data, "Increase Game Clock");
     }
 
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return data.playMode != PlayMode.Playing
                 && data.timeBeforeCurrentPlayMode >= 1000*60

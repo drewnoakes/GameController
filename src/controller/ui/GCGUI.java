@@ -1,7 +1,6 @@
 package controller.ui;
 
-import data.AdvancedData;
-
+import data.GameState;
 
 /**
  * This interface is for a GUI.
@@ -22,5 +21,5 @@ public interface GCGUI
      * 
      * @param data  The Model to view.
      */
-    public void update(AdvancedData data);
+    public void update(GameState data);
 }

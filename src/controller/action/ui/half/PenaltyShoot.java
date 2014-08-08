@@ -3,7 +3,7 @@ package controller.action.ui.half;
 import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
+import data.GameState;
 import data.PlayMode;
 import data.Period;
 import rules.Rules;
@@ -31,7 +31,7 @@ public class PenaltyShoot extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         if (data.period != Period.PenaltyShootout) {
             data.period = Period.PenaltyShootout;
@@ -53,7 +53,7 @@ public class PenaltyShoot extends GCAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return data.period == Period.PenaltyShootout
           || data.previousPeriod == Period.PenaltyShootout

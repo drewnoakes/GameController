@@ -4,7 +4,7 @@ import common.Log;
 import controller.Config;
 import controller.net.protocol.GameStateProtocol;
 import controller.net.protocol.GameStateProtocol9;
-import data.GameState;
+import data.GameStateSnapshot;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -76,7 +76,7 @@ public class GameStateListener
                 try {
                     datagramSocket.receive(packet);
                     buffer.rewind();
-                    final GameState data = gameStateProtocol.fromBytes(buffer);
+                    final GameStateSnapshot data = gameStateProtocol.fromBytes(buffer);
                     if (data != null) {
                         gui.update(data);
                     }

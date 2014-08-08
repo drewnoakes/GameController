@@ -3,7 +3,7 @@ package controller.action.ui.playmode;
 import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
+import data.GameState;
 import data.PlayMode;
 
 /**
@@ -28,7 +28,7 @@ public class Play extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         if (data.playMode == PlayMode.Playing) {
             return;
@@ -48,7 +48,7 @@ public class Play extends GCAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return (data.playMode == PlayMode.Set)
             || (data.playMode == PlayMode.Playing)

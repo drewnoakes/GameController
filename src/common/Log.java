@@ -2,7 +2,8 @@ package common;
 
 import controller.EventHandler;
 import controller.Main;
-import data.AdvancedData;
+import data.GameState;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class Log
     /** The file to write into. */
     private String errorPath = "error.txt";
     /** The timeline. */
-    private LinkedList<AdvancedData> states = new LinkedList<AdvancedData>();
+    private LinkedList<GameState> states = new LinkedList<GameState>();
     /** If != null, the next log entry will use this message. */ 
     private String message = null;
     
@@ -101,9 +102,9 @@ public class Log
      *              go into the timeline.
      * @param message   A message describing what happened to the data.
      */
-    public static void state(AdvancedData data, String message)
+    public static void state(GameState data, String message)
     {
-        AdvancedData state = (AdvancedData) data.clone();
+        GameState state = (GameState) data.clone();
         if (instance.message == null) {
             state.message = message;
         } else {
@@ -140,11 +141,11 @@ public class Log
         }
         if (laterTimestamp != instance.states.getLast().whenCurrentPlayModeBegan) {
             long timeOffset = laterTimestamp - earlierTimestamp + timeInCurrentState;
-            for (AdvancedData data : instance.states) {
+            for (GameState data : instance.states) {
                 data.whenCurrentPlayModeBegan += timeOffset;
             }
         }
-        AdvancedData state = (AdvancedData) instance.states.getLast().clone();
+        GameState state = (GameState) instance.states.getLast().clone();
         EventHandler.getInstance().data = state;
         return state.message;
     }

@@ -2,8 +2,7 @@ package controller.action.ui;
 
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
-
+import data.GameState;
 
 /**
  * Cancels an undo action in progress.
@@ -30,7 +29,7 @@ public class CancelUndo extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
     }
     
@@ -41,7 +40,7 @@ public class CancelUndo extends GCAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return true;
     }

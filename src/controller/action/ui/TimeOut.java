@@ -34,7 +34,7 @@ public class TimeOut extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         if (!data.timeOutActive[side]) {
             data.previousPeriod = data.period;
@@ -66,7 +66,7 @@ public class TimeOut extends GCAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
       return data.timeOutActive[side]
             || ((data.playMode == PlayMode.Initial ||

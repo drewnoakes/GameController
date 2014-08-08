@@ -9,7 +9,7 @@ import controller.ui.GCGUI;
 import controller.ui.GUI;
 import controller.ui.KeyboardListener;
 import controller.ui.StartInput;
-import data.AdvancedData;
+import data.GameState;
 import data.TeamColor;
 import rules.Rules;
 import data.Teams;
@@ -59,7 +59,7 @@ public class Main
         //collect the start parameters and put them into the first data.
         StartInput.showDialog(options);
 
-        AdvancedData data = new AdvancedData();
+        GameState data = new GameState();
         data.team[0].teamNumber = options.teamNumberBlue;
         data.team[1].teamNumber = options.teamNumberRed;
         data.colorChangeAuto = options.colorChangeAuto;

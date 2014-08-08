@@ -29,7 +29,7 @@ public class Set extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         if (data.playMode == PlayMode.Set) {
             return;
@@ -64,7 +64,7 @@ public class Set extends GCAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return data.playMode == PlayMode.Ready
             || data.playMode == PlayMode.Set

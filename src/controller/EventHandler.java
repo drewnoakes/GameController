@@ -4,7 +4,8 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import controller.net.GameStateSender;
 import controller.ui.GCGUI;
-import data.AdvancedData;
+import data.GameState;
+
 import java.awt.EventQueue;
 
 
@@ -57,7 +58,7 @@ public class EventHandler
      * and than use the data giving as parameters. The data is not private,
      * only because the Log may change it to a later version.
      */
-    public AdvancedData data;
+    public GameState data;
     /** The last actions as the name says. */
     private GCAction lastNonClockEvent = null;
     public GCAction lastUIEvent = null;

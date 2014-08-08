@@ -8,8 +8,8 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import controller.action.ui.penalty.*;
 import controller.action.ui.penalty.PenaltyAction;
-import data.AdvancedData;
-import data.AdvancedData.PenaltyQueueData;
+import data.GameState;
+import data.GameState.PenaltyQueueData;
 import data.Penalty;
 import data.PlayerInfo;
 import rules.HL;
@@ -48,7 +48,7 @@ public class Robot extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         PlayerInfo player = data.team[side].player[number];
         if (player.penalty == Penalty.Substitute && !isCoach()) {
@@ -84,7 +84,7 @@ public class Robot extends GCAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return !data.ejected[side][number]
                 && (!(EventHandler.getInstance().lastUIEvent instanceof PenaltyAction)

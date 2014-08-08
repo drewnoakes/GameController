@@ -3,7 +3,7 @@ package controller.action.net;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import controller.net.RobotWatcher;
-import data.AdvancedData;
+import data.GameState;
 import data.Penalty;
 import data.SPLCoachMessage;
 
@@ -18,7 +18,7 @@ public class SPLCoachMessageReceived extends GCAction
     }
     
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         byte team = (data.team[0].teamNumber == message.team)? (byte)0 : (byte)1;
         RobotWatcher.updateCoach(team);
@@ -30,7 +30,7 @@ public class SPLCoachMessageReceived extends GCAction
     }
 
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return true;
     }

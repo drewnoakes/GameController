@@ -5,7 +5,7 @@ import common.Log;
 import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
+import data.GameState;
 import data.PlayMode;
 import data.Period;
 
@@ -17,7 +17,7 @@ public class RefereeTimeout extends GCAction
     }
 
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         if (!data.refereeTimeout) {
             data.previousPeriod = data.period;
@@ -44,7 +44,7 @@ public class RefereeTimeout extends GCAction
     }
 
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return data.playMode != PlayMode.Finished
                 && !data.timeOutActive[0] && !data.timeOutActive[1];

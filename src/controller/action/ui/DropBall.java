@@ -4,7 +4,7 @@ import common.Log;
 import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
+import data.GameState;
 import data.PlayMode;
 
 /**
@@ -29,7 +29,7 @@ public class DropBall extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         // Set to null, indicating no team has kick off
         data.kickOffTeam = null;
@@ -44,7 +44,7 @@ public class DropBall extends GCAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return (data.playMode == PlayMode.Playing) || data.testmode;
     }

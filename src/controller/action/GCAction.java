@@ -1,7 +1,7 @@
 package controller.action;
 
 import controller.EventHandler;
-import data.AdvancedData;
+import data.GameState;
 import data.PlayerInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,7 +50,7 @@ public abstract class GCAction implements ActionListener
      * 
      * @param data      The current data to work on.
      */
-    public abstract void perform(AdvancedData data);
+    public abstract void perform(GameState data);
     
     /**
      * This is to perform an action on a specific player. It is not needed
@@ -61,7 +61,7 @@ public abstract class GCAction implements ActionListener
      * @param side      The side this player is playing for, 0: left, 1: right
      * @param number    The players number, beginning at 0!
      */
-    public void performOn(AdvancedData data, PlayerInfo player, int side, int number) {}
+    public void performOn(GameState data, PlayerInfo player, int side, int number) {}
     
     /**
      * Must be override to determine if the action is legal at a specific
@@ -72,5 +72,5 @@ public abstract class GCAction implements ActionListener
      * 
      * @return This is true if the action is legal.
      */
-    public abstract boolean isLegal(AdvancedData data);
+    public abstract boolean isLegal(GameState data);
 }

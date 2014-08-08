@@ -249,7 +249,7 @@ public class GUI extends JFrame implements GCGUI
      *                      the display`s resolution to the GUI`s size.
      * @param data      The starting data.
      */
-    public GUI(boolean fullscreen, AdvancedData data)
+    public GUI(boolean fullscreen, GameState data)
     {
         super(WINDOW_TITLE);
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -765,7 +765,7 @@ public class GUI extends JFrame implements GCGUI
      * @param data     The current data (model) the GUI should view.
      */
     @Override
-    public void update(AdvancedData data)
+    public void update(GameState data)
     {
         updateClock(data);
         updateHalf(data);
@@ -807,7 +807,7 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updateClock(AdvancedData data)
+    private void updateClock(GameState data)
     {
         clock.setText(formatTime(data.getRemainingGameTime()));
         Integer secondaryTime = data.getSecondaryTime(KICKOFF_BLOCKED_HIGHLIGHT_SECONDS - 1);
@@ -844,7 +844,7 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updateHalf(AdvancedData data)
+    private void updateHalf(GameState data)
     {
         for (int i=0; i<2; i++) {
             name[i].setText(Teams.getNames(false)[data.team[i].teamNumber]);
@@ -874,7 +874,7 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updateColor(AdvancedData data)
+    private void updateColor(GameState data)
     {
         for (int i=0; i<2; i++) {
             name[i].setForeground(data.team[i].teamColor.getColor());
@@ -887,7 +887,7 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updatePlayMode(AdvancedData data)
+    private void updatePlayMode(GameState data)
     {
         initial.setEnabled(ActionBoard.initial.isLegal(data));
         ready.setEnabled(ActionBoard.ready.isLegal(data));
@@ -918,7 +918,7 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updateGoal(AdvancedData data)
+    private void updateGoal(GameState data)
     {
         for (int i=0; i<2; i++) {
             goals[i].setText(""+data.team[i].score);
@@ -932,7 +932,7 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updateKickoff(AdvancedData data)
+    private void updateKickoff(GameState data)
     {
         if (data.kickOffTeam == null) {
             // drop ball
@@ -956,7 +956,7 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updatePushes(AdvancedData data)
+    private void updatePushes(GameState data)
     {
         for (int i=0; i<2; i++) {
             if (data.period != Period.PenaltyShootout && data.previousPeriod != Period.PenaltyShootout) {
@@ -977,7 +977,7 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updateRobots(AdvancedData data)
+    private void updateRobots(GameState data)
     {
         RobotOnlineStatus[][] onlineStatus = RobotWatcher.updateRobotOnlineStatus();
         for (int i=0; i<robot.length; i++) {
@@ -1055,7 +1055,7 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updateTimeOut(AdvancedData data)
+    private void updateTimeOut(GameState data)
     {
         for (int i=0; i<2; i++) {
             if (!data.timeOutActive[i]) {
@@ -1071,7 +1071,7 @@ public class GUI extends JFrame implements GCGUI
         }
     }
     
-    private void updateRefereeTimeout(AdvancedData data) {
+    private void updateRefereeTimeout(GameState data) {
         refereeTimeout.setSelected(data.refereeTimeout);
         refereeTimeout.setEnabled(ActionBoard.refereeTimeout.isLegal(data));
     }
@@ -1081,7 +1081,7 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updateGlobalStuck(AdvancedData data)
+    private void updateGlobalStuck(GameState data)
     {
         for (int i=0; i<2; i++) {
             if (data.playMode == PlayMode.Playing
@@ -1107,7 +1107,7 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updateDropBall(AdvancedData data)
+    private void updateDropBall(GameState data)
     {
         dropBall.setEnabled(ActionBoard.dropBall.isLegal(data));
     }
@@ -1117,7 +1117,7 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updateOut(AdvancedData data)
+    private void updateOut(GameState data)
     {
         for (int i=0; i<2; i++) {
             out[i].setEnabled(ActionBoard.out[i].isLegal(data));
@@ -1129,7 +1129,7 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updatePenaltiesSPL(AdvancedData data)
+    private void updatePenaltiesSPL(GameState data)
     {
         pen[0].setEnabled(ActionBoard.pushing.isLegal(data));
         pen[1].setEnabled(ActionBoard.leaving.isLegal(data));
@@ -1165,7 +1165,7 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updatePenaltiesHL(AdvancedData data)
+    private void updatePenaltiesHL(GameState data)
     {
         pen[0].setEnabled(ActionBoard.ballManipulation.isLegal(data));
         pen[1].setEnabled(ActionBoard.pushing.isLegal(data));

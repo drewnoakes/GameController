@@ -3,7 +3,7 @@ package controller.action.ui.penalty;
 import controller.EventHandler;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
+import data.GameState;
 
 /**
  *
@@ -26,7 +26,7 @@ public abstract class PenaltyAction extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         if (EventHandler.getInstance().lastUIEvent == this) {
             EventHandler.getInstance().noLastUIEvent = true;

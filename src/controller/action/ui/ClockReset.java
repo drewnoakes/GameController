@@ -3,8 +3,7 @@ package controller.action.ui;
 import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
-
+import data.GameState;
 
 /**
  * This action means that the clock is to be resetted.
@@ -28,7 +27,7 @@ public class ClockReset extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         data.timeBeforeCurrentPlayMode = 0;
         data.whenCurrentPlayModeBegan = data.getTime();
@@ -44,7 +43,7 @@ public class ClockReset extends GCAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return data.testmode;
     }

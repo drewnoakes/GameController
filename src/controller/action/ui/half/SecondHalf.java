@@ -27,7 +27,7 @@ public class SecondHalf extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(AdvancedData data)
+    public void perform(GameState data)
     {
         if (data.firstHalf || data.period == Period.PenaltyShootout) {
             data.firstHalf = false;
@@ -51,7 +51,7 @@ public class SecondHalf extends GCAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return (!data.firstHalf && data.period == Period.Normal)
             || (data.period == Period.Normal && data.playMode == PlayMode.Finished)

@@ -2,7 +2,7 @@ package controller.action.ui.penalty;
 
 import common.Log;
 
-import data.AdvancedData;
+import data.GameState;
 import data.Penalty;
 import data.PlayerInfo;
 
@@ -22,7 +22,7 @@ public class PickUp extends PenaltyAction
      * @param number    The player`s number, beginning with 0!
      */
     @Override
-    public void performOn(AdvancedData data, PlayerInfo player, int side, int number)
+    public void performOn(GameState data, PlayerInfo player, int side, int number)
     {
         if (player.penalty == Penalty.None) {
             data.whenPenalized[side][number] = data.getTime();
@@ -39,7 +39,7 @@ public class PickUp extends PenaltyAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return true;
     }

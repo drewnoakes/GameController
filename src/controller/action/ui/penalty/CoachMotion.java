@@ -2,7 +2,7 @@ package controller.action.ui.penalty;
 
 import common.Log;
 
-import data.AdvancedData;
+import data.GameState;
 import data.Penalty;
 import data.PlayerInfo;
 import rules.Rules;
@@ -18,7 +18,7 @@ public class CoachMotion extends PenaltyAction
      * @param number    The player`s number, beginning with 0!
      */
     @Override
-    public void performOn(AdvancedData data, PlayerInfo player, int side, int number)
+    public void performOn(GameState data, PlayerInfo player, int side, int number)
     {
         data.whenPenalized[side][number] = data.getTime();
         data.team[side].coach.penalty = Penalty.SplCoachMotion;
@@ -33,7 +33,7 @@ public class CoachMotion extends PenaltyAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(AdvancedData data)
+    public boolean isLegal(GameState data)
     {
         return Rules.league.isCoachAvailable;
     }
