@@ -37,7 +37,7 @@ public class SPLCoachProtocol2 extends SPLCoachProtocol
             return null;
 
         byte team = buffer.get();
-        TeamInfo[] teams = EventHandler.getInstance().data.team;
+        TeamInfo[] teams = EventHandler.getInstance().state.team;
         if (team != teams[0].teamNumber && team != teams[1].teamNumber)
             return null;
 

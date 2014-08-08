@@ -26,42 +26,42 @@ public class Ready extends GCAction
 
     /**
      * Performs this action to manipulate the data (model).
-     * 
-     * @param data      The current data to work on.
+     *
+     * @param state      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        if (data.playMode == PlayMode.Ready) {
+        if (state.playMode == PlayMode.Ready) {
             return;
         }
         if (Rules.league.returnRobotsInGameStoppages) {
-            data.resetPenaltyTimes();
+            state.resetPenaltyTimes();
         }
-        if (data.playMode == PlayMode.Playing) {
-            data.addTimeInCurrentPlayMode();
+        if (state.playMode == PlayMode.Playing) {
+            state.addTimeInCurrentPlayMode();
         }
-        data.whenCurrentPlayModeBegan = data.getTime();
-        data.playMode = PlayMode.Ready;
-        Log.state(data, "Ready");
+        state.whenCurrentPlayModeBegan = state.getTime();
+        state.playMode = PlayMode.Ready;
+        Log.state(state, "Ready");
     }
     
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
-     * 
-     * @param data      The current data to check with.
+     *
+     * @param state      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
         return
-            (data.playMode == PlayMode.Initial
-              && !data.timeOutActive[0]
-              && !data.timeOutActive[1]
-              && !data.refereeTimeout
-              && data.period != Period.PenaltyShootout)
-            || data.playMode == PlayMode.Ready
-            || data.testmode;
+            (state.playMode == PlayMode.Initial
+              && !state.timeOutActive[0]
+              && !state.timeOutActive[1]
+              && !state.refereeTimeout
+              && state.period != Period.PenaltyShootout)
+            || state.playMode == PlayMode.Ready
+            || state.testmode;
     }
 }

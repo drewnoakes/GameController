@@ -17,37 +17,37 @@ public class RefereeTimeout extends GCAction
     }
 
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        if (!data.refereeTimeout) {
-            data.previousPeriod = data.period;
-            data.period = Period.Timeout;
-            data.refereeTimeout = true;
+        if (!state.refereeTimeout) {
+            state.previousPeriod = state.period;
+            state.period = Period.Timeout;
+            state.refereeTimeout = true;
             Log.setNextMessage("Referee Timeout");
-            if (data.playMode == PlayMode.Playing) {
-                data.addTimeInCurrentPlayMode();
+            if (state.playMode == PlayMode.Playing) {
+                state.addTimeInCurrentPlayMode();
             }
-            if (data.previousPeriod == Period.PenaltyShootout
-                    && (data.playMode == PlayMode.Set || data.playMode == PlayMode.Playing)) {
-                data.team[data.kickOffTeam == data.team[0].teamColor ? 0 : 1].penaltyShot--;
+            if (state.previousPeriod == Period.PenaltyShootout
+                    && (state.playMode == PlayMode.Set || state.playMode == PlayMode.Playing)) {
+                state.team[state.kickOffTeam == state.team[0].teamColor ? 0 : 1].penaltyShot--;
             }
-            ActionBoard.initial.forcePerform(data);
+            ActionBoard.initial.forcePerform(state);
         } else {
-            data.period = data.previousPeriod;
-            data.previousPeriod = Period.Timeout;
-            data.refereeTimeout = false;
+            state.period = state.previousPeriod;
+            state.previousPeriod = Period.Timeout;
+            state.refereeTimeout = false;
             Log.setNextMessage("End of Referee Timeout");
-            if (data.period != Period.PenaltyShootout) {
-                ActionBoard.ready.perform(data);
+            if (state.period != Period.PenaltyShootout) {
+                ActionBoard.ready.perform(state);
             }
         }
     }
 
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
-        return data.playMode != PlayMode.Finished
-                && !data.timeOutActive[0]
-                && !data.timeOutActive[1];
+        return state.playMode != PlayMode.Finished
+                && !state.timeOutActive[0]
+                && !state.timeOutActive[1];
     }
 }

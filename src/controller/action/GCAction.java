@@ -6,7 +6,6 @@ import data.PlayerInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
 /**
  * This is an abstract class every action needs to extend to provide the
  * basic features. By extending this it also becomes an ActionListener,
@@ -20,7 +19,7 @@ public abstract class GCAction implements ActionListener
     public ActionType type;
     
     /**
-     * Creates a new GCAction.
+     * Initialises a @{link GCAction}.
      * 
      * @param type      The type of the action.
      */
@@ -32,6 +31,7 @@ public abstract class GCAction implements ActionListener
     /**
      * This gets called when the button an action is added to was pushed or
      * if the action is called otherwise.
+     * 
      * The action`s perform method will not be executed right away but
      * later in the GUI`s thread.
      * 
@@ -47,30 +47,32 @@ public abstract class GCAction implements ActionListener
      * This is the essential method of each action.
      * It is called automatically after the actionPerformed method was called.
      * Here you can manipulate the given data without worrying.
-     * 
-     * @param data      The current data to work on.
+     *
+     * @param state the game state to operate on.
      */
-    public abstract void perform(GameState data);
+    public abstract void perform(GameState state);
     
     /**
-     * This is to perform an action on a specific player. It is not needed
-     * to override this if not needed.
-     * 
-     * @param data      The current data to work on.
-     * @param player    The player on which the action is to be performed.
-     * @param side      The side this player is playing for, 0: left, 1: right
-     * @param number    The players number, beginning at 0!
+     * Perform a action on a specific player.
+     *
+     * Subclasses only override this function if needed.
+     *
+     * @param state the game state to operate on.
+     * @param player the player on which the action is to be performed.
+     * @param side the side this player is playing for, 0: left, 1: right
+     * @param number the players number, beginning at 0!
      */
-    public void performOn(GameState data, PlayerInfo player, int side, int number) {}
+    public void performOn(GameState state, PlayerInfo player, int side, int number)
+    {}
     
     /**
      * Must be override to determine if the action is legal at a specific
      * state of the game.
+     *
      * Actions that are not legal will not be executed by the EventHandler.
      * 
-     * @param data      The current data to calculate the legality by.
-     * 
+     * @param state the current data to calculate the legality by.
      * @return This is true if the action is legal.
      */
-    public abstract boolean isLegal(GameState data);
+    public abstract boolean isLegal(GameState state);
 }

@@ -23,10 +23,10 @@ public abstract class PenaltyAction extends GCAction
     /**
      * Performs this action to manipulate the data (model).
      *
-     * @param data      The current data to work on.
+     * @param state      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
         if (EventHandler.getInstance().lastUIAction == this) {
             EventHandler.getInstance().noLastUIAction = true;

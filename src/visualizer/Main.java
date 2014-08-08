@@ -43,7 +43,7 @@ public class Main
                     new MessageHandler<GameStateSnapshot>()
                     {
                         @Override
-                        public void handle(GameStateSnapshot message) { gui.update(message); }
+                        public void handle(GameStateSnapshot state) { gui.update(state); }
                     });
             gameStateListener.addProtocol(new GameStateProtocol9());
             gameStateListener.addProtocol(new GameStateProtocol8());

@@ -18,8 +18,7 @@ public class GlobalStuck extends GCAction
 {
     /** On which side (0:left, 1:right) */
     private int side;
-    
-    
+
     /**
      * Creates a new GlobalStuck action.
      * Look at the ActionBoard before using this.
@@ -34,30 +33,30 @@ public class GlobalStuck extends GCAction
 
     /**
      * Performs this action to manipulate the data (model).
-     * 
-     * @param data      The current data to work on.
+     *
+     * @param state      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        data.kickOffTeam = data.team[side == 0 ? 1 : 0].teamColor;
-        if (data.getRemainingSeconds(data.whenCurrentPlayModeBegan, Rules.league.kickoffTime + Rules.league.minDurationBeforeStuck) > 0) {
-            Log.setNextMessage("Kickoff Goal "+data.team[side].teamColor);
+        state.kickOffTeam = state.team[side == 0 ? 1 : 0].teamColor;
+        if (state.getRemainingSeconds(state.whenCurrentPlayModeBegan, Rules.league.kickoffTime + Rules.league.minDurationBeforeStuck) > 0) {
+            Log.setNextMessage("Kickoff Goal "+ state.team[side].teamColor);
         } else {
-            Log.setNextMessage("Global Game Stuck, Kickoff "+data.kickOffTeam);
+            Log.setNextMessage("Global Game Stuck, Kickoff "+ state.kickOffTeam);
         }
-        ActionBoard.ready.perform(data);
+        ActionBoard.ready.perform(state);
     }
     
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
-     * 
-     * @param data      The current data to check with.
+     *
+     * @param state      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
-        return (data.playMode == PlayMode.Playing) || data.testmode;
+        return state.playMode == PlayMode.Playing || state.testmode;
     }
 }

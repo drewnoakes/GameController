@@ -24,22 +24,22 @@ public class SecondHalfOvertime extends GCAction
     /**
      * Performs this action to manipulate the data (model).
      *
-     * @param data      The current data to work on.
+     * @param state      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        if (data.firstHalf || data.period == Period.PenaltyShootout) {
-            data.firstHalf = false;
-            data.period = Period.Overtime;
-            if (data.colorChangeAuto) {
-                data.team[0].teamColor = TeamColor.Blue;
-                data.team[1].teamColor = TeamColor.Red;
+        if (state.firstHalf || state.period == Period.PenaltyShootout) {
+            state.firstHalf = false;
+            state.period = Period.Overtime;
+            if (state.colorChangeAuto) {
+                state.team[0].teamColor = TeamColor.Blue;
+                state.team[1].teamColor = TeamColor.Red;
             }
-            FirstHalf.changeSide(data);
-            data.kickOffTeam = (data.leftSideKickoff ? data.team[0].teamColor : data.team[1].teamColor);
-            data.playMode = PlayMode.Initial;
-            Log.state(data, "2nd Half Extra Time");
+            FirstHalf.changeSide(state);
+            state.kickOffTeam = (state.leftSideKickoff ? state.team[0].teamColor : state.team[1].teamColor);
+            state.playMode = PlayMode.Initial;
+            Log.state(state, "2nd Half Extra Time");
         }
     }
 
@@ -47,13 +47,13 @@ public class SecondHalfOvertime extends GCAction
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
      *
-     * @param data      The current data to check with.
+     * @param state      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
-        return (!data.firstHalf && data.period == Period.Overtime)
-            || (data.period == Period.Overtime && data.playMode == PlayMode.Finished)
-            || data.testmode;
+        return (!state.firstHalf && state.period == Period.Overtime)
+            || (state.period == Period.Overtime && state.playMode == PlayMode.Finished)
+            || state.testmode;
     }
 }

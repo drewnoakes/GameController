@@ -25,54 +25,54 @@ public class Set extends GCAction
 
     /**
      * Performs this action to manipulate the data (model).
-     * 
-     * @param data      The current data to work on.
+     *
+     * @param state      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        if (data.playMode == PlayMode.Set) {
+        if (state.playMode == PlayMode.Set) {
             return;
         }
         if (Rules.league.returnRobotsInGameStoppages) {
-            data.resetPenaltyTimes();
+            state.resetPenaltyTimes();
         }
-        if (!data.playoff && data.timeBeforeCurrentPlayMode != 0) {
-            data.addTimeInCurrentPlayMode();
+        if (!state.playoff && state.timeBeforeCurrentPlayMode != 0) {
+            state.addTimeInCurrentPlayMode();
         }
-        data.whenCurrentPlayModeBegan = data.getTime();
+        state.whenCurrentPlayModeBegan = state.getTime();
 
-        if (data.period == Period.PenaltyShootout) {
-            data.timeBeforeCurrentPlayMode = 0;
-            if (data.playMode != PlayMode.Initial) {
-                data.kickOffTeam = data.kickOffTeam == TeamColor.Blue ? TeamColor.Red : TeamColor.Blue;
-                FirstHalf.changeSide(data);
+        if (state.period == Period.PenaltyShootout) {
+            state.timeBeforeCurrentPlayMode = 0;
+            if (state.playMode != PlayMode.Initial) {
+                state.kickOffTeam = state.kickOffTeam == TeamColor.Blue ? TeamColor.Red : TeamColor.Blue;
+                FirstHalf.changeSide(state);
             }
 
-            if (data.playMode != PlayMode.Playing) {
-                data.team[data.team[0].teamColor == data.kickOffTeam ? 0 : 1].penaltyShot++;
+            if (state.playMode != PlayMode.Playing) {
+                state.team[state.team[0].teamColor == state.kickOffTeam ? 0 : 1].penaltyShot++;
             }
         }
-        data.playMode = PlayMode.Set;
-        Log.state(data, "Set");
+        state.playMode = PlayMode.Set;
+        Log.state(state, "Set");
     }
     
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
-     * 
-     * @param data      The current data to check with.
+     *
+     * @param state      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
-        return data.playMode == PlayMode.Ready
-            || data.playMode == PlayMode.Set
-            || (data.period == Period.PenaltyShootout
-              && (data.playMode != PlayMode.Playing || Rules.league.penaltyShotRetries)
-              && !data.timeOutActive[0]
-              && !data.timeOutActive[1]
-              && !data.refereeTimeout)
-            || data.testmode;
+        return state.playMode == PlayMode.Ready
+            || state.playMode == PlayMode.Set
+            || (state.period == Period.PenaltyShootout
+              && (state.playMode != PlayMode.Playing || Rules.league.penaltyShotRetries)
+              && !state.timeOutActive[0]
+              && !state.timeOutActive[1]
+              && !state.refereeTimeout)
+            || state.testmode;
     }
 }

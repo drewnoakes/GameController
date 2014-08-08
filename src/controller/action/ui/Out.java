@@ -31,26 +31,26 @@ public class Out extends GCAction
 
     /**
      * Performs this action to manipulate the data (model).
-     * 
-     * @param data      The current data to work on.
+     *
+     * @param state      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        data.whenDropIn = data.getTime();
-        data.dropInTeam = data.team[side].teamColor;
-        Log.state(data, "Out by "+data.team[side].teamColor);
+        state.whenDropIn = state.getTime();
+        state.dropInTeam = state.team[side].teamColor;
+        Log.state(state, "Out by " + state.team[side].teamColor);
     }
     
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
-     * 
-     * @param data      The current data to check with.
+     *
+     * @param state      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
-        return (data.playMode == PlayMode.Playing) || (data.testmode);
+        return state.playMode == PlayMode.Playing || state.testmode;
     }
 }

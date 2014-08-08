@@ -56,15 +56,15 @@ public class Main
 
         ApplicationLock applicationLock = getApplicationLock();
 
-        //collect the start parameters and put them into the first data.
+        //collect the start parameters and put them into the first state.
         StartInput.showDialog(options);
 
-        GameState data = new GameState();
-        data.team[0].teamNumber = options.teamNumberBlue;
-        data.team[1].teamNumber = options.teamNumberRed;
-        data.colorChangeAuto = options.colorChangeAuto;
-        data.playoff = options.playOff;
-        data.kickOffTeam = options.initialKickOffTeam;
+        GameState state = new GameState();
+        state.team[0].teamNumber = options.teamNumberBlue;
+        state.team[1].teamNumber = options.teamNumberRed;
+        state.colorChangeAuto = options.colorChangeAuto;
+        state.playoff = options.playOff;
+        state.kickOffTeam = options.initialKickOffTeam;
 
         MessageReceiver robotMessageReceiver;
         MessageReceiver splReceiver = null;
@@ -78,12 +78,12 @@ public class Main
                 gameStateSender.addProtocol(new GameStateProtocol8());
             if (Rules.league.supportGameStateVersion7)
                 gameStateSender.addProtocol(new GameStateProtocol7());
-            gameStateSender.send(data);
+            gameStateSender.send(state);
             gameStateSender.start();
 
             //event-handler
             EventHandler.initialise(gameStateSender);
-            EventHandler.getInstance().data = data;
+            EventHandler.getInstance().state = state;
 
             robotMessageReceiver = new MessageReceiver<RobotMessage>(
                     Config.ROBOT_STATUS_PORT,
@@ -121,18 +121,18 @@ public class Main
         //log
         initialiseLogging();
 
-        Log.toFile("League = "+Rules.league.leagueName);
-        Log.toFile("Play-off = "+data.playoff);
-        Log.toFile("Auto color change = "+data.colorChangeAuto);
+        Log.toFile("League = " + Rules.league.leagueName);
+        Log.toFile("Play-off = " + state.playoff);
+        Log.toFile("Auto color change = " + state.colorChangeAuto);
         Log.toFile("Using broadcast address " + options.broadcastAddress);
 
         //ui
         ActionBoard.init();
-        Log.state(data, Teams.getNames(false)[data.team[0].teamNumber] +" vs "+Teams.getNames(false)[data.team[1].teamNumber]);
-        GCGUI gui = new GUI(options.fullScreenMode, data);
+        Log.state(state, Teams.getNames(false)[state.team[0].teamNumber] + " vs " + Teams.getNames(false)[state.team[1].teamNumber]);
+        GCGUI gui = new GUI(options.fullScreenMode, state);
         new KeyboardListener();
         EventHandler.getInstance().setGUI(gui);
-        gui.update(data);
+        gui.update(state);
 
         //clock runs until window is closed
         Clock.getInstance().start();

@@ -54,11 +54,11 @@ public class EventHandler
     /** The sender has a send method to update the data to send */
     private final GameStateSender gameStateSender;
     /**
-     * This is the current data. You should write into data only in actions
+     * The current game state. You should write into data only in actions
      * and than use the data giving as parameters. The data is not private,
      * only because the Log may change it to a later version.
      */
-    public GameState data;
+    public GameState state;
     /** The last UI action. */
     public GCAction lastUIAction = null;
     /**
@@ -68,7 +68,7 @@ public class EventHandler
     public boolean noLastUIAction = false;
 
     /**
-     * Creates a new EventHandler.
+     * Initialises an EventHandler.
      */
     private EventHandler(GameStateSender gameStateSender)
     {
@@ -105,8 +105,8 @@ public class EventHandler
             return;
         }
 
-        if (action.isLegal(data)) {
-            action.perform(data);
+        if (action.isLegal(state)) {
+            action.perform(state);
             update(action);
         }
     }
@@ -127,7 +127,7 @@ public class EventHandler
             noLastUIAction = false;
             lastUIAction = null;
         }
-        gameStateSender.send(data);
-        gui.update(data);
+        gameStateSender.send(state);
+        gui.update(state);
     }
 }

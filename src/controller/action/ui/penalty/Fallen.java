@@ -15,32 +15,31 @@ public class Fallen extends PenaltyAction
 {
     /**
      * Performs this action`s penalty on a selected player.
-     * 
-     * @param data      The current data to work on.
+     *  @param state      The current data to work on.
      * @param player    The player to penalise.
      * @param side      The side the player is playing on (0:left, 1:right).
      * @param number    The player`s number, beginning with 0!
      */
     @Override
-    public void performOn(GameState data, PlayerInfo player, int side, int number)
+    public void performOn(GameState state, PlayerInfo player, int side, int number)
     {
         player.penalty = Penalty.SplObstruction;
-        data.whenPenalized[side][number] = data.getTime();
-        Log.state(data, "Fallen Robot " + data.team[side].teamColor + " " + (number+1));
+        state.whenPenalized[side][number] = state.getTime();
+        Log.state(state, "Fallen Robot " + state.team[side].teamColor + " " + (number+1));
     }
     
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
-     * 
-     * @param data      The current data to check with.
+     *
+     * @param state      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
-        return data.playMode == PlayMode.Ready
-            || data.playMode == PlayMode.Playing
-            || data.playMode == PlayMode.Set
-            || data.testmode;
+        return state.playMode == PlayMode.Ready
+            || state.playMode == PlayMode.Playing
+            || state.playMode == PlayMode.Set
+            || state.testmode;
     }
 }

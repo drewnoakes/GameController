@@ -31,34 +31,34 @@ public class TimeOut extends GCAction
 
     /**
      * Performs this action to manipulate the data (model).
-     * 
-     * @param data      The current data to work on.
+     *
+     * @param state      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        if (!data.timeOutActive[side]) {
+        if (!state.timeOutActive[side]) {
             // Starting a timeout
-            data.previousPeriod = data.period;
-            data.period = Period.Timeout;
-            data.timeOutActive[side] = true;
-            data.timeOutTaken[side] = true;
-            if (data.previousPeriod != Period.PenaltyShootout) {
+            state.previousPeriod = state.period;
+            state.period = Period.Timeout;
+            state.timeOutActive[side] = true;
+            state.timeOutTaken[side] = true;
+            if (state.previousPeriod != Period.PenaltyShootout) {
                 if (Rules.league.giveOpponentKickOffOnTimeOut)
-                    data.kickOffTeam = data.team[side].teamColor.other();
-            } else if (data.playMode == PlayMode.Set) {
-                data.team[data.kickOffTeam == data.team[0].teamColor ? 0 : 1].penaltyShot--;
+                    state.kickOffTeam = state.team[side].teamColor.other();
+            } else if (state.playMode == PlayMode.Set) {
+                state.team[state.kickOffTeam == state.team[0].teamColor ? 0 : 1].penaltyShot--;
             }
-            Log.setNextMessage("Timeout "+data.team[side].teamColor);
-            ActionBoard.initial.forcePerform(data);
+            Log.setNextMessage("Timeout "+ state.team[side].teamColor);
+            ActionBoard.initial.forcePerform(state);
         } else {
             // Completing
-            data.period = data.previousPeriod;
-            data.previousPeriod = Period.Timeout;
-            data.timeOutActive[side] = false;
-            Log.setNextMessage("End of Timeout "+data.team[side].teamColor);
-            if (data.period != Period.PenaltyShootout) {
-                ActionBoard.ready.perform(data);
+            state.period = state.previousPeriod;
+            state.previousPeriod = Period.Timeout;
+            state.timeOutActive[side] = false;
+            Log.setNextMessage("End of Timeout "+ state.team[side].teamColor);
+            if (state.period != Period.PenaltyShootout) {
+                ActionBoard.ready.perform(state);
             }
         }
     }
@@ -66,19 +66,19 @@ public class TimeOut extends GCAction
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
-     * 
-     * @param data      The current data to check with.
+     *
+     * @param state      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
-      return data.timeOutActive[side]
-            || ((data.playMode == PlayMode.Initial ||
-                  data.playMode == PlayMode.Ready ||
-                  data.playMode == PlayMode.Set)
-                && !data.timeOutTaken[side]
-                && !data.timeOutActive[side == 0 ? 1 : 0]
-                && data.period != Period.Timeout)
-            || data.testmode;
+      return state.timeOutActive[side]
+            || ((state.playMode == PlayMode.Initial ||
+                  state.playMode == PlayMode.Ready ||
+                  state.playMode == PlayMode.Set)
+                && !state.timeOutTaken[side]
+                && !state.timeOutActive[side == 0 ? 1 : 0]
+                && state.period != Period.Timeout)
+            || state.testmode;
     }
 }

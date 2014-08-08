@@ -15,17 +15,17 @@ public class IncGameClock extends GCAction
     }
 
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        data.timeBeforeCurrentPlayMode -= 1000*60;
-        Log.state(data, "Increase Game Clock");
+        state.timeBeforeCurrentPlayMode -= 1000*60;
+        Log.state(state, "Increase Game Clock");
     }
 
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
-        return data.playMode != PlayMode.Playing
-                && data.timeBeforeCurrentPlayMode >= 1000*60
-                || data.testmode;
+        return state.playMode != PlayMode.Playing
+                && state.timeBeforeCurrentPlayMode >= 1000*60
+                || state.testmode;
     }
 }

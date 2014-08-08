@@ -23,24 +23,24 @@ public class Testmode extends GCAction
     
     /**
      * Performs this action to manipulate the data (model).
-     * 
-     * @param data      The current data to work on.
+     *
+     * @param state      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        data.testmode = !data.testmode;
-        Log.toFile("Testmode = "+data.testmode);
+        state.testmode = !state.testmode;
+        Log.toFile("Testmode = "+ state.testmode);
     }
     
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
-     * 
-     * @param data      The current data to check with.
+     *
+     * @param state      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
         return true;
     }

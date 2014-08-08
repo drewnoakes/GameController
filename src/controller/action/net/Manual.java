@@ -45,24 +45,20 @@ public class Manual extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
         if (!unpen) {
-            data.team[side].player[number].penalty = Penalty.Manual;
-            data.whenPenalized[side][number] = data.getTime();
-            if((data.playMode != PlayMode.Initial)
-                    && (data.playMode != PlayMode.Finished)){
-                Log.state(data, "Manually Penalised "+
-                        data.team[side].teamColor
-                        + " " + (number+1));
+            state.team[side].player[number].penalty = Penalty.Manual;
+            state.whenPenalized[side][number] = state.getTime();
+
+            if (state.playMode != PlayMode.Initial && state.playMode != PlayMode.Finished) {
+                Log.state(state, "Manually Penalised " + state.team[side].teamColor + " " + (number+1));
             }
         } else {
-            data.team[side].player[number].penalty = Penalty.None;
-            if((data.playMode != PlayMode.Initial)
-                    && (data.playMode != PlayMode.Finished)){
-                Log.state(data, "Manually Unpenalised "+
-                       data.team[side].teamColor
-                       + " " + (number+1));    
+            state.team[side].player[number].penalty = Penalty.None;
+
+            if (state.playMode != PlayMode.Initial && state.playMode != PlayMode.Finished) {
+                Log.state(state, "Manually Unpenalised " + state.team[side].teamColor + " " + (number+1));
             }
         }
     }
@@ -74,7 +70,7 @@ public class Manual extends GCAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
         return true;
     }

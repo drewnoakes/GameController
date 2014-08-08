@@ -58,8 +58,8 @@ public class GUI extends JFrame
     private BufferStrategy bufferStrategy;
     /** If testmode is on to just display whole GameState. */
     private boolean testmode = false;
-    /** The last data received to show. */
-    private GameStateSnapshot data = null;
+    /** The last state received to show. */
+    private GameStateSnapshot state = null;
     /** The background. */
     private BufferedImage background;
     
@@ -129,7 +129,7 @@ public class GUI extends JFrame
             public void run() {
                 Interval interval = new Interval(DISPLAY_UPDATE_DELAY);
                 while (true) {
-                    update(data);
+                    update(state);
                     try {
                         interval.sleep();
                     } catch (InterruptedException e) {}
@@ -145,18 +145,19 @@ public class GUI extends JFrame
     public void toggleTestmode()
     {
         testmode = !testmode;
-        update(data);
+        update(state);
     }
     
     /**
      * This is called by the GameStateListener after receiving GameState to show
      * them on the gui.
      * 
-     * @param data the game state to show.
+     * @param state the game state to show.
      */
-    public synchronized void update(GameStateSnapshot data)
+    public synchronized void update(GameStateSnapshot state)
     {
-        this.data = data;
+        this.state = state;
+
         do {
             do {
                 Graphics g = bufferStrategy.getDrawGraphics();
@@ -181,7 +182,7 @@ public class GUI extends JFrame
         g.fillRect(0, 0, getWidth(), getHeight());
         g.drawImage(background, 0, 0, null);
         
-        if (data == null) {
+        if (state == null) {
             drawNoPackage(g);
         } else if (testmode) {
             drawTestmode(g);
@@ -220,13 +221,13 @@ public class GUI extends JFrame
         g.setFont(testFont);
         int x = getSizeToWidth(0.08);
         int y = getSizeToHeight(0.3);
-        String[] out = data.toString().split("\n");
+        String[] out = state.toString().split("\n");
         for (String o : out) {
             g.drawString(o, x, y);
             y += testFont.getSize() * 1.2;
         }
         for (int j=0; j<2; j++) {
-            out = data.team[j].toString().split("\n");
+            out = state.team[j].toString().split("\n");
             for (String o : out) {
                 g.drawString(o, x, y);
                 y += testFont.getSize() * 1.2;
@@ -236,8 +237,8 @@ public class GUI extends JFrame
         x = getSizeToWidth(0.35);
         for (int i=0; i<2; i++) {
             y = getSizeToHeight(0.2);
-            for (int j=0; j<data.team[i].player.length; j++) {
-                out = data.team[i].player[j].toString().split("\n");
+            for (int j=0; j< state.team[i].player.length; j++) {
+                out = state.team[i].player[j].toString().split("\n");
                 for (String o : out) {
                     g.drawString(o, x, y);
                     y += testFont.getSize() * 1.2;
@@ -258,11 +259,11 @@ public class GUI extends JFrame
         int y = getSizeToHeight(0.35);
         int size = getSizeToWidth(0.28);
         BufferedImage[] icons = new BufferedImage[] {
-            Teams.getIcon(data.team[0].teamNumber),
-            Teams.getIcon(data.team[1].teamNumber)};
+            Teams.getIcon(state.team[0].teamNumber),
+            Teams.getIcon(state.team[1].teamNumber)};
         ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         for (int i=0; i<2; i++) {
-            g.setColor(data.team[i].teamColor.getColor());
+            g.setColor(state.team[i].teamColor.getColor());
             float scaleFactorX = 1f;
             float scaleFactorY = 1f;
             if (icons[i].getWidth() * 1.2f > icons[i].getHeight()) {
@@ -295,10 +296,10 @@ public class GUI extends JFrame
         g.setColor(Color.BLACK);
         drawCenteredString(g, ":", getWidth()/2-size, yDiv, 2*size);
         for (int i=0; i<2; i++) {
-            g.setColor(data.team[i].teamColor.getColor());
+            g.setColor(state.team[i].teamColor.getColor());
             drawCenteredString(
                     g,
-                    data.team[i].score+"",
+                    state.team[i].score+"",
                     i==1 ? x : getWidth()-x-size,
                     y,
                     size);
@@ -317,7 +318,7 @@ public class GUI extends JFrame
         int x = getSizeToWidth(0.4);
         int y = getSizeToHeight(0.37);
         int size = getSizeToWidth(0.2);
-        drawCenteredString(g, formatTime(data.secsRemaining), x, y, size);
+        drawCenteredString(g, formatTime(state.secsRemaining), x, y, size);
     }
     
     /**
@@ -333,25 +334,25 @@ public class GUI extends JFrame
         int y = getSizeToHeight(0.72);
         int size = getSizeToWidth(0.2);
         String state;
-        if (data.period == Period.Normal) {
-            if (data.firstHalf) {
-                if (data.playMode == PlayMode.Finished) {
+        if (this.state.period == Period.Normal) {
+            if (this.state.firstHalf) {
+                if (this.state.playMode == PlayMode.Finished) {
                     state = "Half Time";
                 } else {
                     state = "First Half";
                 }
             } else {
-                if (data.playMode == PlayMode.Initial) {
+                if (this.state.playMode == PlayMode.Initial) {
                     state = "Half Time";
                 } else {
                     state = "Second Half";
                 }
             }
-        } else if (data.period == Period.Overtime) {
+        } else if (this.state.period == Period.Overtime) {
             state = "Overtime";
-        } else if (data.period == Period.PenaltyShootout) {
+        } else if (this.state.period == Period.PenaltyShootout) {
             state = "Penalty Shootout";
-        } else if (data.period == Period.Timeout) {
+        } else if (this.state.period == Period.Timeout) {
             state = "Time Out";
         } else {
             state = "";
@@ -371,7 +372,7 @@ public class GUI extends JFrame
         int x = getSizeToWidth(0.4);
         int y = getSizeToHeight(0.81);
         int size = getSizeToWidth(0.2);
-        drawCenteredString(g, data.playMode.toString(), x, y, size);
+        drawCenteredString(g, state.playMode.toString(), x, y, size);
     }
     
     /**
@@ -381,7 +382,7 @@ public class GUI extends JFrame
      */
     private void drawSubTime(Graphics g)
     {
-        if (data.secondaryTime == 0) {
+        if (state.secondaryTime == 0) {
             return;
         }
         g.setColor(Color.BLACK);
@@ -389,7 +390,7 @@ public class GUI extends JFrame
         int x = getSizeToWidth(0.4);
         int y = getSizeToHeight(0.9);
         int size = getSizeToWidth(0.2);
-        drawCenteredString(g, formatTime(data.secondaryTime), x, y, size);
+        drawCenteredString(g, formatTime(state.secondaryTime), x, y, size);
     }
     
     /**
@@ -404,9 +405,9 @@ public class GUI extends JFrame
         int y = getSizeToHeight(0.86);
         int size = getSizeToWidth(0.02);
         for (int i=0; i<2; i++) {
-            g.setColor(data.team[i].teamColor.getColor());
-            for (int j=0; j<data.team[i].penaltyShot; j++) {
-                if ((data.team[i].singleShots & (1<<j)) != 0) {
+            g.setColor(state.team[i].teamColor.getColor());
+            for (int j=0; j< state.team[i].penaltyShot; j++) {
+                if ((state.team[i].singleShots & (1<<j)) != 0) {
                     g.fillOval(i==1 ? x+j*2*size : getWidth()-x-(5-j)*2*size-size, y, size, size);
                 } else {
                     g.drawOval(i==1 ? x+j*2*size : getWidth()-x-(5-j)*2*size-size, y, size, size);
@@ -461,9 +462,9 @@ public class GUI extends JFrame
         for (int i = 0; i < 2; i++) {
             String coachMessage;
             try {
-                coachMessage = new String(data.team[i].coachMessage, "UTF-8");
+                coachMessage = new String(state.team[i].coachMessage, "UTF-8");
             } catch (UnsupportedEncodingException e) {
-                coachMessage = new String(data.team[i].coachMessage);
+                coachMessage = new String(state.team[i].coachMessage);
             }
             int p = coachMessage.indexOf(0);
             if (p != -1) {
@@ -497,7 +498,7 @@ public class GUI extends JFrame
             }
 
             //Draw the coach label and coach message box
-            g2.setColor(data.team[i].teamColor.getColor());
+            g2.setColor(state.team[i].teamColor.getColor());
             if (i == 1) {
                 g2.drawString(row1, getSizeToWidth(0.01), getSizeToHeight(0.92));
                 g2.drawString(row2, getSizeToWidth(0.01), getSizeToHeight(0.98));

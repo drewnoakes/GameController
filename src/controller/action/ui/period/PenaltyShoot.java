@@ -27,43 +27,43 @@ public class PenaltyShoot extends GCAction
 
     /**
      * Performs this action to manipulate the data (model).
-     * 
-     * @param data      The current data to work on.
+     *
+     * @param state      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        if (data.period != Period.PenaltyShootout) {
-            data.period = Period.PenaltyShootout;
+        if (state.period != Period.PenaltyShootout) {
+            state.period = Period.PenaltyShootout;
             // Don't set data.whenCurrentPlayModeBegan, because it's used to count the pause
-            data.playMode = PlayMode.Initial;
-            data.timeBeforeCurrentPlayMode = 0;
-            data.resetPenalties();
+            state.playMode = PlayMode.Initial;
+            state.timeBeforeCurrentPlayMode = 0;
+            state.resetPenalties();
             if (Rules.league.timeOutPerHalf) {
-                data.timeOutTaken = new boolean[] {false, false};
+                state.timeOutTaken = new boolean[] {false, false};
             }
-            Log.state(data, "Penalty Shoot-out");
+            Log.state(state, "Penalty Shoot-out");
         }
     }
     
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
-     * 
-     * @param data      The current data to check with.
+     *
+     * @param state      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
-        return data.period == Period.PenaltyShootout
-          || data.previousPeriod == Period.PenaltyShootout
-          || (!data.firstHalf
-            && data.playMode == PlayMode.Finished
+        return state.period == Period.PenaltyShootout
+          || state.previousPeriod == Period.PenaltyShootout
+          || (!state.firstHalf
+            && state.playMode == PlayMode.Finished
             && !(Rules.league.overtime
-                && data.playoff
-                && data.period == Period.Normal
-                && data.team[0].score == data.team[1].score
-                && data.team[0].score > 0))
-          || data.testmode;
+                && state.playoff
+                && state.period == Period.Normal
+                && state.team[0].score == state.team[1].score
+                && state.team[0].score > 0))
+          || state.testmode;
     }
 }

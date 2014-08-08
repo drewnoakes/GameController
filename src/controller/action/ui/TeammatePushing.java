@@ -16,22 +16,21 @@ public class TeammatePushing extends GCAction {
     }
 
     @Override
-    public void performOn(GameState data, PlayerInfo player, int side, int number) {
-        Log.state(data, "Teammate Pushing  " + data.team[side].teamColor + " " + (number+1));
+    public void performOn(GameState state, PlayerInfo player, int side, int number) {
+        Log.state(state, "Teammate Pushing  " + state.team[side].teamColor + " " + (number+1));
     }
 
     @Override
-    public boolean isLegal(GameState data) {
-        return Rules.league.dropInPlayerMode
-               && (data.playMode == PlayMode.Ready
-                || data.playMode == PlayMode.Playing)
-               || data.testmode;
-    }
-
-    @Override
-    public void perform(GameState data) {
+    public void perform(GameState state) {
         if (EventHandler.getInstance().lastUIAction == this) {
             EventHandler.getInstance().noLastUIAction = true;
         }
+    }
+
+    @Override
+    public boolean isLegal(GameState state) {
+        return Rules.league.dropInPlayerMode
+                && (state.playMode == PlayMode.Ready || state.playMode == PlayMode.Playing)
+                || state.testmode;
     }
 }

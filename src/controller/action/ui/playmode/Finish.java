@@ -26,37 +26,37 @@ public class Finish extends GCAction
 
     /**
      * Performs this action to manipulate the data (model).
-     * 
-     * @param data      The current data to work on.
+     *
+     * @param state      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        if (data.playMode == PlayMode.Finished) {
+        if (state.playMode == PlayMode.Finished) {
             return;
         }
         if (Rules.league.returnRobotsInGameStoppages) {
-            data.resetPenaltyTimes();
+            state.resetPenaltyTimes();
         }
-        data.addTimeInCurrentPlayMode();
-        data.whenCurrentPlayModeBegan = data.getTime();
-        data.playMode = PlayMode.Finished;
-        Log.state(data, "Finished");
+        state.addTimeInCurrentPlayMode();
+        state.whenCurrentPlayModeBegan = state.getTime();
+        state.playMode = PlayMode.Finished;
+        Log.state(state, "Finished");
     }
     
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
-     * 
-     * @param data      The current data to check with.
+     *
+     * @param state      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
-        return data.playMode == PlayMode.Ready
-            || data.playMode == PlayMode.Set
-            || data.playMode == PlayMode.Playing
-            || data.playMode == PlayMode.Finished
-            || data.testmode;
+        return state.playMode == PlayMode.Ready
+            || state.playMode == PlayMode.Set
+            || state.playMode == PlayMode.Playing
+            || state.playMode == PlayMode.Finished
+            || state.testmode;
     }
 }

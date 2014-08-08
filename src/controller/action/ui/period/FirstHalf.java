@@ -24,69 +24,67 @@ public class FirstHalf extends GCAction
 
     /**
      * Performs this action to manipulate the data (model).
-     * 
-     * @param data      The current data to work on.
+     *
+     * @param state      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        if (!data.firstHalf || data.period == Period.PenaltyShootout) {
-            data.firstHalf = true;
-            data.period = Period.Normal;
-            changeSide(data);
-            data.kickOffTeam = (data.leftSideKickoff ? data.team[0].teamColor : data.team[1].teamColor);
-            data.playMode = PlayMode.Initial;
+        if (!state.firstHalf || state.period == Period.PenaltyShootout) {
+            state.firstHalf = true;
+            state.period = Period.Normal;
+            changeSide(state);
+            state.kickOffTeam = (state.leftSideKickoff ? state.team[0].teamColor : state.team[1].teamColor);
+            state.playMode = PlayMode.Initial;
             // Don't set data.whenCurrentPlayModeBegan, because it's used to count the pause
-            Log.state(data, "1st Half");
+            Log.state(state, "1st Half");
         }
     }
     
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
-     * 
-     * @param data      The current data to check with.
+     *
+     * @param state      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
-        return ((data.firstHalf)
-                && (data.period == Period.Normal))
-                || (data.testmode);
+        return (state.firstHalf && state.period == Period.Normal)
+                || state.testmode;
     }
     
     /**
-     * Switches sides for the teams, both for first to second and also
-     * second to first half if needed.
+     * Switches sides for the teams, both for first to second and also second to first half if needed.
      * 
-     * @param data      The current data to work on.
+     * @param state the current game state to work on.
      */
-    public static void changeSide(GameState data)
+    public static void changeSide(GameState state)
     {
-        TeamInfo team = data.team[0];
-        data.team[0] = data.team[1];
-        data.team[1] = team;
-        boolean[] ejected = data.ejected[0];
-        data.ejected[0] = data.ejected[1];
-        data.ejected[1] = ejected;
+        TeamInfo team = state.team[0];
+        state.team[0] = state.team[1];
+        state.team[1] = team;
+        boolean[] ejected = state.ejected[0];
+        state.ejected[0] = state.ejected[1];
+        state.ejected[1] = ejected;
 
         // if necessary, swap team colors
-        if (data.period != Period.PenaltyShootout && data.colorChangeAuto) {
-            TeamColor color = data.team[0].teamColor;
-            data.team[0].teamColor = data.team[1].teamColor;
-            data.team[1].teamColor = color;
+        if (state.period != Period.PenaltyShootout && state.colorChangeAuto) {
+            TeamColor color = state.team[0].teamColor;
+            state.team[0].teamColor = state.team[1].teamColor;
+            state.team[1].teamColor = color;
         }
 
-        if (Rules.league.timeOutPerHalf && (data.period != Period.PenaltyShootout)) {
-            data.timeOutTaken = new boolean[] {false, false};
+        if (Rules.league.timeOutPerHalf && (state.period != Period.PenaltyShootout)) {
+            state.timeOutTaken = new boolean[] {false, false};
         } else {
-            boolean timeOutTaken = data.timeOutTaken[0];
-            data.timeOutTaken[0] = data.timeOutTaken[1];
-            data.timeOutTaken[1] = timeOutTaken;
+            boolean timeOutTaken = state.timeOutTaken[0];
+            state.timeOutTaken[0] = state.timeOutTaken[1];
+            state.timeOutTaken[1] = timeOutTaken;
         }
         
-        data.timeBeforeCurrentPlayMode = 0;
-        data.whenDropIn = 0;
-        data.resetPenalties();
+        state.timeBeforeCurrentPlayMode = 0;
+        state.whenDropIn = 0;
+        state.resetPenalties();
     }
 }

@@ -24,42 +24,42 @@ public class ClockPause extends GCAction
 
     /**
      * Performs this action to manipulate the data (model).
-     * 
-     * @param data      The current data to work on.
+     *
+     * @param state      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        if (ActionBoard.clock.isClockRunning(data)) {
-            if (data.manPlay) {
-                data.manRemainingGameTimeOffset += data.getTime() - data.manWhenClockChanged;
-                data.manPlay = false;
+        if (ActionBoard.clock.isClockRunning(state)) {
+            if (state.manPlay) {
+                state.manRemainingGameTimeOffset += state.getTime() - state.manWhenClockChanged;
+                state.manPlay = false;
             } else {
-                data.manWhenClockChanged = data.getTime();
-                data.manPause = true;
+                state.manWhenClockChanged = state.getTime();
+                state.manPause = true;
             }
-            Log.state(data, "Time manual paused");
+            Log.state(state, "Time manual paused");
         } else {
-            if (data.manPause) {
-                data.manPause = false;
-                data.manTimeOffset -= data.getTime() - data.manWhenClockChanged;
+            if (state.manPause) {
+                state.manPause = false;
+                state.manTimeOffset -= state.getTime() - state.manWhenClockChanged;
             } else {
-                data.manWhenClockChanged = data.getTime();
-                data.manPlay = true;
+                state.manWhenClockChanged = state.getTime();
+                state.manPlay = true;
             }
-            Log.state(data, "Time manual running");
+            Log.state(state, "Time manual running");
         }
     }
     
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
-     * 
-     * @param data      The current data to check with.
+     *
+     * @param state      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
-        return data.testmode;
+        return state.testmode;
     }
 }

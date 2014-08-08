@@ -30,22 +30,22 @@ public class ClockTick extends GCAction
      * @param data      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        if (data.playMode == PlayMode.Ready
-               && data.getSecondsSince(data.whenCurrentPlayModeBegan) >= Rules.league.readyTime) {
-            ActionBoard.set.perform(data);
-        } else if (data.playMode == PlayMode.Finished) {
-            Integer remainingPauseTime = data.getRemainingPauseTime();
+        if (state.playMode == PlayMode.Ready
+               && state.getSecondsSince(state.whenCurrentPlayModeBegan) >= Rules.league.readyTime) {
+            ActionBoard.set.perform(state);
+        } else if (state.playMode == PlayMode.Finished) {
+            Integer remainingPauseTime = state.getRemainingPauseTime();
             if (remainingPauseTime != null) {
-                if (data.firstHalf && remainingPauseTime <= Rules.league.pauseTime / 2) {
-                    ActionBoard.secondHalf.perform(data);
-                } else if (!data.firstHalf && remainingPauseTime <= Rules.league.pausePenaltyShootOutTime / 2) {
-                    ActionBoard.penaltyShoot.perform(data);
+                if (state.firstHalf && remainingPauseTime <= Rules.league.pauseTime / 2) {
+                    ActionBoard.secondHalf.perform(state);
+                } else if (!state.firstHalf && remainingPauseTime <= Rules.league.pausePenaltyShootOutTime / 2) {
+                    ActionBoard.penaltyShoot.perform(state);
                 }
             }
         }
-        data.updateCoachMessages();
+        state.updateCoachMessages();
     }
     
     /**
@@ -55,22 +55,26 @@ public class ClockTick extends GCAction
      * @param data      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
         return true;
     }
-    
-    public boolean isClockRunning(GameState data)
+
+    /**
+     * Gets whether the clock should be running given the current GameState.
+     *
+     * @param state the game state to consider
+     * @return true if the clock should be running, otherwise false
+     */
+    public boolean isClockRunning(GameState state)
     {
-        boolean halfNotStarted = data.timeBeforeCurrentPlayMode == 0 && data.playMode != PlayMode.Playing;
-        return !((data.playMode == PlayMode.Initial)
-         || (data.playMode == PlayMode.Finished)
-         || (
-                ((data.playMode == PlayMode.Ready)
-               || (data.playMode == PlayMode.Set))
-                && ((data.playoff && Rules.league.playOffTimeStop) || halfNotStarted)
-                )
-         || data.manPause)
-         || data.manPlay;
+        boolean halfNotStarted = state.timeBeforeCurrentPlayMode == 0 && state.playMode != PlayMode.Playing;
+        return
+          !(state.playMode == PlayMode.Initial
+             || state.playMode == PlayMode.Finished
+             || ((state.playMode == PlayMode.Ready || state.playMode == PlayMode.Set)
+                 && ((state.playoff && Rules.league.playOffTimeStop) || halfNotStarted))
+             || state.manPause)
+         || state.manPlay;
     }
 }

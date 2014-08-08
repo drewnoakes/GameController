@@ -141,12 +141,12 @@ public class Log
         }
         if (laterTimestamp != instance.states.getLast().whenCurrentPlayModeBegan) {
             long timeOffset = laterTimestamp - earlierTimestamp + timeInCurrentState;
-            for (GameState data : instance.states) {
-                data.whenCurrentPlayModeBegan += timeOffset;
+            for (GameState state : instance.states) {
+                state.whenCurrentPlayModeBegan += timeOffset;
             }
         }
         GameState state = (GameState) instance.states.getLast().clone();
-        EventHandler.getInstance().data = state;
+        EventHandler.getInstance().state = state;
         return state.message;
     }
     

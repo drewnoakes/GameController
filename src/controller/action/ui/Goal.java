@@ -35,41 +35,40 @@ public class Goal extends GCAction
 
     /**
      * Performs this action to manipulate the data (model).
-     * 
-     * @param data      The current data to work on.
+     *
+     * @param state      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        data.team[side].score += set;
+        state.team[side].score += set;
         if (set == 1) {
-            if (data.period != Period.PenaltyShootout) {
-                data.kickOffTeam = data.team[side].teamColor.other();
-                Log.setNextMessage("Goal for "+data.team[side].teamColor);
-                ActionBoard.ready.perform(data);
+            if (state.period != Period.PenaltyShootout) {
+                state.kickOffTeam = state.team[side].teamColor.other();
+                Log.setNextMessage("Goal for "+ state.team[side].teamColor);
+                ActionBoard.ready.perform(state);
             } else {
-                data.team[side].singleShots += (1<<(data.team[side].penaltyShot-1));
-                Log.setNextMessage("Goal for "+data.team[side].teamColor);
-                ActionBoard.finish.perform(data);
+                state.team[side].singleShots += (1<<(state.team[side].penaltyShot-1));
+                Log.setNextMessage("Goal for "+ state.team[side].teamColor);
+                ActionBoard.finish.perform(state);
             }
         } else {
-            Log.state(data, "Goal decrease for "+data.team[side].teamColor);
+            Log.state(state, "Goal decrease for " + state.team[side].teamColor);
         }
     }
     
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
-     * 
-     * @param data      The current data to check with.
+     *
+     * @param state      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
-        return ((set == 1)
-              && (data.playMode == PlayMode.Playing)
-              && ( (data.period != Period.PenaltyShootout)
-                || (data.kickOffTeam == data.team[side].teamColor)) )
-            || data.testmode;
+        return (set == 1
+              && state.playMode == PlayMode.Playing
+              && (state.period != Period.PenaltyShootout || state.kickOffTeam == state.team[side].teamColor))
+            || state.testmode;
     }
 }

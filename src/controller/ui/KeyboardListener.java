@@ -75,8 +75,8 @@ public class KeyboardListener implements KeyEventDispatcher
             default:
                 if (Rules.league instanceof SPL) {
                     switch (key) {
-                        case KeyEvent.VK_B: event = ActionBoard.out[EventHandler.getInstance().data.team[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
-                        case KeyEvent.VK_R: event = ActionBoard.out[EventHandler.getInstance().data.team[0].teamColor == TeamColor.Red ? 0 : 1]; break;
+                        case KeyEvent.VK_B: event = ActionBoard.out[EventHandler.getInstance().state.team[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
+                        case KeyEvent.VK_R: event = ActionBoard.out[EventHandler.getInstance().state.team[0].teamColor == TeamColor.Red ? 0 : 1]; break;
 
                         case KeyEvent.VK_P: event = ActionBoard.pushing; break;
                         case KeyEvent.VK_L: event = ActionBoard.leaving; break;
@@ -92,8 +92,8 @@ public class KeyboardListener implements KeyEventDispatcher
                     }
                 } else if (Rules.league instanceof HL) {
                     switch (key) {
-                        case KeyEvent.VK_B: event = ActionBoard.out[EventHandler.getInstance().data.team[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
-                        case KeyEvent.VK_R: event = ActionBoard.out[EventHandler.getInstance().data.team[0].teamColor == TeamColor.Red ? 0 : 1]; break;
+                        case KeyEvent.VK_B: event = ActionBoard.out[EventHandler.getInstance().state.team[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
+                        case KeyEvent.VK_R: event = ActionBoard.out[EventHandler.getInstance().state.team[0].teamColor == TeamColor.Red ? 0 : 1]; break;
 
                         case KeyEvent.VK_P: event = ActionBoard.pushing; break;
                         case KeyEvent.VK_D: event = ActionBoard.defense; break;

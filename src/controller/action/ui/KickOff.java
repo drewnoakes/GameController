@@ -34,39 +34,39 @@ public class KickOff extends GCAction
 
     /**
      * Performs this action to manipulate the data (model).
-     * 
-     * @param data      The current data to work on.
+     *
+     * @param state      The current data to work on.
      */
     @Override
-    public void perform(GameState data)
+    public void perform(GameState state)
     {
-        if (data.kickOffTeam == data.team[side].teamColor) {
+        if (state.kickOffTeam == state.team[side].teamColor) {
             return;
         }
-        data.kickOffTeam = data.team[side].teamColor;
+        state.kickOffTeam = state.team[side].teamColor;
         if (Rules.league.kickoffChoice
-                && data.period == Period.Normal
-                && data.firstHalf
-                && data.playMode == PlayMode.Initial) {
-            data.leftSideKickoff = side == 0;
+                && state.period == Period.Normal
+                && state.firstHalf
+                && state.playMode == PlayMode.Initial) {
+            state.leftSideKickoff = side == 0;
         }
-        Log.state(data, "Kickoff "+data.team[side].teamColor);
+        Log.state(state, "Kickoff " + state.team[side].teamColor);
     }
     
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
-     * 
-     * @param data      The current data to check with.
+     *
+     * @param state      The current data to check with.
      */
     @Override
-    public boolean isLegal(GameState data)
+    public boolean isLegal(GameState state)
     {
-        return data.kickOffTeam == data.team[side].teamColor
+        return state.kickOffTeam == state.team[side].teamColor
                 || (Rules.league.kickoffChoice
-                    && data.period == Period.Normal
-                    && data.firstHalf
-                    && data.playMode == PlayMode.Initial)
-                || data.testmode;
+                    && state.period == Period.Normal
+                    && state.firstHalf
+                    && state.playMode == PlayMode.Initial)
+                || state.testmode;
     }
 }
