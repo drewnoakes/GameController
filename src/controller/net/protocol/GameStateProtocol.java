@@ -15,7 +15,7 @@ public abstract class GameStateProtocol
 
     protected final byte versionNumber;
 
-    protected byte packetNumber = 0;
+    protected byte nextPacketNumber = 0;
 
     protected GameStateProtocol(byte versionNumber)
     {
@@ -49,13 +49,13 @@ public abstract class GameStateProtocol
     public abstract byte[] toBytes(GameControlData data);
 
     /**
-     * Increments the packet number for the sent message.
+     * Increments the next packet number for the next message.
      *
      * Should only be incremented after a successful transmission, so
      * clients track receive errors and not send errors.
      */
     public void incrementPacketNumber()
     {
-        packetNumber++;
+        nextPacketNumber++;
     }
 }
