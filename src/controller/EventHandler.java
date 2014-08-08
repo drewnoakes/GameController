@@ -39,7 +39,7 @@ public class EventHandler
      *
      * @return The singleton`s instance.
      */
-    public synchronized static EventHandler getInstance()
+    public static EventHandler getInstance()
     {
         if (instance == null) {
             throw new AssertionError("Singleton must be initialised.");
