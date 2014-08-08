@@ -21,11 +21,16 @@ public class TeamInfo implements Serializable
      */
     public static final byte MAX_NUM_PLAYERS = 11;
 
-    public byte teamNumber;                                         // unique team number
-    public TeamColor teamColor;                                     // colour of the team
-    public byte score;                                              // team's score
-    public byte penaltyShot = 0;                                    // penalty shot counter
-    public short singleShots = 0;                                   // bits represent penalty shot success
+    /** This team's uniquely identifying number. */
+    public byte teamNumber;
+    /** This team's uniform colour. */
+    public TeamColor teamColor;
+    /** The team's current score. */
+    public byte score;
+    /** The number of penalty shots this team has taken. */
+    public byte penaltyShot = 0;
+    /** Bit flag, indicating success of penalty shots so far. */
+    public short singleShots = 0;
     public byte[] coachMessage = new byte[SPLCoachMessage.SPL_COACH_MESSAGE_SIZE];
     public PlayerInfo coach = new PlayerInfo();
     public PlayerInfo[] player = new PlayerInfo[MAX_NUM_PLAYERS];   // the team's players
