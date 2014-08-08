@@ -21,7 +21,7 @@ import java.util.List;
  * @author Marcel Steinbeck
  * @author Drew Noakes https://drewnoakes.com
  */
-public class Sender
+public class GameStateSender
 {
     /** The thread instance owned by this sender class. */
     private final SenderThread senderThread;
@@ -38,12 +38,12 @@ public class Sender
     private AdvancedData data;
 
     /**
-     * Creates a new Sender.
+     * Creates a new GameStateSender.
      *
      * @throws SocketException      if an error occurs while creating the socket
      * @throws UnknownHostException if the used inet-address is not valid
      */
-    public Sender(final String broadcastAddress) throws SocketException, UnknownHostException
+    public GameStateSender(final String broadcastAddress) throws SocketException, UnknownHostException
     {
         datagramSocket = new DatagramSocket();
         group = InetAddress.getByName(broadcastAddress);
@@ -84,14 +84,14 @@ public class Sender
         {
             while (!isInterrupted()) {
                 // Take a copy of the reference to prevent errors cause when data is modified while this thread is running
-                AdvancedData data = Sender.this.data;
+                AdvancedData data = GameStateSender.this.data;
 
                 if (data != null) {
                     data.updateTimes();
 
                     for (GameStateProtocol version : versions) {
                         byte[] bytes = version.toBytes(data);
-                        DatagramPacket packet = new DatagramPacket(bytes, bytes.length, Sender.this.group, Config.GAME_DATA_PORT);
+                        DatagramPacket packet = new DatagramPacket(bytes, bytes.length, GameStateSender.this.group, Config.GAME_DATA_PORT);
                         try {
                             datagramSocket.send(packet);
                             version.incrementPacketNumber();

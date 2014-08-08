@@ -2,7 +2,7 @@ package controller;
 
 import controller.action.ActionType;
 import controller.action.GCAction;
-import controller.net.Sender;
+import controller.net.GameStateSender;
 import controller.ui.GCGUI;
 import data.AdvancedData;
 import java.awt.EventQueue;
@@ -25,12 +25,12 @@ public class EventHandler
     /** The instance of the singleton. */
     private static EventHandler instance;
 
-    public static void initialise(Sender sender)
+    public static void initialise(GameStateSender gameStateSender)
     {
         if (instance != null) {
             throw new AssertionError("Singleton has already been initialised initialised.");
         }
-        instance = new EventHandler(sender);
+        instance = new EventHandler(gameStateSender);
     }
 
     /**
@@ -51,7 +51,7 @@ public class EventHandler
     /** This GUI`s update method will be called. */
     private GCGUI gui;
     /** The sender has a send method to update the data to send */
-    private final Sender sender;
+    private final GameStateSender gameStateSender;
     /**
      * This is the current data. You should write into data only in actions
      * and than use the data giving as parameters. The data is not private,
@@ -71,9 +71,9 @@ public class EventHandler
     /**
      * Creates a new EventHandler.
      */
-    private EventHandler(Sender sender)
+    private EventHandler(GameStateSender gameStateSender)
     {
-        this.sender = sender;
+        this.gameStateSender = gameStateSender;
     }
     
     /**
@@ -132,7 +132,7 @@ public class EventHandler
             noLastUIEvent = false;
             lastUIEvent = null;
         }
-        sender.send(data);
+        gameStateSender.send(data);
         gui.update(data);
     }
 }

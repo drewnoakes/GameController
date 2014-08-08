@@ -69,22 +69,22 @@ public class Main
         data.kickOffTeam = options.initialKickOffTeam;
 
         GameControlReturnDataReceiver returnReceiver;
-        Sender sender;
+        GameStateSender gameStateSender;
         SPLCoachMessageReceiver splReceiver = null;
 
         try {
             //sender
-            sender = new Sender(options.broadcastAddress);
-            sender.addVersion(new GameStateProtocol9());
-            sender.addVersion(new GameStateProtocol8());
+            gameStateSender = new GameStateSender(options.broadcastAddress);
+            gameStateSender.addVersion(new GameStateProtocol9());
+            gameStateSender.addVersion(new GameStateProtocol8());
             if (Rules.league.compatibilityToVersion7) {
-                sender.addVersion(new GameStateProtocol7());
+                gameStateSender.addVersion(new GameStateProtocol7());
             }
-            sender.send(data);
-            sender.start();
+            gameStateSender.send(data);
+            gameStateSender.start();
 
             //event-handler
-            EventHandler.initialise(sender);
+            EventHandler.initialise(gameStateSender);
             EventHandler.getInstance().data = data;
 
             returnReceiver = new GameControlReturnDataReceiver();
@@ -131,7 +131,7 @@ public class Main
         }
 
         try {
-            sender.stop();
+            gameStateSender.stop();
             returnReceiver.stop();
             if (splReceiver != null)
                 splReceiver.stop();
