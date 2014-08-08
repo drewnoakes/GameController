@@ -1,5 +1,6 @@
 package controller;
 
+import common.Interval;
 import controller.action.ActionBoard;
 
 /**
@@ -44,12 +45,13 @@ public class Clock
     {
         thread = Thread.currentThread();
 
-        while (!thread.isInterrupted())
-        {
+        Interval interval = new Interval(HEARTBEAT);
+
+        while (!thread.isInterrupted()) {
             ActionBoard.clock.actionPerformed(null);
             
             try {
-                Thread.sleep(HEARTBEAT);
+                interval.sleep();
             } catch (InterruptedException e) {
                 thread.interrupt();
             }

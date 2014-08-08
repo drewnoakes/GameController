@@ -1,5 +1,6 @@
 package controller.net;
 
+import common.Interval;
 import common.Log;
 import controller.Config;
 import controller.net.protocol.GameStateProtocol;
@@ -81,11 +82,13 @@ public class GameStateSender
         @Override
         public void run()
         {
+            Interval interval = new Interval(Config.GAME_STATE_SEND_PERIOD_MILLIS);
+
             while (!isInterrupted()) {
                 sendData();
 
                 try {
-                    Thread.sleep(Config.GAME_STATE_SEND_PERIOD_MILLIS);
+                    interval.sleep();
                 } catch (InterruptedException e) {
                     interrupt();
                 }

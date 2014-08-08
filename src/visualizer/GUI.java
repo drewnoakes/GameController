@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
+import common.Interval;
 import common.Log;
 import data.GameStateSnapshot;
 import data.Period;
@@ -126,10 +127,11 @@ public class GUI extends JFrame
         {
             @Override
             public void run() {
+                Interval interval = new Interval(DISPLAY_UPDATE_DELAY);
                 while (true) {
                     update(data);
                     try {
-                        Thread.sleep(DISPLAY_UPDATE_DELAY);
+                        interval.sleep();
                     } catch (InterruptedException e) {}
                 }
             }
@@ -150,7 +152,7 @@ public class GUI extends JFrame
      * This is called by the GameStateListener after receiving GameState to show
      * them on the gui.
      * 
-     * @param data  The GameState to show.
+     * @param data the game state to show.
      */
     public synchronized void update(GameStateSnapshot data)
     {
