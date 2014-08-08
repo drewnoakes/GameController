@@ -59,10 +59,7 @@ public class EventHandler
      * only because the Log may change it to a later version.
      */
     public GameState data;
-    /** The last actions as the name says. */
-    private GCAction lastNonClockEvent = null;
     public GCAction lastUIEvent = null;
-    private GCAction lastNetEvent = null;
     /**
      * This may be set only in actions. If true, lastUIEvent will be set to
      * null, even if the current action is an UIEvent.
@@ -122,11 +119,8 @@ public class EventHandler
     private void update(GCAction event)
     {
         if (event.type != ActionType.CLOCK) {
-            lastNonClockEvent = event;
             if (event.type == ActionType.UI) {
                 lastUIEvent = event;
-            } else if (event.type == ActionType.NET) {
-                lastNetEvent = event;
             }
         }
         if (noLastUIEvent) {
