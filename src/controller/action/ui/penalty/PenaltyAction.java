@@ -11,20 +11,11 @@ import data.GameState;
  */
 public abstract class PenaltyAction extends GCAction
 {
-    /**
-     * Creates a new Defender action.
-     * Look at the ActionBoard before using this.
-     */
     public PenaltyAction()
     {
         super(ActionType.UI);
     }
 
-    /**
-     * Performs this action to manipulate the data (model).
-     *
-     * @param state      The current data to work on.
-     */
     @Override
     public void perform(GameState state)
     {

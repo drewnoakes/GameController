@@ -24,11 +24,6 @@ public class ClockTick extends GCAction
         super(ActionType.CLOCK);
     }
 
-    /**
-     * Performs this action to manipulate the data (model).
-     * 
-     * @param data      The current data to work on.
-     */
     @Override
     public void perform(GameState state)
     {
@@ -48,12 +43,6 @@ public class ClockTick extends GCAction
         state.updateCoachMessages();
     }
     
-    /**
-     * Checks if this action is legal with the given data (model).
-     * Illegal actions are not performed by the EventHandler.
-     * 
-     * @param data      The current data to check with.
-     */
     @Override
     public boolean isLegal(GameState state)
     {

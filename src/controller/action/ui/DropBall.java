@@ -14,20 +14,11 @@ import data.PlayMode;
  */
 public class DropBall extends GCAction
 {    
-    /**
-     * Creates a new DropBall action.
-     * Look at the ActionBoard before using this.
-     */
     public DropBall()
     {
         super(ActionType.UI);
     }
 
-    /**
-     * Performs this action to manipulate the data (model).
-     *
-     * @param state      The current data to work on.
-     */
     @Override
     public void perform(GameState state)
     {
@@ -37,12 +28,6 @@ public class DropBall extends GCAction
         ActionBoard.ready.perform(state);
     }
     
-    /**
-     * Checks if this action is legal with the given data (model).
-     * Illegal actions are not performed by the EventHandler.
-     *
-     * @param state      The current data to check with.
-     */
     @Override
     public boolean isLegal(GameState state)
     {

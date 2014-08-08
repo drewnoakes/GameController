@@ -20,11 +20,8 @@ public class Goal extends GCAction
     
     
     /**
-     * Creates a new Goal action.
-     * Look at the ActionBoard before using this.
-     * 
-     * @param side      On which side (0:left, 1:right)
-     * @param set       This value will be added to the score.
+     * @param side on which side (0:left, 1:right)
+     * @param set the amount to increment the score by
      */
     public Goal(int side, int set)
     {
@@ -33,11 +30,6 @@ public class Goal extends GCAction
         this.set = set;
     }
 
-    /**
-     * Performs this action to manipulate the data (model).
-     *
-     * @param state      The current data to work on.
-     */
     @Override
     public void perform(GameState state)
     {
@@ -57,12 +49,6 @@ public class Goal extends GCAction
         }
     }
     
-    /**
-     * Checks if this action is legal with the given data (model).
-     * Illegal actions are not performed by the EventHandler.
-     *
-     * @param state      The current data to check with.
-     */
     @Override
     public boolean isLegal(GameState state)
     {

@@ -18,10 +18,7 @@ public class TimeOut extends GCAction
     private int side;
 
     /**
-     * Creates a new TimeOut action.
-     * Look at the ActionBoard before using this.
-     * 
-     * @param side      On which side (0:left, 1:right)
+     * @param side the side to whom the timeout belongs (0:left, 1:right)
      */
     public TimeOut(int side)
     {
@@ -29,11 +26,6 @@ public class TimeOut extends GCAction
         this.side = side;
     }
 
-    /**
-     * Performs this action to manipulate the data (model).
-     *
-     * @param state      The current data to work on.
-     */
     @Override
     public void perform(GameState state)
     {
@@ -63,12 +55,6 @@ public class TimeOut extends GCAction
         }
     }
     
-    /**
-     * Checks if this action is legal with the given data (model).
-     * Illegal actions are not performed by the EventHandler.
-     *
-     * @param state      The current data to check with.
-     */
     @Override
     public boolean isLegal(GameState state)
     {

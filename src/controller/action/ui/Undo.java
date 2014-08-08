@@ -20,10 +20,7 @@ public class Undo extends GCAction
     
     
     /**
-     * Creates a new Undo action.
-     * Look at the ActionBoard before using this.
-     * 
-     * @param states        How far to go back in the timeline by this action.
+     * @param states the number of actions to go back in the timeline
      */
     public Undo(int states)
     {
@@ -31,11 +28,6 @@ public class Undo extends GCAction
         this.states = states;
     }
 
-    /**
-     * Performs this action to manipulate the data (model).
-     *
-     * @param state      The current data to work on.
-     */
     @Override
     public void perform(GameState state)
     {
@@ -47,12 +39,6 @@ public class Undo extends GCAction
         }
     }
     
-    /**
-     * Checks if this action is legal with the given data (model).
-     * Illegal actions are not performed by the EventHandler.
-     *
-     * @param state      The current data to check with.
-     */
     @Override
     public boolean isLegal(GameState state)
     {

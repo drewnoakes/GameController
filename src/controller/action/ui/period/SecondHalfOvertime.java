@@ -12,20 +12,11 @@ import data.*;
  */
 public class SecondHalfOvertime extends GCAction
 {
-    /**
-     * Creates a new SecondHalfOvertime action.
-     * Look at the ActionBoard before using this.
-     */
     public SecondHalfOvertime()
     {
         super(ActionType.UI);
     }
 
-    /**
-     * Performs this action to manipulate the data (model).
-     *
-     * @param state      The current data to work on.
-     */
     @Override
     public void perform(GameState state)
     {
@@ -43,12 +34,6 @@ public class SecondHalfOvertime extends GCAction
         }
     }
 
-    /**
-     * Checks if this action is legal with the given data (model).
-     * Illegal actions are not performed by the EventHandler.
-     *
-     * @param state      The current data to check with.
-     */
     @Override
     public boolean isLegal(GameState state)
     {

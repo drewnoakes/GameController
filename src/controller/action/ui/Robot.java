@@ -29,11 +29,8 @@ public class Robot extends GCAction
     private int number;
     
     /**
-     * Creates a new Robot action.
-     * Look at the ActionBoard before using this.
-     * 
-     * @param side      On which side (0:left, 1:right)
-     * @param number    The players`s number, beginning with 0!
+     * @param side on which side (0:left, 1:right)
+     * @param number the players`s number, beginning with 0!
      */
     public Robot(int side, int number)
     {
@@ -42,11 +39,6 @@ public class Robot extends GCAction
         this.number = number;
     }
 
-    /**
-     * Performs this action to manipulate the data (model).
-     *
-     * @param state      The current data to work on.
-     */
     @Override
     public void perform(GameState state)
     {
@@ -77,12 +69,6 @@ public class Robot extends GCAction
         }
     }
     
-    /**
-     * Checks if this action is legal with the given data (model).
-     * Illegal actions are not performed by the EventHandler.
-     *
-     * @param state      The current data to check with.
-     */
     @Override
     public boolean isLegal(GameState state)
     {
