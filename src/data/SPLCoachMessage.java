@@ -6,80 +6,45 @@ import java.nio.ByteOrder;
 
 import controller.EventHandler;
 
+/**
+ * A message received from the coach, and to be sent out to players after some delay.
+ *
+ * SPL only.
+ *
+ * @author Sebastian Koralewski
+ * @author Drew Noakes https://drewnoakes.com
+ */
 public class SPLCoachMessage implements Serializable
 {
-    /** Some constants from the C-structure. */
     public static final int SPL_COACH_MESSAGE_PORT = 3839;
-    private static final String SPL_COACH_MESSAGE_STRUCT_HEADER = "SPLC";
-    private static final int SPL_COACH_MESSAGE_STRUCT_VERSION = 2;
-    public static final int SPL_COACH_MESSAGE_SIZE = 40;
     public static final long SPL_COACH_MESSAGE_RECEIVE_INTERVAL = 10000; // in ms
+    public static final int SPL_COACH_MESSAGE_SIZE = 40;
+
     private static final long SPL_COACH_MESSAGE_MIN_SEND_INTERVAL = 3000; // in ms
     private static final long SPL_COACH_MESSAGE_MAX_SEND_INTERVAL = 6000; // in ms
-    public static final int SIZE = 4 // header size
-                                   + 1 // byte for the version
-                                   + 1 // team number
-                                   + SPL_COACH_MESSAGE_SIZE;
 
-    private String header;   // header to identify the structure
-    private byte version;    // version of the data structure
-    public byte team;       // unique team number
-    public byte[] message;  // what the coach says
-    private long sendTime;  // delay in ms that the message will be held back
+    /** The coach's team's uniquely identifying team number for the tournament. */
+    public final byte teamNumber;
+    /** Contents of the coach's message. */
+    public final byte[] message;
+    /** The delay in millis that the message will be held back. */
+    private final long sendTime;
 
-    public SPLCoachMessage()
+    public SPLCoachMessage(byte teamNumber, byte[] message)
     {
-        sendTime = generateSendIntervalForSPLCoachMessage() + System.currentTimeMillis();
+        this.teamNumber = teamNumber;
+        this.message = message;
+        this.sendTime = generateSendIntervalForSPLCoachMessage() + System.currentTimeMillis();
     }
 
-    public byte[] toByteArray()
-    {
-        ByteBuffer buffer = ByteBuffer.allocate(SIZE);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-
-        buffer.put(header.getBytes());
-        buffer.put(version);
-        buffer.put(team);
-        buffer.put(message);
-
-        return buffer.array();
-    }
-
-    public boolean fromByteArray(ByteBuffer buffer)
-    {
-        try {
-            buffer.order(ByteOrder.LITTLE_ENDIAN);
-            byte[] header = new byte[4];
-            buffer.get(header);
-            this.header = new String(header);
-            if (!this.header.equals(SPL_COACH_MESSAGE_STRUCT_HEADER)) {
-                return false;
-            } else {
-                version = buffer.get();
-                if (version != SPL_COACH_MESSAGE_STRUCT_VERSION) {
-                    return false;
-                } else {
-                    team = buffer.get();
-                    if ((team != EventHandler.getInstance().data.team[0].teamNumber) && (team != EventHandler.getInstance().data.team[1].teamNumber)) {
-                        return false;
-                    }
-                    message = new byte[SPLCoachMessage.SPL_COACH_MESSAGE_SIZE];
-                    buffer.get(message);
-                    return true;
-                }
-            }
-        } catch (RuntimeException e) {
-            return false;
-        }
-    }
-
+    /** The remaining period of time before the message may be distrubuted to players, in milliseconds. */
     public long getRemainingTimeToSend()
     {
         long remainingTime = sendTime - System.currentTimeMillis();
         return remainingTime > 0 ? remainingTime : 0;
     }
 
-    private long generateSendIntervalForSPLCoachMessage()
+    private static long generateSendIntervalForSPLCoachMessage()
     {
         return (long) (Math.random() * (SPLCoachMessage.SPL_COACH_MESSAGE_MAX_SEND_INTERVAL
                 - SPLCoachMessage.SPL_COACH_MESSAGE_MIN_SEND_INTERVAL))

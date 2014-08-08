@@ -361,7 +361,7 @@ public class GameState extends GameStateSnapshot implements Cloneable
         while (i < splCoachMessageQueue.size()) {
             if (splCoachMessageQueue.get(i).getRemainingTimeToSend() == 0) {
                 for (int j = 0; j < 2; j++) {
-                    if (team[j].teamNumber == splCoachMessageQueue.get(i).team) {
+                    if (team[j].teamNumber == splCoachMessageQueue.get(i).teamNumber) {
                         byte[] message = splCoachMessageQueue.get(i).message;
 
                         // All chars after the first zero are zeroed, too
