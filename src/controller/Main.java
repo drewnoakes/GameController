@@ -45,6 +45,8 @@ public class Main
 
     private static final String DEFAULT_BROADCAST = "255.255.255.255";
 
+    private Main() {}
+
     /**
      * The program starts here.
      * 

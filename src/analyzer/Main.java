@@ -23,7 +23,9 @@ public class Main
     public static File stats;
     /* Use this to write into the output file. */
     public static FileWriter writer;
-    
+
+    private Main() {}
+
     /**
      * The program starts here.
      * 

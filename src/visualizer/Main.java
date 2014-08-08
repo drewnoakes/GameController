@@ -21,6 +21,8 @@ public class Main
     
     private static Listener listener;
 
+    private Main() {}
+
     /**
      * The program starts here.
      * 

@@ -76,9 +76,10 @@ public class Parser
         "Set",
         "Coach Message"
     };
-    
-    
-     /**
+
+    private Parser() {}
+
+    /**
      * Parsing a log to get some information and place the undone-prefix,
      * so this is needed before parsing for statistics. The information
      * will be written into the LogInfo instance.

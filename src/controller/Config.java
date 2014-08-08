@@ -23,4 +23,6 @@ public class Config
      * The number of milliseconds between sends of the game data.
      */
     public static final int GAME_DATA_SEND_PERIOD_MILLIS = 500;
+
+    private Config() {}
 }

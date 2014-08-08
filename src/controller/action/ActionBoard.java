@@ -109,8 +109,9 @@ public class ActionBoard
 
     public static Manual[][] manualPen = Rules.league.isCoachAvailable ? new Manual[2][Rules.league.teamSize+1] : new Manual[2][Rules.league.teamSize];
     public static Manual[][] manualUnpen = Rules.league.isCoachAvailable ? new Manual[2][Rules.league.teamSize+1] : new Manual[2][Rules.league.teamSize];
-    
-    
+
+    private ActionBoard() {}
+
     /**
      * This must be called before using actions from this class. It creates
      * all the actions instances.
