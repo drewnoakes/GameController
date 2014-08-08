@@ -2,7 +2,7 @@ package controller.net.protocol;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import data.GameControlData;
+import data.GameState;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -39,19 +39,19 @@ public abstract class GameStateProtocol
      * Attempts to parse the provided byte array as a message of this protocol version.
      *
      * @param buffer the bytes to parse
-     * @return the {@link data.GameControlData} if successfully parsed, otherwise null
+     * @return the {@link data.GameState} if successfully parsed, otherwise null
      */
     @Nullable
-    public abstract GameControlData fromBytes(ByteBuffer buffer);
+    public abstract GameState fromBytes(ByteBuffer buffer);
 
     /**
-     * Formats an instance of {@link GameControlData} for network transmission.
+     * Formats an instance of {@link data.GameState} for network transmission.
      *
      * @param data The source of data for the message
      * @return the byte array to be sent via the network
      */
     @NotNull
-    public abstract byte[] toBytes(GameControlData data);
+    public abstract byte[] toBytes(GameState data);
 
     /**
      * Increments the next packet number for the next message.

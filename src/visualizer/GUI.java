@@ -20,7 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import common.Log;
-import data.GameControlData;
+import data.GameState;
 import data.Period;
 import data.PlayMode;
 import rules.Rules;
@@ -55,10 +55,10 @@ public class GUI extends JFrame
     private static final GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 
     private BufferStrategy bufferStrategy;
-    /** If testmode is on to just display whole GameControlData. */
+    /** If testmode is on to just display whole GameState. */
     private boolean testmode = false;
     /** The last data received to show. */
-    private GameControlData data = null;
+    private GameState data = null;
     /** The background. */
     private BufferedImage background;
     
@@ -147,12 +147,12 @@ public class GUI extends JFrame
     }
     
     /**
-     * This is called by the GameStateListener after receiving GameControlData to show
+     * This is called by the GameStateListener after receiving GameState to show
      * them on the gui.
      * 
-     * @param data  The GameControlData to show.
+     * @param data  The GameState to show.
      */
-    public synchronized void update(GameControlData data)
+    public synchronized void update(GameState data)
     {
         this.data = data;
         do {

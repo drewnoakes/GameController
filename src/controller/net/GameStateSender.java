@@ -4,7 +4,6 @@ import common.Log;
 import controller.Config;
 import controller.net.protocol.GameStateProtocol;
 import data.AdvancedData;
-import data.GameControlData;
 
 import java.io.IOException;
 import java.net.*;
@@ -12,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class is used to send the current {@link GameControlData} (game-state) to all robots every 500 ms.
+ * This class is used to send the current {@link data.GameState} (game-state) to all robots every 500 ms.
  * The packet will be sent via UDP broadcast on port {@link Config#GAME_STATE_PORT}.
  *
  * To prevent race-conditions (the sender is executed in its thread-context), the sender creates a deep copy
- * of {@link GameControlData} via {@link AdvancedData#clone()}.
+ * of {@link data.GameState} via {@link AdvancedData#clone()}.
  *
  * @author Marcel Steinbeck
  * @author Drew Noakes https://drewnoakes.com

@@ -16,7 +16,7 @@ import java.io.Serializable;
  * @author Michel Bartsch
  * @author Drew Noakes https://drewnoakes.com
  */
-public class GameControlData implements Serializable
+public class GameState implements Serializable
 {
     /** Play mode of the game. */
     @NotNull
@@ -45,9 +45,9 @@ public class GameControlData implements Serializable
     public TeamInfo[] team = new TeamInfo[2];
 
     /**
-     * Creates a new, blank GameControlData.
+     * Creates a new, blank GameState.
      */
-    public GameControlData()
+    public GameState()
     {
         for (int i=0; i<team.length; i++) {
             team[i] = new TeamInfo();

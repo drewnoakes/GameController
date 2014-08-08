@@ -4,7 +4,7 @@ import common.Log;
 import controller.Config;
 import controller.net.protocol.GameStateProtocol;
 import controller.net.protocol.GameStateProtocol8;
-import data.GameControlData;
+import data.GameState;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -14,7 +14,7 @@ import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 
 /**
- * This class receives the GameControlData from the GameController.
+ * This class receives @{link GameState} from the GameController.
  *
  * @author Michel Bartsch
  */

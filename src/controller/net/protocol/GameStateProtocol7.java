@@ -2,7 +2,7 @@ package controller.net.protocol;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import data.GameControlData;
+import data.GameState;
 import data.TeamColor;
 import data.TeamInfo;
 import rules.Rules;
@@ -50,7 +50,7 @@ public class GameStateProtocol7 extends GameStateProtocol
 
     @NotNull
     @Override
-    public byte[] toBytes(GameControlData data)
+    public byte[] toBytes(GameState data)
     {
         ByteBuffer buffer = writeHeader();
 
@@ -79,7 +79,7 @@ public class GameStateProtocol7 extends GameStateProtocol
 
     @Nullable
     @Override
-    public GameControlData fromBytes(ByteBuffer buffer)
+    public GameState fromBytes(ByteBuffer buffer)
     {
         throw new AssertionError("Not implemented as no use for parsing version 7 messages is known of.");
     }

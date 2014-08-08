@@ -13,7 +13,7 @@ import controller.action.ActionBoard;
 import rules.Rules;
 
 /**
- * This class extends the GameControlData that is send to the robots. It
+ * This class extends the GameState that is send to the robots. It
  * contains all the additional information the GameController needs to
  * represent a state of the game, for example time in millis.
  *
@@ -23,7 +23,7 @@ import rules.Rules;
  *
  * @author Michel Bartsch
  */
-public class AdvancedData extends GameControlData implements Cloneable
+public class AdvancedData extends GameState implements Cloneable
 {
     /** This message is set when the data is put into the timeline */
     public String message = "";
@@ -177,7 +177,7 @@ public class AdvancedData extends GameControlData implements Cloneable
     }
 
     /**
-     * Update all durations in the GameControlData packet.
+     * Update all durations in the GameState packet.
      */
     public void updateTimes()
     {

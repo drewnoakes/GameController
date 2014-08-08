@@ -74,7 +74,7 @@ public class GameStateProtocol9 extends GameStateProtocol
 
     @NotNull
     @Override
-    public byte[] toBytes(GameControlData data)
+    public byte[] toBytes(GameState data)
     {
         ByteBuffer buffer = writeHeader();
 
@@ -101,12 +101,12 @@ public class GameStateProtocol9 extends GameStateProtocol
 
     @Nullable
     @Override
-    public GameControlData fromBytes(ByteBuffer buffer)
+    public GameState fromBytes(ByteBuffer buffer)
     {
         if (!verifyHeader(buffer))
             return null;
 
-        GameControlData data = new GameControlData();
+        GameState data = new GameState();
 
         buffer.get(); // packet number (ignored when decoding)
         buffer.get(); // players per team (ignored when decoding)

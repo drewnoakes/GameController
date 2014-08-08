@@ -17,7 +17,7 @@ public class TeamInfo implements Serializable
     /**
      * How many players a team may have.
      * Actually that many players in each team need to be sent, even if
-     * playersPerTeam in GameControlData is less.
+     * playersPerTeam in GameState is less.
      */
     public static final byte MAX_NUM_PLAYERS = 11;
 
