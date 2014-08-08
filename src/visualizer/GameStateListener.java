@@ -3,8 +3,9 @@ package visualizer;
 import common.Log;
 import controller.Config;
 import controller.net.protocol.GameStateProtocol;
-import controller.net.protocol.GameStateProtocol8;
+import controller.net.protocol.GameStateProtocol9;
 import data.GameState;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -25,7 +26,7 @@ public class GameStateListener
     /** The GUI to listen for, its update method will be called. */
     private final GUI gui;
     /** The protocol we are listening to. */
-    private final GameStateProtocol networkProtocol;
+    private final GameStateProtocol gameStateProtocol;
 
     /** Some attributes for receiving. */
     private DatagramSocket datagramSocket;
@@ -46,7 +47,7 @@ public class GameStateListener
             System.exit(1);
         }
 
-        networkProtocol = new GameStateProtocol8();
+        gameStateProtocol = new GameStateProtocol9();
 
         listenerThread = new ListenerThread();
     }
@@ -68,14 +69,14 @@ public class GameStateListener
         public void run()
         {
             while (!isInterrupted()) {
-                final ByteBuffer buffer = ByteBuffer.wrap(new byte[networkProtocol.getMessageSize()]);
+                final ByteBuffer buffer = ByteBuffer.wrap(new byte[gameStateProtocol.getMessageSize()]);
 
                 final DatagramPacket packet = new DatagramPacket(buffer.array(), buffer.array().length);
 
                 try {
                     datagramSocket.receive(packet);
                     buffer.rewind();
-                    final GameControlData data = networkProtocol.fromBytes(buffer);
+                    final GameState data = gameStateProtocol.fromBytes(buffer);
                     if (data != null) {
                         gui.update(data);
                     }
