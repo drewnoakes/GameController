@@ -13,7 +13,7 @@ import java.nio.ByteOrder;
  */
 public abstract class RobotStatusProtocol
 {
-    protected static final String GAMECONTROLLER_RETURN_STRUCT_HEADER = "RGrt";
+    private static final String HEADER = "RGrt";
 
     protected final byte versionNumber;
 
@@ -41,6 +41,7 @@ public abstract class RobotStatusProtocol
     @Nullable
     public abstract RobotMessage fromBytes(ByteBuffer buffer);
 
+    /** Verifies the buffer starts with the expected header for this version of protocol. */
     protected boolean verifyHeader(ByteBuffer buffer)
     {
         buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -50,7 +51,7 @@ public abstract class RobotStatusProtocol
         buffer.get(headerBytes, 0, 4);
         String header = new String(headerBytes);
 
-        if (!header.equals(GAMECONTROLLER_RETURN_STRUCT_HEADER))
+        if (!header.equals(HEADER))
             return false;
 
         // Version

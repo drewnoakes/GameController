@@ -53,10 +53,8 @@ public class GameStateProtocol7 extends GameStateProtocol
     @Override
     public byte[] toBytes(GameControlData data)
     {
-        ByteBuffer buffer = ByteBuffer.allocate(getMessageSize());
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer buffer = writeHeader();
 
-        buffer.put(GAMECONTROLLER_STRUCT_HEADER.getBytes(), 0, 4);
         buffer.putInt(versionNumber);
         buffer.put((byte)Rules.league.teamSize);
         buffer.put(data.playMode.getValue());

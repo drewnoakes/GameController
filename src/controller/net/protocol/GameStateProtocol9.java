@@ -77,10 +77,8 @@ public class GameStateProtocol9 extends GameStateProtocol
     @Override
     public byte[] toBytes(GameControlData data)
     {
-        ByteBuffer buffer = ByteBuffer.allocate(getMessageSize());
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer buffer = writeHeader();
 
-        buffer.put(GAMECONTROLLER_STRUCT_HEADER.getBytes(), 0, 4);
         buffer.put(versionNumber);
         buffer.put(nextPacketNumber);
         buffer.put((byte)Rules.league.teamSize);
@@ -106,18 +104,10 @@ public class GameStateProtocol9 extends GameStateProtocol
     @Override
     public GameControlData fromBytes(ByteBuffer buffer)
     {
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        if (!verifyHeader(buffer))
+            return null;
 
         GameControlData data = new GameControlData();
-
-        byte[] header = new byte[4];
-        buffer.get(header, 0, 4);
-
-        // TODO validate header contains correct data
-
-        if (buffer.get() != versionNumber) {
-            return null;
-        }
 
         buffer.get(); // packet number (ignored when decoding)
         buffer.get(); // players per team (ignored when decoding)

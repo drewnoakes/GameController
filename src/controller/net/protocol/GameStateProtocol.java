@@ -5,6 +5,7 @@ import common.annotations.Nullable;
 import data.GameControlData;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * Base class for game state network protocols. Subclasses implement specific versions.
@@ -13,7 +14,7 @@ import java.nio.ByteBuffer;
  */
 public abstract class GameStateProtocol
 {
-    protected static final String GAMECONTROLLER_STRUCT_HEADER = "RGme";
+    private static final String HEADER = "RGme";
 
     protected final byte versionNumber;
 
@@ -61,5 +62,34 @@ public abstract class GameStateProtocol
     public void incrementPacketNumber()
     {
         nextPacketNumber++;
+    }
+
+    /** Verifies the buffer starts with the expected header for this version of protocol. */
+    protected boolean verifyHeader(ByteBuffer buffer)
+    {
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+
+        // Header
+        byte[] headerBytes = new byte[4];
+        buffer.get(headerBytes, 0, 4);
+        String header = new String(headerBytes);
+
+        if (!header.equals(HEADER))
+            return false;
+
+        // Version
+        byte version = buffer.get();
+        return version == getVersionNumber();
+    }
+
+    /** Create a new buffer and writes the correct header for this version of the protocol. */
+    protected ByteBuffer writeHeader()
+    {
+        ByteBuffer buffer = ByteBuffer.allocate(getMessageSize());
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+
+        buffer.put(HEADER.getBytes(), 0, 4);
+
+        return buffer;
     }
 }
