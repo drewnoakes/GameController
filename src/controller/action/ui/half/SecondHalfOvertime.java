@@ -9,13 +9,13 @@ import data.GameState;
 
 /**
  * @author Michel Bartsch
- * 
- * This action means that the half is to be set to the second half.
+ *
+ * This action means that the half is to be set to the second half of overtime.
  */
 public class SecondHalfOvertime extends GCAction
 {
     /**
-     * Creates a new SecondHalf action.
+     * Creates a new SecondHalfOvertime action.
      * Look at the ActionBoard before using this.
      */
     public SecondHalfOvertime()
@@ -25,7 +25,7 @@ public class SecondHalfOvertime extends GCAction
 
     /**
      * Performs this action to manipulate the data (model).
-     * 
+     *
      * @param data      The current data to work on.
      */
     @Override
@@ -44,11 +44,11 @@ public class SecondHalfOvertime extends GCAction
             Log.state(data, "2nd Half Extra Time");
         }
     }
-    
+
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
-     * 
+     *
      * @param data      The current data to check with.
      */
     @Override
