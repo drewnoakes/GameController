@@ -24,7 +24,7 @@ public class Parser
     /* The separator used for the output within a row. */
     private static final String OUT_SEP = ",";
     /* The output´s date format (date-time) */
-    public static final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+    private static final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
     
     /* All the actions that would cause the teams to change colors */
     private static final String[] colorChangeActions = {

@@ -19,13 +19,13 @@ import javax.swing.JComponent;
 public class TotalScaleLayout implements LayoutManager
 {
     /** The container to layout. */
-    Container parent;
+    private Container parent;
     /** The containers preferred size. */
-    Dimension preferredSize;
+    private Dimension preferredSize;
     /** The containers minimum size. */
-    Dimension minimumSize;
+    private Dimension minimumSize;
     /** List of all components to layout on the container */
-    LinkedList<TotalScaleComponent> comps = new LinkedList<TotalScaleComponent>();
+    private LinkedList<TotalScaleComponent> comps = new LinkedList<TotalScaleComponent>();
     
     
     /**

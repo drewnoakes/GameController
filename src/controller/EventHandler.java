@@ -59,9 +59,9 @@ public class EventHandler
      */
     public AdvancedData data;
     /** The last actions as the name says. */
-    public GCAction lastNonClockEvent = null;
+    private GCAction lastNonClockEvent = null;
     public GCAction lastUIEvent = null;
-    public GCAction lastNetEvent = null;
+    private GCAction lastNetEvent = null;
     /**
      * This may be set only in actions. If true, lastUIEvent will be set to
      * null, even if the current action is an UIEvent.

@@ -10,19 +10,19 @@ public class SPLCoachMessage implements Serializable
 {
     /** Some constants from the C-structure. */
     public static final int SPL_COACH_MESSAGE_PORT = 3839;
-    public static final String SPL_COACH_MESSAGE_STRUCT_HEADER = "SPLC";
-    public static final int SPL_COACH_MESSAGE_STRUCT_VERSION = 2;
+    private static final String SPL_COACH_MESSAGE_STRUCT_HEADER = "SPLC";
+    private static final int SPL_COACH_MESSAGE_STRUCT_VERSION = 2;
     public static final int SPL_COACH_MESSAGE_SIZE = 40;
     public static final long SPL_COACH_MESSAGE_RECEIVE_INTERVALL = 10000; // in ms
-    public static final long SPL_COACH_MESSAGE_MIN_SEND_INTERVALL = 3000; // in ms
-    public static final long SPL_COACH_MESSAGE_MAX_SEND_INTERVALL = 6000; // in ms
+    private static final long SPL_COACH_MESSAGE_MIN_SEND_INTERVALL = 3000; // in ms
+    private static final long SPL_COACH_MESSAGE_MAX_SEND_INTERVALL = 6000; // in ms
     public static final int SIZE = 4 // header size
                                    + 1 // byte for the version
                                    + 1 // team number
                                    + SPL_COACH_MESSAGE_SIZE;
 
-    public String header;   // header to identify the structure
-    public byte version;    // version of the data structure
+    private String header;   // header to identify the structure
+    private byte version;    // version of the data structure
     public byte team;       // unique team number
     public byte[] message;  // what the coach says
     private long sendTime;  // delay in ms that the message will be held back

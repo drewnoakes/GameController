@@ -241,7 +241,7 @@ public class GUI extends JFrame implements ListSelectionListener
     /**
      * This class is used to render a list item with checkbox.
      */
-    class CheckListRenderer extends JCheckBox implements ListCellRenderer
+    private class CheckListRenderer extends JCheckBox implements ListCellRenderer
     {
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus)

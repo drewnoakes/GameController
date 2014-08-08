@@ -54,7 +54,7 @@ public class GUI extends JFrame
     /** Available screens. */
     private static final GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 
-    BufferStrategy bufferStrategy;
+    private BufferStrategy bufferStrategy;
     /** If testmode is on to just display whole GameControlData. */
     private boolean testmode = false;
     /** The last data received to show. */

@@ -14,7 +14,7 @@ public class Clock
      * it fires after this time, it will always take some more millis depending
      * on the performance.
      */
-    public static final int HEARTBEAT = 500; // 2Hz
+    private static final int HEARTBEAT = 500; // 2Hz
 
     /** The instance of the singleton. */
     private static Clock instance;

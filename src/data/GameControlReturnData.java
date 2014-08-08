@@ -16,10 +16,10 @@ import java.nio.ByteOrder;
 public class GameControlReturnData
 {
     /** The header to identify the structure. */
-    public static final String GAMECONTROLLER_RETURN_STRUCT_HEADER = "RGrt";
+    private static final String GAMECONTROLLER_RETURN_STRUCT_HEADER = "RGrt";
     /** The version of the data structure. */
-    public static final byte GAMECONTROLLER_RETURN_STRUCT_VERSION = 2;
-    public static final byte GAMECONTROLLER_RETURN_STRUCT_VERSION1 = 1;
+    private static final byte GAMECONTROLLER_RETURN_STRUCT_VERSION = 2;
+    private static final byte GAMECONTROLLER_RETURN_STRUCT_VERSION1 = 1;
 
     /** What a player may say. */
     public static final byte GAMECONTROLLER_RETURN_MSG_MAN_PENALISE = 0;
@@ -44,11 +44,11 @@ public class GameControlReturnData
             4; // message
 
     //this is streamed
-    String header;          // header to identify the structure
-    byte version;            // version of the data structure
+    private String header; // header to identify the structure
+    private byte version;  // version of the data structure
     public byte team;      // unique team number
     public byte player;    // player number
-    public byte message;     // what the player says
+    public byte message;   // what the player says
     
     
     /**

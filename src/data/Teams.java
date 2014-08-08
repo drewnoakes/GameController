@@ -111,7 +111,7 @@ public class Teams
      * You don't need to use this because the getNames method automatically
      * uses this if needed.
      */
-    public static void readNames()
+    private static void readNames()
     {
         int value;
         BufferedReader br = null;
@@ -169,7 +169,7 @@ public class Teams
      * uses this if needed.
      * @param team Number of the team which icon should be read.
      */
-    public static void readIcon(int team)
+    private static void readIcon(int team)
     {
         BufferedImage out = null;
         File file = null;
