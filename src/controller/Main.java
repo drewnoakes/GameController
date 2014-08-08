@@ -104,7 +104,7 @@ public class Main
                         new MessageHandler<SPLCoachMessage>()
                         {
                             @Override
-                            public void handle(SPLCoachMessage message) { new SPLCoachMessageReceived(message).actionPerformed(null); }
+                            public void handle(SPLCoachMessage message) { new SPLCoachMessageReceived(message).invoke(); }
                         });
                 splReceiver.addProtocol(new SPLCoachProtocol2());
                 splReceiver.start();

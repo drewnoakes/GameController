@@ -34,9 +34,9 @@ import rules.HL;
 import rules.Rules;
 import rules.SPL;
 
-
 /**
- * This is the main GUI.
+ * This is the main Game Controller GUI.
+ *
  * In this class you will find the whole graphical output and the bindings
  * of buttons to their actions, nothing less and nothing more.
  *
@@ -586,61 +586,61 @@ public class GUI extends JFrame implements GCGUI
         
         //--listener--
         for (int i=0; i<2; i++) {
-            goalDec[i].addActionListener(ActionBoard.goalDec[i]);
-            goalInc[i].addActionListener(ActionBoard.goalInc[i]);
-            kickOff[i].addActionListener(ActionBoard.kickOff[i]);
+            goalDec[i].addActionListener(new ActionListenerAdapter(ActionBoard.goalDec[i]));
+            goalInc[i].addActionListener(new ActionListenerAdapter(ActionBoard.goalInc[i]));
+            kickOff[i].addActionListener(new ActionListenerAdapter(ActionBoard.kickOff[i]));
             for (int j=0; j<robot[i].length; j++) {
-                robot[i][j].addActionListener(ActionBoard.robot[i][j]);
+                robot[i][j].addActionListener(new ActionListenerAdapter(ActionBoard.robot[i][j]));
             }
-            timeOut[i].addActionListener(ActionBoard.timeOut[i]);
-            out[i].addActionListener(ActionBoard.out[i]);
+            timeOut[i].addActionListener(new ActionListenerAdapter(ActionBoard.timeOut[i]));
+            out[i].addActionListener(new ActionListenerAdapter(ActionBoard.out[i]));
             if (Rules.league instanceof SPL) {
-                stuck[i].addActionListener(ActionBoard.stuck[i]);
+                stuck[i].addActionListener(new ActionListenerAdapter(ActionBoard.stuck[i]));
             }
         }
-        refereeTimeout.addActionListener(ActionBoard.refereeTimeout);
-        initial.addActionListener(ActionBoard.initial);
-        ready.addActionListener(ActionBoard.ready);
-        set.addActionListener(ActionBoard.set);
-        play.addActionListener(ActionBoard.play);
-        finish.addActionListener(ActionBoard.finish);
-        clockReset.addActionListener(ActionBoard.clockReset);
-        clockPause.addActionListener(ActionBoard.clockPause);
+        refereeTimeout.addActionListener(new ActionListenerAdapter(ActionBoard.refereeTimeout));
+        initial.addActionListener(new ActionListenerAdapter(ActionBoard.initial));
+        ready.addActionListener(new ActionListenerAdapter(ActionBoard.ready));
+        set.addActionListener(new ActionListenerAdapter(ActionBoard.set));
+        play.addActionListener(new ActionListenerAdapter(ActionBoard.play));
+        finish.addActionListener(new ActionListenerAdapter(ActionBoard.finish));
+        clockReset.addActionListener(new ActionListenerAdapter(ActionBoard.clockReset));
+        clockPause.addActionListener(new ActionListenerAdapter(ActionBoard.clockPause));
         if (Rules.league.lostTime) {
-            incGameClock.addActionListener(ActionBoard.incGameClock);
+            incGameClock.addActionListener(new ActionListenerAdapter(ActionBoard.incGameClock));
         }
-        firstHalf.addActionListener(ActionBoard.firstHalf);
-        secondHalf.addActionListener(ActionBoard.secondHalf);
+        firstHalf.addActionListener(new ActionListenerAdapter(ActionBoard.firstHalf));
+        secondHalf.addActionListener(new ActionListenerAdapter(ActionBoard.secondHalf));
         if (Rules.league.overtime) {
-            firstHalfOvertime.addActionListener(ActionBoard.firstHalfOvertime);
-            secondHalfOvertime.addActionListener(ActionBoard.secondHalfOvertime);
+            firstHalfOvertime.addActionListener(new ActionListenerAdapter(ActionBoard.firstHalfOvertime));
+            secondHalfOvertime.addActionListener(new ActionListenerAdapter(ActionBoard.secondHalfOvertime));
         }
-        penaltyShoot.addActionListener(ActionBoard.penaltyShoot);
+        penaltyShoot.addActionListener(new ActionListenerAdapter(ActionBoard.penaltyShoot));
         if (Rules.league instanceof SPL) {
-            pen[0].addActionListener(ActionBoard.pushing);
-            pen[1].addActionListener(ActionBoard.leaving);
-            pen[2].addActionListener(ActionBoard.fallen);
-            pen[3].addActionListener(ActionBoard.inactive);
-            pen[4].addActionListener(ActionBoard.defender);
-            pen[5].addActionListener(ActionBoard.holding);
-            pen[6].addActionListener(ActionBoard.hands);
-            pen[7].addActionListener(ActionBoard.pickUp);
-            pen[8].addActionListener(Rules.league.dropInPlayerMode ? ActionBoard.teammatePushing : ActionBoard.coachMotion);
-            pen[9].addActionListener(ActionBoard.substitute);
+            pen[0].addActionListener(new ActionListenerAdapter(ActionBoard.pushing));
+            pen[1].addActionListener(new ActionListenerAdapter(ActionBoard.leaving));
+            pen[2].addActionListener(new ActionListenerAdapter(ActionBoard.fallen));
+            pen[3].addActionListener(new ActionListenerAdapter(ActionBoard.inactive));
+            pen[4].addActionListener(new ActionListenerAdapter(ActionBoard.defender));
+            pen[5].addActionListener(new ActionListenerAdapter(ActionBoard.holding));
+            pen[6].addActionListener(new ActionListenerAdapter(ActionBoard.hands));
+            pen[7].addActionListener(new ActionListenerAdapter(ActionBoard.pickUp));
+            pen[8].addActionListener(new ActionListenerAdapter(Rules.league.dropInPlayerMode ? ActionBoard.teammatePushing : ActionBoard.coachMotion));
+            pen[9].addActionListener(new ActionListenerAdapter(ActionBoard.substitute));
         } else if (Rules.league instanceof HL) {
-            pen[0].addActionListener(ActionBoard.ballManipulation);
-            pen[1].addActionListener(ActionBoard.pushing);
-            pen[2].addActionListener(ActionBoard.attack);
-            pen[3].addActionListener(ActionBoard.defense);
-            pen[4].addActionListener(ActionBoard.pickUpHL);
-            pen[5].addActionListener(ActionBoard.serviceHL);
-            pen[6].addActionListener(ActionBoard.substitute);
-            dropBall.addActionListener(ActionBoard.dropBall);
+            pen[0].addActionListener(new ActionListenerAdapter(ActionBoard.ballManipulation));
+            pen[1].addActionListener(new ActionListenerAdapter(ActionBoard.pushing));
+            pen[2].addActionListener(new ActionListenerAdapter(ActionBoard.attack));
+            pen[3].addActionListener(new ActionListenerAdapter(ActionBoard.defense));
+            pen[4].addActionListener(new ActionListenerAdapter(ActionBoard.pickUpHL));
+            pen[5].addActionListener(new ActionListenerAdapter(ActionBoard.serviceHL));
+            pen[6].addActionListener(new ActionListenerAdapter(ActionBoard.substitute));
+            dropBall.addActionListener(new ActionListenerAdapter(ActionBoard.dropBall));
         }
         for (int i=0; i<undo.length; i++) {
-            undo[i].addActionListener(ActionBoard.undo[i+1]);
+            undo[i].addActionListener(new ActionListenerAdapter(ActionBoard.undo[i+1]));
         }
-        cancelUndo.addActionListener(ActionBoard.cancelUndo);
+        cancelUndo.addActionListener(new ActionListenerAdapter(ActionBoard.cancelUndo));
       
         //fullscreen
         if (fullscreen) {
@@ -663,8 +663,7 @@ public class GUI extends JFrame implements GCGUI
     class ImagePanel extends JPanel
     {
         private static final long serialVersionUID = 1L;
-        
-        
+
         /** The image that is shown in the background. */
         private Image image;
 

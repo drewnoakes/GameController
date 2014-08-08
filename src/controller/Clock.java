@@ -48,7 +48,7 @@ public class Clock
         Interval interval = new Interval(HEARTBEAT);
 
         while (!thread.isInterrupted()) {
-            ActionBoard.clock.actionPerformed(null);
+            ActionBoard.clock.invoke();
             
             try {
                 interval.sleep();

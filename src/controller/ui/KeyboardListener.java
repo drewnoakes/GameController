@@ -106,7 +106,7 @@ public class KeyboardListener implements KeyEventDispatcher
         }
         
         if (event != null) {
-            event.actionPerformed(null);
+            event.invoke();
             return true;
         }
         return false;

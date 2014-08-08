@@ -71,10 +71,10 @@ public class RobotWatcher
             instance.robotLastStatus[team][number-1] = robotMessage.getStatus();
             if ((robotMessage.getStatus() == RobotStatus.ManuallyPenalised)
                     && (EventHandler.getInstance().state.team[team].player[number-1].penalty == Penalty.None)) {
-                ActionBoard.manualPen[team][number-1].actionPerformed(null);
+                ActionBoard.manualPen[team][number-1].invoke();
             } else if ((robotMessage.getStatus() == RobotStatus.ManuallyUnpenalised)
                     && (EventHandler.getInstance().state.team[team].player[number-1].penalty != Penalty.None)) {
-                ActionBoard.manualUnpen[team][number-1].actionPerformed(null);
+                ActionBoard.manualUnpen[team][number-1].invoke();
             }
         }
     }

@@ -3,17 +3,14 @@ package controller.action;
 import controller.EventHandler;
 import data.GameState;
 import data.PlayerInfo;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * This is an abstract class every action needs to extend to provide the
- * basic features. By extending this it also becomes an ActionListener,
- * which is needed to add them to GUI buttons.
+ * basic features.
  *
  * @author Michel Bartsch
  */
-public abstract class GCAction implements ActionListener
+public abstract class GCAction
 {
     /** The type of the action. */
     public final ActionType type;
@@ -27,22 +24,13 @@ public abstract class GCAction implements ActionListener
     {
         this.type = type;
     }
-    
-    /**
-     * This gets called when the button an action is added to was pushed or
-     * if the action is called otherwise.
-     *
-     * The action`s perform method will not be executed right away but
-     * later in the GUI`s thread.
-     * 
-     * @param e the event that happened, but this is ignored.
-     */
-    @Override
-    public void actionPerformed(ActionEvent e)
+
+    /** Causes this action to register itself for execution. */
+    public void invoke()
     {
         EventHandler.getInstance().register(this);
     }
-    
+
     /**
      * This is the essential method of each action.
      * It is called automatically after the actionPerformed method was called.
