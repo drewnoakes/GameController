@@ -89,8 +89,8 @@ private:
   const int* defaultTeamColour; /** Points to where ALMemory stores the default team color. */
   int teamNumber; /**< The team number. */
   RoboCupGameControlData gameCtrlData; /**< The local copy of the GameController packet. */
-  uint8_t previousState; /**< The game state during the previous cycle. Used to detect when LEDs have to be updated. */
-  uint8_t previousSecondaryState; /**< The secondary game state during the previous cycle. Used to detect when LEDs have to be updated. */
+  uint8_t previousPlayMode; /**< The play mode during the previous cycle. Used to detect when LEDs have to be updated. */
+  uint8_t previousPeriod; /**< The period during the previous cycle. Used to detect when LEDs have to be updated. */
   uint8_t previousKickOffTeam; /**< The kick-off team during the previous cycle. Used to detect when LEDs have to be updated. */
   uint8_t previousTeamColour; /**< The team colour during the previous cycle. Used to detect when LEDs have to be updated. */
   uint8_t previousPenalty; /**< The penalty set during the previous cycle. Used to detect when LEDs have to be updated. */
@@ -108,8 +108,8 @@ private:
    */
   void init()
   {
-    previousState = (uint8_t) -1;
-    previousSecondaryState = (uint8_t) -1;
+    previousPlayMode = (uint8_t) -1;
+    previousPeriod = (uint8_t) -1;
     previousKickOffTeam = (uint8_t) -1;
     previousTeamColour = (uint8_t) -1;
     previousPenalty = (uint8_t) -1;
@@ -126,7 +126,7 @@ private:
 
   /**
    * Sets the LEDs whenever the state they visualize changes.
-   * Regularily sends the return packet to the GameController.
+   * Regularly sends the return packet to the GameController.
    */
   void handleOutput()
   {
@@ -138,8 +138,8 @@ private:
         gameCtrlData.teams[1].teamNumber == teamNumber))
     {
       const TeamInfo& team = gameCtrlData.teams[gameCtrlData.teams[0].teamNumber == teamNumber ? 0 : 1];
-      if(gameCtrlData.state != previousState ||
-         gameCtrlData.secondaryState != previousSecondaryState ||
+      if(gameCtrlData.playMode != previousPlayMode ||
+         gameCtrlData.period != previousPlayMode ||
          gameCtrlData.kickOffTeam != previousKickOffTeam ||
          team.teamColour != previousTeamColour ||
          team.players[*playerNumber - 1].penalty != previousPenalty)
@@ -149,16 +149,16 @@ private:
         else
           setLED(leftFootRed, 1.f, 0.f, 0.f);
 
-        if(gameCtrlData.state == PLAY_MODE_INITIAL &&
-           gameCtrlData.secondaryState == PERIOD_PENALTYSHOOT &&
+        if(gameCtrlData.playMode == PLAY_MODE_INITIAL &&
+           gameCtrlData.period == PERIOD_PENALTYSHOOT &&
            gameCtrlData.kickOffTeam == team.teamColour)
           setLED(rightFootRed, 0.f, 1.f, 0.f);
-        else if(gameCtrlData.state == PLAY_MODE_INITIAL &&
-                gameCtrlData.secondaryState == PERIOD_PENALTYSHOOT &&
+        else if(gameCtrlData.playMode == PLAY_MODE_INITIAL &&
+                gameCtrlData.period == PERIOD_PENALTYSHOOT &&
                 gameCtrlData.kickOffTeam != team.teamColour)
           setLED(rightFootRed, 1.f, 1.0f, 0.f);
         else if(now - whenPacketWasReceived < GAMECONTROLLER_TIMEOUT &&
-                gameCtrlData.state <= PLAY_MODE_SET &&
+                gameCtrlData.playMode <= PLAY_MODE_SET &&
                 gameCtrlData.kickOffTeam == team.teamColour)
           setLED(rightFootRed, 1.f, 1.f, 1.f);
         else
@@ -167,7 +167,7 @@ private:
         if(team.players[*playerNumber - 1].penalty != PENALTY_NONE)
           setLED(chestRed, 1.f, 0.f, 0.f);
         else
-          switch(gameCtrlData.state)
+          switch(gameCtrlData.playMode)
           {
             case PLAY_MODE_READY:
               setLED(chestRed, 0.f, 0.f, 1.f);
@@ -185,8 +185,8 @@ private:
         ledRequest[4][0] = (int) now;
         proxy->setAlias(ledRequest);
 
-        previousState = gameCtrlData.state;
-        previousSecondaryState = gameCtrlData.secondaryState;
+        previousPlayMode = gameCtrlData.playMode;
+        previousPeriod = gameCtrlData.period;
         previousKickOffTeam = gameCtrlData.kickOffTeam;
         previousTeamColour = team.teamColour;
         previousPenalty = team.players[*playerNumber - 1].penalty;
@@ -233,7 +233,7 @@ private:
     if(receive())
     {
       if(!whenPacketWasReceived)
-        previousState = (uint8_t) -1; // force LED update on first packet received
+        previousPlayMode = (uint8_t) -1; // force LED update on first packet received
       whenPacketWasReceived = now;
       publish();
     }
@@ -272,7 +272,7 @@ private:
             else
             {
               player.penalty = PENALTY_NONE;
-              gameCtrlData.state = PLAY_MODE_PLAYING;
+              gameCtrlData.playMode = PLAY_MODE_PLAYING;
               if(now - whenPacketWasReceived < GAMECONTROLLER_TIMEOUT &&
                  send(GAMECONTROLLER_RETURN_MSG_MAN_UNPENALISE))
                 whenPacketWasSent = now;
@@ -284,7 +284,7 @@ private:
           whenChestButtonStateChanged = now;
         }
 
-        if(gameCtrlData.state == PLAY_MODE_INITIAL)
+        if(gameCtrlData.playMode == PLAY_MODE_INITIAL)
         {
           bool leftFootButtonPressed = *buttons[leftFootLeft] != 0.f || *buttons[leftFootRight] != 0.f;
           if(leftFootButtonPressed != previousLeftFootButtonPressed && now - whenLeftFootButtonStateChanged >= BUTTON_DELAY)
@@ -304,15 +304,15 @@ private:
           {
             if(rightFootButtonPressed)
             {
-              if(gameCtrlData.secondaryState == PERIOD_NORMAL)
+              if(gameCtrlData.period == PERIOD_NORMAL)
               {
-                gameCtrlData.secondaryState = PERIOD_PENALTYSHOOT;
+                gameCtrlData.period = PERIOD_PENALTYSHOOT;
                 gameCtrlData.kickOffTeam = team.teamColour;
               }
               else if(gameCtrlData.kickOffTeam == team.teamColour)
                 gameCtrlData.kickOffTeam ^= 1;
               else
-                gameCtrlData.secondaryState = PERIOD_NORMAL;
+                gameCtrlData.period = PERIOD_NORMAL;
               publish();
             }
             previousRightFootButtonPressed = rightFootButtonPressed;
