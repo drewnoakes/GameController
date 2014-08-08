@@ -1,4 +1,4 @@
-package controller.action.ui;
+package controller.action.ui.period;
 
 import common.Log;
 
@@ -47,7 +47,7 @@ public class RefereeTimeout extends GCAction
     public boolean isLegal(GameState data)
     {
         return data.playMode != PlayMode.Finished
-                && !data.timeOutActive[0] && !data.timeOutActive[1];
+                && !data.timeOutActive[0]
+                && !data.timeOutActive[1];
     }
-
 }

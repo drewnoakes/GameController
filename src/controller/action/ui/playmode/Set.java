@@ -3,7 +3,7 @@ package controller.action.ui.playmode;
 import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import controller.action.ui.half.FirstHalf;
+import controller.action.ui.period.FirstHalf;
 import data.*;
 import rules.Rules;
 

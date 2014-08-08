@@ -1,22 +1,24 @@
-package controller.action.ui.half;
+package controller.action.ui.period;
 
 import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.*;
+import rules.Rules;
+
 
 /**
- * This action means that the half is to be set to the second half of overtime.
+ * This action means that the half is to be set to the first half of overtime.
  *
  * @author Michel Bartsch
  */
-public class SecondHalfOvertime extends GCAction
+public class FirstHalfOvertime extends GCAction
 {
     /**
-     * Creates a new SecondHalfOvertime action.
+     * Creates a new FirstHalfOvertime action.
      * Look at the ActionBoard before using this.
      */
-    public SecondHalfOvertime()
+    public FirstHalfOvertime()
     {
         super(ActionType.UI);
     }
@@ -29,8 +31,8 @@ public class SecondHalfOvertime extends GCAction
     @Override
     public void perform(GameState data)
     {
-        if (data.firstHalf || data.period == Period.PenaltyShootout) {
-            data.firstHalf = false;
+        if (!data.firstHalf || data.period == Period.PenaltyShootout) {
+            data.firstHalf = true;
             data.period = Period.Overtime;
             if (data.colorChangeAuto) {
                 data.team[0].teamColor = TeamColor.Blue;
@@ -39,7 +41,7 @@ public class SecondHalfOvertime extends GCAction
             FirstHalf.changeSide(data);
             data.kickOffTeam = (data.leftSideKickoff ? data.team[0].teamColor : data.team[1].teamColor);
             data.playMode = PlayMode.Initial;
-            Log.state(data, "2nd Half Extra Time");
+            Log.state(data, "1st Half Extra Time");
         }
     }
 
@@ -52,8 +54,14 @@ public class SecondHalfOvertime extends GCAction
     @Override
     public boolean isLegal(GameState data)
     {
-        return (!data.firstHalf && data.period == Period.Overtime)
-            || (data.period == Period.Overtime && data.playMode == PlayMode.Finished)
-            || data.testmode;
+        return (data.firstHalf && data.period == Period.Overtime)
+                || (Rules.league.overtime
+                    && data.playoff
+                    && data.period == Period.Normal
+                    && data.playMode == PlayMode.Finished
+                    && !data.firstHalf
+                    && data.team[0].score == data.team[1].score
+                    && data.team[0].score > 0)
+                || data.testmode;
     }
 }

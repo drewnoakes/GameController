@@ -1,4 +1,4 @@
-package controller.action.ui.half;
+package controller.action.ui.period;
 
 import common.Log;
 import controller.action.ActionType;
