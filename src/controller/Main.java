@@ -74,10 +74,10 @@ public class Main
             //sender
             gameStateSender = new GameStateSender(options.broadcastAddress);
             gameStateSender.addProtocol(new GameStateProtocol9());
-            gameStateSender.addProtocol(new GameStateProtocol8());
-            if (Rules.league.compatibilityToVersion7) {
+            if (Rules.league.supportGameStateVersion8)
+                gameStateSender.addProtocol(new GameStateProtocol8());
+            if (Rules.league.supportGameStateVersion7)
                 gameStateSender.addProtocol(new GameStateProtocol7());
-            }
             gameStateSender.send(data);
             gameStateSender.start();
 

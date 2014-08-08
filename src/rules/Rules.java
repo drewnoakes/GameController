@@ -96,8 +96,10 @@ public abstract class Rules
     public boolean isCoachAvailable;
     /** Allowed to compensate for lost time? */
     public boolean lostTime;
-    /** Whether compatibility mode (version 7) is supported **/
-    public boolean compatibilityToVersion7;
+    /** Whether to support version 7 of the game state protocol. */
+    public boolean supportGameStateVersion7;
+    /** Whether to support version 8 of the game state protocol. */
+    public boolean supportGameStateVersion8;
     /** If true, the drop-in player competition is active*/
     public boolean dropInPlayerMode;
 }

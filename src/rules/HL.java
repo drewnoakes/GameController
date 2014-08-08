@@ -67,8 +67,10 @@ public class HL extends Rules
         isCoachAvailable = false;
         /** Allowed to compensate for lost time? */
         lostTime = false;
-        /** Whether compatibility mode (version 7) is supported **/
-        compatibilityToVersion7 = true;
+        /** Whether to support version 7 of the game state protocol. */
+        supportGameStateVersion7 = true;
+        /** Whether to support version 8 of the game state protocol. */
+        supportGameStateVersion8 = true;
         /** If true, the drop-in player competition is active*/
         dropInPlayerMode = false;
     }
