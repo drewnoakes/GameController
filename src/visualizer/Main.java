@@ -19,7 +19,7 @@ public class Main
     private final static String COMMAND_LEAGUE = "--league";
     private final static String COMMAND_LEAGUE_SHORT = "-l";
     
-    private static Listener listener;
+    private static GameStateListener gameStateListener;
 
     private Main() {}
 
@@ -48,8 +48,8 @@ public class Main
         
         GUI gui = new GUI();
         new KeyboardListener(gui);
-        listener = new Listener(gui);
-        listener.start();
+        gameStateListener = new GameStateListener(gui);
+        gameStateListener.start();
     }
     
     /**
@@ -59,9 +59,9 @@ public class Main
     public static void exit()
     {
         try {
-            listener.stop();
+            gameStateListener.stop();
         } catch (InterruptedException e) {
-            Log.error("Waiting for listener to shutdown was interrupted.");
+            Log.error("Waiting for gameStateListener to shutdown was interrupted.");
         }
         System.exit(0);
     }

@@ -147,7 +147,7 @@ public class GUI extends JFrame
     }
     
     /**
-     * This is called by the Listener after receiving GameControlData to show
+     * This is called by the GameStateListener after receiving GameControlData to show
      * them on the gui.
      * 
      * @param data  The GameControlData to show.

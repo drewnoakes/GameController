@@ -18,7 +18,7 @@ import java.nio.ByteBuffer;
  * 
  * This class receives the GameControlData from the GameController.
  */
-public class Listener
+public class GameStateListener
 {
     /** The thread instance owned by this listener class. */
     private final ListenerThread listenerThread;
@@ -31,9 +31,9 @@ public class Listener
     private DatagramSocket datagramSocket;
 
     /**
-     * Creates a new Listener.
+     * Creates a new GameStateListener.
      */
-    public Listener(GUI gui)
+    public GameStateListener(GUI gui)
     {
         this.gui = gui;
         try {
