@@ -46,9 +46,12 @@ public class Main
         logs = new LinkedList<LogInfo>();
         File dir = new File(PATH);
         File[] files = dir.listFiles();
-        for (File file: files) {
-            if (file.isFile() && file.getName().startsWith("log_")) {
-                logs.add(new LogInfo(file));
+
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile() && file.getName().startsWith("log_")) {
+                    logs.add(new LogInfo(file));
+                }
             }
         }
     }
