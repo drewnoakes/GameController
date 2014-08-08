@@ -43,7 +43,7 @@ public class TimeOut extends GCAction
             data.timeOutTaken[side] = true;
             if (data.previousSecGameState != SecondaryGameState.PenaltyShootout) {
                 data.kickOffTeam = data.team[side].teamColor.other();
-            } else if (data.gameState == GameState.Set) {
+            } else if (data.playMode == PlayMode.Set) {
                 data.team[data.kickOffTeam == data.team[0].teamColor ? 0 : 1].penaltyShot--;
             }
             Log.setNextMessage("Timeout "+data.team[side].teamColor);
@@ -69,9 +69,9 @@ public class TimeOut extends GCAction
     public boolean isLegal(AdvancedData data)
     {
       return data.timeOutActive[side]
-            || ((data.gameState == GameState.Initial ||
-                  data.gameState == GameState.Ready ||
-                  data.gameState == GameState.Set)
+            || ((data.playMode == PlayMode.Initial ||
+                  data.playMode == PlayMode.Ready ||
+                  data.playMode == PlayMode.Set)
                 && !data.timeOutTaken[side]
                 && !data.timeOutActive[side == 0 ? 1 : 0]
                 && data.secGameState != SecondaryGameState.Timeout)

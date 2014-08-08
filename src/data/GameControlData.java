@@ -18,9 +18,9 @@ import java.io.Serializable;
  */
 public class GameControlData implements Serializable
 {
-    /** Primary state of the game. */
+    /** Play mode of the game. */
     @NotNull
-    public GameState gameState = GameState.Initial;
+    public PlayMode playMode = PlayMode.Initial;
     /** Whether the game is currently in the first half. Applies to both normal time and overtime. */
     public boolean firstHalf = true;
     /** Which team has the next kick off. If null, then the next kick off will be a drop ball. */
@@ -36,10 +36,10 @@ public class GameControlData implements Serializable
     /** An estimate of the number of seconds remaining in the current half. */
     public short secsRemaining = (short) Rules.league.halfTime;
     /**
-     * State-specific sub-time in seconds.
+     * Play-mode-specific sub-time in seconds.
      *
      * For example, may reflect the ten second countdown during kickoff, or the number of seconds
-     * remaining during 'ready' state, and so forth.
+     * remaining during 'ready' play mode, and so forth.
      */
     public short secondaryTime = 0;
     public TeamInfo[] team = new TeamInfo[2];
@@ -59,7 +59,7 @@ public class GameControlData implements Serializable
     @Override
     public String toString()
     {
-        return "          gameState: " + gameState + '\n' +
+        return "           playMode: " + playMode + '\n' +
                "          firstHalf: " + (firstHalf ? "true" : "false") + '\n' +
                "        kickOffTeam: " + kickOffTeam + '\n' +
                "       secGameState: " + secGameState + '\n' +

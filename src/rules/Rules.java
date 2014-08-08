@@ -46,11 +46,11 @@ public abstract class Rules
     public int robotsPlaying;
     /** If the colors change automatically. */
     public boolean colorChangeAuto;
-    /** If the clock may stop in certain states (Ready, Set) in a play-off game. */
+    /** If the clock may stop in certain play modes (Ready, Set) in a play-off game. */
     public boolean playOffTimeStop;
     /** Time in seconds one half is long. */
     public int halfTime;
-    /** Time in seconds the ready state is long. */
+    /** Length of the 'ready' play mode, in seconds. */
     public int readyTime;
     /** Time in seconds between first and second half. */
     public int pauseTime;

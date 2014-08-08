@@ -5,7 +5,7 @@ import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
-import data.GameState;
+import data.PlayMode;
 import rules.Rules;
 
 
@@ -41,7 +41,7 @@ public class GlobalStuck extends GCAction
     public void perform(AdvancedData data)
     {
         data.kickOffTeam = data.team[side == 0 ? 1 : 0].teamColor;
-        if (data.getRemainingSeconds(data.whenCurrentGameStateBegan, Rules.league.kickoffTime + Rules.league.minDurationBeforeStuck) > 0) {
+        if (data.getRemainingSeconds(data.whenCurrentPlayModeBegan, Rules.league.kickoffTime + Rules.league.minDurationBeforeStuck) > 0) {
             Log.setNextMessage("Kickoff Goal "+data.team[side].teamColor);
         } else {
             Log.setNextMessage("Global Game Stuck, Kickoff "+data.kickOffTeam);
@@ -58,6 +58,6 @@ public class GlobalStuck extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameState.Playing) || data.testmode;
+        return (data.playMode == PlayMode.Playing) || data.testmode;
     }
 }

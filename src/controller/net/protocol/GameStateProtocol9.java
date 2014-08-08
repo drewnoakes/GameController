@@ -59,7 +59,7 @@ public class GameStateProtocol9 extends GameStateProtocol
                 1 + // version
                 1 + // packet number
                 1 + // numPlayers
-                1 + // gameState
+                1 + // playMode
                 1 + // firstHalf
                 1 + // kickOffTeam
                 1 + // secGameState
@@ -81,7 +81,7 @@ public class GameStateProtocol9 extends GameStateProtocol
         buffer.put(versionNumber);
         buffer.put(packetNumber);
         buffer.put((byte)Rules.league.teamSize);
-        buffer.put(data.gameState.getValue());
+        buffer.put(data.playMode.getValue());
         buffer.put(data.firstHalf ? (byte)1 : 0);
         buffer.put(data.kickOffTeam == null ? 2 : data.kickOffTeam.getValue());
         buffer.put(data.secGameState.getValue());
@@ -118,7 +118,7 @@ public class GameStateProtocol9 extends GameStateProtocol
         buffer.get(); // packet number (ignored when decoding)
         buffer.get(); // players per team (ignored when decoding)
 
-        data.gameState = GameState.fromValue(buffer.get());
+        data.playMode = PlayMode.fromValue(buffer.get());
         data.firstHalf = buffer.get() != 0;
         data.kickOffTeam = TeamColor.fromValue(buffer.get());
         data.secGameState = SecondaryGameState.fromValue(buffer.get());

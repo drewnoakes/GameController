@@ -1,4 +1,4 @@
-package controller.action.ui.state;
+package controller.action.ui.playmode;
 
 import common.Log;
 import controller.action.ActionType;
@@ -7,11 +7,10 @@ import controller.action.ui.half.FirstHalf;
 import data.*;
 import rules.Rules;
 
-
 /**
+ * Sets play mode to @{link PlayMode#Set}.
+ *
  * @author Michel Bartsch
- * 
- * This action means that the state is to be set to set.
  */
 public class Set extends GCAction
 {
@@ -32,29 +31,29 @@ public class Set extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (data.gameState == GameState.Set) {
+        if (data.playMode == PlayMode.Set) {
             return;
         }
         if (Rules.league.returnRobotsInGameStoppages) {
             data.resetPenaltyTimes();
         }
-        if (!data.playoff && data.timeBeforeCurrentGameState != 0) {
-            data.addTimeInCurrentState();
+        if (!data.playoff && data.timeBeforeCurrentPlayMode != 0) {
+            data.addTimeInCurrentPlayMode();
         }
-        data.whenCurrentGameStateBegan = data.getTime();
+        data.whenCurrentPlayModeBegan = data.getTime();
 
         if (data.secGameState == SecondaryGameState.PenaltyShootout) {
-            data.timeBeforeCurrentGameState = 0;
-            if (data.gameState != GameState.Initial) {
+            data.timeBeforeCurrentPlayMode = 0;
+            if (data.playMode != PlayMode.Initial) {
                 data.kickOffTeam = data.kickOffTeam == TeamColor.Blue ? TeamColor.Red : TeamColor.Blue;
                 FirstHalf.changeSide(data);
             }
 
-            if (data.gameState != GameState.Playing) {
+            if (data.playMode != PlayMode.Playing) {
                 data.team[data.team[0].teamColor == data.kickOffTeam ? 0 : 1].penaltyShot++;
             }
         }
-        data.gameState = GameState.Set;
+        data.playMode = PlayMode.Set;
         Log.state(data, "Set");
     }
     
@@ -67,10 +66,10 @@ public class Set extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return data.gameState == GameState.Ready
-            || data.gameState == GameState.Set
+        return data.playMode == PlayMode.Ready
+            || data.playMode == PlayMode.Set
             || (data.secGameState == SecondaryGameState.PenaltyShootout
-              && (data.gameState != GameState.Playing || Rules.league.penaltyShotRetries)
+              && (data.playMode != PlayMode.Playing || Rules.league.penaltyShotRetries)
               && !data.timeOutActive[0]
               && !data.timeOutActive[1]
               && !data.refereeTimeout)

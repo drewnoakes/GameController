@@ -1,15 +1,15 @@
-package controller.action.ui.state;
+package controller.action.ui.playmode;
 
 import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
-import data.GameState;
+import data.PlayMode;
 
 /**
+ * Sets play mode to @{link PlayMode#Playing}.
+ *
  * @author Michel Bartsch
- * 
- * This action means that the state is to be set to play.
  */
 public class Play extends GCAction
 {
@@ -30,14 +30,14 @@ public class Play extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (data.gameState == GameState.Playing) {
+        if (data.playMode == PlayMode.Playing) {
             return;
         }
-        if (!data.playoff && data.timeBeforeCurrentGameState != 0) {
-            data.addTimeInCurrentState();
+        if (!data.playoff && data.timeBeforeCurrentPlayMode != 0) {
+            data.addTimeInCurrentPlayMode();
         }
-        data.whenCurrentGameStateBegan = data.getTime();
-        data.gameState = GameState.Playing;
+        data.whenCurrentPlayModeBegan = data.getTime();
+        data.playMode = PlayMode.Playing;
         Log.state(data, "Playing");
     }
     
@@ -50,8 +50,8 @@ public class Play extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameState.Set)
-            || (data.gameState == GameState.Playing)
+        return (data.playMode == PlayMode.Set)
+            || (data.playMode == PlayMode.Playing)
             || data.testmode;
     }
 }

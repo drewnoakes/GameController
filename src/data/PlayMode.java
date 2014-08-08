@@ -1,56 +1,56 @@
 package data;
 
 /**
- * Enum of primary game states.
+ * Enum of game play modes.
  *
  * @author Drew Noakes https://drewnoakes.com
  */
-public enum GameState
+public enum PlayMode
 {
     /**
-     * The game is in 'initial' state.
+     * The game is in 'initial' play mode.
      * We are waiting for the referee to call 'ready'.
      */
     Initial((byte)0),
 
     /**
-     * The game is in 'ready' state.
+     * The game is in 'ready' play mode.
      * Robots may position automatically, or be positioned manually.
      * The referee will call 'set' soon.
      */
     Ready((byte)1),
 
     /**
-     * The game is in 'set' state.
+     * The game is in 'set' play mode.
      * Robots must stop moving, and robot handlers must leave the field.
      * The referee will call 'play' soon.
      */
     Set((byte)2),
 
-    /** The game is in 'playing' state. */
+    /** The game is in 'playing' play mode. */
     Playing((byte)3),
 
     /**
-     * The game is in 'finished' state as a half has completed.
+     * The game is in 'finished' play mode as a half has completed.
      * There may yet be another half, extra time or penalties.
      */
     Finished((byte)4);
 
     private final byte value;
 
-    GameState(byte value)
+    PlayMode(byte value)
     {
         this.value = value;
     }
 
-    /** Get the numeric value used in network messages for this game state. */
+    /** Get the numeric value used in network messages for this play mode. */
     public byte getValue()
     {
         return value;
     }
 
     /** Decode a numeric value from a network message. */
-    public static GameState fromValue(byte value)
+    public static PlayMode fromValue(byte value)
     {
         switch (value)
         {

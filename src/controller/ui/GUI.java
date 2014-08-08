@@ -106,7 +106,7 @@ public class GUI extends JFrame implements GCGUI
     private static final int TIME_FONT_SIZE = 50;
     private static final int TIME_SUB_FONT_SIZE = 40;
     private static final int TIMEOUT_FONT_SIZE = 14;
-    private static final int STATE_FONT_SIZE = 12;
+    private static final int PLAY_MODE_FONT_SIZE = 12;
     private static final String WINDOW_TITLE = "RoboCup Game Controller";
     private static final String ICONS_PATH = "config/icons/";
     private static final String[][] BACKGROUND_SIDE = {{"robot_left_blue.png",
@@ -131,11 +131,11 @@ public class GUI extends JFrame implements GCGUI
     private static final String STUCK = "Global <br/> Game <br/> Stuck";
     private static final String KICKOFF_GOAL = "Kickoff Goal";
     private static final String OUT = "Out";
-    private static final String STATE_INITIAL = "Initial";
-    private static final String STATE_READY = "Ready";
-    private static final String STATE_SET = "Set";
-    private static final String STATE_PLAY = "Play";
-    private static final String STATE_FINISH = "Finish";
+    private static final String PLAY_MODE_INITIAL = "Initial";
+    private static final String PLAY_MODE_READY = "Ready";
+    private static final String PLAY_MODE_SET = "Set";
+    private static final String PLAY_MODE_PLAY = "Play";
+    private static final String PLAY_MODE_FINISH = "Finish";
     private static final String CLOCK_RESET = "reset.png";
     private static final String CLOCK_PAUSE = "pause.png";
     private static final String CLOCK_PLAY = "play.png";
@@ -185,7 +185,7 @@ public class GUI extends JFrame implements GCGUI
     private Font timeFont;
     private Font timeSubFont;
     private Font timeoutFont;
-    private Font stateFont;
+    private Font playModeFont;
     private ImageIcon clockImgReset;
     private ImageIcon clockImgPlay;
     private ImageIcon clockImgPause;
@@ -220,7 +220,7 @@ public class GUI extends JFrame implements GCGUI
     private JToggleButton set;
     private JToggleButton play;
     private JToggleButton finish;
-    private ButtonGroup stateGroup;
+    private ButtonGroup playModeGroup;
     private ImageButton clockReset;
     private ImagePanel clockContainer;
     private JLabel clock;
@@ -424,23 +424,22 @@ public class GUI extends JFrame implements GCGUI
                 halfGroup.add(refereeTimeout);
             }
         }
-        //  state
-        initial = new ToggleButton(STATE_INITIAL);
+        // play mode
+        initial = new ToggleButton(PLAY_MODE_INITIAL);
         initial.setSelected(true);
-        ready = new ToggleButton(STATE_READY);
-        set = new ToggleButton(STATE_SET);
-        play = new ToggleButton(STATE_PLAY);
-        finish = new ToggleButton(STATE_FINISH);
-        stateGroup = new ButtonGroup();
-        stateGroup.add(initial);
-        stateGroup.add(ready);
-        stateGroup.add(set);
-        stateGroup.add(play);
-        stateGroup.add(finish);
-        //  penalties
+        ready = new ToggleButton(PLAY_MODE_READY);
+        set = new ToggleButton(PLAY_MODE_SET);
+        play = new ToggleButton(PLAY_MODE_PLAY);
+        finish = new ToggleButton(PLAY_MODE_FINISH);
+        playModeGroup = new ButtonGroup();
+        playModeGroup.add(initial);
+        playModeGroup.add(ready);
+        playModeGroup.add(set);
+        playModeGroup.add(play);
+        playModeGroup.add(finish);
+        // penalties
         if (Rules.league instanceof SPL) {
             pen = new JToggleButton[10];
-            
             pen[0] = new ToggleButton(PEN_PUSHING);
             pen[1] = new ToggleButton(PEN_LEAVING);
             pen[2] = new ToggleButton(PEN_FALLEN);
@@ -771,7 +770,7 @@ public class GUI extends JFrame implements GCGUI
         updateClock(data);
         updateHalf(data);
         updateColor(data);
-        updateState(data);
+        updatePlayMode(data);
         updateGoal(data);
         updateKickoff(data);
         updateRobots(data);
@@ -813,7 +812,7 @@ public class GUI extends JFrame implements GCGUI
         clock.setText(formatTime(data.getRemainingGameTime()));
         Integer secondaryTime = data.getSecondaryTime(KICKOFF_BLOCKED_HIGHLIGHT_SECONDS - 1);
         if (secondaryTime != null) {
-            if (data.gameState == GameState.Playing) {
+            if (data.playMode == PlayMode.Playing) {
                 clockSub.setText(formatTime(Math.max(0, secondaryTime)));
                 clockSub.setForeground(secondaryTime <= 0
                         && clockSub.getForeground() != COLOR_HIGHLIGHT ? COLOR_HIGHLIGHT : Color.BLACK);
@@ -884,11 +883,11 @@ public class GUI extends JFrame implements GCGUI
     }
     
     /**
-     * Updates the state.
+     * Updates the play mode.
      * 
      * @param data     The current data (model) the GUI should view.
      */
-    private void updateState(AdvancedData data)
+    private void updatePlayMode(AdvancedData data)
     {
         initial.setEnabled(ActionBoard.initial.isLegal(data));
         ready.setEnabled(ActionBoard.ready.isLegal(data));
@@ -896,21 +895,22 @@ public class GUI extends JFrame implements GCGUI
         play.setEnabled(ActionBoard.play.isLegal(data));
         finish.setEnabled(ActionBoard.finish.isLegal(data));
 
-        if (data.gameState == GameState.Initial) {
+        if (data.playMode == PlayMode.Initial) {
             initial.setSelected(true);
-        } else if (data.gameState == GameState.Ready) {
+        } else if (data.playMode == PlayMode.Ready) {
             ready.setSelected(true);
-        } else if (data.gameState == GameState.Set) {
+        } else if (data.playMode == PlayMode.Set) {
             set.setSelected(true);
-        } else if (data.gameState == GameState.Playing) {
+        } else if (data.playMode == PlayMode.Playing) {
             play.setSelected(true);
-        } else if (data.gameState == GameState.Finished) {
+        } else if (data.playMode == PlayMode.Finished) {
             finish.setSelected(true);
         }
 
-        highlight(finish, (data.gameState != GameState.Finished)
-                && (data.getRemainingGameTime() <= FINISH_HIGHLIGHT_SECONDS)
-                && (finish.getBackground() != COLOR_HIGHLIGHT));
+        highlight(finish,
+                data.playMode != PlayMode.Finished
+                && data.getRemainingGameTime() <= FINISH_HIGHLIGHT_SECONDS
+                && finish.getBackground() != COLOR_HIGHLIGHT);
     }
     
     /**
@@ -966,8 +966,8 @@ public class GUI extends JFrame implements GCGUI
                     pushes[i].setText(PUSHES+": "+data.pushes[i]);
                 }
             } else {
-                pushes[i].setText((i == 0 && (data.gameState == GameState.Set
-                        || data.gameState == GameState.Playing) ? SHOT : SHOTS)+": "+data.team[i].penaltyShot);
+                pushes[i].setText((i == 0 && (data.playMode == PlayMode.Set
+                        || data.playMode == PlayMode.Playing) ? SHOT : SHOTS)+": "+data.team[i].penaltyShot);
             }
         }
     }
@@ -1062,7 +1062,7 @@ public class GUI extends JFrame implements GCGUI
                 timeOut[i].setSelected(false);
                 highlight(timeOut[i], false);
             } else {
-                boolean shouldHighlight = (data.getRemainingSeconds(data.whenCurrentGameStateBegan, Rules.league.timeOutTime) < TIMEOUT_HIGHLIGHT_SECONDS)
+                boolean shouldHighlight = (data.getRemainingSeconds(data.whenCurrentPlayModeBegan, Rules.league.timeOutTime) < TIMEOUT_HIGHLIGHT_SECONDS)
                         && (timeOut[i].getBackground() != COLOR_HIGHLIGHT);
                 timeOut[i].setSelected(!IS_OSX || !shouldHighlight);
                 highlight(timeOut[i], shouldHighlight);
@@ -1084,8 +1084,8 @@ public class GUI extends JFrame implements GCGUI
     private void updateGlobalStuck(AdvancedData data)
     {
         for (int i=0; i<2; i++) {
-            if (data.gameState == GameState.Playing
-                    && data.getRemainingSeconds(data.whenCurrentGameStateBegan, Rules.league.kickoffTime + Rules.league.minDurationBeforeStuck) > 0)
+            if (data.playMode == PlayMode.Playing
+                    && data.getRemainingSeconds(data.whenCurrentPlayModeBegan, Rules.league.kickoffTime + Rules.league.minDurationBeforeStuck) > 0)
             {
                 if (data.kickOffTeam == data.team[i].teamColor)
                 {
@@ -1226,7 +1226,7 @@ public class GUI extends JFrame implements GCGUI
         timeFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(TIME_FONT_SIZE*(size)));
         timeSubFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(TIME_SUB_FONT_SIZE*(size)));
         timeoutFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(TIMEOUT_FONT_SIZE*(size)));
-        stateFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STATE_FONT_SIZE*(size)));
+        playModeFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(PLAY_MODE_FONT_SIZE *(size)));
 
         for (int i=0; i<=1; i++) {
             name[i].setFont(titleFont);
@@ -1258,11 +1258,11 @@ public class GUI extends JFrame implements GCGUI
             refereeTimeout.setFont(timeoutFont);
         }
 
-        initial.setFont(stateFont);
-        ready.setFont(stateFont);
-        set.setFont(stateFont);
-        play.setFont(stateFont);
-        finish.setFont(stateFont);
+        initial.setFont(playModeFont);
+        ready.setFont(playModeFont);
+        set.setFont(playModeFont);
+        play.setFont(playModeFont);
+        finish.setFont(playModeFont);
         for (JToggleButton penaltyButton : pen) {
             penaltyButton.setFont(standardFont);
         }

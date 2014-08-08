@@ -1,25 +1,24 @@
-package controller.action.ui.state;
+package controller.action.ui.playmode;
 
 import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
-import data.GameState;
+import data.PlayMode;
 import rules.Rules;
 
-
 /**
+ * Sets play mode to @{link PlayMode#Initial}.
+ *
  * @author Michel Bartsch
- * 
- * This action means that the state is to be set to finish.
  */
-public class Finish extends GCAction
+public class Initial extends GCAction
 {
     /**
-     * Creates a new Finish action.
+     * Creates a new Initial action.
      * Look at the ActionBoard before using this.
      */
-    public Finish()
+    public Initial()
     {
         super(ActionType.UI);
     }
@@ -32,18 +31,26 @@ public class Finish extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (data.gameState == GameState.Finished) {
-            return;
+        if (data.playMode != PlayMode.Initial) {
+            forcePerform(data);
         }
+    }
+
+    /**
+     * Performs this action, even if the current play mode is @{link PlayMode#Initial}.
+     *
+     * @param data The current data to work on.
+     */
+    public void forcePerform(AdvancedData data)
+    {
         if (Rules.league.returnRobotsInGameStoppages) {
             data.resetPenaltyTimes();
         }
-        data.addTimeInCurrentState();
-        data.whenCurrentGameStateBegan = data.getTime();
-        data.gameState = GameState.Finished;
-        Log.state(data, "Finished");
+        data.whenCurrentPlayModeBegan = data.getTime();
+        data.playMode = PlayMode.Initial;
+        Log.state(data, "Initial");
     }
-    
+
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
@@ -53,10 +60,6 @@ public class Finish extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameState.Ready)
-            || (data.gameState == GameState.Set)
-            || (data.gameState == GameState.Playing)
-            || (data.gameState == GameState.Finished)
-            || data.testmode;
+        return data.playMode == PlayMode.Initial || data.testmode;
     }
 }

@@ -5,7 +5,7 @@ import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
-import data.GameState;
+import data.PlayMode;
 
 /**
  * @author Michel Bartsch
@@ -46,6 +46,6 @@ public class DropBall extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameState.Playing) || data.testmode;
+        return (data.playMode == PlayMode.Playing) || data.testmode;
     }
 }

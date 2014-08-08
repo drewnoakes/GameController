@@ -28,11 +28,11 @@ public class AdvancedData extends GameControlData implements Cloneable
     /** This message is set when the data is put into the timeline */
     public String message = "";
 
-    /** How much time summed up before the current state? (ms)*/
-    public long timeBeforeCurrentGameState;
+    /** How much time summed up before the current play mode? (ms)*/
+    public long timeBeforeCurrentPlayMode;
     
-    /** When was switched to the current state? (ms) */
-    public long whenCurrentGameStateBegan;
+    /** When was switched to the current play mode? (ms) */
+    public long whenCurrentPlayModeBegan;
     
     /** When was the last drop-in? (ms, 0 = never) */
     public long whenDropIn;
@@ -200,12 +200,12 @@ public class AdvancedData extends GameControlData implements Cloneable
     }
     
     /**
-     * Add the time passed in the current game state to the time that already passed before.
-     * Is usually called during changes of the game state.
+     * Add the time passed in the current play mode to the time that already passed before.
+     * Is usually called during changes of the play mode.
      */
-    public void addTimeInCurrentState()
+    public void addTimeInCurrentPlayMode()
     {
-        timeBeforeCurrentGameState += getTime() - whenCurrentGameStateBegan;
+        timeBeforeCurrentPlayMode += getTime() - whenCurrentPlayModeBegan;
     }
     
     /**
@@ -222,12 +222,12 @@ public class AdvancedData extends GameControlData implements Cloneable
                 : Math.max(team[0].penaltyShot, team[1].penaltyShot) > regularNumberOfPenaltyShots
                 ? Rules.league.penaltyShotTimeSuddenDeath
                 : Rules.league.penaltyShotTime;
-        int timePlayed = gameState == GameState.Initial// during timeouts
-                || (gameState == GameState.Ready || gameState == GameState.Set)
-                && (playoff && Rules.league.playOffTimeStop || timeBeforeCurrentGameState == 0)
-                || gameState == GameState.Finished
-        ? (int) ((timeBeforeCurrentGameState + manRemainingGameTimeOffset + (manPlay ? System.currentTimeMillis() - manWhenClockChanged : 0)) / 1000)
-                : getSecondsSince(whenCurrentGameStateBegan - timeBeforeCurrentGameState - manRemainingGameTimeOffset);
+        int timePlayed = playMode == PlayMode.Initial// during timeouts
+                || (playMode == PlayMode.Ready || playMode == PlayMode.Set)
+                && (playoff && Rules.league.playOffTimeStop || timeBeforeCurrentPlayMode == 0)
+                || playMode == PlayMode.Finished
+        ? (int) ((timeBeforeCurrentPlayMode + manRemainingGameTimeOffset + (manPlay ? System.currentTimeMillis() - manWhenClockChanged : 0)) / 1000)
+                : getSecondsSince(whenCurrentPlayModeBegan - timeBeforeCurrentPlayMode - manRemainingGameTimeOffset);
 
         return duration - timePlayed;
     }
@@ -239,13 +239,13 @@ public class AdvancedData extends GameControlData implements Cloneable
     public Integer getRemainingPauseTime()
     {
         if (secGameState == SecondaryGameState.Normal
-                && (gameState == GameState.Initial && !firstHalf && !timeOutActive[0] && !timeOutActive[1]
-                || gameState == GameState.Finished && firstHalf)) {
-            return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.pauseTime);
+                && (playMode == PlayMode.Initial && !firstHalf && !timeOutActive[0] && !timeOutActive[1]
+                || playMode == PlayMode.Finished && firstHalf)) {
+            return getRemainingSeconds(whenCurrentPlayModeBegan, Rules.league.pauseTime);
         } else if (Rules.league.pausePenaltyShootOutTime != 0 && playoff && team[0].score == team[1].score
-                && (gameState == GameState.Initial && secGameState == SecondaryGameState.PenaltyShootout && !timeOutActive[0] && !timeOutActive[1]
-                || gameState == GameState.Finished && !firstHalf)) {
-            return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.pausePenaltyShootOutTime);
+                && (playMode == PlayMode.Initial && secGameState == SecondaryGameState.PenaltyShootout && !timeOutActive[0] && !timeOutActive[1]
+                || playMode == PlayMode.Finished && !firstHalf)) {
+            return getRemainingSeconds(whenCurrentPlayModeBegan, Rules.league.pausePenaltyShootOutTime);
         } else {
             return null;
         }
@@ -295,8 +295,8 @@ public class AdvancedData extends GameControlData implements Cloneable
         Penalty penalty = team[side].player[number].penalty;
         assert penalty == Penalty.Manual || penalty == Penalty.Substitute || penalty.getDurationSeconds() != -1;
         return penalty == Penalty.Manual || penalty == Penalty.Substitute ? 0
-                : gameState == GameState.Ready && Rules.league.returnRobotsInGameStoppages && whenPenalized[side][number] >= whenCurrentGameStateBegan
-                ? Rules.league.readyTime - getSecondsSince(whenCurrentGameStateBegan)
+                : playMode == PlayMode.Ready && Rules.league.returnRobotsInGameStoppages && whenPenalized[side][number] >= whenCurrentPlayModeBegan
+                ? Rules.league.readyTime - getSecondsSince(whenCurrentPlayModeBegan)
                 : Math.max(0, getRemainingSeconds(whenPenalized[side][number], penalty.getDurationSeconds()));
     }
     
@@ -326,19 +326,19 @@ public class AdvancedData extends GameControlData implements Cloneable
      */
     public Integer getSecondaryTime(int timeKickOffBlockedOvertime)
     {
-        int timeKickOffBlocked = getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.kickoffTime);
+        int timeKickOffBlocked = getRemainingSeconds(whenCurrentPlayModeBegan, Rules.league.kickoffTime);
         if (kickOffTeam == null) {
             timeKickOffBlocked = 0;
         }
-        if (gameState == GameState.Initial && (timeOutActive[0] || timeOutActive[1])) {
-            return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.timeOutTime);
+        if (playMode == PlayMode.Initial && (timeOutActive[0] || timeOutActive[1])) {
+            return getRemainingSeconds(whenCurrentPlayModeBegan, Rules.league.timeOutTime);
         }
-        else if (gameState == GameState.Initial && refereeTimeout) {
-            return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.refereeTimeout);
+        else if (playMode == PlayMode.Initial && refereeTimeout) {
+            return getRemainingSeconds(whenCurrentPlayModeBegan, Rules.league.refereeTimeout);
         }
-        else if (gameState == GameState.Ready) {
-            return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.readyTime);
-        } else if (gameState == GameState.Playing && secGameState != SecondaryGameState.PenaltyShootout
+        else if (playMode == PlayMode.Ready) {
+            return getRemainingSeconds(whenCurrentPlayModeBegan, Rules.league.readyTime);
+        } else if (playMode == PlayMode.Playing && secGameState != SecondaryGameState.PenaltyShootout
                 && timeKickOffBlocked >= -timeKickOffBlockedOvertime) {
             if (timeKickOffBlocked > 0) {
                 return timeKickOffBlocked;

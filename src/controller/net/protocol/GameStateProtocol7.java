@@ -37,7 +37,7 @@ public class GameStateProtocol7 extends GameStateProtocol
         return  4 + // header
                 4 + // version
                 1 + // numPlayers
-                1 + // gameState
+                1 + // playMode
                 1 + // firstHalf
                 1 + // kickOffTeam
                 1 + // secGameState
@@ -56,7 +56,7 @@ public class GameStateProtocol7 extends GameStateProtocol
         buffer.put(GAMECONTROLLER_STRUCT_HEADER.getBytes(), 0, 4);
         buffer.putInt(versionNumber);
         buffer.put((byte)Rules.league.teamSize);
-        buffer.put(data.gameState.getValue());
+        buffer.put(data.playMode.getValue());
         buffer.put(data.firstHalf ? (byte)1 : 0);
         buffer.put(data.kickOffTeam == null ? 2 : data.kickOffTeam.getValue());
         buffer.put(data.secGameState.getValue());

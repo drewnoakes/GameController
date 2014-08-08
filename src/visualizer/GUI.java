@@ -21,7 +21,7 @@ import javax.swing.JFrame;
 
 import common.Log;
 import data.GameControlData;
-import data.GameState;
+import data.PlayMode;
 import data.SecondaryGameState;
 import rules.Rules;
 import data.Teams;
@@ -188,7 +188,7 @@ public class GUI extends JFrame
             drawScores(g);
             drawTime(g);
             drawSecState(g);
-            drawState(g);
+            drawPlayMode(g);
             drawSubTime(g);
             drawPenaltyInfo(g);
             drawCoachMessages(g);
@@ -333,13 +333,13 @@ public class GUI extends JFrame
         String state;
         if (data.secGameState == SecondaryGameState.Normal) {
             if (data.firstHalf) {
-                if (data.gameState == GameState.Finished) {
+                if (data.playMode == PlayMode.Finished) {
                     state = "Half Time";
                 } else {
                     state = "First Half";
                 }
             } else {
-                if (data.gameState == GameState.Initial) {
+                if (data.playMode == PlayMode.Initial) {
                     state = "Half Time";
                 } else {
                     state = "Second Half";
@@ -358,18 +358,18 @@ public class GUI extends JFrame
     }
     
     /**
-     * This draws the state, for example "Initial".
+     * This draws the play mode, for example "Initial".
      * 
      * @param g  The graphics object to draw on.
      */
-    private void drawState(Graphics g)
+    private void drawPlayMode(Graphics g)
     {
         g.setColor(Color.BLACK);
         g.setFont(standardSmallFont);
         int x = getSizeToWidth(0.4);
         int y = getSizeToHeight(0.81);
         int size = getSizeToWidth(0.2);
-        drawCenteredString(g, data.gameState.toString(), x, y, size);
+        drawCenteredString(g, data.playMode.toString(), x, y, size);
     }
     
     /**

@@ -35,8 +35,8 @@ public class FirstHalf extends GCAction
             data.secGameState = SecondaryGameState.Normal;
             changeSide(data);
             data.kickOffTeam = (data.leftSideKickoff ? data.team[0].teamColor : data.team[1].teamColor);
-            data.gameState = GameState.Initial;
-            // Don't set data.whenCurrentGameStateBegan, because it's used to count the pause
+            data.playMode = PlayMode.Initial;
+            // Don't set data.whenCurrentPlayModeBegan, because it's used to count the pause
             Log.state(data, "1st Half");
         }
     }
@@ -85,7 +85,7 @@ public class FirstHalf extends GCAction
             data.timeOutTaken[1] = timeOutTaken;
         }
         
-        data.timeBeforeCurrentGameState = 0;
+        data.timeBeforeCurrentPlayMode = 0;
         data.whenDropIn = 0;
         data.resetPenalties();
     }

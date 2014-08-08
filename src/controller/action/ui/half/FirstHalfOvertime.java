@@ -40,7 +40,7 @@ public class FirstHalfOvertime extends GCAction
             }
             FirstHalf.changeSide(data);
             data.kickOffTeam = (data.leftSideKickoff ? data.team[0].teamColor : data.team[1].teamColor);
-            data.gameState = GameState.Initial;
+            data.playMode = PlayMode.Initial;
             Log.state(data, "1st Half Extra Time");
         }
     }
@@ -58,7 +58,7 @@ public class FirstHalfOvertime extends GCAction
                 || (Rules.league.overtime
                     && data.playoff
                     && data.secGameState == SecondaryGameState.Normal
-                    && data.gameState == GameState.Finished
+                    && data.playMode == PlayMode.Finished
                     && !data.firstHalf
                     && data.team[0].score == data.team[1].score
                     && data.team[0].score > 0)

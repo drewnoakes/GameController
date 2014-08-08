@@ -38,11 +38,11 @@ import controller.action.ui.penalty.PickUpHL;
 import controller.action.ui.penalty.Pushing;
 import controller.action.ui.penalty.ServiceHL;
 import controller.action.ui.penalty.Substitute;
-import controller.action.ui.state.Finish;
-import controller.action.ui.state.Initial;
-import controller.action.ui.state.Play;
-import controller.action.ui.state.Ready;
-import controller.action.ui.state.Set;
+import controller.action.ui.playmode.Finish;
+import controller.action.ui.playmode.Initial;
+import controller.action.ui.playmode.Play;
+import controller.action.ui.playmode.Ready;
+import controller.action.ui.playmode.Set;
 import rules.Rules;
 
 /**

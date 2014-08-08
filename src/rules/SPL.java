@@ -20,11 +20,11 @@ public class SPL extends Rules
         robotsPlaying = 5;
         /** If the colors change automatically. */
         colorChangeAuto = false;
-        /** If the clock may stop in certain states (Ready, Set) in a play-off game. */
+        /** If the clock may stop in certain play modes (Ready, Set) in a play-off game. */
         playOffTimeStop = true;
         /** Time in seconds one half is long. */
         halfTime = 10*60;
-        /** Time in seconds the ready state is long. */
+        /** Length of the 'ready' play mode, in seconds. */
         readyTime = 45;
         /** Time in seconds between first and second half. */
         pauseTime = 10*60;

@@ -1,18 +1,17 @@
-package controller.action.ui.state;
+package controller.action.ui.playmode;
 
 import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
-import data.GameState;
+import data.PlayMode;
 import data.SecondaryGameState;
 import rules.Rules;
 
-
 /**
+ * Sets play mode to @{link PlayMode#Ready}.
+ *
  * @author Michel Bartsch
- * 
- * This action means that the state is to be set to ready.
  */
 public class Ready extends GCAction
 {
@@ -33,17 +32,17 @@ public class Ready extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (data.gameState == GameState.Ready) {
+        if (data.playMode == PlayMode.Ready) {
             return;
         }
         if (Rules.league.returnRobotsInGameStoppages) {
             data.resetPenaltyTimes();
         }
-        if (data.gameState == GameState.Playing) {
-            data.addTimeInCurrentState();
+        if (data.playMode == PlayMode.Playing) {
+            data.addTimeInCurrentPlayMode();
         }
-        data.whenCurrentGameStateBegan = data.getTime();
-        data.gameState = GameState.Ready;
+        data.whenCurrentPlayModeBegan = data.getTime();
+        data.playMode = PlayMode.Ready;
         Log.state(data, "Ready");
     }
     
@@ -56,12 +55,13 @@ public class Ready extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return ((data.gameState == GameState.Initial)
+        return
+            (data.playMode == PlayMode.Initial
               && !data.timeOutActive[0]
               && !data.timeOutActive[1]
               && !data.refereeTimeout
-              && (data.secGameState != SecondaryGameState.PenaltyShootout))
-            || (data.gameState == GameState.Ready)
+              && data.secGameState != SecondaryGameState.PenaltyShootout)
+            || data.playMode == PlayMode.Ready
             || data.testmode;
     }
 }

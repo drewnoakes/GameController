@@ -4,7 +4,7 @@ import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
-import data.GameState;
+import data.PlayMode;
 import data.Penalty;
 
 /**
@@ -50,16 +50,16 @@ public class Manual extends GCAction
         if (!unpen) {
             data.team[side].player[number].penalty = Penalty.Manual;
             data.whenPenalized[side][number] = data.getTime();
-            if((data.gameState != GameState.Initial)
-                    && (data.gameState != GameState.Finished)){
+            if((data.playMode != PlayMode.Initial)
+                    && (data.playMode != PlayMode.Finished)){
                 Log.state(data, "Manually Penalised "+
                         data.team[side].teamColor
                         + " " + (number+1));
             }
         } else {
             data.team[side].player[number].penalty = Penalty.None;
-            if((data.gameState != GameState.Initial)
-                    && (data.gameState != GameState.Finished)){
+            if((data.playMode != PlayMode.Initial)
+                    && (data.playMode != PlayMode.Finished)){
                 Log.state(data, "Manually Unpenalised "+
                        data.team[side].teamColor
                        + " " + (number+1));    

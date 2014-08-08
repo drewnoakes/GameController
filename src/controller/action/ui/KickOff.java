@@ -4,7 +4,7 @@ import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
-import data.GameState;
+import data.PlayMode;
 import data.SecondaryGameState;
 import rules.Rules;
 
@@ -47,7 +47,7 @@ public class KickOff extends GCAction
         if (Rules.league.kickoffChoice
                 && data.secGameState == SecondaryGameState.Normal
                 && data.firstHalf
-                && data.gameState == GameState.Initial) {
+                && data.playMode == PlayMode.Initial) {
             data.leftSideKickoff = side == 0;
         }
         Log.state(data, "Kickoff "+data.team[side].teamColor);
@@ -66,7 +66,7 @@ public class KickOff extends GCAction
                 || (Rules.league.kickoffChoice
                     && data.secGameState == SecondaryGameState.Normal
                     && data.firstHalf
-                    && data.gameState == GameState.Initial)
+                    && data.playMode == PlayMode.Initial)
                 || data.testmode;
     }
 }

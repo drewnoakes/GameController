@@ -38,8 +38,8 @@ public class SecondHalf extends GCAction
             }
             FirstHalf.changeSide(data);
             data.kickOffTeam = (data.leftSideKickoff ? data.team[0].teamColor : data.team[1].teamColor);
-            data.gameState = GameState.Initial;
-            // Don't set data.whenCurrentGameStateBegan, because it's used to count the pause
+            data.playMode = PlayMode.Initial;
+            // Don't set data.whenCurrentPlayModeBegan, because it's used to count the pause
             Log.state(data, "2nd Half");
         }
     }
@@ -54,7 +54,7 @@ public class SecondHalf extends GCAction
     public boolean isLegal(AdvancedData data)
     {
         return (!data.firstHalf && data.secGameState == SecondaryGameState.Normal)
-            || (data.secGameState == SecondaryGameState.Normal && data.gameState == GameState.Finished)
+            || (data.secGameState == SecondaryGameState.Normal && data.playMode == PlayMode.Finished)
             || (data.testmode);
     }
 }

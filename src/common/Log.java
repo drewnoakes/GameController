@@ -131,17 +131,17 @@ public class Log
             states = instance.states.size()-1;
         }
         
-        long laterTimestamp = instance.states.getLast().whenCurrentGameStateBegan;
+        long laterTimestamp = instance.states.getLast().whenCurrentPlayModeBegan;
         long earlierTimestamp = 0;
         long timeInCurrentState = instance.states.getLast().getTime() - laterTimestamp;
         for (int i=0; i<states; i++) {
-            earlierTimestamp = instance.states.getLast().whenCurrentGameStateBegan;
+            earlierTimestamp = instance.states.getLast().whenCurrentPlayModeBegan;
             instance.states.removeLast();
         }
-        if (laterTimestamp != instance.states.getLast().whenCurrentGameStateBegan) {
+        if (laterTimestamp != instance.states.getLast().whenCurrentPlayModeBegan) {
             long timeOffset = laterTimestamp - earlierTimestamp + timeInCurrentState;
             for (AdvancedData data : instance.states) {
-                data.whenCurrentGameStateBegan += timeOffset;
+                data.whenCurrentPlayModeBegan += timeOffset;
             }
         }
         AdvancedData state = (AdvancedData) instance.states.getLast().clone();
