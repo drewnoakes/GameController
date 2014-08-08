@@ -13,7 +13,7 @@ import java.awt.event.KeyEvent;
 public class KeyboardListener implements KeyEventDispatcher
 {
     /** The instance of the visualizer´s gui. */
-    private GUI gui;
+    private final GUI gui;
     /** The key that is actually pressed, 0 if no key is pressed. */
     private int pressing = 0;
     

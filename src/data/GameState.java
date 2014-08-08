@@ -38,19 +38,19 @@ public class GameState extends GameStateSnapshot implements Cloneable
     public long whenDropIn;
     
     /** When was each player penalized last (ms, 0 = never)? */
-    public long[][] whenPenalized = Rules.league.isCoachAvailable ? new long[2][Rules.league.teamSize+1] : new long[2][Rules.league.teamSize];
+    public final long[][] whenPenalized = Rules.league.isCoachAvailable ? new long[2][Rules.league.teamSize+1] : new long[2][Rules.league.teamSize];
 
     /** Which players were already ejected? */
-    public boolean[][] ejected = Rules.league.isCoachAvailable ? new boolean[2][Rules.league.teamSize+1] : new boolean[2][Rules.league.teamSize];
+    public final boolean[][] ejected = Rules.league.isCoachAvailable ? new boolean[2][Rules.league.teamSize+1] : new boolean[2][Rules.league.teamSize];
     
     /** Pushing counters for each team, 0:left side, 1:right side. */
-    public int[] pushes = {0, 0};
+    public final int[] pushes = {0, 0};
     
     /** If true, the referee set a timeout */
     public boolean refereeTimeout = false;
 
     /** If true, this team is currently taking a timeOut, 0:left side, 1:right side. */
-    public boolean[] timeOutActive = {false, false};
+    public final boolean[] timeOutActive = {false, false};
     
     /** TimeOut counters for each team, 0:left side, 1:right side. */
     public boolean[] timeOutTaken = {false, false};
@@ -86,13 +86,13 @@ public class GameState extends GameStateSnapshot implements Cloneable
     public Period previousPeriod = Period.Normal;
 
     /** Keeps the penalties for the players if there are substituted */
-    public ArrayList<ArrayList<PenaltyQueueData>> penaltyQueueForSubPlayers = new ArrayList<ArrayList<PenaltyQueueData>>();
+    public final ArrayList<ArrayList<PenaltyQueueData>> penaltyQueueForSubPlayers = new ArrayList<ArrayList<PenaltyQueueData>>();
 
     /** Keep the timestamp when a coach message was received*/
-    public long timestampCoachPackage[] = {0, 0};
+    public final long[] timestampCoachMessage = {0, 0};
 
     /** Keep the coach messages*/
-    public ArrayList<SPLCoachMessage> splCoachMessageQueue = new ArrayList<SPLCoachMessage>();
+    public final ArrayList<SPLCoachMessage> splCoachMessageQueue = new ArrayList<SPLCoachMessage>();
 
     /**
      * Creates a new AdvancedData.
@@ -387,8 +387,8 @@ public class GameState extends GameStateSnapshot implements Cloneable
 
     public class PenaltyQueueData implements Serializable
     {
-        public long whenPenalized;
-        public Penalty penalty;
+        public final long whenPenalized;
+        public final Penalty penalty;
 
         public PenaltyQueueData(long whenPenalized, Penalty penalty)
         {

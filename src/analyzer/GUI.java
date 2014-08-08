@@ -54,13 +54,13 @@ public class GUI extends JFrame implements ListSelectionListener
     public final static String HTML_END = "</font>";
     
     /* This gui´s components. */
-    private DefaultListModel list;
-    private JList listDisplay;
-    private ListSelectionModel selection;
-    private JScrollPane scrollArea;
-    private JLabel info;
-    private JButton clean;
-    private JButton analyze;
+    private final DefaultListModel list;
+    private final JList listDisplay;
+    private final ListSelectionModel selection;
+    private final JScrollPane scrollArea;
+    private final JLabel info;
+    private final JButton clean;
+    private final JButton analyze;
 
     /**
      * Creates a new GUI.
@@ -219,11 +219,11 @@ public class GUI extends JFrame implements ListSelectionListener
      */
     class CheckListItem
     {
+        /* String shown to represent the log */
+        public final String label;
         /* If this log is selected (the checkbox is true) */
         public boolean selected;
-        /* String shown to represent the log */
-        public String label;
-        
+
         /**
         * Creates a new CheckListItem.
         * 

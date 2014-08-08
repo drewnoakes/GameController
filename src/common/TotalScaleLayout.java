@@ -18,13 +18,13 @@ import javax.swing.JComponent;
 public class TotalScaleLayout implements LayoutManager
 {
     /** The container to layout. */
-    private Container parent;
+    private final Container parent;
     /** The containers preferred size. */
-    private Dimension preferredSize;
+    private final Dimension preferredSize;
     /** The containers minimum size. */
-    private Dimension minimumSize;
+    private final Dimension minimumSize;
     /** List of all components to layout on the container */
-    private LinkedList<TotalScaleComponent> comps = new LinkedList<TotalScaleComponent>();
+    private final LinkedList<TotalScaleComponent> comps = new LinkedList<TotalScaleComponent>();
     
     
     /**
@@ -135,15 +135,15 @@ public class TotalScaleLayout implements LayoutManager
     class TotalScaleComponent
     {
         /* Left-edge position on the container between 0 and 1. */
-        double x;
+        final double x;
         /* Top-edge position on the container between 0 and 1. */
-        double y;
+        final double y;
         /* Width on the container between 0 and 1. */
-        double width;
+        final double width;
         /* Height on the container between 0 and 1. */
-        double height;
+        final double height;
         /* Component to be layouted on the container. */
-        Component comp;
+        final Component comp;
         
         /**
         * Creates a new TotalScaleComponent.

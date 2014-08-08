@@ -55,7 +55,7 @@ public class GUI extends JFrame
     /** Available screens. */
     private static final GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 
-    private BufferStrategy bufferStrategy;
+    private final BufferStrategy bufferStrategy;
     /** If testmode is on to just display whole GameState. */
     private boolean testmode = false;
     /** The last state received to show. */
@@ -64,11 +64,11 @@ public class GUI extends JFrame
     private BufferedImage background;
     
     /** The fonts used. */
-    private Font testFont;
-    private Font standardFont;
-    private Font standardSmallFont;
-    private Font scoreFont;
-    private Font coachMessageFont;
+    private final Font testFont;
+    private final Font standardFont;
+    private final Font standardSmallFont;
+    private final Font scoreFont;
+    private final Font coachMessageFont;
 
 
     /**

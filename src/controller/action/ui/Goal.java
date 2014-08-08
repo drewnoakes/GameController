@@ -14,11 +14,10 @@ import data.*;
 public class Goal extends GCAction
 {
     /** On which side (0:left, 1:right) */
-    private int side;
-    /** This value will be added to the score. */
-    private int set;
-    
-    
+    private final int side;
+    /** This value will be added to the score. Normally will be one, but may vary if in test mode for example. */
+    private final int set;
+
     /**
      * @param side on which side (0:left, 1:right)
      * @param set the amount to increment the score by

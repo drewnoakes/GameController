@@ -39,16 +39,16 @@ public class Teams
     private static final String[] PIC_ENDING = {"png", "gif", "jpg", "jpeg"};
     
     /** The instance of the singleton. */
-    private static Teams instance = new Teams();
+    private static final Teams instance = new Teams();
     
     /** The names read from the config files. */
-    private String[][] names;
+    private final String[][] names;
     /**
      * The icons read.
      * Note, that not all icons are read from the start but just when you ask
      * for them.
      */
-    private BufferedImage[][] icons;
+    private final BufferedImage[][] icons;
     
     
     /**

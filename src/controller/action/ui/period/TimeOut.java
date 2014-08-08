@@ -15,7 +15,7 @@ import rules.Rules;
 public class TimeOut extends GCAction
 {
     /** On which side (0:left, 1:right) */
-    private int side;
+    private final int side;
 
     /**
      * @param side the side to whom the timeout belongs (0:left, 1:right)

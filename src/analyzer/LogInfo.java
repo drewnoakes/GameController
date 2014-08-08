@@ -31,7 +31,7 @@ public class LogInfo
     private final static int NUM_OF_INFO_ENTRIES = 6;
     
     /* The log file this instance belongs to. */
-    public File file;
+    public final File file;
     /* The version information found in the log. */
     public String version;
     /* The league this log´s game was played in. */
@@ -39,13 +39,13 @@ public class LogInfo
     /* If the teams have kept there team colors during the game. */
     public boolean keepColors = false;
     /* The teams`s names. */
-    public String[] team = new String[2];
+    public final String[] team = new String[2];
     /* Time of the first ready. */
     public Date start;
     /* Duration of the game in seconds (first ready to last finish) */
     public int duration;
     /* All lines from the log file. */
-    public LinkedList<String> lines = new LinkedList<String>();
+    public final LinkedList<String> lines = new LinkedList<String>();
     /* If something odd happens while parsing this log, it will be written
      * into this string. */
     public String parseErrors = "";

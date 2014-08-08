@@ -13,12 +13,12 @@ import data.GameState;
  */
 public class Undo extends GCAction
 {
+    /** How far to go back in the timeline by this action. */
+    private final int states;
+
     /** This is true, if this action has just been executed */
     public boolean executed = false;
-    /** How far to go back in the timeline by this action. */
-    private int states;
-    
-    
+
     /**
      * @param states the number of actions to go back in the timeline
      */

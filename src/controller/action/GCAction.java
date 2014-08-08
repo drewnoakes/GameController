@@ -15,9 +15,9 @@ import java.awt.event.ActionListener;
  */
 public abstract class GCAction implements ActionListener
 {
-    /** The type of an action to easily distinguish them. */
-    public ActionType type;
-    
+    /** The type of the action. */
+    public final ActionType type;
+
     /**
      * Initialises a @{link GCAction}.
      * 

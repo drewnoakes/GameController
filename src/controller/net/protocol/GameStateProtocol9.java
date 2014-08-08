@@ -31,7 +31,7 @@ public class GameStateProtocol9 extends GameStateProtocol
      * Can be used by robots to defend against problems seen when multiple game controllers
      * are running.
      */
-    private int gameControllerId;
+    private final int gameControllerId;
 
     public GameStateProtocol9()
     {

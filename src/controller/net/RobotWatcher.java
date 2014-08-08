@@ -20,11 +20,11 @@ public class RobotWatcher
     private static final RobotWatcher instance = new RobotWatcher();
 
     /** A timestamp when the last reply from each robot was received. */
-    private long [][] robotLastHeardTime = Rules.league.isCoachAvailable ? new long[2][Rules.league.teamSize+1] : new long[2][Rules.league.teamSize];
+    private final long [][] robotLastHeardTime = Rules.league.isCoachAvailable ? new long[2][Rules.league.teamSize+1] : new long[2][Rules.league.teamSize];
     /** Last status received from each robot. */
-    private RobotStatus[][] robotLastStatus = Rules.league.isCoachAvailable ? new RobotStatus[2][Rules.league.teamSize+1] : new RobotStatus[2][Rules.league.teamSize];
+    private final RobotStatus[][] robotLastStatus = Rules.league.isCoachAvailable ? new RobotStatus[2][Rules.league.teamSize+1] : new RobotStatus[2][Rules.league.teamSize];
     /** The calculated information about the online-status. */
-    private RobotOnlineStatus [][] status = Rules.league.isCoachAvailable ? new RobotOnlineStatus[2][Rules.league.teamSize+1] : new RobotOnlineStatus[2][Rules.league.teamSize];
+    private final RobotOnlineStatus [][] status = Rules.league.isCoachAvailable ? new RobotOnlineStatus[2][Rules.league.teamSize+1] : new RobotOnlineStatus[2][Rules.league.teamSize];
 
     private final static int MILLIS_UNTIL_ROBOT_IS_OFFLINE = 4*1000;
     private final static int MILLIS_UNTIL_ROBOT_HAS_HIGH_LATENCY = 2*1000;

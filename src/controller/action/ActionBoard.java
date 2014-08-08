@@ -68,13 +68,13 @@ public class ActionBoard
     public static CancelUndo cancelUndo;
     public static final int MAX_NUM_UNDOS_AT_ONCE = 8;
     
-    public static Goal[] goalDec = new Goal[2];
-    public static Goal[] goalInc = new Goal[2];
-    public static KickOff[] kickOff = new KickOff[2];
+    public static final Goal[] goalDec = new Goal[2];
+    public static final Goal[] goalInc = new Goal[2];
+    public static final KickOff[] kickOff = new KickOff[2];
     public static Robot[][] robot;
-    public static TimeOut[] timeOut = new TimeOut[2];
-    public static GlobalStuck[] stuck = new GlobalStuck[2];
-    public static Out[] out = new Out[2];
+    public static final TimeOut[] timeOut = new TimeOut[2];
+    public static final GlobalStuck[] stuck = new GlobalStuck[2];
+    public static final Out[] out = new Out[2];
     public static ClockReset clockReset;
     public static ClockPause clockPause;
     public static IncGameClock incGameClock;
@@ -107,8 +107,8 @@ public class ActionBoard
     public static Substitute substitute;
     public static DropBall dropBall;
 
-    public static Manual[][] manualPen = Rules.league.isCoachAvailable ? new Manual[2][Rules.league.teamSize+1] : new Manual[2][Rules.league.teamSize];
-    public static Manual[][] manualUnpen = Rules.league.isCoachAvailable ? new Manual[2][Rules.league.teamSize+1] : new Manual[2][Rules.league.teamSize];
+    public static final Manual[][] manualPen = Rules.league.isCoachAvailable ? new Manual[2][Rules.league.teamSize+1] : new Manual[2][Rules.league.teamSize];
+    public static final Manual[][] manualUnpen = Rules.league.isCoachAvailable ? new Manual[2][Rules.league.teamSize+1] : new Manual[2][Rules.league.teamSize];
 
     private ActionBoard() {}
 

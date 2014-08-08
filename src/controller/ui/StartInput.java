@@ -56,23 +56,23 @@ public class StartInput extends JFrame
     private static final String COLOR_CHANGE_LABEL = "Auto color change";
     private static final String START_LABEL = "Start";
     /** A countdown latch which fires when the UI has been closed and the game should start. */
-    private CountDownLatch latch = new CountDownLatch(1);
+    private final CountDownLatch latch = new CountDownLatch(1);
 
-    private StartOptions options;
+    private final StartOptions options;
 
     /** All the components of this GUI. */
-    private ImagePanel[] teamContainer = new ImagePanel[2];
-    private ImageIcon[] teamIcon = new ImageIcon[2];
-    private JLabel[] teamIconLabel = new JLabel[2];
-    private JComboBox[] team = new JComboBox[2];
-    private JRadioButton kickOffBlue;
-    private JRadioButton kickOffRed;
-    private JComboBox league;
-    private JRadioButton nofulltime;
-    private JRadioButton fulltime;
-    private Checkbox fullscreen;
-    private Checkbox autoColorChange;
-    private JButton start;
+    private final ImagePanel[] teamContainer = new ImagePanel[2];
+    private final ImageIcon[] teamIcon = new ImageIcon[2];
+    private final JLabel[] teamIconLabel = new JLabel[2];
+    private final JComboBox[] team = new JComboBox[2];
+    private final JRadioButton kickOffBlue;
+    private final JRadioButton kickOffRed;
+    private final JComboBox league;
+    private final JRadioButton nofulltime;
+    private final JRadioButton fulltime;
+    private final Checkbox fullscreen;
+    private final Checkbox autoColorChange;
+    private final JButton start;
 
     /**
      * Shows the StartInput dialog and blocks until the user clicks 'start' or closes the window.

@@ -24,9 +24,9 @@ import rules.SPL;
 public class Robot extends GCAction
 {
     /** On which side (0:left, 1:right) */
-    private int side;
+    private final int side;
     /** The players`s number, beginning with 0! */
-    private int number;
+    private final int number;
     
     /**
      * @param side on which side (0:left, 1:right)

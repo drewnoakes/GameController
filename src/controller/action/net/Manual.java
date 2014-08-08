@@ -16,11 +16,11 @@ import data.Penalty;
 public class Manual extends GCAction
 {
     /** On which side (0:left, 1:right) */
-    private int side;
+    private final int side;
     /** The players`s number, beginning with 0! */
-    private int number;
+    private final int number;
     /** If true, this action means manual unpenalising, otherwise manual penalising.  */
-    private boolean unpen;
+    private final boolean unpen;
     
     /**
      * Creates a new Manual action.

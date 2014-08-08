@@ -17,7 +17,7 @@ import rules.Rules;
 public class KickOff extends GCAction
 {
     /** On which side (0:left, 1:right) */
-    private int side;
+    private final int side;
     
     /**
      * @param side on which side (0:left, 1:right)

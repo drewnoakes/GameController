@@ -42,7 +42,7 @@ public class GameStateSnapshot implements Serializable
      * remaining during 'ready' play mode, and so forth.
      */
     public short secondaryTime = 0;
-    public TeamInfo[] team = new TeamInfo[2];
+    public final TeamInfo[] team = new TeamInfo[2];
 
     /**
      * Creates a new, blank GameState.

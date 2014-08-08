@@ -9,7 +9,7 @@ import data.SPLCoachMessage;
 
 public class SPLCoachMessageReceived extends GCAction
 {
-    private SPLCoachMessage message;
+    private final SPLCoachMessage message;
     
     public SPLCoachMessageReceived(SPLCoachMessage message)
     {

@@ -25,16 +25,16 @@ import java.util.LinkedList;
 public class Log
 {
     /** The instance of the singleton. */
-    private static Log instance = new Log();
+    private static final Log instance = new Log();
     
     /** The file to write into. */
     private FileWriter file;
     /** The error-file to write into. */
     private FileWriter errorFile;
     /** The file to write into. */
-    private String errorPath = "error.txt";
+    private final String errorPath = "error.txt";
     /** The timeline. */
-    private LinkedList<GameState> states = new LinkedList<GameState>();
+    private final LinkedList<GameState> states = new LinkedList<GameState>();
     /** If != null, the next log entry will use this message. */ 
     private String message = null;
     
