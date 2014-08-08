@@ -5,11 +5,11 @@ import data.GameControlData;
 import java.nio.ByteBuffer;
 
 /**
- * Base class for network protocol versions.
+ * Base class for game state network protocols. Subclasses implement specific versions.
  *
  * @author Drew Noakes https://drewnoakes.com
  */
-public abstract class NetworkProtocol
+public abstract class GameStateProtocol
 {
     protected static final String GAMECONTROLLER_STRUCT_HEADER = "RGme";
 
@@ -17,7 +17,7 @@ public abstract class NetworkProtocol
 
     protected byte packetNumber = 0;
 
-    protected NetworkProtocol(byte versionNumber)
+    protected GameStateProtocol(byte versionNumber)
     {
         this.versionNumber = versionNumber;
     }

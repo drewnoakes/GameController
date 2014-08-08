@@ -7,13 +7,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /**
- * Implements network protocol version 8.
+ * Implements game state network protocol, version 8.
  *
  * @author Drew Noakes https://drewnoakes.com
  */
-public class NetworkProtocol8 extends NetworkProtocol
+public class GameStateProtocol8 extends GameStateProtocol
 {
-    public NetworkProtocol8()
+    public GameStateProtocol8()
     {
         super((byte) 8);
     }

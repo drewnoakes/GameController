@@ -2,8 +2,8 @@ package visualizer;
 
 import common.Log;
 import controller.Config;
-import controller.net.protocol.NetworkProtocol;
-import controller.net.protocol.NetworkProtocol8;
+import controller.net.protocol.GameStateProtocol;
+import controller.net.protocol.GameStateProtocol8;
 import data.GameControlData;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -25,7 +25,7 @@ public class Listener
     /** The GUI to listen for, its update method will be called. */
     private final GUI gui;
     /** The protocol we are listening to. */
-    private final NetworkProtocol networkProtocol;
+    private final GameStateProtocol networkProtocol;
 
     /** Some attributes for receiving. */
     private DatagramSocket datagramSocket;
@@ -46,7 +46,7 @@ public class Listener
             System.exit(1);
         }
 
-        networkProtocol = new NetworkProtocol8();
+        networkProtocol = new GameStateProtocol8();
 
         listenerThread = new ListenerThread();
     }

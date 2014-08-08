@@ -8,7 +8,7 @@ import java.nio.ByteOrder;
 import java.util.Random;
 
 /**
- * Implements network protocol version 9.
+ * Implements game state network protocol, version 9.
  *
  * <ul>
  *     <li>
@@ -22,7 +22,7 @@ import java.util.Random;
  *
  * @author Drew Noakes https://drewnoakes.com
  */
-public class NetworkProtocol9 extends NetworkProtocol
+public class GameStateProtocol9 extends GameStateProtocol
 {
     /**
      * A unique number for this game controller instance.
@@ -32,7 +32,7 @@ public class NetworkProtocol9 extends NetworkProtocol
      */
     private int gameControllerId;
 
-    public NetworkProtocol9()
+    public GameStateProtocol9()
     {
         super((byte) 9);
 

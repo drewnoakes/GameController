@@ -4,9 +4,9 @@ import common.ApplicationLock;
 import common.Log;
 import controller.action.ActionBoard;
 import controller.net.*;
-import controller.net.protocol.NetworkProtocol7;
-import controller.net.protocol.NetworkProtocol8;
-import controller.net.protocol.NetworkProtocol9;
+import controller.net.protocol.GameStateProtocol7;
+import controller.net.protocol.GameStateProtocol8;
+import controller.net.protocol.GameStateProtocol9;
 import controller.ui.GCGUI;
 import controller.ui.GUI;
 import controller.ui.KeyboardListener;
@@ -75,10 +75,10 @@ public class Main
         try {
             //sender
             sender = new Sender(options.broadcastAddress);
-            sender.addVersion(new NetworkProtocol9());
-            sender.addVersion(new NetworkProtocol8());
+            sender.addVersion(new GameStateProtocol9());
+            sender.addVersion(new GameStateProtocol8());
             if (Rules.league.compatibilityToVersion7) {
-                sender.addVersion(new NetworkProtocol7());
+                sender.addVersion(new GameStateProtocol7());
             }
             sender.send(data);
             sender.start();

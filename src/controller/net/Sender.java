@@ -2,7 +2,7 @@ package controller.net;
 
 import common.Log;
 import controller.Config;
-import controller.net.protocol.NetworkProtocol;
+import controller.net.protocol.GameStateProtocol;
 import data.AdvancedData;
 import data.GameControlData;
 
@@ -32,7 +32,7 @@ public class Sender
     /** The used inet-address (the broadcast address). */
     private final InetAddress group;
 
-    private final List<NetworkProtocol> versions = new ArrayList<NetworkProtocol>();
+    private final List<GameStateProtocol> versions = new ArrayList<GameStateProtocol>();
 
     /** The current deep copy of the game-state. */
     private AdvancedData data;
@@ -50,7 +50,7 @@ public class Sender
         senderThread = new SenderThread();
     }
 
-    public void addVersion(NetworkProtocol version)
+    public void addVersion(GameStateProtocol version)
     {
         versions.add(version);
     }
@@ -89,7 +89,7 @@ public class Sender
                 if (data != null) {
                     data.updateTimes();
 
-                    for (NetworkProtocol version : versions) {
+                    for (GameStateProtocol version : versions) {
                         byte[] bytes = version.toBytes(data);
                         DatagramPacket packet = new DatagramPacket(bytes, bytes.length, Sender.this.group, Config.GAME_DATA_PORT);
                         try {
