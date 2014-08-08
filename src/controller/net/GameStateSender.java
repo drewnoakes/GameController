@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * This class is used to send the current {@link GameControlData} (game-state) to all robots every 500 ms.
- * The packet will be sent via UDP broadcast on port {@link Config#GAME_DATA_PORT}.
+ * The packet will be sent via UDP broadcast on port {@link Config#GAME_STATE_PORT}.
  *
  * To prevent race-conditions (the sender is executed in its thread-context), the sender creates a deep copy
  * of {@link GameControlData} via {@link AdvancedData#clone()}.
@@ -32,7 +32,7 @@ public class GameStateSender
     /** The used inet-address (the broadcast address). */
     private final InetAddress group;
 
-    private final List<GameStateProtocol> versions = new ArrayList<GameStateProtocol>();
+    private final List<GameStateProtocol> protocols = new ArrayList<GameStateProtocol>();
 
     /** The current deep copy of the game-state. */
     private AdvancedData data;
@@ -50,9 +50,9 @@ public class GameStateSender
         senderThread = new SenderThread();
     }
 
-    public void addVersion(GameStateProtocol version)
+    public void addProtocol(GameStateProtocol protocol)
     {
-        versions.add(version);
+        protocols.add(protocol);
     }
 
     /**
@@ -89,9 +89,9 @@ public class GameStateSender
                 if (data != null) {
                     data.updateTimes();
 
-                    for (GameStateProtocol version : versions) {
+                    for (GameStateProtocol version : protocols) {
                         byte[] bytes = version.toBytes(data);
-                        DatagramPacket packet = new DatagramPacket(bytes, bytes.length, GameStateSender.this.group, Config.GAME_DATA_PORT);
+                        DatagramPacket packet = new DatagramPacket(bytes, bytes.length, GameStateSender.this.group, Config.GAME_STATE_PORT);
                         try {
                             datagramSocket.send(packet);
                             version.incrementPacketNumber();
@@ -103,7 +103,7 @@ public class GameStateSender
                 }
 
                 try {
-                    Thread.sleep(Config.GAME_DATA_SEND_PERIOD_MILLIS);
+                    Thread.sleep(Config.GAME_STATE_SEND_PERIOD_MILLIS);
                 } catch (InterruptedException e) {
                     interrupt();
                 }

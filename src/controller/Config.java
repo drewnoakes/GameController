@@ -8,21 +8,22 @@ package controller;
 public class Config
 {
     /**
-     * UDP port for broadcast of return packets.
-     * Return packets indicate a robot's status to the game controller.
+     * UDP port that robot status messages are broadcast upon.
+     * Robot status messages allow manual penalisation/unpenalisation
+     * and allow the GC to know which players are online.
      */
-    public static final int RETURN_DATA_PORT = 3838;
+    public static final int ROBOT_STATUS_PORT = 3838;
 
     /**
      * UDP port for broadcast of game state packets.
      * Game state packets convey referee data to the players.
      */
-    public static final int GAME_DATA_PORT = 3838;
+    public static final int GAME_STATE_PORT = 3838;
 
     /**
-     * The number of milliseconds between sends of the game data.
+     * The number of milliseconds between broadcasts of game state.
      */
-    public static final int GAME_DATA_SEND_PERIOD_MILLIS = 500;
+    public static final int GAME_STATE_SEND_PERIOD_MILLIS = 500;
 
     private Config() {}
 }

@@ -4,9 +4,7 @@ import common.ApplicationLock;
 import common.Log;
 import controller.action.ActionBoard;
 import controller.net.*;
-import controller.net.protocol.GameStateProtocol7;
-import controller.net.protocol.GameStateProtocol8;
-import controller.net.protocol.GameStateProtocol9;
+import controller.net.protocol.*;
 import controller.ui.GCGUI;
 import controller.ui.GUI;
 import controller.ui.KeyboardListener;
@@ -68,17 +66,17 @@ public class Main
         data.playoff = options.playOff;
         data.kickOffTeam = options.initialKickOffTeam;
 
-        GameControlReturnDataReceiver returnReceiver;
+        RobotMessageReceiver robotMessageReceiver;
         GameStateSender gameStateSender;
         SPLCoachMessageReceiver splReceiver = null;
 
         try {
             //sender
             gameStateSender = new GameStateSender(options.broadcastAddress);
-            gameStateSender.addVersion(new GameStateProtocol9());
-            gameStateSender.addVersion(new GameStateProtocol8());
+            gameStateSender.addProtocol(new GameStateProtocol9());
+            gameStateSender.addProtocol(new GameStateProtocol8());
             if (Rules.league.compatibilityToVersion7) {
-                gameStateSender.addVersion(new GameStateProtocol7());
+                gameStateSender.addProtocol(new GameStateProtocol7());
             }
             gameStateSender.send(data);
             gameStateSender.start();
@@ -87,8 +85,10 @@ public class Main
             EventHandler.initialise(gameStateSender);
             EventHandler.getInstance().data = data;
 
-            returnReceiver = new GameControlReturnDataReceiver();
-            returnReceiver.start();
+            robotMessageReceiver = new RobotMessageReceiver();
+            robotMessageReceiver.addProtocol(new RobotStatusProtocol1());
+            robotMessageReceiver.addProtocol(new RobotStatusProtocol2());
+            robotMessageReceiver.start();
 
             if (Rules.league.isCoachAvailable) {
                 splReceiver = new SPLCoachMessageReceiver();
@@ -96,7 +96,7 @@ public class Main
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
-                    "Error while setting up GameController on port: " + Config.RETURN_DATA_PORT + ".",
+                    "Error while setting up GameController on port: " + Config.ROBOT_STATUS_PORT + ".",
                     "Error on configured port",
                     JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
@@ -132,7 +132,7 @@ public class Main
 
         try {
             gameStateSender.stop();
-            returnReceiver.stop();
+            robotMessageReceiver.stop();
             if (splReceiver != null)
                 splReceiver.stop();
         } catch (InterruptedException e) {
