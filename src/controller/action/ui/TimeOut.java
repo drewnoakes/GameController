@@ -47,8 +47,7 @@ public class TimeOut extends GCAction
                 data.team[data.kickOffTeam == data.team[0].teamColor ? 0 : 1].penaltyShot--;
             }
             Log.setNextMessage("Timeout "+data.team[side].teamColor);
-            data.gameState = null; // to force execution of next call
-            ActionBoard.initial.perform(data);
+            ActionBoard.initial.forcePerform(data);
         } else {
             data.secGameState = data.previousSecGameState;
             data.previousSecGameState = SecondaryGameState.Timeout;

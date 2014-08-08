@@ -31,9 +31,18 @@ public class Initial extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (data.gameState == GameState.Initial) {
-            return;
+        if (data.gameState != GameState.Initial) {
+            forcePerform(data);
         }
+    }
+
+    /**
+     * Performs this action, even if the current game state is @{link GameState.Initial}.
+     *
+     * @param data The current data to work on.
+     */
+    public void forcePerform(AdvancedData data)
+    {
         if (Rules.league.returnRobotsInGameStoppages) {
             data.resetPenaltyTimes();
         }
@@ -41,7 +50,7 @@ public class Initial extends GCAction
         data.gameState = GameState.Initial;
         Log.state(data, "Initial");
     }
-    
+
     /**
      * Checks if this action is legal with the given data (model).
      * Illegal actions are not performed by the EventHandler.
@@ -51,7 +60,6 @@ public class Initial extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameState.Initial)
-            || data.testmode;
+        return data.gameState == GameState.Initial || data.testmode;
     }
 }

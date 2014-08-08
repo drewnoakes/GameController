@@ -31,9 +31,7 @@ public class RefereeTimeout extends GCAction
                     && (data.gameState == GameState.Set || data.gameState == GameState.Playing)) {
                 data.team[data.kickOffTeam == data.team[0].teamColor ? 0 : 1].penaltyShot--;
             }
-            
-            data.gameState = null; // to force execution of next call
-            ActionBoard.initial.perform(data);
+            ActionBoard.initial.forcePerform(data);
         } else {
             data.secGameState = data.previousSecGameState;
             data.previousSecGameState = SecondaryGameState.Timeout;
