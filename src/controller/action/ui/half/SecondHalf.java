@@ -3,9 +3,7 @@ package controller.action.ui.half;
 import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
-import data.GameControlData;
-import data.GameState;
+import data.*;
 
 /**
  * @author Michel Bartsch
@@ -31,12 +29,12 @@ public class SecondHalf extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (data.firstHalf != GameControlData.C_FALSE || data.secGameState == GameControlData.STATE2_PENALTYSHOOT) {
-            data.firstHalf = GameControlData.C_FALSE;
-            data.secGameState = GameControlData.STATE2_NORMAL;
+        if (data.firstHalf || data.secGameState == SecondaryGameState.PenaltyShootout) {
+            data.firstHalf = false;
+            data.secGameState = SecondaryGameState.Normal;
             if (data.colorChangeAuto) {
-                data.team[0].teamColor = GameControlData.TEAM_BLUE;
-                data.team[1].teamColor = GameControlData.TEAM_RED;
+                data.team[0].teamColor = TeamColor.Blue;
+                data.team[1].teamColor = TeamColor.Red;
             }
             FirstHalf.changeSide(data);
             data.kickOffTeam = (data.leftSideKickoff ? data.team[0].teamColor : data.team[1].teamColor);
@@ -55,10 +53,8 @@ public class SecondHalf extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return ((data.firstHalf != GameControlData.C_TRUE)
-              && (data.secGameState == GameControlData.STATE2_NORMAL))
-            || ((data.secGameState == GameControlData.STATE2_NORMAL)
-              && (data.gameState == GameState.Finished))
+        return (!data.firstHalf && data.secGameState == SecondaryGameState.Normal)
+            || (data.secGameState == SecondaryGameState.Normal && data.gameState == GameState.Finished)
             || (data.testmode);
     }
 }

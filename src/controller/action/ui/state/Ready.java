@@ -6,6 +6,7 @@ import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameControlData;
 import data.GameState;
+import data.SecondaryGameState;
 import rules.Rules;
 
 
@@ -57,10 +58,10 @@ public class Ready extends GCAction
     public boolean isLegal(AdvancedData data)
     {
         return ((data.gameState == GameState.Initial)
-              && !data.timeOutActive[0] 
+              && !data.timeOutActive[0]
               && !data.timeOutActive[1]
               && !data.refereeTimeout
-              && (data.secGameState != GameControlData.STATE2_PENALTYSHOOT))
+              && (data.secGameState != SecondaryGameState.PenaltyShootout))
             || (data.gameState == GameState.Ready)
             || data.testmode;
     }

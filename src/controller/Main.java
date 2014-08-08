@@ -13,6 +13,7 @@ import controller.ui.KeyboardListener;
 import controller.ui.StartInput;
 import data.AdvancedData;
 import data.GameControlData;
+import data.TeamColor;
 import rules.Rules;
 import data.Teams;
 
@@ -64,7 +65,7 @@ public class Main
         data.team[1].teamNumber = options.teamNumberRed;
         data.colorChangeAuto = options.colorChangeAuto;
         data.playoff = options.playOff;
-        data.kickOffTeam = (byte)options.kickOffTeamIndex;
+        data.kickOffTeam = options.initialKickOffTeam;
 
         GameControlReturnDataReceiver returnReceiver;
         Sender sender;
@@ -185,7 +186,7 @@ public class Main
         StartOptions options = new StartOptions();
         options.broadcastAddress = DEFAULT_BROADCAST;
         options.fullScreenMode = true;
-        options.kickOffTeamIndex = -1;
+        options.initialKickOffTeam = null;
         options.playOff = null;
 
         Rules.league = Rules.LEAGUES[0];
@@ -213,10 +214,10 @@ public class Main
                 if (hasAnotherArg) {
                     String colour = args[++i];
                     if (colour.equals("blue")) {
-                        options.kickOffTeamIndex = 0;
+                        options.initialKickOffTeam = TeamColor.Blue;
                         continue;
                     } else if (colour.equals("red")) {
-                        options.kickOffTeamIndex = 1;
+                        options.initialKickOffTeam = TeamColor.Red;
                         continue;
                     }
                 }

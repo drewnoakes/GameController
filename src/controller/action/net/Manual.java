@@ -54,7 +54,7 @@ public class Manual extends GCAction
             if((data.gameState != GameState.Initial)
                     && (data.gameState != GameState.Finished)){
                 Log.state(data, "Manually Penalised "+
-                        Rules.league.teamColorName[data.team[side].teamColor]
+                        data.team[side].teamColor
                         + " " + (number+1));
             }
         } else {
@@ -62,7 +62,7 @@ public class Manual extends GCAction
             if((data.gameState != GameState.Initial)
                     && (data.gameState != GameState.Finished)){
                 Log.state(data, "Manually Unpenalised "+
-                       Rules.league.teamColorName[data.team[side].teamColor]
+                       data.team[side].teamColor
                        + " " + (number+1));    
             }
         }

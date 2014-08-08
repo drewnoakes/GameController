@@ -1,6 +1,7 @@
 package controller.ui;
 
 import controller.StartOptions;
+import data.TeamColor;
 import data.Teams;
 import rules.Rules;
 import rules.SPL;
@@ -183,9 +184,9 @@ public class StartInput extends JFrame
         kickOffGroup.add(kickOffRed);
         optionsKickOff.add(kickOffBlue);
         optionsKickOff.add(kickOffRed);
-        if (options.kickOffTeamIndex == 0)
+        if (options.initialKickOffTeam == TeamColor.Blue)
             kickOffBlue.setSelected(true);
-        else if (options.kickOffTeamIndex == 1)
+        else if (options.initialKickOffTeam == TeamColor.Red)
             kickOffRed.setSelected(true);
         optionsKickOff.setPreferredSize(new Dimension(WINDOW_WIDTH-2*STANDARD_SPACE, OPTIONS_HEIGHT));
         optionsKickOff.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -302,9 +303,9 @@ public class StartInput extends JFrame
                     options.fullScreenMode = fullscreen.getState();
                     options.colorChangeAuto = autoColorChange.getState();
                     if (kickOffBlue.isSelected())
-                        options.kickOffTeamIndex = 0;
+                        options.initialKickOffTeam = TeamColor.Blue;
                     else if (kickOffRed.isSelected())
-                        options.kickOffTeamIndex = 1;
+                        options.initialKickOffTeam = TeamColor.Red;
                     else
                         throw new AssertionError("Start button should not be enabled if no kick off team selected.");
                     latch.countDown();

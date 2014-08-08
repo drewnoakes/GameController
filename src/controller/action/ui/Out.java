@@ -41,7 +41,7 @@ public class Out extends GCAction
     {
         data.whenDropIn = data.getTime();
         data.dropInTeam = data.team[side].teamColor;
-        Log.state(data, "Out by "+Rules.league.teamColorName[data.team[side].teamColor]);
+        Log.state(data, "Out by "+data.team[side].teamColor);
     }
     
     /**

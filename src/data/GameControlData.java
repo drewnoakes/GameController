@@ -16,29 +16,15 @@ import java.io.Serializable;
  */
 public class GameControlData implements Serializable
 {
-    /** Some constants from the C-structure. */
     public static final int GAMECONTROLLER_RETURNDATA_PORT = 3838; // port to receive return-packets on
     public static final int GAMECONTROLLER_GAMEDATA_PORT = 3838; // port to send game state packets to
 
-
-    public static final byte TEAM_BLUE = 0;
-    public static final byte TEAM_RED = 1;
-    public static final byte DROPBALL = 2;
-
-    public static final byte STATE2_NORMAL = 0;
-    public static final byte STATE2_PENALTYSHOOT = 1;
-    public static final byte STATE2_OVERTIME = 2;
-    public static final byte STATE2_TIMEOUT = 3;             
-    
-    public static final byte C_FALSE = 0;
-    public static final byte C_TRUE = 1;
-
-    public byte playersPerTeam = (byte)Rules.league.teamSize;   // The number of players on a team
-    public GameState gameState = GameState.Initial;             // state of the game
-    public byte firstHalf = C_TRUE;                             // 1 = game in first half, 0 otherwise
-    public byte kickOffTeam = TEAM_BLUE;                        // the next team to kick off
-    public byte secGameState = STATE2_NORMAL;                   // Extra state information - (STATE2_NORMAL, STATE2_PENALTYSHOOT, etc)
-    public byte dropInTeam;                                     // team that caused last drop in
+    public byte playersPerTeam = (byte)Rules.league.teamSize;
+    public GameState gameState = GameState.Initial;
+    public boolean firstHalf = true;
+    public TeamColor kickOffTeam = TeamColor.Blue;
+    public SecondaryGameState secGameState = SecondaryGameState.Normal; // Extra state information - (STATE2_NORMAL, STATE2_PENALTYSHOOT, etc)
+    public TeamColor dropInTeam;                                // team that caused last drop in
     public short dropInTime = -1;                               // number of seconds passed since the last drop in. -1 before first dropin
     public short secsRemaining = (short) Rules.league.halfTime; // estimate of number of seconds remaining in the half
     public short secondaryTime = 0;                             // sub-time (remaining in ready state etc.) in seconds
@@ -52,47 +38,21 @@ public class GameControlData implements Serializable
         for (int i=0; i<team.length; i++) {
             team[i] = new TeamInfo();
         }
-        team[0].teamColor = TEAM_BLUE;
-        team[1].teamColor = TEAM_RED;
+        team[0].teamColor = TeamColor.Blue;
+        team[1].teamColor = TeamColor.Red;
     }
     
     @Override
     public String toString()
     {
-        String out = "";
-        String temp;
-        
-        out += "     playersPerTeam: "+playersPerTeam+"\n";
-        out += "          gameState: "+gameState+"\n";
-        switch (firstHalf) {
-            case C_TRUE:  temp = "true";  break;
-            case C_FALSE: temp = "false"; break;
-            default: temp = "undefined("+firstHalf+")";
-        }
-        out += "          firstHalf: "+temp+"\n";
-        switch (kickOffTeam) {
-            case TEAM_BLUE: temp = "blue"; break;
-            case TEAM_RED:  temp = "red";  break;
-            default: temp = "undefined("+kickOffTeam+")";
-        }
-        out += "        kickOffTeam: "+temp+"\n";
-        switch (secGameState) {
-            case STATE2_NORMAL:       temp = "normal"; break;
-            case STATE2_PENALTYSHOOT: temp = "penaltyshoot";  break;
-            case STATE2_OVERTIME:     temp = "overtime";  break;
-            case STATE2_TIMEOUT:     temp = "timeout";  break;
-            default: temp = "undefined("+secGameState+")";
-        }
-        out += "       secGameState: "+temp+"\n";
-        switch (dropInTeam) {
-            case TEAM_BLUE: temp = "blue"; break;
-            case TEAM_RED:  temp = "red";  break;
-            default: temp = "undefined("+dropInTeam+")";
-        }
-        out += "         dropInTeam: "+temp+"\n";
-        out += "         dropInTime: "+dropInTime+"\n";
-        out += "      secsRemaining: "+secsRemaining+"\n";
-        out += "      secondaryTime: "+secondaryTime+"\n";
-        return out;
+        return "     playersPerTeam: " + playersPerTeam + '\n' +
+               "          gameState: " + gameState + '\n' +
+               "          firstHalf: " + (firstHalf ? "true" : "false") + '\n' +
+               "        kickOffTeam: " + kickOffTeam + '\n' +
+               "       secGameState: " + secGameState + '\n' +
+               "         dropInTeam: " + dropInTeam + '\n' +
+               "         dropInTime: " + dropInTime + '\n' +
+               "      secsRemaining: " + secsRemaining + '\n' +
+               "      secondaryTime: " + secondaryTime + '\n';
     }
 }

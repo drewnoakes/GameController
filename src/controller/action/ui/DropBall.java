@@ -5,7 +5,6 @@ import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
-import data.GameControlData;
 import data.GameState;
 
 /**
@@ -32,7 +31,8 @@ public class DropBall extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        data.kickOffTeam = GameControlData.DROPBALL;
+        // Set to null, indicating no team has kick off
+        data.kickOffTeam = null;
         Log.setNextMessage("Dropped Ball");
         ActionBoard.ready.perform(data);
     }

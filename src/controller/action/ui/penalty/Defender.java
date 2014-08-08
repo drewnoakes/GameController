@@ -26,9 +26,7 @@ public class Defender extends Penalty
     {
         player.penalty = PlayerInfo.PENALTY_SPL_ILLEGAL_DEFENDER;
         data.whenPenalized[side][number] = data.getTime();
-        Log.state(data, "Illegal Defender "+
-                Rules.league.teamColorName[data.team[side].teamColor]
-                + " " + (number+1));
+        Log.state(data, "Illegal Defender " + data.team[side].teamColor + " " + (number+1));
     }
     
     /**

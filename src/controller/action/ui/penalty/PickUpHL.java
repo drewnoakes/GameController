@@ -27,7 +27,7 @@ public class PickUpHL extends Penalty
         }
 
         player.penalty = PlayerInfo.PENALTY_HL_PICKUP_OR_INCAPABLE;
-        Log.state(data, "Request for PickUp / Incapable Player "+ Rules.league.teamColorName[data.team[side].teamColor]+ " " + (number+1));
+        Log.state(data, "Request for PickUp / Incapable Player " + data.team[side].teamColor+ " " + (number+1));
     }
 
     /**

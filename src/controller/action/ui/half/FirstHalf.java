@@ -3,11 +3,8 @@ package controller.action.ui.half;
 import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
-import data.GameControlData;
-import data.GameState;
+import data.*;
 import rules.Rules;
-import data.TeamInfo;
 
 /**
  * @author Michel Bartsch
@@ -33,9 +30,9 @@ public class FirstHalf extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (data.firstHalf != GameControlData.C_TRUE || data.secGameState == GameControlData.STATE2_PENALTYSHOOT) {
-            data.firstHalf = GameControlData.C_TRUE;
-            data.secGameState = GameControlData.STATE2_NORMAL;
+        if (!data.firstHalf || data.secGameState == SecondaryGameState.PenaltyShootout) {
+            data.firstHalf = true;
+            data.secGameState = SecondaryGameState.Normal;
             changeSide(data);
             data.kickOffTeam = (data.leftSideKickoff ? data.team[0].teamColor : data.team[1].teamColor);
             data.gameState = GameState.Initial;
@@ -53,8 +50,8 @@ public class FirstHalf extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return ((data.firstHalf == GameControlData.C_TRUE)
-                && (data.secGameState == GameControlData.STATE2_NORMAL))
+        return ((data.firstHalf)
+                && (data.secGameState == SecondaryGameState.Normal))
                 || (data.testmode);
     }
     
@@ -72,15 +69,15 @@ public class FirstHalf extends GCAction
         boolean[] ejected = data.ejected[0];
         data.ejected[0] = data.ejected[1];
         data.ejected[1] = ejected;
-        // if necessary, swap back team colors
-        if (data.secGameState != GameControlData.STATE2_PENALTYSHOOT 
-                && data.colorChangeAuto) {
-            byte color = data.team[0].teamColor;
+
+        // if necessary, swap team colors
+        if (data.secGameState != SecondaryGameState.PenaltyShootout && data.colorChangeAuto) {
+            TeamColor color = data.team[0].teamColor;
             data.team[0].teamColor = data.team[1].teamColor;
             data.team[1].teamColor = color;
         }
-        
-        if (Rules.league.timeOutPerHalf && (data.secGameState != GameControlData.STATE2_PENALTYSHOOT)) {
+
+        if (Rules.league.timeOutPerHalf && (data.secGameState != SecondaryGameState.PenaltyShootout)) {
             data.timeOutTaken = new boolean[] {false, false};
         } else {
             boolean timeOutTaken = data.timeOutTaken[0];

@@ -9,8 +9,15 @@ import java.util.Random;
 /**
  * Implements network protocol version 9.
  *
- * Adds the 'game controller ID' to the message, which can be used to prevent against problems seen
- * when multiple game controllers are running.
+ * <ul>
+ *     <li>
+ *         Adds field 'game controller ID' to the message, which can be used to prevent
+ *         against problems seen when multiple game controllers are running.
+ *     </li>
+ *     <li>
+ *         When no drop in has yet occurred, 'dropInTeam' has value 2 instead of 0.
+ *     </li>
+ * </ul>
  *
  * @author Drew Noakes https://drewnoakes.com
  */
@@ -74,10 +81,10 @@ public class NetworkProtocol9 extends NetworkProtocol
         buffer.put(packetNumber);
         buffer.put(data.playersPerTeam);
         buffer.put(data.gameState.getValue());
-        buffer.put(data.firstHalf);
-        buffer.put(data.kickOffTeam);
-        buffer.put(data.secGameState);
-        buffer.put(data.dropInTeam);
+        buffer.put(data.firstHalf ? (byte)1 : 0);
+        buffer.put(data.kickOffTeam == null ? 2 : data.kickOffTeam.getValue());
+        buffer.put(data.secGameState.getValue());
+        buffer.put(data.dropInTeam == null ? 2 : data.dropInTeam.getValue());
         buffer.putShort(data.dropInTime);
         buffer.putShort(data.secsRemaining);
         buffer.putShort(data.secondaryTime);
@@ -111,17 +118,17 @@ public class NetworkProtocol9 extends NetworkProtocol
 
         data.playersPerTeam = buffer.get();
         data.gameState = GameState.fromValue(buffer.get());
-        data.firstHalf = buffer.get();
-        data.kickOffTeam = buffer.get();
-        data.secGameState = buffer.get();
-        data.dropInTeam = buffer.get();
+        data.firstHalf = buffer.get() != 0;
+        data.kickOffTeam = TeamColor.fromValue(buffer.get());
+        data.secGameState = SecondaryGameState.fromValue(buffer.get());
+        data.dropInTeam = TeamColor.fromValue(buffer.get());
         data.dropInTime = buffer.getShort();
         data.secsRemaining = buffer.getShort();
         data.secondaryTime = buffer.getShort();
 
         for (TeamInfo t : data.team) {
             t.teamNumber = buffer.get();
-            t.teamColor = buffer.get();
+            t.teamColor = TeamColor.fromValue(buffer.get());
             t.score = buffer.get();
             t.penaltyShot = buffer.get();
             t.singleShots = buffer.getShort();
@@ -142,7 +149,7 @@ public class NetworkProtocol9 extends NetworkProtocol
     private static void writeTeamInfo(ByteBuffer buffer, TeamInfo teamInfo)
     {
         buffer.put(teamInfo.teamNumber);
-        buffer.put(teamInfo.teamColor);
+        buffer.put(teamInfo.teamColor.getValue());
         buffer.put(teamInfo.score);
         buffer.put(teamInfo.penaltyShot);
         buffer.putShort(teamInfo.singleShots);

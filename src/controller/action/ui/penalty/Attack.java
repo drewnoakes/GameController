@@ -25,9 +25,7 @@ public class Attack extends Penalty
     {
         player.penalty = PlayerInfo.PENALTY_HL_ILLEGAL_ATTACK;
         data.whenPenalized[side][number] = data.getTime();
-        Log.state(data, "Illegal Attack "+
-                Rules.league.teamColorName[data.team[side].teamColor]
-                + " " + (number+1));
+        Log.state(data, "Illegal Attack " + data.team[side].teamColor + " " + (number+1));
     }
     
     /**

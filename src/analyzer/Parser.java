@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import common.Log;
-
+import data.TeamColor;
 import rules.Rules;
 
 /**
@@ -209,16 +209,16 @@ public class Parser
                 continue;
             }
             
-            if (raw.contains(log.league.teamColorName[0])) {
+            if (raw.contains(TeamColor.Blue.toString())) {
                 team = teams[0];
-            } else if (raw.contains(log.league.teamColorName[1])) {
+            } else if (raw.contains(TeamColor.Red.toString())) {
                 team = teams[1];
             } else {
                 team = "";
             }
             
             player = "";
-            String pattern = "("+log.league.teamColorName[0]+"|"+log.league.teamColorName[1]+")\\s*(\\d+)\\s*$";
+            String pattern = "("+TeamColor.Blue.toString()+"|"+TeamColor.Red.toString()+")\\s*(\\d+)\\s*$";
             Matcher matcher = Pattern.compile(pattern).matcher(raw);
             if (matcher.find()) {
                 if (matcher.groupCount() == 2) {

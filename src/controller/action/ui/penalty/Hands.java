@@ -26,9 +26,7 @@ public class Hands extends Penalty
     {
         player.penalty = PlayerInfo.PENALTY_SPL_PLAYING_WITH_HANDS;
         data.whenPenalized[side][number] = data.getTime();
-        Log.state(data, "Playing with Hands "+
-                Rules.league.teamColorName[data.team[side].teamColor]
-                + " " + (number+1));
+        Log.state(data, "Playing with Hands " + data.team[side].teamColor + " " + (number+1));
     }
     
     /**

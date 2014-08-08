@@ -22,6 +22,7 @@ import javax.swing.JFrame;
 import common.Log;
 import data.GameControlData;
 import data.GameState;
+import data.SecondaryGameState;
 import rules.Rules;
 import data.Teams;
 
@@ -259,7 +260,7 @@ public class GUI extends JFrame
             Teams.getIcon(data.team[1].teamNumber)};
         ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         for (int i=0; i<2; i++) {
-            g.setColor(Rules.league.teamColor[data.team[i].teamColor]);
+            g.setColor(data.team[i].teamColor.getColor());
             float scaleFactorX = 1f;
             float scaleFactorY = 1f;
             if (icons[i].getWidth() * 1.2f > icons[i].getHeight()) {
@@ -292,7 +293,7 @@ public class GUI extends JFrame
         g.setColor(Color.BLACK);
         drawCenteredString(g, ":", getWidth()/2-size, yDiv, 2*size);
         for (int i=0; i<2; i++) {
-            g.setColor(Rules.league.teamColor[data.team[i].teamColor]);
+            g.setColor(data.team[i].teamColor.getColor());
             drawCenteredString(
                     g,
                     data.team[i].score+"",
@@ -330,34 +331,28 @@ public class GUI extends JFrame
         int y = getSizeToHeight(0.72);
         int size = getSizeToWidth(0.2);
         String state;
-        
-        switch (data.secGameState) {
-            case GameControlData.STATE2_NORMAL:
-                if (data.firstHalf == GameControlData.C_TRUE) {
-                    if (data.gameState == GameState.Finished) {
-                        state = "Half Time";
-                    } else {
-                        state = "First Half";
-                    }
+        if (data.secGameState == SecondaryGameState.Normal) {
+            if (data.firstHalf) {
+                if (data.gameState == GameState.Finished) {
+                    state = "Half Time";
                 } else {
-                    if (data.gameState == GameState.Initial) {
-                        state = "Half Time";
-                    } else {
-                        state = "Second Half";
-                    }
+                    state = "First Half";
                 }
-                break;
-            case GameControlData.STATE2_OVERTIME:
-                state = "Overtime";
-                break;
-            case GameControlData.STATE2_PENALTYSHOOT:
-                state = "Penalty Shootout";
-                break;
-            case GameControlData.STATE2_TIMEOUT:
-                state = "Time Out";
-                break;
-            default:
-                state = "";
+            } else {
+                if (data.gameState == GameState.Initial) {
+                    state = "Half Time";
+                } else {
+                    state = "Second Half";
+                }
+            }
+        } else if (data.secGameState == SecondaryGameState.Overtime) {
+            state = "Overtime";
+        } else if (data.secGameState == SecondaryGameState.PenaltyShootout) {
+            state = "Penalty Shootout";
+        } else if (data.secGameState == SecondaryGameState.Timeout) {
+            state = "Time Out";
+        } else {
+            state = "";
         }
         drawCenteredString(g, state, x, y, size);
     }
@@ -407,7 +402,7 @@ public class GUI extends JFrame
         int y = getSizeToHeight(0.86);
         int size = getSizeToWidth(0.02);
         for (int i=0; i<2; i++) {
-            g.setColor(Rules.league.teamColor[data.team[i].teamColor]);
+            g.setColor(data.team[i].teamColor.getColor());
             for (int j=0; j<data.team[i].penaltyShot; j++) {
                 if ((data.team[i].singleShots & (1<<j)) != 0) {
                     g.fillOval(i==1 ? x+j*2*size : getWidth()-x-(5-j)*2*size-size, y, size, size);
@@ -500,7 +495,7 @@ public class GUI extends JFrame
             }
 
             //Draw the coach label and coach message box
-            g2.setColor(Rules.league.teamColor[data.team[i].teamColor]);
+            g2.setColor(data.team[i].teamColor.getColor());
             if (i == 1) {
                 g2.drawString(row1, getSizeToWidth(0.01), getSizeToHeight(0.92));
                 g2.drawString(row2, getSizeToWidth(0.01), getSizeToHeight(0.98));

@@ -6,6 +6,7 @@ import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameControlData;
 import data.GameState;
+import data.SecondaryGameState;
 import rules.Rules;
 
 
@@ -44,14 +45,13 @@ public class KickOff extends GCAction
             return;
         }
         data.kickOffTeam = data.team[side].teamColor;
-        if ((Rules.league.kickoffChoice)
-                && (data.secGameState == GameControlData.STATE2_NORMAL)
-                && (data.firstHalf == GameControlData.C_TRUE)
-                && (data.gameState == GameState.Initial)) {
-            data.leftSideKickoff = (side == 0);
+        if (Rules.league.kickoffChoice
+                && data.secGameState == SecondaryGameState.Normal
+                && data.firstHalf
+                && data.gameState == GameState.Initial) {
+            data.leftSideKickoff = side == 0;
         }
-        Log.state(data, "Kickoff "+
-                Rules.league.teamColorName[data.team[side].teamColor]);
+        Log.state(data, "Kickoff "+data.team[side].teamColor);
     }
     
     /**
@@ -63,11 +63,11 @@ public class KickOff extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.kickOffTeam == data.team[side].teamColor)
-                || ((Rules.league.kickoffChoice)
-                    && (data.secGameState == GameControlData.STATE2_NORMAL)
-                    && (data.firstHalf == GameControlData.C_TRUE)
-                    && (data.gameState == GameState.Initial))
+        return data.kickOffTeam == data.team[side].teamColor
+                || (Rules.league.kickoffChoice
+                    && data.secGameState == SecondaryGameState.Normal
+                    && data.firstHalf
+                    && data.gameState == GameState.Initial)
                 || data.testmode;
     }
 }

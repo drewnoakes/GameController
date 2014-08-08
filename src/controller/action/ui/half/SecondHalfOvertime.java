@@ -3,9 +3,7 @@ package controller.action.ui.half;
 import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
-import data.GameControlData;
-import data.GameState;
+import data.*;
 
 /**
  * @author Michel Bartsch
@@ -31,12 +29,12 @@ public class SecondHalfOvertime extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (data.firstHalf != GameControlData.C_FALSE || data.secGameState == GameControlData.STATE2_PENALTYSHOOT) {
-            data.firstHalf = GameControlData.C_FALSE;
-            data.secGameState = GameControlData.STATE2_OVERTIME;
+        if (data.firstHalf || data.secGameState == SecondaryGameState.PenaltyShootout) {
+            data.firstHalf = false;
+            data.secGameState = SecondaryGameState.Overtime;
             if (data.colorChangeAuto) {
-                data.team[0].teamColor = GameControlData.TEAM_BLUE;
-                data.team[1].teamColor = GameControlData.TEAM_RED;
+                data.team[0].teamColor = TeamColor.Blue;
+                data.team[1].teamColor = TeamColor.Red;
             }
             FirstHalf.changeSide(data);
             data.kickOffTeam = (data.leftSideKickoff ? data.team[0].teamColor : data.team[1].teamColor);
@@ -54,10 +52,8 @@ public class SecondHalfOvertime extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return ((data.firstHalf != GameControlData.C_TRUE)
-              && (data.secGameState == GameControlData.STATE2_OVERTIME))
-            || ((data.secGameState == GameControlData.STATE2_OVERTIME)
-              && (data.gameState == GameState.Finished))
-            || (data.testmode);
+        return (!data.firstHalf && data.secGameState == SecondaryGameState.Overtime)
+            || (data.secGameState == SecondaryGameState.Overtime && data.gameState == GameState.Finished)
+            || data.testmode;
     }
 }

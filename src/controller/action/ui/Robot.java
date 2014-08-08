@@ -69,16 +69,13 @@ public class Robot extends GCAction
                 data.whenPenalized[side][number] = playerInfo.whenPenalized;
                 playerInfoList.remove(0);
             }
-            Log.state(data, "Entering Player " + Rules.league.teamColorName[data.team[side].teamColor]
-                    + " " + (number+1));
+            Log.state(data, "Entering Player " + data.team[side].teamColor + " " + (number+1));
         }
         else if (EventHandler.getInstance().lastUIEvent instanceof Penalty || EventHandler.getInstance().lastUIEvent instanceof TeammatePushing) {
             EventHandler.getInstance().lastUIEvent.performOn(data, player, side, number);
         }
         else if (player.penalty != PlayerInfo.PENALTY_NONE) {
-            Log.state(data, ("Unpenalised ")+
-                    Rules.league.teamColorName[data.team[side].teamColor]
-                    + " " + (number+1));
+            Log.state(data, "Unpenalised " + data.team[side].teamColor + " " + (number+1));
             player.penalty = PlayerInfo.PENALTY_NONE;
         }
     }

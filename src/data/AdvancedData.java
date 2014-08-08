@@ -83,7 +83,7 @@ public class AdvancedData extends GameControlData implements Cloneable
     public long manRemainingGameTimeOffset;
 
     /** Used to backup the secondary game state during a timeout. */
-    public byte previousSecGameState = STATE2_NORMAL;
+    public SecondaryGameState previousSecGameState = SecondaryGameState.Normal;
 
     /** Keeps the penalties for the players if there are substituted */
     public ArrayList<ArrayList<PenaltyQueueData>> penaltyQueueForSubPlayers = new ArrayList<ArrayList<PenaltyQueueData>>();
@@ -100,7 +100,7 @@ public class AdvancedData extends GameControlData implements Cloneable
     public AdvancedData()
     {
         if (Rules.league.startWithPenalty) {
-            secGameState = GameControlData.STATE2_PENALTYSHOOT;
+            secGameState = SecondaryGameState.PenaltyShootout;
         }
         for (int i=0; i<2; i++) {
             for (int j=0; j < team[i].player.length; j++) {
@@ -216,9 +216,9 @@ public class AdvancedData extends GameControlData implements Cloneable
     public int getRemainingGameTime()
     {
         int regularNumberOfPenaltyShots = playoff ? Rules.league.numberOfPenaltyShotsLong : Rules.league.numberOfPenaltyShotsShort;
-        int duration = secGameState == STATE2_TIMEOUT ? secsRemaining : 
-                secGameState == STATE2_NORMAL ? Rules.league.halfTime
-                : secGameState == STATE2_OVERTIME ? Rules.league.overtimeTime
+        int duration = secGameState == SecondaryGameState.Timeout ? secsRemaining :
+                secGameState == SecondaryGameState.Normal ? Rules.league.halfTime
+                : secGameState == SecondaryGameState.Overtime ? Rules.league.overtimeTime
                 : Math.max(team[0].penaltyShot, team[1].penaltyShot) > regularNumberOfPenaltyShots
                 ? Rules.league.penaltyShotTimeSuddenDeath
                 : Rules.league.penaltyShotTime;
@@ -228,23 +228,23 @@ public class AdvancedData extends GameControlData implements Cloneable
                 || gameState == GameState.Finished
         ? (int) ((timeBeforeCurrentGameState + manRemainingGameTimeOffset + (manPlay ? System.currentTimeMillis() - manWhenClockChanged : 0)) / 1000)
                 : getSecondsSince(whenCurrentGameStateBegan - timeBeforeCurrentGameState - manRemainingGameTimeOffset);
-        
+
         return duration - timePlayed;
     }
-    
+
     /**
      * The method returns the remaining pause time.
      * @return The remaining number of seconds of the game pause or null if there currently is no pause.
      */
     public Integer getRemainingPauseTime()
     {
-        if (secGameState == GameControlData.STATE2_NORMAL
-                && (gameState == GameState.Initial && firstHalf != C_TRUE && !timeOutActive[0] && !timeOutActive[1]
-                || gameState == GameState.Finished && firstHalf == C_TRUE)) {
+        if (secGameState == SecondaryGameState.Normal
+                && (gameState == GameState.Initial && !firstHalf && !timeOutActive[0] && !timeOutActive[1]
+                || gameState == GameState.Finished && firstHalf)) {
             return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.pauseTime);
         } else if (Rules.league.pausePenaltyShootOutTime != 0 && playoff && team[0].score == team[1].score
-                && (gameState == GameState.Initial && secGameState == STATE2_PENALTYSHOOT && !timeOutActive[0] && !timeOutActive[1]
-                || gameState == GameState.Finished && firstHalf != C_TRUE)) {
+                && (gameState == GameState.Initial && secGameState == SecondaryGameState.PenaltyShootout && !timeOutActive[0] && !timeOutActive[1]
+                || gameState == GameState.Finished && !firstHalf)) {
             return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.pausePenaltyShootOutTime);
         } else {
             return null;
@@ -327,7 +327,7 @@ public class AdvancedData extends GameControlData implements Cloneable
     public Integer getSecondaryTime(int timeKickOffBlockedOvertime)
     {
         int timeKickOffBlocked = getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.kickoffTime);
-        if (kickOffTeam == DROPBALL) {
+        if (kickOffTeam == null) {
             timeKickOffBlocked = 0;
         }
         if (gameState == GameState.Initial && (timeOutActive[0] || timeOutActive[1])) {
@@ -338,7 +338,7 @@ public class AdvancedData extends GameControlData implements Cloneable
         }
         else if (gameState == GameState.Ready) {
             return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.readyTime);
-        } else if (gameState == GameState.Playing && secGameState != STATE2_PENALTYSHOOT
+        } else if (gameState == GameState.Playing && secGameState != SecondaryGameState.PenaltyShootout
                 && timeKickOffBlocked >= -timeKickOffBlockedOvertime) {
             if (timeKickOffBlocked > 0) {
                 return timeKickOffBlocked;
@@ -363,7 +363,7 @@ public class AdvancedData extends GameControlData implements Cloneable
                 for (int j = 0; j < 2; j++) {
                     if (team[j].teamNumber == splCoachMessageQueue.get(i).team) {
                         byte[] message = splCoachMessageQueue.get(i).message;
-                        
+
                         // All chars after the first zero are zeroed, too
                         int k = 0;
                         while (k < message.length && message[k] != 0) {
@@ -372,9 +372,9 @@ public class AdvancedData extends GameControlData implements Cloneable
                         while (k < message.length) {
                             message[k++] = 0;
                         }
-                        
+
                         team[j].coachMessage = message;
-                        Log.toFile("Coach Message Team "+  Rules.league.teamColorName[team[j].teamColor]+" "+ new String(message));
+                        Log.toFile("Coach Message Team " + team[j].teamColor + " " + new String(message));
                         splCoachMessageQueue.remove(i);
                         break;
                     }

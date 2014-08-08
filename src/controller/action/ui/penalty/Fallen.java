@@ -26,9 +26,7 @@ public class Fallen extends Penalty
     {
         player.penalty = PlayerInfo.PENALTY_SPL_OBSTRUCTION;
         data.whenPenalized[side][number] = data.getTime();
-        Log.state(data, "Fallen Robot "+
-                Rules.league.teamColorName[data.team[side].teamColor]
-                + " " + (number+1));
+        Log.state(data, "Fallen Robot " + data.team[side].teamColor + " " + (number+1));
     }
     
     /**

@@ -4,9 +4,7 @@ import common.Log;
 import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
-import data.GameControlData;
-import data.GameState;
+import data.*;
 import rules.Rules;
 
 
@@ -47,17 +45,17 @@ public class Goal extends GCAction
     {
         data.team[side].score += set;
         if (set == 1) {
-            if (data.secGameState != GameControlData.STATE2_PENALTYSHOOT) {
-                data.kickOffTeam = data.team[side].teamColor == GameControlData.TEAM_BLUE ? GameControlData.TEAM_RED : GameControlData.TEAM_BLUE;
-                Log.setNextMessage("Goal for "+Rules.league.teamColorName[data.team[side].teamColor]);
+            if (data.secGameState != SecondaryGameState.PenaltyShootout) {
+                data.kickOffTeam = data.team[side].teamColor.other();
+                Log.setNextMessage("Goal for "+data.team[side].teamColor);
                 ActionBoard.ready.perform(data);
             } else {
                 data.team[side].singleShots += (1<<(data.team[side].penaltyShot-1));
-                Log.setNextMessage("Goal for "+Rules.league.teamColorName[data.team[side].teamColor]);
+                Log.setNextMessage("Goal for "+data.team[side].teamColor);
                 ActionBoard.finish.perform(data);
             }
         } else {
-            Log.state(data, "Goal decrease for "+Rules.league.teamColorName[data.team[side].teamColor]);
+            Log.state(data, "Goal decrease for "+data.team[side].teamColor);
         }
     }
     
@@ -72,7 +70,7 @@ public class Goal extends GCAction
     {
         return ((set == 1)
               && (data.gameState == GameState.Playing)
-              && ( (data.secGameState != GameControlData.STATE2_PENALTYSHOOT)
+              && ( (data.secGameState != SecondaryGameState.PenaltyShootout)
                 || (data.kickOffTeam == data.team[side].teamColor)) )
             || data.testmode;
     }

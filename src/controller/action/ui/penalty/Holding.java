@@ -26,9 +26,7 @@ public class Holding extends Penalty
     {
         player.penalty = PlayerInfo.PENALTY_SPL_BALL_HOLDING;
         data.whenPenalized[side][number] = data.getTime();
-        Log.state(data, "Ball Holding "+
-                Rules.league.teamColorName[data.team[side].teamColor]
-                + " " + (number+1));
+        Log.state(data, "Ball Holding " + data.team[side].teamColor + " " + (number+1));
     }
     
     /**

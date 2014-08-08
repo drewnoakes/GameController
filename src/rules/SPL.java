@@ -1,7 +1,5 @@
 package rules;
 
-import java.awt.Color;
-
 /**
  *
  * @author Michel-Zen
@@ -20,10 +18,6 @@ public class SPL extends Rules
         teamSize = 6; // 5 players + 1 sub
         /** How many robots of each team may play at one time. */
         robotsPlaying = 5;
-        /** The Java Colors the left and the right team starts with. */
-        teamColor = new Color[] {Color.BLUE, Color.RED};
-        /** The name of the colors. */
-        teamColorName = new String[] {"Blue", "Red"};
         /** If the colors change automatically. */
         colorChangeAuto = false;
         /** If the clock may stop in certain states (Ready, Set) in a play-off game. */

@@ -22,7 +22,7 @@ public class TeamInfo implements Serializable
     public static final byte MAX_NUM_PLAYERS = 11;
 
     public byte teamNumber;                                         // unique team number
-    public byte teamColor;                                          // colour of the team
+    public TeamColor teamColor;                                     // colour of the team
     public byte score;                                              // team's score
     public byte penaltyShot = 0;                                    // penalty shot counter
     public short singleShots = 0;                                   // bits represent penalty shot success
@@ -43,21 +43,13 @@ public class TeamInfo implements Serializable
     @Override
     public String toString()
     {
-        String out = "--------------------------------------\n";
-        String temp;
-        
-        out += "         teamNumber: "+teamNumber+"\n";
-        switch (teamColor) {
-            case GameControlData.TEAM_BLUE: temp = "blue"; break;
-            case GameControlData.TEAM_RED:  temp = "red";  break;
-            default: temp = "undefined("+teamColor+")";
-        }
-        out += "          teamColor: "+temp+"\n";
-        out += "              score: "+score+"\n";
-        out += "        penaltyShot: "+penaltyShot+"\n";
-        out += "        singleShots: "+Integer.toBinaryString(singleShots)+"\n";
-        out += "       coachMessage: "+new String(coachMessage)+"\n";
-        out += "        coachStatus: "+coach.toString()+"\n";
-        return out;
+        return "--------------------------------------\n"
+             + "         teamNumber: " + teamNumber + '\n'
+             + "          teamColor: " + teamColor + '\n'
+             + "              score: " + score + '\n'
+             + "        penaltyShot: " + penaltyShot + '\n'
+             + "        singleShots: " + Integer.toBinaryString(singleShots) + '\n'
+             + "       coachMessage: " + new String(coachMessage) + '\n'
+             + "        coachStatus: " + coach + '\n';
     }
 }

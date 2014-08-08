@@ -4,6 +4,7 @@ import controller.EventHandler;
 import controller.action.ActionBoard;
 import controller.action.GCAction;
 import data.GameControlData;
+import data.TeamColor;
 import rules.HL;
 import rules.Rules;
 import rules.SPL;
@@ -75,8 +76,8 @@ public class KeyboardListener implements KeyEventDispatcher
             default:
                 if (Rules.league instanceof SPL) {
                     switch (key) {
-                        case KeyEvent.VK_B: event = ActionBoard.out[EventHandler.getInstance().data.team[0].teamColor == GameControlData.TEAM_BLUE ? 0 : 1]; break;
-                        case KeyEvent.VK_R: event = ActionBoard.out[EventHandler.getInstance().data.team[0].teamColor == GameControlData.TEAM_RED ? 0 : 1]; break;
+                        case KeyEvent.VK_B: event = ActionBoard.out[EventHandler.getInstance().data.team[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
+                        case KeyEvent.VK_R: event = ActionBoard.out[EventHandler.getInstance().data.team[0].teamColor == TeamColor.Red ? 0 : 1]; break;
 
                         case KeyEvent.VK_P: event = ActionBoard.pushing; break;
                         case KeyEvent.VK_L: event = ActionBoard.leaving; break;
@@ -92,8 +93,8 @@ public class KeyboardListener implements KeyEventDispatcher
                     }
                 } else if (Rules.league instanceof HL) {
                     switch (key) {
-                        case KeyEvent.VK_B: event = ActionBoard.out[EventHandler.getInstance().data.team[0].teamColor == GameControlData.TEAM_BLUE ? 0 : 1]; break;
-                        case KeyEvent.VK_R: event = ActionBoard.out[EventHandler.getInstance().data.team[0].teamColor == GameControlData.TEAM_RED ? 0 : 1]; break;
+                        case KeyEvent.VK_B: event = ActionBoard.out[EventHandler.getInstance().data.team[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
+                        case KeyEvent.VK_R: event = ActionBoard.out[EventHandler.getInstance().data.team[0].teamColor == TeamColor.Red ? 0 : 1]; break;
 
                         case KeyEvent.VK_P: event = ActionBoard.pushing; break;
                         case KeyEvent.VK_D: event = ActionBoard.defense; break;

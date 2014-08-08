@@ -6,6 +6,7 @@ import controller.action.GCAction;
 import data.AdvancedData;
 import data.GameControlData;
 import data.GameState;
+import data.SecondaryGameState;
 import rules.Rules;
 
 
@@ -33,8 +34,8 @@ public class PenaltyShoot extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (data.secGameState != GameControlData.STATE2_PENALTYSHOOT) {
-            data.secGameState = GameControlData.STATE2_PENALTYSHOOT;
+        if (data.secGameState != SecondaryGameState.PenaltyShootout) {
+            data.secGameState = SecondaryGameState.PenaltyShootout;
             // Don't set data.whenCurrentGameStateBegan, because it's used to count the pause
             data.gameState = GameState.Initial;
             data.timeBeforeCurrentGameState = 0;
@@ -55,15 +56,15 @@ public class PenaltyShoot extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.secGameState == GameControlData.STATE2_PENALTYSHOOT)
-          || (data.previousSecGameState == GameControlData.STATE2_PENALTYSHOOT)      
-          || ((data.firstHalf != GameControlData.C_TRUE)
-            && (data.gameState == GameState.Finished)
+        return data.secGameState == SecondaryGameState.PenaltyShootout
+          || data.previousSecGameState == SecondaryGameState.PenaltyShootout
+          || (!data.firstHalf
+            && data.gameState == GameState.Finished
             && !(Rules.league.overtime
-                && (data.playoff)
-                && (data.secGameState == GameControlData.STATE2_NORMAL)
-                && (data.team[0].score == data.team[1].score)
-                && (data.team[0].score > 0)) )
-          || (data.testmode);
+                && data.playoff
+                && data.secGameState == SecondaryGameState.Normal
+                && data.team[0].score == data.team[1].score
+                && data.team[0].score > 0))
+          || data.testmode;
     }
 }

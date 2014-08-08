@@ -1,5 +1,7 @@
 package controller;
 
+import data.TeamColor;
+
 /** Models options that apply through the entire game and must be specified before the game commences.
  *
  * @author Drew Noakes https://drewnoakes.com
@@ -16,10 +18,9 @@ public class StartOptions
     public boolean colorChangeAuto;
 
     /**
-     * Specifies which team has kick off.
-     * 0 for blue, 1 for red, -1 for unspecified.
+     * Specifies which team has kick off, or null for unspecified.
      */
-    public int kickOffTeamIndex;
+    public TeamColor initialKickOffTeam;
 
     /**
      * Whether this is a play off game (goes into extra time if needed).

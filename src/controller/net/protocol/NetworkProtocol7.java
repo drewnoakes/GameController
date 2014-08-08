@@ -1,6 +1,7 @@
 package controller.net.protocol;
 
 import data.GameControlData;
+import data.TeamColor;
 import data.TeamInfo;
 
 import java.nio.ByteBuffer;
@@ -55,15 +56,16 @@ public class NetworkProtocol7 extends NetworkProtocol
         buffer.putInt(versionNumber);
         buffer.put(data.playersPerTeam);
         buffer.put(data.gameState.getValue());
-        buffer.put(data.firstHalf);
-        buffer.put(data.kickOffTeam);
-        buffer.put(data.secGameState);
-        buffer.put(data.dropInTeam);
+        buffer.put(data.firstHalf ? (byte)1 : 0);
+        buffer.put(data.kickOffTeam == null ? 2 : data.kickOffTeam.getValue());
+        buffer.put(data.secGameState.getValue());
+        // V7 sends '0' (blue) when no drop in has occurred. This is addressed in V9.
+        buffer.put(data.dropInTeam == null ? 0 : data.dropInTeam.getValue());
         buffer.putShort(data.dropInTime);
         buffer.putInt(data.secsRemaining);
 
         // in version 7, team data was sorted by team color
-        if (data.team[0].teamColor == GameControlData.TEAM_BLUE) {
+        if (data.team[0].teamColor == TeamColor.Blue) {
             writeTeamInfo(buffer, data.team[0]);
             writeTeamInfo(buffer, data.team[1]);
         } else {
@@ -83,7 +85,7 @@ public class NetworkProtocol7 extends NetworkProtocol
     private static void writeTeamInfo(ByteBuffer buffer, TeamInfo teamInfo)
     {
         buffer.put(teamInfo.teamNumber);
-        buffer.put(teamInfo.teamColor);
+        buffer.put(teamInfo.teamColor.getValue());
         buffer.put((byte) 1); // goal color is always yellow
         buffer.put(teamInfo.score);
 

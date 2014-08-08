@@ -47,10 +47,6 @@ public abstract class Rules
     public int teamSize;
     /** How many robots of each team may play at one time. */
     public int robotsPlaying;
-    /** The Java Colors the left and the right team starts with. */
-    public Color[] teamColor;
-    /** The name of the colors. */
-    public String[] teamColorName;
     /** If the colors change automatically. */
     public boolean colorChangeAuto;
     /** If the clock may stop in certain states (Ready, Set) in a play-off game. */

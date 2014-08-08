@@ -4,9 +4,7 @@ import common.Log;
 import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
-import data.AdvancedData;
-import data.GameControlData;
-import data.GameState;
+import data.*;
 import rules.Rules;
 
 /**
@@ -41,23 +39,23 @@ public class TimeOut extends GCAction
     {
         if (!data.timeOutActive[side]) {
             data.previousSecGameState = data.secGameState;
-            data.secGameState = GameControlData.STATE2_TIMEOUT;
+            data.secGameState = SecondaryGameState.Timeout;
             data.timeOutActive[side] = true;
             data.timeOutTaken[side] = true;
-            if (data.previousSecGameState != GameControlData.STATE2_PENALTYSHOOT) {
-                data.kickOffTeam = data.team[side].teamColor == GameControlData.TEAM_BLUE ? GameControlData.TEAM_RED : GameControlData.TEAM_BLUE;
+            if (data.previousSecGameState != SecondaryGameState.PenaltyShootout) {
+                data.kickOffTeam = data.team[side].teamColor.other();
             } else if (data.gameState == GameState.Set) {
                 data.team[data.kickOffTeam == data.team[0].teamColor ? 0 : 1].penaltyShot--;
             }
-            Log.setNextMessage("Timeout "+Rules.league.teamColorName[data.team[side].teamColor]);
+            Log.setNextMessage("Timeout "+data.team[side].teamColor);
             data.gameState = null; // to force execution of next call
             ActionBoard.initial.perform(data);
         } else {
             data.secGameState = data.previousSecGameState;
-            data.previousSecGameState = GameControlData.STATE2_TIMEOUT;
+            data.previousSecGameState = SecondaryGameState.Timeout;
             data.timeOutActive[side] = false;
-            Log.setNextMessage("End of Timeout "+Rules.league.teamColorName[data.team[side].teamColor]);
-            if (data.secGameState != GameControlData.STATE2_PENALTYSHOOT) {
+            Log.setNextMessage("End of Timeout "+data.team[side].teamColor);
+            if (data.secGameState != SecondaryGameState.PenaltyShootout) {
                 ActionBoard.ready.perform(data);
             }
         }
@@ -78,7 +76,7 @@ public class TimeOut extends GCAction
                   data.gameState == GameState.Set)
                 && !data.timeOutTaken[side]
                 && !data.timeOutActive[side == 0 ? 1 : 0]
-                && data.secGameState != GameControlData.STATE2_TIMEOUT)
+                && data.secGameState != SecondaryGameState.Timeout)
             || data.testmode;
     }
 }

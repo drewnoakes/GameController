@@ -4,9 +4,7 @@ import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import controller.action.ui.half.FirstHalf;
-import data.AdvancedData;
-import data.GameControlData;
-import data.GameState;
+import data.*;
 import rules.Rules;
 
 
@@ -44,11 +42,11 @@ public class Set extends GCAction
             data.addTimeInCurrentState();
         }
         data.whenCurrentGameStateBegan = data.getTime();
-        
-        if (data.secGameState == GameControlData.STATE2_PENALTYSHOOT) {
+
+        if (data.secGameState == SecondaryGameState.PenaltyShootout) {
             data.timeBeforeCurrentGameState = 0;
             if (data.gameState != GameState.Initial) {
-                data.kickOffTeam = data.kickOffTeam == GameControlData.TEAM_BLUE ? GameControlData.TEAM_RED : GameControlData.TEAM_BLUE;
+                data.kickOffTeam = data.kickOffTeam == TeamColor.Blue ? TeamColor.Red : TeamColor.Blue;
                 FirstHalf.changeSide(data);
             }
 
@@ -69,11 +67,10 @@ public class Set extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (data.gameState == GameState.Ready)
-            || (data.gameState == GameState.Set)
-            || ((data.secGameState == GameControlData.STATE2_PENALTYSHOOT)
-              && ((data.gameState != GameState.Playing)
-                || (Rules.league.penaltyShotRetries))
+        return data.gameState == GameState.Ready
+            || data.gameState == GameState.Set
+            || (data.secGameState == SecondaryGameState.PenaltyShootout
+              && (data.gameState != GameState.Playing || Rules.league.penaltyShotRetries)
               && !data.timeOutActive[0]
               && !data.timeOutActive[1]
               && !data.refereeTimeout)

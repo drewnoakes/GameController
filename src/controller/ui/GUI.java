@@ -306,7 +306,7 @@ public class GUI extends JFrame implements GCGUI
         for (int i=0; i<2; i++) {
             name[i] = new JLabel(Teams.getNames(false)[data.team[i].teamNumber]);
             name[i].setHorizontalAlignment(JLabel.CENTER);
-            name[i].setForeground(Rules.league.teamColor[data.team[i].teamColor]);
+            name[i].setForeground(data.team[i].teamColor.getColor());
             goalInc[i] = new Button("+");
             goalDec[i] = new Button("-");
             kickOff[i] = new JRadioButton(KICKOFF);
@@ -857,17 +857,17 @@ public class GUI extends JFrame implements GCGUI
             secondHalfOvertime.setEnabled(ActionBoard.secondHalfOvertime.isLegal(data));
         }
         penaltyShoot.setEnabled(ActionBoard.penaltyShoot.isLegal(data));
-        firstHalf.setSelected((data.secGameState == GameControlData.STATE2_NORMAL)
-                            && (data.firstHalf == GameControlData.C_TRUE));
-        secondHalf.setSelected((data.secGameState == GameControlData.STATE2_NORMAL)
-                            && (data.firstHalf != GameControlData.C_TRUE));
+        firstHalf.setSelected((data.secGameState == SecondaryGameState.Normal)
+                            && (data.firstHalf));
+        secondHalf.setSelected((data.secGameState == SecondaryGameState.Normal)
+                            && (!data.firstHalf));
         if (Rules.league.overtime) {
-           firstHalfOvertime.setSelected((data.secGameState == GameControlData.STATE2_OVERTIME)
-                            && (data.firstHalf == GameControlData.C_TRUE));
-           secondHalfOvertime.setSelected((data.secGameState == GameControlData.STATE2_OVERTIME)
-                            && (data.firstHalf != GameControlData.C_TRUE)); 
+           firstHalfOvertime.setSelected((data.secGameState == SecondaryGameState.Overtime)
+                            && (data.firstHalf));
+           secondHalfOvertime.setSelected((data.secGameState == SecondaryGameState.Overtime)
+                            && (!data.firstHalf));
         }
-        penaltyShoot.setSelected(data.secGameState == GameControlData.STATE2_PENALTYSHOOT || data.previousSecGameState == GameControlData.STATE2_PENALTYSHOOT);
+        penaltyShoot.setSelected(data.secGameState == SecondaryGameState.PenaltyShootout || data.previousSecGameState == SecondaryGameState.PenaltyShootout);
     }
     
     /**
@@ -878,8 +878,8 @@ public class GUI extends JFrame implements GCGUI
     private void updateColor(AdvancedData data)
     {
         for (int i=0; i<2; i++) {
-            name[i].setForeground(Rules.league.teamColor[data.team[i].teamColor]);
-            side[i].setImage(backgroundSide[i][data.team[i].teamColor].getImage());
+            name[i].setForeground(data.team[i].teamColor.getColor());
+            side[i].setImage(backgroundSide[i][data.team[i].teamColor.getValue()].getImage());
         }
     }
     
@@ -934,15 +934,16 @@ public class GUI extends JFrame implements GCGUI
      */
     private void updateKickoff(AdvancedData data)
     {
-        if (data.kickOffTeam == GameControlData.DROPBALL) {
+        if (data.kickOffTeam == null) {
+            // drop ball
             kickOff[2].setSelected(true);
         } else {
             kickOff[data.team[0].teamColor == data.kickOffTeam ? 0 : 1].setSelected(true);
         }
         for (int i=0; i<2; i++) {
             kickOff[i].setEnabled(ActionBoard.kickOff[i].isLegal(data));
-            if (data.secGameState != GameControlData.STATE2_PENALTYSHOOT
-                && data.previousSecGameState != GameControlData.STATE2_PENALTYSHOOT) {
+            if (data.secGameState != SecondaryGameState.PenaltyShootout
+                && data.previousSecGameState != SecondaryGameState.PenaltyShootout) {
                 kickOff[i].setText(KICKOFF);
             } else {
                 kickOff[i].setText(KICKOFF_PENALTY_SHOOTOUT);
@@ -958,7 +959,7 @@ public class GUI extends JFrame implements GCGUI
     private void updatePushes(AdvancedData data)
     {
         for (int i=0; i<2; i++) {
-            if (data.secGameState != GameControlData.STATE2_PENALTYSHOOT && data.previousSecGameState != GameControlData.STATE2_PENALTYSHOOT) {
+            if (data.secGameState != SecondaryGameState.PenaltyShootout && data.previousSecGameState != SecondaryGameState.PenaltyShootout) {
                 if (Rules.league.pushesToEjection == null || Rules.league.pushesToEjection.length == 0) {
                     pushes[i].setText("");
                 } else {
@@ -986,7 +987,7 @@ public class GUI extends JFrame implements GCGUI
                       robot[i][j].setEnabled(false);
                       robotLabel[i][j].setText(EJECTED);
                   } else {
-                      robotLabel[i][j].setText(Rules.league.teamColorName[data.team[i].teamColor]+" "+COACH);
+                      robotLabel[i][j].setText(data.team[i].teamColor+" "+COACH);
                   }
                 }
                 else {
@@ -1001,18 +1002,18 @@ public class GUI extends JFrame implements GCGUI
                                     );
                             if (seconds == 0) {
                                 if (pickup) {
-                                    robotLabel[i][j].setText(Rules.league.teamColorName[data.team[i].teamColor]+" "+(j+1)+" ("+PEN_PICKUP+")");
+                                    robotLabel[i][j].setText(data.team[i].teamColor+" "+(j+1)+" ("+PEN_PICKUP+")");
                                     highlight(robot[i][j], true);
                                 } else if (data.team[i].player[j].penalty == PlayerInfo.PENALTY_SUBSTITUTE) {
-                                    robotLabel[i][j].setText(Rules.league.teamColorName[data.team[i].teamColor]+" "+(j+1)+" ("+PEN_SUBSTITUTE_SHORT+")");
+                                    robotLabel[i][j].setText(data.team[i].teamColor+" "+(j+1)+" ("+PEN_SUBSTITUTE_SHORT+")");
                                     highlight(robot[i][j], false);
                                 } else if (!(Rules.league instanceof SPL) ||
                                         !(data.team[i].player[j].penalty == PlayerInfo.PENALTY_SPL_COACH_MOTION)) {
-                                    robotLabel[i][j].setText(Rules.league.teamColorName[data.team[i].teamColor]+" "+(j+1)+": "+formatTime(seconds));
+                                    robotLabel[i][j].setText(data.team[i].teamColor+" "+(j+1)+": "+formatTime(seconds));
                                     highlight(robot[i][j], seconds <= UNPEN_HIGHLIGHT_SECONDS && robot[i][j].getBackground() != COLOR_HIGHLIGHT);
                                 }
                             }  else {
-                                robotLabel[i][j].setText(Rules.league.teamColorName[data.team[i].teamColor]+" "+(j+1)+": "+formatTime(seconds)+(pickup ? " (P)" : ""));
+                                robotLabel[i][j].setText(data.team[i].teamColor+" "+(j+1)+": "+formatTime(seconds)+(pickup ? " (P)" : ""));
                                 highlight(robot[i][j], seconds <= UNPEN_HIGHLIGHT_SECONDS && robot[i][j].getBackground() != COLOR_HIGHLIGHT);
                             }
                             int penTime = (seconds + data.getSecondsSince(data.whenPenalized[i][j]));
@@ -1026,7 +1027,7 @@ public class GUI extends JFrame implements GCGUI
                             highlight(robot[i][j], false);
                         }
                     } else {
-                        robotLabel[i][j].setText(Rules.league.teamColorName[data.team[i].teamColor]+" "+(j+1));
+                        robotLabel[i][j].setText(data.team[i].teamColor+" "+(j+1));
                         robotTime[i][j].setVisible(false);
                         highlight(robot[i][j], false);
                     }

@@ -29,9 +29,7 @@ public class Substitute extends Penalty
         
         player.penalty = PlayerInfo.PENALTY_SUBSTITUTE;
         data.whenPenalized[side][number] = data.getTime();
-        Log.state(data, "Leaving Player "+
-                Rules.league.teamColorName[data.team[side].teamColor]
-                + " " + (number+1));
+        Log.state(data, "Leaving Player " + data.team[side].teamColor + " " + (number+1));
     }
     
     /**
