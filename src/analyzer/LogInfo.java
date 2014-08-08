@@ -104,7 +104,7 @@ public class LogInfo
      */
     private boolean isRealVersion()
     {
-        return version == null ? false : version.equals(controller.Main.version);
+        return version != null && version.equals(controller.Main.version);
     }
     
     /**
@@ -126,7 +126,8 @@ public class LogInfo
      */
     private boolean isRealTeam(boolean firstTeam)
     {
-        return team[firstTeam ? 0 : 1] == null ? false : !team[firstTeam ? 0 : 1].equals(NOT_A_REAL_TEAM);
+        String team = this.team[firstTeam ? 0 : 1];
+        return team != null && !team.equals(NOT_A_REAL_TEAM);
     }
     
     /**
