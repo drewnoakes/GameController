@@ -31,6 +31,7 @@ public class TeamInfo implements Serializable
     public byte penaltyShot = 0;
     /** Bit flag, indicating success of penalty shots so far. */
     public short singleShots = 0;
+    /** The last coach message (only used in SPL). */
     public byte[] coachMessage = new byte[SPLCoachMessage.SPL_COACH_MESSAGE_SIZE];
     /** Data about the team's coach (only used in SPL). */
     public final PlayerInfo coach = new PlayerInfo();

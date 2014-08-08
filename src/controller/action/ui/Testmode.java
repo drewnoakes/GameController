@@ -6,7 +6,7 @@ import controller.action.GCAction;
 import data.GameState;
 
 /**
- * This action means that the testmode should be toggled on or off.
+ * Toggles test mode on/off.
  *
  * @author Michel Bartsch
  */

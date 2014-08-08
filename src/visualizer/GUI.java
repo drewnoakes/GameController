@@ -28,16 +28,27 @@ import rules.Rules;
 import data.Teams;
 
 /**
- * This class displays the game-state
+ * The window of the Game Controller Visualizer.
+ *
+ * Displays a summary of the game state in a large screen format, targeted at audiences and field referees.
+ *
+ * Shows:
+ *
+ * <ul>
+ *     <li>Team logos</li>
+ *     <li>Score</li>
+ *     <li>Time remaining</li>
+ *     <li>The current game period</li>
+ *     <li>The current play mode</li>
+ * </ul>
  *
  * @author Michel Bartsch
  */
 public class GUI extends JFrame
 {
-    /**
-     * Some constants defining this GUI`s appearance as their names say.
-     * Feel free to change them and see what happens.
-     */
+    // Some constants defining this GUI`s appearance as their names say.
+    // Feel free to change them and see what happens.
+
     private static final boolean IS_OSX = System.getProperty("os.name").contains("OS X");
     private static final boolean IS_APPLE_JAVA = IS_OSX && System.getProperty("java.version").compareTo("1.7") < 0;
     private static final String WINDOW_TITLE = "Visualizer";
@@ -52,7 +63,7 @@ public class GUI extends JFrame
     private static final String BACKGROUND = "background";
     private static final String WAITING_FOR_PACKAGE = "waiting for package...";
 
-    /** Available screens. */
+    /** Available screens on the current computer. */
     private static final GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 
     private final BufferStrategy bufferStrategy;
@@ -63,16 +74,16 @@ public class GUI extends JFrame
     /** The background. */
     private BufferedImage background;
     
-    /** The fonts used. */
+    // The fonts used
+
     private final Font testFont;
     private final Font standardFont;
     private final Font standardSmallFont;
     private final Font scoreFont;
     private final Font coachMessageFont;
 
-
     /**
-     * Creates a new GUI.
+     * Constructs all elements of the UI and shows it on screen.
      */
     GUI()
     {
@@ -123,6 +134,9 @@ public class GUI extends JFrame
         setVisible(true);
         createBufferStrategy(2);
         bufferStrategy = getBufferStrategy();
+
+        // Start a thread that periodically updates the UI with the latest state
+        // TODO do this directly in response to new state arriving rather than via polling
         Thread displayUpdater = new Thread()
         {
             @Override
@@ -140,7 +154,8 @@ public class GUI extends JFrame
     }
     
     /**
-     * This toggles the visualizer´s testmode on and off.
+     * Toggles testmode on and off.
+     * Test mode allows the user to make changes to the state without adhering to the game's rules.
      */
     public void toggleTestmode()
     {
@@ -149,8 +164,7 @@ public class GUI extends JFrame
     }
     
     /**
-     * This is called by the GameStateListener after receiving GameState to show
-     * them on the gui.
+     * Updates the visualizer's UI with the provided game state snapshot.
      * 
      * @param state the game state to show.
      */

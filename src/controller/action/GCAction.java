@@ -21,7 +21,7 @@ public abstract class GCAction implements ActionListener
     /**
      * Initialises a @{link GCAction}.
      * 
-     * @param type      The type of the action.
+     * @param type the type of the action.
      */
     public GCAction(ActionType type)
     {

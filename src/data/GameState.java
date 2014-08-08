@@ -25,7 +25,7 @@ import rules.Rules;
  */
 public class GameState extends GameStateSnapshot implements Cloneable
 {
-    /** This message is set when the data is put into the timeline */
+    /** This message to be used when the state is added to the timeline. */
     public String message = "";
 
     /** How much time summed up before the current play mode? (ms)*/
@@ -46,7 +46,7 @@ public class GameState extends GameStateSnapshot implements Cloneable
     /** Pushing counters for each team, 0:left side, 1:right side. */
     public final int[] pushes = {0, 0};
     
-    /** If true, the referee set a timeout */
+    /** If true, the referee set a timeout. */
     public boolean refereeTimeout = false;
 
     /** If true, this team is currently taking a timeOut, 0:left side, 1:right side. */
@@ -85,13 +85,13 @@ public class GameState extends GameStateSnapshot implements Cloneable
     /** Used to backup the secondary game state during a timeout. */
     public Period previousPeriod = Period.Normal;
 
-    /** Keeps the penalties for the players if there are substituted */
+    /** Keeps the penalties for the players if there are substituted. */
     public final ArrayList<ArrayList<PenaltyQueueData>> penaltyQueueForSubPlayers = new ArrayList<ArrayList<PenaltyQueueData>>();
 
     /** Keep the timestamp when a coach message was received*/
     public final long[] timestampCoachMessage = {0, 0};
 
-    /** Keep the coach messages*/
+    /** Keep the coach messages. */
     public final ArrayList<SPLCoachMessage> splCoachMessageQueue = new ArrayList<SPLCoachMessage>();
 
     /**

@@ -24,20 +24,20 @@ import controller.net.protocol.ReceivingProtocol;
 public class MessageReceiver<T>
 {
     private final MessageHandler<T> handler;
-    /** The used socket to receive the packages. */
+    /** The used socket to receive UDP packets. */
     private final DatagramSocket datagramSocket;
-
     /** The thread instance owned by this receiver class. */
     private final ReceiverThread receiverThread;
-
+    /** The set of protocols supported by this receiver. */
     private final List<ReceivingProtocol<T>> protocols = new ArrayList<ReceivingProtocol<T>>();
 
     /**
-     * Creates a new RobotMessageReceiver.
+     * Creates a new MessageReceiver.
      *
+     * @param udpPort the port number to listen on.
+     * @param timeoutMillis the number of milliseconds to wait for before timing out and trying again
+     * @param handler an object to invoke when a message is successfully received
      * @throws SocketException the an error occurs while creating the socket
-     * @param udpPort
-     * @param timeoutMillis
      */
     public MessageReceiver(int udpPort, int timeoutMillis, MessageHandler<T> handler) throws SocketException
     {

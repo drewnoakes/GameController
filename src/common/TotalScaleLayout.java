@@ -10,8 +10,7 @@ import javax.swing.JComponent;
 
 /**
  * This LayoutManager places components without any dependencies between each
- * other. Scaling the layouted container will make every component scaled
- * proportional.
+ * other. Scaling the container will make every component scale proportionally.
  *
  * @author Michel Bartsch
  */
@@ -26,12 +25,10 @@ public class TotalScaleLayout implements LayoutManager
     /** List of all components to layout on the container */
     private final LinkedList<TotalScaleComponent> comps = new LinkedList<TotalScaleComponent>();
     
-    
     /**
      * Creates a new TotalScaleLayout.
      * 
      * @param parent     The container to layout.
-     * 
      */
     public TotalScaleLayout(Container parent)
     {
@@ -39,7 +36,6 @@ public class TotalScaleLayout implements LayoutManager
         preferredSize = parent.getPreferredSize();
         minimumSize = parent.getMinimumSize();
     }
-    
     
     /**
      * This will add a Component to the container to be layout. Use this instead
@@ -50,7 +46,6 @@ public class TotalScaleLayout implements LayoutManager
      * @param width    Width on the container between 0 and 1.
      * @param height   Height on the container between 0 and 1.
      * @param comp     Component to be added.
-     * 
      */
     public void add(double x, double y, double width, double height, JComponent comp)
     {
@@ -134,15 +129,15 @@ public class TotalScaleLayout implements LayoutManager
     */
     class TotalScaleComponent
     {
-        /* Left-edge position on the container between 0 and 1. */
+        /** Left-edge position on the container between 0 and 1. */
         final double x;
-        /* Top-edge position on the container between 0 and 1. */
+        /** Top-edge position on the container between 0 and 1. */
         final double y;
-        /* Width on the container between 0 and 1. */
+        /** Width on the container between 0 and 1. */
         final double width;
-        /* Height on the container between 0 and 1. */
+        /** Height on the container between 0 and 1. */
         final double height;
-        /* Component to be layouted on the container. */
+        /** Component to be laid out on the container. */
         final Component comp;
         
         /**
@@ -152,8 +147,7 @@ public class TotalScaleLayout implements LayoutManager
         * @param y        Top-edge position on the container between 0 and 1.
         * @param width    Width on the container between 0 and 1.
         * @param height   Height on the container between 0 and 1.
-        * @param comp     Component to be layouted on the container.
-        * 
+        * @param comp     Component to be laid out on the container.
         */
         TotalScaleComponent(double x, double y, double width, double height, Component comp)
         {
