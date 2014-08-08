@@ -1146,18 +1146,18 @@ public class GUI extends JFrame implements GCGUI
                 : ActionBoard.coachMotion.isLegal(data));
         pen[9].setEnabled(ActionBoard.substitute.isLegal(data));
         
-        GCAction highlightEvent = EventHandler.getInstance().lastUIEvent;
-        pen[0].setSelected(highlightEvent == ActionBoard.pushing);
-        pen[1].setSelected(highlightEvent == ActionBoard.leaving);
-        pen[2].setSelected(highlightEvent == ActionBoard.fallen);
-        pen[3].setSelected(highlightEvent == ActionBoard.inactive);
-        pen[4].setSelected(highlightEvent == ActionBoard.defender);
-        pen[5].setSelected(highlightEvent == ActionBoard.holding);
-        pen[6].setSelected(highlightEvent == ActionBoard.hands);
-        pen[7].setSelected(highlightEvent == ActionBoard.pickUp);
-        pen[8].setSelected(Rules.league.dropInPlayerMode ? highlightEvent == ActionBoard.teammatePushing
-                : highlightEvent == ActionBoard.coachMotion);
-        pen[9].setSelected(highlightEvent == ActionBoard.substitute);
+        GCAction highlightAction = EventHandler.getInstance().lastUIAction;
+        pen[0].setSelected(highlightAction == ActionBoard.pushing);
+        pen[1].setSelected(highlightAction == ActionBoard.leaving);
+        pen[2].setSelected(highlightAction == ActionBoard.fallen);
+        pen[3].setSelected(highlightAction == ActionBoard.inactive);
+        pen[4].setSelected(highlightAction == ActionBoard.defender);
+        pen[5].setSelected(highlightAction == ActionBoard.holding);
+        pen[6].setSelected(highlightAction == ActionBoard.hands);
+        pen[7].setSelected(highlightAction == ActionBoard.pickUp);
+        pen[8].setSelected(Rules.league.dropInPlayerMode ? highlightAction == ActionBoard.teammatePushing
+                : highlightAction == ActionBoard.coachMotion);
+        pen[9].setSelected(highlightAction == ActionBoard.substitute);
     }
     
     /**
@@ -1175,14 +1175,14 @@ public class GUI extends JFrame implements GCGUI
         pen[5].setEnabled(ActionBoard.serviceHL.isLegal(data));
         pen[6].setEnabled(ActionBoard.substitute.isLegal(data));
 
-        GCAction highlightEvent = EventHandler.getInstance().lastUIEvent;
-        pen[0].setSelected(highlightEvent == ActionBoard.ballManipulation);
-        pen[1].setSelected(highlightEvent == ActionBoard.pushing);
-        pen[2].setSelected(highlightEvent == ActionBoard.attack);
-        pen[3].setSelected(highlightEvent == ActionBoard.defense);
-        pen[4].setSelected(highlightEvent == ActionBoard.pickUpHL);
-        pen[5].setSelected(highlightEvent == ActionBoard.serviceHL);
-        pen[6].setSelected(highlightEvent == ActionBoard.substitute);
+        GCAction highlightAction = EventHandler.getInstance().lastUIAction;
+        pen[0].setSelected(highlightAction == ActionBoard.ballManipulation);
+        pen[1].setSelected(highlightAction == ActionBoard.pushing);
+        pen[2].setSelected(highlightAction == ActionBoard.attack);
+        pen[3].setSelected(highlightAction == ActionBoard.defense);
+        pen[4].setSelected(highlightAction == ActionBoard.pickUpHL);
+        pen[5].setSelected(highlightAction == ActionBoard.serviceHL);
+        pen[6].setSelected(highlightAction == ActionBoard.substitute);
     }
     
     /**
@@ -1191,13 +1191,13 @@ public class GUI extends JFrame implements GCGUI
      */
     private void updateUndo()
     {
-        GCAction highlightEvent = EventHandler.getInstance().lastUIEvent;
+        GCAction highlightAction = EventHandler.getInstance().lastUIAction;
         String[] undos = Log.getLast(ActionBoard.MAX_NUM_UNDOS_AT_ONCE);
         boolean undoFromHere = false;
         for (int i=undo.length - 1; i >= 0; i--) {
             undo[i].setVisible(!undos[i].equals(""));
             undo[i].setEnabled(!undos[i].contains(" vs "));
-            if ((highlightEvent == ActionBoard.undo[i+1]) && (!ActionBoard.undo[i+1].executed)) {
+            if ((highlightAction == ActionBoard.undo[i+1]) && (!ActionBoard.undo[i+1].executed)) {
                 undoFromHere = true;
             }
             if (undoFromHere) {

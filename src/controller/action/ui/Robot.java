@@ -68,8 +68,8 @@ public class Robot extends GCAction
             }
             Log.state(data, "Entering Player " + data.team[side].teamColor + " " + (number+1));
         }
-        else if (EventHandler.getInstance().lastUIEvent instanceof PenaltyAction || EventHandler.getInstance().lastUIEvent instanceof TeammatePushing) {
-            EventHandler.getInstance().lastUIEvent.performOn(data, player, side, number);
+        else if (EventHandler.getInstance().lastUIAction instanceof PenaltyAction || EventHandler.getInstance().lastUIAction instanceof TeammatePushing) {
+            EventHandler.getInstance().lastUIAction.performOn(data, player, side, number);
         }
         else if (player.penalty != Penalty.None) {
             Log.state(data, "Unpenalised " + data.team[side].teamColor + " " + (number+1));
@@ -87,32 +87,32 @@ public class Robot extends GCAction
     public boolean isLegal(GameState data)
     {
         return !data.ejected[side][number]
-                && (!(EventHandler.getInstance().lastUIEvent instanceof PenaltyAction)
+                && (!(EventHandler.getInstance().lastUIAction instanceof PenaltyAction)
                 && data.team[side].player[number].penalty != Penalty.None
                 && (data.getRemainingPenaltyTime(side, number) == 0 || Rules.league instanceof HL)
                 && (data.team[side].player[number].penalty != Penalty.Substitute || data.getNumberOfRobotsInPlay(side) < Rules.league.robotsPlaying)
                 && !isCoach()
-                || EventHandler.getInstance().lastUIEvent instanceof PickUpHL
+                || EventHandler.getInstance().lastUIAction instanceof PickUpHL
                 && data.team[side].player[number].penalty != Penalty.HLService
                 && data.team[side].player[number].penalty != Penalty.Substitute
-                || EventHandler.getInstance().lastUIEvent instanceof ServiceHL
+                || EventHandler.getInstance().lastUIAction instanceof ServiceHL
                 && data.team[side].player[number].penalty != Penalty.HLService
                 && data.team[side].player[number].penalty != Penalty.Substitute
-                || (EventHandler.getInstance().lastUIEvent instanceof PickUp && Rules.league instanceof SPL)
+                || (EventHandler.getInstance().lastUIAction instanceof PickUp && Rules.league instanceof SPL)
                 && data.team[side].player[number].penalty != Penalty.SplRequestForPickup
                 && data.team[side].player[number].penalty != Penalty.Substitute
-                || EventHandler.getInstance().lastUIEvent instanceof Substitute
+                || EventHandler.getInstance().lastUIAction instanceof Substitute
                 && data.team[side].player[number].penalty != Penalty.Substitute
                 && (!isCoach() && (!(Rules.league instanceof SPL) || number != 0))
-                || (EventHandler.getInstance().lastUIEvent instanceof CoachMotion)
+                || (EventHandler.getInstance().lastUIAction instanceof CoachMotion)
                     && (isCoach() && (data.team[side].coach.penalty != Penalty.SplCoachMotion))
                 || data.team[side].player[number].penalty == Penalty.None
-                    && (EventHandler.getInstance().lastUIEvent instanceof PenaltyAction)
-                    && !(EventHandler.getInstance().lastUIEvent instanceof CoachMotion)
-                    && !(EventHandler.getInstance().lastUIEvent instanceof Substitute)
+                    && (EventHandler.getInstance().lastUIAction instanceof PenaltyAction)
+                    && !(EventHandler.getInstance().lastUIAction instanceof CoachMotion)
+                    && !(EventHandler.getInstance().lastUIAction instanceof Substitute)
                     && (!isCoach())
                 || (data.team[side].player[number].penalty == Penalty.None)
-                    && (EventHandler.getInstance().lastUIEvent instanceof TeammatePushing))
+                    && (EventHandler.getInstance().lastUIAction instanceof TeammatePushing))
                 || data.testmode;
     }
     

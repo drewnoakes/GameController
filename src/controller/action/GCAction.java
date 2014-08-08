@@ -35,7 +35,7 @@ public abstract class GCAction implements ActionListener
      * The action`s perform method will not be executed right away but
      * later in the GUI`s thread.
      * 
-     * @param e      The event that happened, but this is ignored.
+     * @param e the event that happened, but this is ignored.
      */
     @Override
     public void actionPerformed(ActionEvent e)

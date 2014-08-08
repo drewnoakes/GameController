@@ -30,8 +30,8 @@ public class TeammatePushing extends GCAction {
 
     @Override
     public void perform(GameState data) {
-        if (EventHandler.getInstance().lastUIEvent == this) {
-            EventHandler.getInstance().noLastUIEvent = true;
+        if (EventHandler.getInstance().lastUIAction == this) {
+            EventHandler.getInstance().noLastUIAction = true;
         }
     }
 }

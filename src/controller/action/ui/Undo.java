@@ -39,7 +39,7 @@ public class Undo extends GCAction
     @Override
     public void perform(GameState data)
     {
-        if ((EventHandler.getInstance().lastUIEvent == this)
+        if ((EventHandler.getInstance().lastUIAction == this)
          && (!executed) ) {
             executed= true;
             Log.toFile("Undo "+states+" States to "+Log.goBack(states));

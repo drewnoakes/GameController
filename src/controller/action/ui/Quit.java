@@ -30,7 +30,7 @@ public class Quit extends GCAction
     @Override
     public void perform(GameState data)
     {
-        if (EventHandler.getInstance().lastUIEvent == this) {
+        if (EventHandler.getInstance().lastUIAction == this) {
             Clock.getInstance().stop();
         }
     }

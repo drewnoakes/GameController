@@ -59,12 +59,13 @@ public class EventHandler
      * only because the Log may change it to a later version.
      */
     public GameState data;
-    public GCAction lastUIEvent = null;
+    /** The last UI action. */
+    public GCAction lastUIAction = null;
     /**
-     * This may be set only in actions. If true, lastUIEvent will be set to
-     * null, even if the current action is an UIEvent.
+     * This may be set only in actions. If true, lastUIAction will be set to
+     * null, even if the current action is an UI action.
      */
-    public boolean noLastUIEvent = false;
+    public boolean noLastUIAction = false;
 
     /**
      * Creates a new EventHandler.
@@ -89,24 +90,24 @@ public class EventHandler
      * @{link GCAction#actionPerformed} method to later call its
      * @{link GCAction#perform} method in the GUI-Thread.
      * 
-     * @param event     The action calling.
+     * @param action the action calling.
      */
-    public void register(final GCAction event)
+    public void register(final GCAction action)
     {
         // Ensure we are running on the GUI thread
         if (!EventQueue.isDispatchThread()) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    register(event);
+                    register(action);
                 }
             });
             return;
         }
 
-        if (event.isLegal(data)) {
-            event.perform(data);
-            update(event);
+        if (action.isLegal(data)) {
+            action.perform(data);
+            update(action);
         }
     }
     
@@ -114,18 +115,17 @@ public class EventHandler
      * After the perform method this updates some attributes, calls the GUI`s
      * update method and changes the data to be send.
      * 
-     * @param event     The action that has been called.
+     * @param action the action that has been called.
      */
-    private void update(GCAction event)
+    private void update(GCAction action)
     {
-        if (event.type != ActionType.CLOCK) {
-            if (event.type == ActionType.UI) {
-                lastUIEvent = event;
-            }
+        if (action.type != ActionType.CLOCK && action.type == ActionType.UI) {
+            lastUIAction = action;
         }
-        if (noLastUIEvent) {
-            noLastUIEvent = false;
-            lastUIEvent = null;
+
+        if (noLastUIAction) {
+            noLastUIAction = false;
+            lastUIAction = null;
         }
         gameStateSender.send(data);
         gui.update(data);
