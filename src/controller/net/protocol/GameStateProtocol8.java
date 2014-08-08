@@ -1,5 +1,7 @@
 package controller.net.protocol;
 
+import common.annotations.NotNull;
+import common.annotations.Nullable;
 import data.*;
 import rules.Rules;
 
@@ -49,6 +51,7 @@ public class GameStateProtocol8 extends GameStateProtocol
                 2 * teamSize;
     }
 
+    @NotNull
     @Override
     public byte[] toBytes(GameControlData data)
     {
@@ -76,6 +79,7 @@ public class GameStateProtocol8 extends GameStateProtocol
         return buffer.array();
     }
 
+    @Nullable
     @Override
     public GameControlData fromBytes(ByteBuffer buffer)
     {

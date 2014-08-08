@@ -1,5 +1,7 @@
 package controller.net.protocol;
 
+import common.annotations.NotNull;
+import common.annotations.Nullable;
 import data.GameControlData;
 
 import java.nio.ByteBuffer;
@@ -38,6 +40,7 @@ public abstract class GameStateProtocol
      * @param buffer the bytes to parse
      * @return the {@link data.GameControlData} if successfully parsed, otherwise null
      */
+    @Nullable
     public abstract GameControlData fromBytes(ByteBuffer buffer);
 
     /**
@@ -46,6 +49,7 @@ public abstract class GameStateProtocol
      * @param data The source of data for the message
      * @return the byte array to be sent via the network
      */
+    @NotNull
     public abstract byte[] toBytes(GameControlData data);
 
     /**
