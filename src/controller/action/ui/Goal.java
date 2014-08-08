@@ -43,7 +43,7 @@ public class Goal extends GCAction
     {
         data.team[side].score += set;
         if (set == 1) {
-            if (data.secGameState != SecondaryGameState.PenaltyShootout) {
+            if (data.period != Period.PenaltyShootout) {
                 data.kickOffTeam = data.team[side].teamColor.other();
                 Log.setNextMessage("Goal for "+data.team[side].teamColor);
                 ActionBoard.ready.perform(data);
@@ -68,7 +68,7 @@ public class Goal extends GCAction
     {
         return ((set == 1)
               && (data.playMode == PlayMode.Playing)
-              && ( (data.secGameState != SecondaryGameState.PenaltyShootout)
+              && ( (data.period != Period.PenaltyShootout)
                 || (data.kickOffTeam == data.team[side].teamColor)) )
             || data.testmode;
     }

@@ -7,7 +7,7 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
 import data.PlayMode;
-import data.SecondaryGameState;
+import data.Period;
 
 public class RefereeTimeout extends GCAction
 {
@@ -20,24 +20,24 @@ public class RefereeTimeout extends GCAction
     public void perform(AdvancedData data)
     {
         if (!data.refereeTimeout) {
-            data.previousSecGameState = data.secGameState;
-            data.secGameState = SecondaryGameState.Timeout;
+            data.previousPeriod = data.period;
+            data.period = Period.Timeout;
             data.refereeTimeout = true;
             Log.setNextMessage("Referee Timeout");
             if (data.playMode == PlayMode.Playing) {
                 data.addTimeInCurrentPlayMode();
             }
-            if (data.previousSecGameState == SecondaryGameState.PenaltyShootout
+            if (data.previousPeriod == Period.PenaltyShootout
                     && (data.playMode == PlayMode.Set || data.playMode == PlayMode.Playing)) {
                 data.team[data.kickOffTeam == data.team[0].teamColor ? 0 : 1].penaltyShot--;
             }
             ActionBoard.initial.forcePerform(data);
         } else {
-            data.secGameState = data.previousSecGameState;
-            data.previousSecGameState = SecondaryGameState.Timeout;
+            data.period = data.previousPeriod;
+            data.previousPeriod = Period.Timeout;
             data.refereeTimeout = false;
             Log.setNextMessage("End of Referee Timeout");
-            if (data.secGameState != SecondaryGameState.PenaltyShootout) {
+            if (data.period != Period.PenaltyShootout) {
                 ActionBoard.ready.perform(data);
             }
         }

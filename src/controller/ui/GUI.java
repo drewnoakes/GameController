@@ -856,17 +856,17 @@ public class GUI extends JFrame implements GCGUI
             secondHalfOvertime.setEnabled(ActionBoard.secondHalfOvertime.isLegal(data));
         }
         penaltyShoot.setEnabled(ActionBoard.penaltyShoot.isLegal(data));
-        firstHalf.setSelected((data.secGameState == SecondaryGameState.Normal)
+        firstHalf.setSelected((data.period == Period.Normal)
                             && (data.firstHalf));
-        secondHalf.setSelected((data.secGameState == SecondaryGameState.Normal)
+        secondHalf.setSelected((data.period == Period.Normal)
                             && (!data.firstHalf));
         if (Rules.league.overtime) {
-           firstHalfOvertime.setSelected((data.secGameState == SecondaryGameState.Overtime)
+           firstHalfOvertime.setSelected((data.period == Period.Overtime)
                             && (data.firstHalf));
-           secondHalfOvertime.setSelected((data.secGameState == SecondaryGameState.Overtime)
+           secondHalfOvertime.setSelected((data.period == Period.Overtime)
                             && (!data.firstHalf));
         }
-        penaltyShoot.setSelected(data.secGameState == SecondaryGameState.PenaltyShootout || data.previousSecGameState == SecondaryGameState.PenaltyShootout);
+        penaltyShoot.setSelected(data.period == Period.PenaltyShootout || data.previousPeriod == Period.PenaltyShootout);
     }
     
     /**
@@ -942,8 +942,8 @@ public class GUI extends JFrame implements GCGUI
         }
         for (int i=0; i<2; i++) {
             kickOff[i].setEnabled(ActionBoard.kickOff[i].isLegal(data));
-            if (data.secGameState != SecondaryGameState.PenaltyShootout
-                && data.previousSecGameState != SecondaryGameState.PenaltyShootout) {
+            if (data.period != Period.PenaltyShootout
+                && data.previousPeriod != Period.PenaltyShootout) {
                 kickOff[i].setText(KICKOFF);
             } else {
                 kickOff[i].setText(KICKOFF_PENALTY_SHOOTOUT);
@@ -959,7 +959,7 @@ public class GUI extends JFrame implements GCGUI
     private void updatePushes(AdvancedData data)
     {
         for (int i=0; i<2; i++) {
-            if (data.secGameState != SecondaryGameState.PenaltyShootout && data.previousSecGameState != SecondaryGameState.PenaltyShootout) {
+            if (data.period != Period.PenaltyShootout && data.previousPeriod != Period.PenaltyShootout) {
                 if (Rules.league.pushesToEjection == null || Rules.league.pushesToEjection.length == 0) {
                     pushes[i].setText("");
                 } else {

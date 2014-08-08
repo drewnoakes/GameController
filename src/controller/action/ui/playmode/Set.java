@@ -42,7 +42,7 @@ public class Set extends GCAction
         }
         data.whenCurrentPlayModeBegan = data.getTime();
 
-        if (data.secGameState == SecondaryGameState.PenaltyShootout) {
+        if (data.period == Period.PenaltyShootout) {
             data.timeBeforeCurrentPlayMode = 0;
             if (data.playMode != PlayMode.Initial) {
                 data.kickOffTeam = data.kickOffTeam == TeamColor.Blue ? TeamColor.Red : TeamColor.Blue;
@@ -68,7 +68,7 @@ public class Set extends GCAction
     {
         return data.playMode == PlayMode.Ready
             || data.playMode == PlayMode.Set
-            || (data.secGameState == SecondaryGameState.PenaltyShootout
+            || (data.period == Period.PenaltyShootout
               && (data.playMode != PlayMode.Playing || Rules.league.penaltyShotRetries)
               && !data.timeOutActive[0]
               && !data.timeOutActive[1]

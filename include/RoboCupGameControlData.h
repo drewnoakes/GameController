@@ -16,16 +16,16 @@
 #define TEAM_MAGENTA                1
 #define DROPBALL                    2
 
-#define STATE_INITIAL               0
-#define STATE_READY                 1
-#define STATE_SET                   2
-#define STATE_PLAYING               3
-#define STATE_FINISHED              4
+#define PLAY_MODE_INITIAL           0
+#define PLAY_MODE_READY             1
+#define PLAY_MODE_SET               2
+#define PLAY_MODE_PLAYING           3
+#define PLAY_MODE_FINISHED          4
 
-#define STATE2_NORMAL               0
-#define STATE2_PENALTYSHOOT         1
-#define STATE2_OVERTIME             2
-#define STATE2_TIMEOUT              3
+#define PERIOD_NORMAL               0
+#define PERIOD_PENALTYSHOOT         1
+#define PERIOD_OVERTIME             2
+#define PERIOD_TIMEOUT              3
 
 #define PENALTY_NONE                        0
 // SPL
@@ -78,18 +78,18 @@ struct TeamInfo
 
 struct RoboCupGameControlData
 {
-  char header[4];               // header to identify the structure
-  uint8_t version;              // version of the data structure
-  uint8_t packetNumber;         // number incremented with each packet sent (with wraparound)
-  uint8_t playersPerTeam;       // The number of players on a team
-  uint8_t state;                // state of the game (STATE_READY, STATE_PLAYING, etc)
+  char header[4];               // Header to identify the structure
+  uint8_t version;              // Version of the data structure
+  uint8_t packetNumber;         // Number incremented with each packet sent (with wraparound)
+  uint8_t playersPerTeam;       // The maximum number of players on each team, including substitutes
+  uint8_t playMode;             // The play mode of the game (PLAY_MODE_READY, PLAY_MODE_PLAYING, etc)
   uint8_t firstHalf;            // 1 = game in first half, 0 otherwise
-  uint8_t kickOffTeam;          // the next team to kick off (TEAM_BLUE, TEAM_RED)
-  uint8_t secondaryState;       // Extra state information - (STATE2_NORMAL, STATE2_PENALTYSHOOT, etc)
-  uint8_t dropInTeam;           // team that caused last drop in
-  uint16_t dropInTime;          // number of seconds passed since the last drop in.  -1 before first dropin
-  uint16_t secsRemaining;       // estimate of number of seconds remaining in the half
-  uint16_t secondaryTime;       // number of seconds shown as secondary time (remaining ready, until free ball, etc)
+  uint8_t kickOffTeam;          // The next team to kick off (0=TEAM_BLUE, 1=TEAM_RED, 2=DROP_BALL)
+  uint8_t period;               // Extra state information - (PERIOD_NORMAL, PERIOD_PENALTYSHOOT, etc)
+  uint8_t dropInTeam;           // Team that caused last drop in (0=TEAM_BLUE, 1=TEAM_RED, 2=NONE)
+  uint16_t dropInTime;          // Number of seconds passed since the last drop in.  -1 before first drop in
+  uint16_t secsRemaining;       // An estimate of the number of seconds remaining in the half
+  uint16_t secondaryTime;       // Number of seconds shown as secondary time (remaining ready, until free ball, etc)
   TeamInfo teams[2];
   uint32_t gameControllerId;    // A randomly chosen number that is consistent throughout the lifespan of a game
 };

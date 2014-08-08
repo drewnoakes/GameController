@@ -149,16 +149,16 @@ private:
         else
           setLED(leftFootRed, 1.f, 0.f, 0.f);
 
-        if(gameCtrlData.state == STATE_INITIAL &&
-           gameCtrlData.secondaryState == STATE2_PENALTYSHOOT &&
+        if(gameCtrlData.state == PLAY_MODE_INITIAL &&
+           gameCtrlData.secondaryState == PERIOD_PENALTYSHOOT &&
            gameCtrlData.kickOffTeam == team.teamColour)
           setLED(rightFootRed, 0.f, 1.f, 0.f);
-        else if(gameCtrlData.state == STATE_INITIAL &&
-                gameCtrlData.secondaryState == STATE2_PENALTYSHOOT &&
+        else if(gameCtrlData.state == PLAY_MODE_INITIAL &&
+                gameCtrlData.secondaryState == PERIOD_PENALTYSHOOT &&
                 gameCtrlData.kickOffTeam != team.teamColour)
           setLED(rightFootRed, 1.f, 1.0f, 0.f);
         else if(now - whenPacketWasReceived < GAMECONTROLLER_TIMEOUT &&
-                gameCtrlData.state <= STATE_SET &&
+                gameCtrlData.state <= PLAY_MODE_SET &&
                 gameCtrlData.kickOffTeam == team.teamColour)
           setLED(rightFootRed, 1.f, 1.f, 1.f);
         else
@@ -169,13 +169,13 @@ private:
         else
           switch(gameCtrlData.state)
           {
-            case STATE_READY:
+            case PLAY_MODE_READY:
               setLED(chestRed, 0.f, 0.f, 1.f);
               break;
-            case STATE_SET:
+            case PLAY_MODE_SET:
               setLED(chestRed, 1.f, 1.0f, 0.f);
               break;
-            case STATE_PLAYING:
+            case PLAY_MODE_PLAYING:
               setLED(chestRed, 0.f, 1.f, 0.f);
               break;
             default:
@@ -272,7 +272,7 @@ private:
             else
             {
               player.penalty = PENALTY_NONE;
-              gameCtrlData.state = STATE_PLAYING;
+              gameCtrlData.state = PLAY_MODE_PLAYING;
               if(now - whenPacketWasReceived < GAMECONTROLLER_TIMEOUT &&
                  send(GAMECONTROLLER_RETURN_MSG_MAN_UNPENALISE))
                 whenPacketWasSent = now;
@@ -284,7 +284,7 @@ private:
           whenChestButtonStateChanged = now;
         }
 
-        if(gameCtrlData.state == STATE_INITIAL)
+        if(gameCtrlData.state == PLAY_MODE_INITIAL)
         {
           bool leftFootButtonPressed = *buttons[leftFootLeft] != 0.f || *buttons[leftFootRight] != 0.f;
           if(leftFootButtonPressed != previousLeftFootButtonPressed && now - whenLeftFootButtonStateChanged >= BUTTON_DELAY)
@@ -304,15 +304,15 @@ private:
           {
             if(rightFootButtonPressed)
             {
-              if(gameCtrlData.secondaryState == STATE2_NORMAL)
+              if(gameCtrlData.secondaryState == PERIOD_NORMAL)
               {
-                gameCtrlData.secondaryState = STATE2_PENALTYSHOOT;
+                gameCtrlData.secondaryState = PERIOD_PENALTYSHOOT;
                 gameCtrlData.kickOffTeam = team.teamColour;
               }
               else if(gameCtrlData.kickOffTeam == team.teamColour)
                 gameCtrlData.kickOffTeam ^= 1;
               else
-                gameCtrlData.secondaryState = STATE2_NORMAL;
+                gameCtrlData.secondaryState = PERIOD_NORMAL;
               publish();
             }
             previousRightFootButtonPressed = rightFootButtonPressed;

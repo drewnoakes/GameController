@@ -6,7 +6,6 @@ import data.*;
 import rules.Rules;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Random;
 
 /**
@@ -64,7 +63,7 @@ public class GameStateProtocol9 extends GameStateProtocol
                 1 + // playMode
                 1 + // firstHalf
                 1 + // kickOffTeam
-                1 + // secGameState
+                1 + // period
                 1 + // dropInTeam
                 2 + // dropInTime
                 2 + // secsRemaining
@@ -85,7 +84,7 @@ public class GameStateProtocol9 extends GameStateProtocol
         buffer.put(data.playMode.getValue());
         buffer.put(data.firstHalf ? (byte)1 : 0);
         buffer.put(data.kickOffTeam == null ? 2 : data.kickOffTeam.getValue());
-        buffer.put(data.secGameState.getValue());
+        buffer.put(data.period.getValue());
         buffer.put(data.dropInTeam == null ? 2 : data.dropInTeam.getValue());
         buffer.putShort(data.dropInTime);
         buffer.putShort(data.secsRemaining);
@@ -115,7 +114,7 @@ public class GameStateProtocol9 extends GameStateProtocol
         data.playMode = PlayMode.fromValue(buffer.get());
         data.firstHalf = buffer.get() != 0;
         data.kickOffTeam = TeamColor.fromValue(buffer.get());
-        data.secGameState = SecondaryGameState.fromValue(buffer.get());
+        data.period = Period.fromValue(buffer.get());
         data.dropInTeam = TeamColor.fromValue(buffer.get());
         data.dropInTime = buffer.getShort();
         data.secsRemaining = buffer.getShort();

@@ -5,7 +5,7 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
 import data.PlayMode;
-import data.SecondaryGameState;
+import data.Period;
 import rules.Rules;
 
 
@@ -33,8 +33,8 @@ public class PenaltyShoot extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (data.secGameState != SecondaryGameState.PenaltyShootout) {
-            data.secGameState = SecondaryGameState.PenaltyShootout;
+        if (data.period != Period.PenaltyShootout) {
+            data.period = Period.PenaltyShootout;
             // Don't set data.whenCurrentPlayModeBegan, because it's used to count the pause
             data.playMode = PlayMode.Initial;
             data.timeBeforeCurrentPlayMode = 0;
@@ -55,13 +55,13 @@ public class PenaltyShoot extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return data.secGameState == SecondaryGameState.PenaltyShootout
-          || data.previousSecGameState == SecondaryGameState.PenaltyShootout
+        return data.period == Period.PenaltyShootout
+          || data.previousPeriod == Period.PenaltyShootout
           || (!data.firstHalf
             && data.playMode == PlayMode.Finished
             && !(Rules.league.overtime
                 && data.playoff
-                && data.secGameState == SecondaryGameState.Normal
+                && data.period == Period.Normal
                 && data.team[0].score == data.team[1].score
                 && data.team[0].score > 0))
           || data.testmode;

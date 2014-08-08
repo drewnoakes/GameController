@@ -21,8 +21,8 @@ import javax.swing.JFrame;
 
 import common.Log;
 import data.GameControlData;
+import data.Period;
 import data.PlayMode;
-import data.SecondaryGameState;
 import rules.Rules;
 import data.Teams;
 
@@ -331,7 +331,7 @@ public class GUI extends JFrame
         int y = getSizeToHeight(0.72);
         int size = getSizeToWidth(0.2);
         String state;
-        if (data.secGameState == SecondaryGameState.Normal) {
+        if (data.period == Period.Normal) {
             if (data.firstHalf) {
                 if (data.playMode == PlayMode.Finished) {
                     state = "Half Time";
@@ -345,11 +345,11 @@ public class GUI extends JFrame
                     state = "Second Half";
                 }
             }
-        } else if (data.secGameState == SecondaryGameState.Overtime) {
+        } else if (data.period == Period.Overtime) {
             state = "Overtime";
-        } else if (data.secGameState == SecondaryGameState.PenaltyShootout) {
+        } else if (data.period == Period.PenaltyShootout) {
             state = "Penalty Shootout";
-        } else if (data.secGameState == SecondaryGameState.Timeout) {
+        } else if (data.period == Period.Timeout) {
             state = "Time Out";
         } else {
             state = "";

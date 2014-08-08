@@ -29,9 +29,9 @@ public class SecondHalfOvertime extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (data.firstHalf || data.secGameState == SecondaryGameState.PenaltyShootout) {
+        if (data.firstHalf || data.period == Period.PenaltyShootout) {
             data.firstHalf = false;
-            data.secGameState = SecondaryGameState.Overtime;
+            data.period = Period.Overtime;
             if (data.colorChangeAuto) {
                 data.team[0].teamColor = TeamColor.Blue;
                 data.team[1].teamColor = TeamColor.Red;
@@ -52,8 +52,8 @@ public class SecondHalfOvertime extends GCAction
     @Override
     public boolean isLegal(AdvancedData data)
     {
-        return (!data.firstHalf && data.secGameState == SecondaryGameState.Overtime)
-            || (data.secGameState == SecondaryGameState.Overtime && data.playMode == PlayMode.Finished)
+        return (!data.firstHalf && data.period == Period.Overtime)
+            || (data.period == Period.Overtime && data.playMode == PlayMode.Finished)
             || data.testmode;
     }
 }

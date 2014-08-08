@@ -26,8 +26,8 @@ public class GameControlData implements Serializable
     /** Which team has the next kick off. If null, then the next kick off will be a drop ball. */
     @Nullable
     public TeamColor kickOffTeam = TeamColor.Blue;
-    /** The secondary game state (normal, overtime, penalties...). */
-    public SecondaryGameState secGameState = SecondaryGameState.Normal;
+    /** The type of active game period (normal, overtime, penalties, timeout). */
+    public Period period = Period.Normal;
     /** Team that caused last drop in. If no drop in has occurred yet, will be null. */
     @Nullable
     public TeamColor dropInTeam;
@@ -62,7 +62,7 @@ public class GameControlData implements Serializable
         return "           playMode: " + playMode + '\n' +
                "          firstHalf: " + (firstHalf ? "true" : "false") + '\n' +
                "        kickOffTeam: " + kickOffTeam + '\n' +
-               "       secGameState: " + secGameState + '\n' +
+               "             period: " + period + '\n' +
                "         dropInTeam: " + dropInTeam + '\n' +
                "         dropInTime: " + dropInTime + '\n' +
                "      secsRemaining: " + secsRemaining + '\n' +

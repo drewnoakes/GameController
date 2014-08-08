@@ -8,7 +8,6 @@ import data.TeamInfo;
 import rules.Rules;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 /**
  * Implements game state network protocol, version 7.
@@ -42,7 +41,7 @@ public class GameStateProtocol7 extends GameStateProtocol
                 1 + // playMode
                 1 + // firstHalf
                 1 + // kickOffTeam
-                1 + // secGameState
+                1 + // period
                 1 + // dropInTeam
                 2 + // dropInTime
                 4 + // secsRemaining
@@ -60,7 +59,7 @@ public class GameStateProtocol7 extends GameStateProtocol
         buffer.put(data.playMode.getValue());
         buffer.put(data.firstHalf ? (byte)1 : 0);
         buffer.put(data.kickOffTeam == null ? 2 : data.kickOffTeam.getValue());
-        buffer.put(data.secGameState.getValue());
+        buffer.put(data.period.getValue());
         // V7 sends '0' (blue) when no drop in has occurred. This is addressed in V9.
         buffer.put(data.dropInTeam == null ? 0 : data.dropInTeam.getValue());
         buffer.putShort(data.dropInTime);

@@ -30,9 +30,9 @@ public class FirstHalf extends GCAction
     @Override
     public void perform(AdvancedData data)
     {
-        if (!data.firstHalf || data.secGameState == SecondaryGameState.PenaltyShootout) {
+        if (!data.firstHalf || data.period == Period.PenaltyShootout) {
             data.firstHalf = true;
-            data.secGameState = SecondaryGameState.Normal;
+            data.period = Period.Normal;
             changeSide(data);
             data.kickOffTeam = (data.leftSideKickoff ? data.team[0].teamColor : data.team[1].teamColor);
             data.playMode = PlayMode.Initial;
@@ -51,7 +51,7 @@ public class FirstHalf extends GCAction
     public boolean isLegal(AdvancedData data)
     {
         return ((data.firstHalf)
-                && (data.secGameState == SecondaryGameState.Normal))
+                && (data.period == Period.Normal))
                 || (data.testmode);
     }
     
@@ -71,13 +71,13 @@ public class FirstHalf extends GCAction
         data.ejected[1] = ejected;
 
         // if necessary, swap team colors
-        if (data.secGameState != SecondaryGameState.PenaltyShootout && data.colorChangeAuto) {
+        if (data.period != Period.PenaltyShootout && data.colorChangeAuto) {
             TeamColor color = data.team[0].teamColor;
             data.team[0].teamColor = data.team[1].teamColor;
             data.team[1].teamColor = color;
         }
 
-        if (Rules.league.timeOutPerHalf && (data.secGameState != SecondaryGameState.PenaltyShootout)) {
+        if (Rules.league.timeOutPerHalf && (data.period != Period.PenaltyShootout)) {
             data.timeOutTaken = new boolean[] {false, false};
         } else {
             boolean timeOutTaken = data.timeOutTaken[0];

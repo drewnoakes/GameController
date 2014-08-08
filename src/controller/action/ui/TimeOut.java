@@ -37,11 +37,11 @@ public class TimeOut extends GCAction
     public void perform(AdvancedData data)
     {
         if (!data.timeOutActive[side]) {
-            data.previousSecGameState = data.secGameState;
-            data.secGameState = SecondaryGameState.Timeout;
+            data.previousPeriod = data.period;
+            data.period = Period.Timeout;
             data.timeOutActive[side] = true;
             data.timeOutTaken[side] = true;
-            if (data.previousSecGameState != SecondaryGameState.PenaltyShootout) {
+            if (data.previousPeriod != Period.PenaltyShootout) {
                 data.kickOffTeam = data.team[side].teamColor.other();
             } else if (data.playMode == PlayMode.Set) {
                 data.team[data.kickOffTeam == data.team[0].teamColor ? 0 : 1].penaltyShot--;
@@ -49,11 +49,11 @@ public class TimeOut extends GCAction
             Log.setNextMessage("Timeout "+data.team[side].teamColor);
             ActionBoard.initial.forcePerform(data);
         } else {
-            data.secGameState = data.previousSecGameState;
-            data.previousSecGameState = SecondaryGameState.Timeout;
+            data.period = data.previousPeriod;
+            data.previousPeriod = Period.Timeout;
             data.timeOutActive[side] = false;
             Log.setNextMessage("End of Timeout "+data.team[side].teamColor);
-            if (data.secGameState != SecondaryGameState.PenaltyShootout) {
+            if (data.period != Period.PenaltyShootout) {
                 ActionBoard.ready.perform(data);
             }
         }
@@ -74,7 +74,7 @@ public class TimeOut extends GCAction
                   data.playMode == PlayMode.Set)
                 && !data.timeOutTaken[side]
                 && !data.timeOutActive[side == 0 ? 1 : 0]
-                && data.secGameState != SecondaryGameState.Timeout)
+                && data.period != Period.Timeout)
             || data.testmode;
     }
 }

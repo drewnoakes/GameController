@@ -5,7 +5,7 @@ import controller.action.ActionType;
 import controller.action.GCAction;
 import data.AdvancedData;
 import data.PlayMode;
-import data.SecondaryGameState;
+import data.Period;
 import rules.Rules;
 
 /**
@@ -60,7 +60,7 @@ public class Ready extends GCAction
               && !data.timeOutActive[0]
               && !data.timeOutActive[1]
               && !data.refereeTimeout
-              && data.secGameState != SecondaryGameState.PenaltyShootout)
+              && data.period != Period.PenaltyShootout)
             || data.playMode == PlayMode.Ready
             || data.testmode;
     }
