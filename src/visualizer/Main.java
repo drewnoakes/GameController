@@ -12,50 +12,30 @@ import rules.Rules;
 import java.net.SocketException;
 
 /**
- * The game-state-visualizer-program starts in this class.
- * The main components are initialised here.
+ * Launches the Game State Visualiser, and manages its lifetime including graceful shutdown.
  *
  * @author Michel Bartsch
+ * @author Drew Noakes https://drewnoakes.com
  */
 public class Main
-{        
-    private static final String HELP = "Usage: java -jar GameController.jar <options>"
-            + "\n  [-h | --help]                   display help"
-            + "\n  [-l | --league] <league-dir>    given league is preselected";
-    private static final String COMMAND_HELP = "--help";
-    private static final String COMMAND_HELP_SHORT = "-h";
-    private final static String COMMAND_LEAGUE = "--league";
-    private final static String COMMAND_LEAGUE_SHORT = "-l";
-    
+{
     private static MessageReceiver<GameStateSnapshot> gameStateListener;
 
     private Main() {}
 
     /**
-     * The program starts here.
+     * Entry point for the executable.
      * 
-     * @param args  This is ignored.
+     * @param args command line arguments for the application
      */
     public static void main(String[] args)
     {
-        //commands
-        if ((args.length > 0)
-                && ((args[0].equalsIgnoreCase(COMMAND_HELP_SHORT))
-                  || (args[0].equalsIgnoreCase(COMMAND_HELP))) ) {
-            System.out.println(HELP);
-            System.exit(0);
-        }
-        if ((args.length >= 2) && ((args[0].equals(COMMAND_LEAGUE_SHORT)) || (args[0].equals(COMMAND_LEAGUE)))) {
-            for (int i=0; i < Rules.LEAGUES.length; i++) {
-                if (Rules.LEAGUES[i].leagueDirectory.equals(args[1])) {
-                    Rules.league = Rules.LEAGUES[i];
-                    break;
-                }
-            }
-        }
+        processCommandLineArguments(args);
         
         final GUI gui = new GUI();
+
         new KeyboardListener(gui);
+
         try {
             gameStateListener = new MessageReceiver<GameStateSnapshot>(
                     Config.GAME_STATE_PORT,
@@ -73,7 +53,7 @@ public class Main
             System.exit(1);
         }
     }
-    
+
     /**
      * This should be called when the program is shutting down to close
      * sockets and finally exit.
@@ -86,5 +66,28 @@ public class Main
             Log.error("Waiting for gameStateListener to shutdown was interrupted.");
         }
         System.exit(0);
+    }
+
+    private static void processCommandLineArguments(String[] args)
+    {
+        if (args.length > 0 && (args[0].equals("-h") || args[0].equals("--help")) ) {
+            printUsage();
+            System.exit(0);
+        }
+
+        if (args.length >= 2 && (args[0].equals("-l") || args[0].equals("--league"))) {
+            if (!Rules.trySetLeague(args[1])) {
+                printUsage();
+                System.exit(1);
+            }
+        }
+    }
+
+    private static void printUsage()
+    {
+        final String HELP = "Usage: java -jar GameController.jar <options>"
+                + "\n  (-h | --help)                   show this help message"
+                + "\n  (-l | --league) <league-dir>    select league (default is spl)";
+        System.out.println(HELP);
     }
 }
