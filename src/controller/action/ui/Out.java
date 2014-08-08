@@ -7,9 +7,9 @@ import data.AdvancedData;
 import data.PlayMode;
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that the ball is out.
+ *
+ * @author Michel Bartsch
  */
 public class Out extends GCAction
 {

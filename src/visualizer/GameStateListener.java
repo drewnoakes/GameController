@@ -14,9 +14,9 @@ import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 
 /**
- * @author Michel Bartsch
- * 
  * This class receives the GameControlData from the GameController.
+ *
+ * @author Michel Bartsch
  */
 public class GameStateListener
 {

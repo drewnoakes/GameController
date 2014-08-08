@@ -8,10 +8,10 @@ import data.PlayMode;
 import data.Penalty;
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that a player has been penalised or unpenalised manually
  * via the chest button.
+ *
+ * @author Michel Bartsch
  */
 public class Manual extends GCAction
 {

@@ -7,9 +7,9 @@ import controller.action.GCAction;
 import data.*;
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that a timeOut is to be taken or ending.
+ *
+ * @author Michel Bartsch
  */
 public class TimeOut extends GCAction
 {

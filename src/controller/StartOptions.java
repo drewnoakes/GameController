@@ -2,7 +2,8 @@ package controller;
 
 import data.TeamColor;
 
-/** Models options that apply through the entire game and must be specified before the game commences.
+/**
+ * Models options that apply through the entire game and must be specified before the game commences.
  *
  * @author Drew Noakes https://drewnoakes.com
  */

@@ -1,10 +1,9 @@
 package rules;
 
 /**
+ * This class sets attributes given by the spl rules.
  *
  * @author Michel-Zen
- * 
- * This class sets attributes given by the spl rules.
  */
 public class SPL extends Rules
 {

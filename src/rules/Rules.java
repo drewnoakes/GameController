@@ -1,9 +1,9 @@
 package rules;
 
 /**
- * @author Michel Bartsch
- * 
  * This class holds attributes defining rules.
+ *
+ * @author Michel Bartsch
  */
 public abstract class Rules
 {   

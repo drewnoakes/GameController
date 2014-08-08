@@ -13,9 +13,9 @@ import java.awt.event.KeyEvent;
 
 
 /**
- * @author Michel Bartsch
- * 
  * This class listens to the keyboard. It does not depend on the GUI.
+ *
+ * @author Michel Bartsch
  */
 public class KeyboardListener implements KeyEventDispatcher
 {

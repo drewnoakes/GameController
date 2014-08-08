@@ -10,9 +10,9 @@ import rules.Rules;
 
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that a penalty shoot is to be starting.
+ *
+ * @author Michel Bartsch
  */
 public class PenaltyShoot extends GCAction
 {

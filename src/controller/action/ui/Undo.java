@@ -8,9 +8,9 @@ import data.AdvancedData;
 
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that the operator wants to go back in the timeline.
+ *
+ * @author Michel Bartsch
  */
 public class Undo extends GCAction
 {

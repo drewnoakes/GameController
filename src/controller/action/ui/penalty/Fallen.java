@@ -7,9 +7,9 @@ import data.Penalty;
 import data.PlayerInfo;
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that the fallen robot penalty has been selected.
+ *
+ * @author Michel Bartsch
  */
 public class Fallen extends PenaltyAction
 {

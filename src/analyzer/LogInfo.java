@@ -12,10 +12,10 @@ import java.util.Date;
 import java.util.LinkedList;
 
 /**
- * @author Michel Bartsch
- * 
  * Instances of this class represent a log file. It can analyze some basic
  * information of its log to guess if it was made by a real game.
+ *
+ * @author Michel Bartsch
  */
 public class LogInfo
 {

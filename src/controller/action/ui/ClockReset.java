@@ -7,9 +7,9 @@ import data.AdvancedData;
 
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that the clock is to be resetted.
+ *
+ * @author Michel Bartsch
  */
 public class ClockReset extends GCAction
 {

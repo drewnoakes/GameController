@@ -12,14 +12,14 @@ import java.util.LinkedList;
 
 
 /**
- * @author Michel Bartsch
- * 
  * This class should be used to log into a log file. A new file will be created
  * every time the GameController is started.
  * At the end of an actions the Log should be used to add a state into the
  * timeline, that is provided by this class too.
- * 
+ *
  * This class is a singleton!
+ *
+ * @author Michel Bartsch
  */
 public class Log
 {

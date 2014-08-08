@@ -31,9 +31,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 /**
- * @author Michel Bartsch
- * 
  * This window is shown to select log-files for analyzing.
+ *
+ * @author Michel Bartsch
  */
 @SuppressWarnings("unchecked")
 public class GUI extends JFrame implements ListSelectionListener

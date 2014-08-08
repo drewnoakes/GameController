@@ -7,9 +7,9 @@ import data.AdvancedData;
 
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that the testmode should be toggled on or off.
+ *
+ * @author Michel Bartsch
  */
 public class Testmode extends GCAction
 {

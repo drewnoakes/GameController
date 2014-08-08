@@ -8,9 +8,9 @@ import rules.Rules;
 
 
 /**
- * @author Michel Bartsch
- *
  * This action means that the half is to be set to the first half of overtime.
+ *
+ * @author Michel Bartsch
  */
 public class FirstHalfOvertime extends GCAction
 {

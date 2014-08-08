@@ -8,9 +8,9 @@ import data.AdvancedData;
 
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that the operator tries to close the GameController.
+ *
+ * @author Michel Bartsch
  */
 public class Quit extends GCAction
 {

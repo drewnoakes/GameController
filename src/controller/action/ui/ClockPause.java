@@ -8,9 +8,9 @@ import data.AdvancedData;
 
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that the clock is to be paused.
+ *
+ * @author Michel Bartsch
  */
 public class ClockPause extends GCAction
 {

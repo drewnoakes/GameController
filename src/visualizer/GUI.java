@@ -27,9 +27,9 @@ import rules.Rules;
 import data.Teams;
 
 /**
- * @author Michel Bartsch
- * 
  * This class displays the game-state
+ *
+ * @author Michel Bartsch
  */
 public class GUI extends JFrame
 {

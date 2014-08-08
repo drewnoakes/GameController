@@ -7,9 +7,9 @@ import data.Penalty;
 import data.PlayerInfo;
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that the inactive player penalty has been selected.
+ *
+ * @author Michel Bartsch
  */
 public class Inactive extends PenaltyAction
 {

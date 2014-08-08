@@ -24,9 +24,9 @@ import javax.swing.*;
 
 
 /**
- * @author Michel Bartsch
- * 
  * This is only to be on starting the program to get starting input.
+ *
+ * @author Michel Bartsch
  */
 public class StartInput extends JFrame
 {
@@ -448,9 +448,9 @@ public class StartInput extends JFrame
     }
 
     /**
-     * @author Michel Bartsch
-     * 
      * This is a normal JPanel, but it has a background image.
+     *
+     * @author Michel Bartsch
      */
     class ImagePanel extends JPanel
     {

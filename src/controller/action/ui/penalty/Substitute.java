@@ -7,9 +7,9 @@ import data.PlayerInfo;
 import rules.Rules;
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that the substitution player penalty has been selected.
+ *
+ * @author Michel Bartsch
  */
 public class Substitute extends PenaltyAction
 {

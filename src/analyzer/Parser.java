@@ -12,9 +12,9 @@ import data.TeamColor;
 import rules.Rules;
 
 /**
- * @author Michel Bartsch
- * 
  * This class contains all methods meant to parse logs.
+ *
+ * @author Michel Bartsch
  */
 public class Parser
 {

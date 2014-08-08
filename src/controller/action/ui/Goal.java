@@ -7,9 +7,9 @@ import controller.action.GCAction;
 import data.*;
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that a team has scored or it`s score is to be decreased.
+ *
+ * @author Michel Bartsch
  */
 public class Goal extends GCAction
 {

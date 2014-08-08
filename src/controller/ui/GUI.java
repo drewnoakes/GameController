@@ -36,11 +36,11 @@ import rules.SPL;
 
 
 /**
- * @author Michel Bartsch
- * 
  * This is the main GUI.
  * In this class you will find the whole graphical output and the bindings
  * of buttons to their actions, nothing less and nothing more.
+ *
+ * @author Michel Bartsch
  */
 public class GUI extends JFrame implements GCGUI
 {
@@ -656,9 +656,9 @@ public class GUI extends JFrame implements GCGUI
     }
     
     /**
-     * @author Michel Bartsch
-     * 
      * This is a normal JPanel, but it has a background image.
+     *
+     * @author Michel Bartsch
      */
     class ImagePanel extends JPanel
     {
@@ -705,9 +705,9 @@ public class GUI extends JFrame implements GCGUI
     }
     
     /**
-     * @author Michel Bartsch
-     * 
      * This is a normal JButton, but it has a background image.
+     *
+     * @author Michel Bartsch
      */
     class ImageButton extends JButton
     {

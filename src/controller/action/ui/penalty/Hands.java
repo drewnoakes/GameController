@@ -7,9 +7,9 @@ import data.Penalty;
 import data.PlayerInfo;
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that the playing with hands penalty has been selected.
+ *
+ * @author Michel Bartsch
  */
 public class Hands extends PenaltyAction
 {

@@ -9,9 +9,9 @@ import rules.Rules;
 
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that some time has been passed.
+ *
+ * @author Michel Bartsch
  */
 public class ClockTick extends GCAction
 {

@@ -4,10 +4,10 @@ import common.Log;
 import rules.Rules;
 
 /**
- * @author Michel Bartsch
- * 
  * The game-state-visualizer-program starts in this class.
  * The main components are initialised here.
+ *
+ * @author Michel Bartsch
  */
 public class Main
 {        

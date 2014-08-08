@@ -8,9 +8,9 @@ import data.AdvancedData;
 import data.PlayMode;
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that a global game stuck has occured.
+ *
+ * @author Michel Bartsch
  */
 public class DropBall extends GCAction
 {    

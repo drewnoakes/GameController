@@ -6,9 +6,9 @@ import controller.action.GCAction;
 import data.*;
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that the half is to be set to the second half.
+ *
+ * @author Michel Bartsch
  */
 public class SecondHalf extends GCAction
 {

@@ -7,9 +7,9 @@ import data.*;
 import rules.Rules;
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that the half is to be set to the first half.
+ *
+ * @author Michel Bartsch
  */
 public class FirstHalf extends GCAction
 {

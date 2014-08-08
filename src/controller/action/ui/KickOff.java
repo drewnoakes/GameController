@@ -10,9 +10,9 @@ import rules.Rules;
 
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that a team get kickoff.
+ *
+ * @author Michel Bartsch
  */
 public class KickOff extends GCAction
 {

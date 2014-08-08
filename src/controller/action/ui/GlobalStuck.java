@@ -10,9 +10,9 @@ import rules.Rules;
 
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that a global game stuck has occured.
+ *
+ * @author Michel Bartsch
  */
 public class GlobalStuck extends GCAction
 {

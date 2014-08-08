@@ -6,9 +6,9 @@ import java.awt.event.KeyEvent;
 
 
 /**
- * @author Michel Bartsch
- * 
  * This class listens to the keyboard.
+ *
+ * @author Michel Bartsch
  */
 public class KeyboardListener implements KeyEventDispatcher
 {

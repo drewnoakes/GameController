@@ -9,14 +9,14 @@ import java.awt.EventQueue;
 
 
 /**
- * @author Michel Bartsch
- * 
  * If the actionPerformed method of an action is called, it executes the register
  * method of this class. Later the action`s perform method will be called
  * in the GUI`s thread. This is to avoid resource conflicts caused by multiple
  * threads without massive use of synchronized get- and set-methods.
- * 
+ *
  * This class is a singleton!
+ *
+ * @author Michel Bartsch
  */
 public class EventHandler
 {

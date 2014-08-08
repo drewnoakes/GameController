@@ -9,12 +9,11 @@ import java.util.LinkedList;
 import javax.swing.JComponent;
 
 /**
- *
- * @author Michel Bartsch
- * 
  * This LayoutManager places components without any dependencies between each
  * other. Scaling the layouted container will make every component scaled
  * proportional.
+ *
+ * @author Michel Bartsch
  */
 public class TotalScaleLayout implements LayoutManager
 {

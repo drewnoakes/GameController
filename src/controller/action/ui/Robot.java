@@ -17,9 +17,9 @@ import rules.Rules;
 import rules.SPL;
 
 /**
- * @author Michel Bartsch
- * 
  * This action means that a player has been selected.
+ *
+ * @author Michel Bartsch
  */
 public class Robot extends GCAction
 {
