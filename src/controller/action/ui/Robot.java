@@ -51,7 +51,7 @@ public class Robot extends GCAction
     public void perform(AdvancedData data)
     {
         PlayerInfo player = data.team[side].player[number];
-        if (player.penalty == Penalty.Substitute && !isCoach(data)) {
+        if (player.penalty == Penalty.Substitute && !isCoach()) {
             ArrayList<PenaltyQueueData> playerInfoList = data.penaltyQueueForSubPlayers.get(side);
             if (playerInfoList.isEmpty()) {
                 if (Rules.league instanceof HL) {
@@ -91,7 +91,7 @@ public class Robot extends GCAction
                 && data.team[side].player[number].penalty != Penalty.None
                 && (data.getRemainingPenaltyTime(side, number) == 0 || Rules.league instanceof HL)
                 && (data.team[side].player[number].penalty != Penalty.Substitute || data.getNumberOfRobotsInPlay(side) < Rules.league.robotsPlaying)
-                && !isCoach(data)
+                && !isCoach()
                 || EventHandler.getInstance().lastUIEvent instanceof PickUpHL
                 && data.team[side].player[number].penalty != Penalty.HLService
                 && data.team[side].player[number].penalty != Penalty.Substitute
@@ -103,20 +103,20 @@ public class Robot extends GCAction
                 && data.team[side].player[number].penalty != Penalty.Substitute
                 || EventHandler.getInstance().lastUIEvent instanceof Substitute
                 && data.team[side].player[number].penalty != Penalty.Substitute
-                && (!isCoach(data) && (!(Rules.league instanceof SPL) || number != 0))
+                && (!isCoach() && (!(Rules.league instanceof SPL) || number != 0))
                 || (EventHandler.getInstance().lastUIEvent instanceof CoachMotion)
-                    && (isCoach(data) && (data.team[side].coach.penalty != Penalty.SplCoachMotion))
+                    && (isCoach() && (data.team[side].coach.penalty != Penalty.SplCoachMotion))
                 || data.team[side].player[number].penalty == Penalty.None
                     && (EventHandler.getInstance().lastUIEvent instanceof PenaltyAction)
                     && !(EventHandler.getInstance().lastUIEvent instanceof CoachMotion)
                     && !(EventHandler.getInstance().lastUIEvent instanceof Substitute)
-                    && (!isCoach(data))
+                    && (!isCoach())
                 || (data.team[side].player[number].penalty == Penalty.None)
                     && (EventHandler.getInstance().lastUIEvent instanceof TeammatePushing))
                 || data.testmode;
     }
     
-    public boolean isCoach(AdvancedData data)
+    public boolean isCoach()
     {
         return Rules.league.isCoachAvailable && number == Rules.league.teamSize;
     }

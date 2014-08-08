@@ -272,7 +272,7 @@ public class AdvancedData extends GameControlData implements Cloneable
         for (int i = 0; i < team.length; ++i) {
             pushes[i] = 0;
             for (int j = 0; j < Rules.league.teamSize; j++) {
-                if (!ActionBoard.robot[i][j].isCoach(this) && team[i].player[j].penalty != Penalty.Substitute) {
+                if (!ActionBoard.robot[i][j].isCoach() && team[i].player[j].penalty != Penalty.Substitute) {
                     team[i].player[j].penalty = Penalty.None;
                     ejected[i][j] = false;
                 }

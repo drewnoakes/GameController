@@ -92,7 +92,7 @@ public class GUI extends JFrame implements GCGUI
     }
     
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * Some constants defining this GUI`s appearance as their names say.
      * Feel free to change them and see what happens.
@@ -787,7 +787,7 @@ public class GUI extends JFrame implements GCGUI
             updatePenaltiesHL(data);
             updateDropBall(data);
         }
-        updateUndo(data);
+        updateUndo();
         repaint();
     }
 
@@ -982,7 +982,7 @@ public class GUI extends JFrame implements GCGUI
         RobotOnlineStatus[][] onlineStatus = RobotWatcher.updateRobotOnlineStatus();
         for (int i=0; i<robot.length; i++) {
             for (int j=0; j<robot[i].length; j++) {
-                if (ActionBoard.robot[i][j].isCoach(data)) {
+                if (ActionBoard.robot[i][j].isCoach()) {
                    if (data.team[i].coach.penalty == Penalty.SplCoachMotion) {
                       robot[i][j].setEnabled(false);
                       robotLabel[i][j].setText(EJECTED);
@@ -1187,10 +1187,9 @@ public class GUI extends JFrame implements GCGUI
     
     /**
      * Updates the timeline/undo.
-     * 
-     * @param data     The current data (model) the GUI should view.
+     *
      */
-    private void updateUndo(AdvancedData data)
+    private void updateUndo()
     {
         GCAction highlightEvent = EventHandler.getInstance().lastUIEvent;
         String[] undos = Log.getLast(ActionBoard.MAX_NUM_UNDOS_AT_ONCE);
