@@ -25,10 +25,4 @@ public class Quit extends GCAction
             Clock.getInstance().stop();
         }
     }
-    
-    @Override
-    public boolean isLegal(GameState state)
-    {
-        return true;
-    }
 }

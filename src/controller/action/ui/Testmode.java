@@ -23,10 +23,4 @@ public class Testmode extends GCAction
         state.testmode = !state.testmode;
         Log.toFile("Testmode = "+ state.testmode);
     }
-    
-    @Override
-    public boolean isLegal(GameState state)
-    {
-        return true;
-    }
 }

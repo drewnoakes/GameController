@@ -28,10 +28,4 @@ public class SPLCoachMessageReceived extends GCAction
             state.splCoachMessageQueue.add(message);
         }
     }
-
-    @Override
-    public boolean isLegal(GameState state)
-    {
-        return true;
-    }
 }

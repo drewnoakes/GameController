@@ -42,12 +42,6 @@ public class ClockTick extends GCAction
         }
         state.updateCoachMessages();
     }
-    
-    @Override
-    public boolean isLegal(GameState state)
-    {
-        return true;
-    }
 
     /**
      * Gets whether the clock should be running given the current GameState.

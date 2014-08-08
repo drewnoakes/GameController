@@ -31,7 +31,7 @@ public abstract class GCAction implements ActionListener
     /**
      * This gets called when the button an action is added to was pushed or
      * if the action is called otherwise.
-     * 
+     *
      * The action`s perform method will not be executed right away but
      * later in the GUI`s thread.
      * 
@@ -66,13 +66,17 @@ public abstract class GCAction implements ActionListener
     {}
     
     /**
-     * Must be override to determine if the action is legal at a specific
-     * state of the game.
+     * Specifies if this action is legal at a specific state of the game.
      *
      * Actions that are not legal will not be executed by the EventHandler.
+     *
+     * By default, actions are legal unless this method is overridden.
      * 
      * @param state the current data to calculate the legality by.
      * @return This is true if the action is legal.
      */
-    public abstract boolean isLegal(GameState state);
+    public boolean isLegal(GameState state)
+    {
+        return true;
+    }
 }

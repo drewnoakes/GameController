@@ -23,10 +23,4 @@ public class PickUp extends PenaltyAction
         player.penalty = Penalty.SplRequestForPickup;
         Log.state(state, "Request for PickUp " + state.team[side].teamColor + " " + (number+1));
     }
-    
-    @Override
-    public boolean isLegal(GameState state)
-    {
-        return true;
-    }
 }

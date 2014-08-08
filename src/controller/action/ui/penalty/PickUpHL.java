@@ -21,10 +21,4 @@ public class PickUpHL extends PenaltyAction
         player.penalty = Penalty.HLPickupOrIncapable;
         Log.state(state, "Request for PickUp / Incapable Player " + state.team[side].teamColor + " " + (number+1));
     }
-
-    @Override
-    public boolean isLegal(GameState state)
-    {
-        return true;
-    }
 }

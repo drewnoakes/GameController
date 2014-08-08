@@ -56,10 +56,4 @@ public class Manual extends GCAction
             }
         }
     }
-    
-    @Override
-    public boolean isLegal(GameState state)
-    {
-        return true;
-    }
 }

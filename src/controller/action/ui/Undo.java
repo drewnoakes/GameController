@@ -39,10 +39,4 @@ public class Undo extends GCAction
             executed = false;
         }
     }
-    
-    @Override
-    public boolean isLegal(GameState state)
-    {
-        return true;
-    }
 }

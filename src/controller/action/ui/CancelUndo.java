@@ -22,10 +22,4 @@ public class CancelUndo extends GCAction
     @Override
     public void perform(GameState state)
     {}
-    
-    @Override
-    public boolean isLegal(GameState state)
-    {
-        return true;
-    }
 }
