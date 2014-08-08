@@ -11,7 +11,7 @@ import java.nio.ByteOrder;
  *
  * @author Drew Noakes https://drewnoakes.com
  */
-public abstract class SPLCoachProtocol
+public abstract class SPLCoachProtocol implements ReceivingProtocol<SPLCoachMessage>
 {
     private static final String HEADER = "SPLC";
 

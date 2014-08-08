@@ -12,7 +12,7 @@ import java.nio.ByteOrder;
  *
  * @author Drew Noakes https://drewnoakes.com
  */
-public abstract class GameStateProtocol
+public abstract class GameStateProtocol implements ReceivingProtocol<GameStateSnapshot>
 {
     private static final String HEADER = "RGme";
 

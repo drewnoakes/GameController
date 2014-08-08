@@ -16,7 +16,6 @@ import controller.EventHandler;
  */
 public class SPLCoachMessage implements Serializable
 {
-    public static final int SPL_COACH_MESSAGE_PORT = 3839;
     public static final long SPL_COACH_MESSAGE_RECEIVE_INTERVAL = 10000; // in ms
     public static final int SPL_COACH_MESSAGE_SIZE = 40;
 

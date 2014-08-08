@@ -1,7 +1,15 @@
 package visualizer;
 
 import common.Log;
+import controller.Config;
+import controller.net.MessageHandler;
+import controller.net.MessageReceiver;
+import controller.net.protocol.GameStateProtocol8;
+import controller.net.protocol.GameStateProtocol9;
+import data.GameStateSnapshot;
 import rules.Rules;
+
+import java.net.SocketException;
 
 /**
  * The game-state-visualizer-program starts in this class.
@@ -19,7 +27,7 @@ public class Main
     private final static String COMMAND_LEAGUE = "--league";
     private final static String COMMAND_LEAGUE_SHORT = "-l";
     
-    private static GameStateListener gameStateListener;
+    private static MessageReceiver<GameStateSnapshot> gameStateListener;
 
     private Main() {}
 
@@ -46,10 +54,24 @@ public class Main
             }
         }
         
-        GUI gui = new GUI();
+        final GUI gui = new GUI();
         new KeyboardListener(gui);
-        gameStateListener = new GameStateListener(gui);
-        gameStateListener.start();
+        try {
+            gameStateListener = new MessageReceiver<GameStateSnapshot>(
+                    Config.GAME_STATE_PORT,
+                    500,
+                    new MessageHandler<GameStateSnapshot>()
+                    {
+                        @Override
+                        public void handle(GameStateSnapshot message) { gui.update(message); }
+                    });
+            gameStateListener.addProtocol(new GameStateProtocol9());
+            gameStateListener.addProtocol(new GameStateProtocol8());
+            gameStateListener.start();
+        } catch (SocketException e) {
+            System.err.println("Exception binding listener");
+            System.exit(1);
+        }
     }
     
     /**

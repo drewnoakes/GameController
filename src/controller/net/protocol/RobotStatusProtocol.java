@@ -1,6 +1,5 @@
 package controller.net.protocol;
 
-import common.annotations.Nullable;
 import data.RobotMessage;
 
 import java.nio.ByteBuffer;
@@ -11,7 +10,7 @@ import java.nio.ByteOrder;
  *
  * @author Drew Noakes https://drewnoakes.com
  */
-public abstract class RobotStatusProtocol
+public abstract class RobotStatusProtocol implements ReceivingProtocol<RobotMessage>
 {
     private static final String HEADER = "RGrt";
 
@@ -26,20 +25,6 @@ public abstract class RobotStatusProtocol
     {
         return versionNumber;
     }
-
-    /**
-     * The size in bytes of each fixed-size network message, as formatted by this protocol version.
-     */
-    public abstract int getMessageSize();
-
-    /**
-     * Attempts to parse the provided byte array as a message of this protocol version.
-     *
-     * @param buffer the bytes to parse
-     * @return the {@link data.RobotMessage} if successfully parsed, otherwise null
-     */
-    @Nullable
-    public abstract RobotMessage fromBytes(ByteBuffer buffer);
 
     /** Verifies the buffer starts with the expected header for this version of protocol. */
     protected boolean verifyHeader(ByteBuffer buffer)

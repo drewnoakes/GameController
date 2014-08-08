@@ -25,5 +25,10 @@ public class Config
      */
     public static final int GAME_STATE_SEND_PERIOD_MILLIS = 500;
 
+    /**
+     * UDP port that SPL coach messages are broadcast upon.
+     */
+    public static final int SPL_COACH_MESSAGE_PORT = 3839;
+
     private Config() {}
 }

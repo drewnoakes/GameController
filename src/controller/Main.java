@@ -3,16 +3,15 @@ package controller;
 import common.ApplicationLock;
 import common.Log;
 import controller.action.ActionBoard;
+import controller.action.net.SPLCoachMessageReceived;
 import controller.net.*;
 import controller.net.protocol.*;
 import controller.ui.GCGUI;
 import controller.ui.GUI;
 import controller.ui.KeyboardListener;
 import controller.ui.StartInput;
-import data.GameState;
-import data.TeamColor;
+import data.*;
 import rules.Rules;
-import data.Teams;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +49,7 @@ public class Main
      * 
      * @param args the array of command line arguments provided to the executable
      */
+    @SuppressWarnings("unchecked")
     public static void main(String[] args)
     {
         StartOptions options = parseCommandLineArguments(args);
@@ -66,9 +66,9 @@ public class Main
         data.playoff = options.playOff;
         data.kickOffTeam = options.initialKickOffTeam;
 
-        RobotMessageReceiver robotMessageReceiver;
+        MessageReceiver robotMessageReceiver;
+        MessageReceiver splReceiver = null;
         GameStateSender gameStateSender;
-        SPLCoachMessageReceiver splReceiver = null;
 
         try {
             //sender
@@ -85,13 +85,28 @@ public class Main
             EventHandler.initialise(gameStateSender);
             EventHandler.getInstance().data = data;
 
-            robotMessageReceiver = new RobotMessageReceiver();
+            robotMessageReceiver = new MessageReceiver<RobotMessage>(
+                    Config.ROBOT_STATUS_PORT,
+                    500,
+                    new MessageHandler<RobotMessage>()
+                    {
+                        @Override
+                        public void handle(RobotMessage message) { RobotWatcher.update(message); }
+                    });
             robotMessageReceiver.addProtocol(new RobotStatusProtocol1());
             robotMessageReceiver.addProtocol(new RobotStatusProtocol2());
             robotMessageReceiver.start();
 
             if (Rules.league.isCoachAvailable) {
-                splReceiver = new SPLCoachMessageReceiver();
+                splReceiver = new MessageReceiver<SPLCoachMessage>(
+                        Config.SPL_COACH_MESSAGE_PORT,
+                        500,
+                        new MessageHandler<SPLCoachMessage>()
+                        {
+                            @Override
+                            public void handle(SPLCoachMessage message) { new SPLCoachMessageReceived(message).actionPerformed(null); }
+                        });
+                splReceiver.addProtocol(new SPLCoachProtocol2());
                 splReceiver.start();
             }
         } catch (Exception e) {
