@@ -20,18 +20,31 @@ public class GameControlData implements Serializable
     public static final int GAMECONTROLLER_GAMEDATA_PORT = 3838; // port to send game state packets to
 
     public byte playersPerTeam = (byte)Rules.league.teamSize;
+    /** Primary state of the game. */
     public GameState gameState = GameState.Initial;
+    /** Whether the game is currently in the first half. Applies to both normal time and overtime. */
     public boolean firstHalf = true;
+    /** Which team has the next kick off. If null, then the next kick off will be a drop ball. */
     public TeamColor kickOffTeam = TeamColor.Blue;
-    public SecondaryGameState secGameState = SecondaryGameState.Normal; // Extra state information - (STATE2_NORMAL, STATE2_PENALTYSHOOT, etc)
-    public TeamColor dropInTeam;                                // team that caused last drop in
-    public short dropInTime = -1;                               // number of seconds passed since the last drop in. -1 before first dropin
-    public short secsRemaining = (short) Rules.league.halfTime; // estimate of number of seconds remaining in the half
-    public short secondaryTime = 0;                             // sub-time (remaining in ready state etc.) in seconds
-    public TeamInfo[] team = new TeamInfo[2];
-    
+    /** The secondary game state (normal, overtime, penalties...). */
+    public SecondaryGameState secGameState = SecondaryGameState.Normal;
+    /** Team that caused last drop in. */
+    public TeamColor dropInTeam;
+    /** The number of seconds that have passed since the last drop in. Will be -1 before first drop in. */
+    public short dropInTime = -1;
+    /** An estimate of the number of seconds remaining in the current half. */
+    public short secsRemaining = (short) Rules.league.halfTime;
     /**
-     * Creates a new GameControlData.
+     * State-specific sub-time in seconds.
+     *
+     * For example, may reflect the ten second countdown during kickoff, or the number of seconds
+     * remaining during 'ready' state, and so forth.
+     */
+    public short secondaryTime = 0;
+    public TeamInfo[] team = new TeamInfo[2];
+
+    /**
+     * Creates a new, blank GameControlData.
      */
     public GameControlData()
     {
