@@ -82,24 +82,7 @@ public class GameStateSender
         public void run()
         {
             while (!isInterrupted()) {
-                // Take a copy of the reference to prevent errors cause when data is modified while this thread is running
-                GameState data = GameStateSender.this.data;
-
-                if (data != null) {
-                    data.updateTimes();
-
-                    for (GameStateProtocol version : protocols) {
-                        byte[] bytes = version.toBytes(data);
-                        DatagramPacket packet = new DatagramPacket(bytes, bytes.length, GameStateSender.this.group, Config.GAME_STATE_PORT);
-                        try {
-                            datagramSocket.send(packet);
-                            version.incrementPacketNumber();
-                        } catch (IOException e) {
-                            Log.error("Error while sending");
-                            e.printStackTrace();
-                        }
-                    }
-                }
+                sendData();
 
                 try {
                     Thread.sleep(Config.GAME_STATE_SEND_PERIOD_MILLIS);
@@ -109,6 +92,29 @@ public class GameStateSender
             }
 
             datagramSocket.close();
+        }
+
+        protected void sendData()
+        {
+            // Take a copy of the reference to prevent errors cause when data is modified while this thread is running
+            GameState data = GameStateSender.this.data;
+
+            if (data == null)
+                return;
+
+            data.updateTimes();
+
+            for (GameStateProtocol version : protocols) {
+                try {
+                    byte[] bytes = version.toBytes(data);
+                    DatagramPacket packet = new DatagramPacket(bytes, bytes.length, GameStateSender.this.group, Config.GAME_STATE_PORT);
+                    datagramSocket.send(packet);
+                    version.incrementPacketNumber();
+                } catch (Exception e) {
+                    Log.error("Error while sending");
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
