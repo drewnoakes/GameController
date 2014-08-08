@@ -57,6 +57,8 @@ public class HL extends Rules
         returnRobotsInGameStoppages = false;
         /** Time in seconds one team has as timeOut. */
         timeOutTime = 2*60;
+        /** Whether calling a timeout gives the opponent the kickoff or not. */
+        giveOpponentKickOffOnTimeOut = false;
         /** One time-out per half? */
         timeOutPerHalf = true;
         /** On how many pushes is a robot ejected. */

@@ -57,6 +57,8 @@ public class SPL extends Rules
         returnRobotsInGameStoppages = true;
         /** Time in seconds one team has as timeOut. */
         timeOutTime = 5*60;
+        /** Whether calling a timeout gives the opponent the kickoff or not. */
+        giveOpponentKickOffOnTimeOut = true;
         /** Time in seconds of a referee timeout*/
         refereeTimeout = 10*60;
         /** Defines if the option for a referee timeout is available */

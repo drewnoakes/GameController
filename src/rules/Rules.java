@@ -84,6 +84,8 @@ public abstract class Rules
     public boolean returnRobotsInGameStoppages;
     /** Time in seconds one team has as timeOut. */
     public int timeOutTime;
+    /** Whether calling a timeout gives the opponent the kickoff or not. */
+    public boolean giveOpponentKickOffOnTimeOut;
     /** Time in seconds of a referee timeout*/
     public int refereeTimeout;
     /** Defines if the option for a referee timeout is available. */ 

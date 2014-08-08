@@ -5,6 +5,7 @@ import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.*;
+import rules.Rules;
 
 /**
  * This action means that a timeOut is to be taken or ending.
@@ -37,18 +38,21 @@ public class TimeOut extends GCAction
     public void perform(GameState data)
     {
         if (!data.timeOutActive[side]) {
+            // Starting a timeout
             data.previousPeriod = data.period;
             data.period = Period.Timeout;
             data.timeOutActive[side] = true;
             data.timeOutTaken[side] = true;
             if (data.previousPeriod != Period.PenaltyShootout) {
-                data.kickOffTeam = data.team[side].teamColor.other();
+                if (Rules.league.giveOpponentKickOffOnTimeOut)
+                    data.kickOffTeam = data.team[side].teamColor.other();
             } else if (data.playMode == PlayMode.Set) {
                 data.team[data.kickOffTeam == data.team[0].teamColor ? 0 : 1].penaltyShot--;
             }
             Log.setNextMessage("Timeout "+data.team[side].teamColor);
             ActionBoard.initial.forcePerform(data);
         } else {
+            // Completing
             data.period = data.previousPeriod;
             data.previousPeriod = Period.Timeout;
             data.timeOutActive[side] = false;
