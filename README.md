@@ -2,28 +2,28 @@
 
 This is the GameController developed by team B-Human for the RoboCup SPL and Humanoid League.
 
-If there are any questions, please contact seba@informatik.uni-bremen.de .
+If there are any questions, please contact: seba@informatik.uni-bremen.de
 
-Follow @BHumanOpenSrc on Twitter to get notifications about recent activity.
+Follow [@BHumanOpenSrc on Twitter](https://twitter.com/BHumanOpenSrc) to get notifications about recent activity.
 
-The sources mentioned in some sections of this document are available at
-https://github.com/bhuman/GameController .
+The sources mentioned in some sections of this document are available at:
+https://github.com/bhuman/GameController
 
 
 ## 1. Building from Source
 
-To build it from the source code you may use Apache Ant.
+To build it from the source code you may use [Apache Ant](http://ant.apache.org/).
+
 There are some ant targets:
 
-- clean
-	cleans up the project folder
+- `clean` cleans up the project folder
+- `compile` compiles the code and stores files in `/build/classes`
+- `jar` creates a jar package and stores it in `/build/jar`
+- `run` run the game controller application
+- `run_visualizer` runs the visualiser application
+- `run_analyzer` runs the log file analyzer application
 
-- compile
-	compiles the code and stores files in /build/classes
-	
-- jar
-	creates a jar package and stores it in /build/jar
-
+The default target is `jar`.
 	
 ## 2. Executing the Jar
 
@@ -31,11 +31,14 @@ Double-click GameController.jar or run
 
 Usage: `java -jar GameController.jar {options}`
 
-    (-h | --help)                   display help
-    (-b | --broadcast) <address>    set broadcast ip (default is 255.255.255.255)
+    (-h | --help)                   show this help message
+    (-b | --broadcast) <address>    set broadcast ip address (default is 255.255.255.255)
+    (-t | --teams) <blue> <red>     set team numbers
+    (-k | --kickoff) <colour>       set kickoff team colour ('blue' or 'red')
     (-l | --league) (spl | spl_dropin | hl_kid | hl_teen | hl_adult)
                                     select league (default is spl)
-    (-w | --window)                 select window mode (default is fullscreen)
+    (-w | --window)                 set window mode (default is fullscreen)
+    (--knockout | --playoff) <val>  set whether knockout/playoff game (yes/no)
 
 
 ## 3. Usage
@@ -68,14 +71,14 @@ HL: You can also select whether teams exchange their colors in the halftime.
 The use of the main screen should be rather obvious in most cases. Therefore, we only
 focus on the specialties.
 
-When ever you made a mistake, use the undo history at the bottom of the screen to correct
+Whenever you make a mistake, use the undo history at the bottom of the screen to correct
 it. You cannot correct individual decisions (except for the last one). Instead, you can
 only roll back to a certain state of the game. Click the oldest decision in the history
 you want to undo. After that all decisions that would be undone will be marked. Click the
 decision again to actually undo it together with all decisions that followed.
 
-To penalize a robot, first press the penalty button, then the robot button. For
-unpenalizing a robot, just press the robot button. A robot can only be unpenalized, when
+To penalize a robot, first press the penalty button, then the robot button. To
+unpenalize a robot, just press the robot button. A robot can only be unpenalized when
 its penalty time is over or when the game state changes (SPL only). Ten seconds before
 the penalty time is over, the robot's button starts flashing yellow. For regular penalties,
 it continues to flash until the button is pressed. Only buttons of robots that were
@@ -100,7 +103,7 @@ to the clock to increase the game time in one-minute steps. This is only availab
 stoppages of play.
 
 
-## 4. Shortcuts
+## 4. Keyboard Shortcuts
 
 While the GameController is running, you may use the following keys on the keyboard instead of pushing buttons:
 
@@ -108,7 +111,7 @@ While the GameController is running, you may use the following keys on the keybo
     Delete		- toggle test-mode (everything is legal, every button is visible and enabled)
     Backspace	- undo last action
 
-only SPL
+### SPL specific
 
     B	- out by blue
     R	- out by red
@@ -125,7 +128,7 @@ only SPL
     T   - teammate pushing
     S	- substitute
 
-only Humanoid-League
+### Humanoid League specific
 
     B	- out by blue
     R	- out by red
@@ -203,7 +206,9 @@ The GameStateVisualizer also displays the coach messages.
 Please note that the field "team" now contains the team number, not its color.
 
 
-## 7. Misc
+## 7. Changes
+
+### In GC 1.2 (used in WC 2014)
 
 The format of the packets the GameController broadcasts and receives at port
 GAMECONTROLLER_PORT is defined in the file RoboCupGameControlData.h. It differs
@@ -238,6 +243,24 @@ from the version used in 2013 in several ways:
   
 - Many fields use smaller data types now.
 
+### In GC 1.3 (proposed for WC 2015)
+
+- The startup UI now requires the user to explicitly specify the team with
+  initial kick off.
+
+- All start UI options may be specified from the command line.
+
+- Game state messages include a number that is unique to the game controller
+  instance, intended to prevent problems seen when multiple game controllers are
+  run on the same network. This allows robots to detect the problem, and in most
+  cases ignore the potentially sabotaging game controller.
+
+- When no drop in has yet occurred, 'dropInTeam' has value 2 instead of 0.
+
+- `STATE2_*` (SecondaryGameState, with Normal, Overtime, Timeout, Penalties) has been
+  renamed to `PERIOD_*`.
+
+- `STATE_*` (with Initial, Ready, Set, Playing, Finished) has been renamed to `PLAY_MODE_*`.
 
 ## 8. Known Issues
 
