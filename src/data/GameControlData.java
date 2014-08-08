@@ -1,5 +1,7 @@
 package data;
 
+import common.annotations.NotNull;
+import common.annotations.Nullable;
 import rules.Rules;
 
 import java.io.Serializable;
@@ -17,14 +19,17 @@ import java.io.Serializable;
 public class GameControlData implements Serializable
 {
     /** Primary state of the game. */
+    @NotNull
     public GameState gameState = GameState.Initial;
     /** Whether the game is currently in the first half. Applies to both normal time and overtime. */
     public boolean firstHalf = true;
     /** Which team has the next kick off. If null, then the next kick off will be a drop ball. */
+    @Nullable
     public TeamColor kickOffTeam = TeamColor.Blue;
     /** The secondary game state (normal, overtime, penalties...). */
     public SecondaryGameState secGameState = SecondaryGameState.Normal;
-    /** Team that caused last drop in. */
+    /** Team that caused last drop in. If no drop in has occurred yet, will be null. */
+    @Nullable
     public TeamColor dropInTeam;
     /** The number of seconds that have passed since the last drop in. Will be -1 before first drop in. */
     public short dropInTime = -1;
