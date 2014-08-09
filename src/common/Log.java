@@ -13,10 +13,9 @@ import java.util.LinkedList;
 
 
 /**
- * This class should be used to log into a log file. A new file will be created
- * every time the GameController is started.
- * At the end of an actions the Log should be used to add a state into the
- * timeline, that is provided by this class too.
+ * Used for both logging to files, and tracking the history of states in the timeline.
+ *
+ * A new log file is created every time the Log is initialised.
  *
  * This class is a singleton!
  *
@@ -27,12 +26,10 @@ public class Log
     /** The instance of the singleton. */
     private static Log instance;
     
-    /** The file to write into. */
+    /** The writer for normal log messages. */
     private FileWriter file;
-    /** The error-file to write into. */
+    /** The writer for error messages. */
     private FileWriter errorFile;
-    /** The file to write into. */
-    private final String errorPath = "error.txt";
     /** The timeline. */
     private final LinkedList<GameState> states = new LinkedList<GameState>();
     /** If != null, the next log entry will use this message. */ 
@@ -41,15 +38,12 @@ public class Log
     /** The format of timestamps. */
     public static final SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy.M.dd-kk.mm.ss");
     
-    /**
-     * Creates a new Log.
-     */
     private Log() {}
     
     /**
-     * Must be called once at the very beginning to allow Log to work.
+     * Initialises the log, creating the output file. Must be called before using this class.
      * 
-     * @param path  The path where the log-file should be created.
+     * @param path the path of the directory into which the log file should be created.
      */
     public synchronized static void init(String path)
     {
@@ -69,16 +63,15 @@ public class Log
     }
     
     /**
-     * Simply writes a line, beginning with a timestamp, in the file.
-     * May be used to log something that should not be in the timeline.
-     * 
-     * @param s     The string to be written in the file.
+     * Appends a line to the log file. Prepends the string with a timestamp.
+     *
+     * @param s the string to be written in the file.
      */
     public static void toFile(String s)
     {
         assert(instance != null);
-        try{
-            instance.file.write(timestampFormat.format(new Date(System.currentTimeMillis()))+": "+s+"\n");
+        try {
+            instance.file.write(createTimestamp() + ": " + s + '\n');
             instance.file.flush();
         } catch (IOException e) {
             error("cannot write to logfile!");
@@ -90,6 +83,7 @@ public class Log
      * replace the one that is specified during that log entry. This allows
      * to replace rather generic messages by more specific ones if an
      * action calls another action to perform its task.
+     *
      * @param message The message that will be used for the next log entry.
      */
     public static void setNextMessage(String message)
@@ -99,39 +93,41 @@ public class Log
     }
     
     /**
-     * Puts a copy of the given data into the timeline, attaching the message
+     * Puts a copy of the given state into the timeline, attaching the message
      * to it and writing it to the file using toFile method.
      * This should be used at the very end of all actions that are meant to be
      * in the timeline.
      * 
-     * @param data  The current data that have just been changed and should
+     * @param state the current state that have just been changed and should
      *              go into the timeline.
-     * @param message   A message describing what happened to the data.
+     * @param message a message describing what happened to the state.
      */
-    public static void state(GameState data, String message)
+    public static void state(GameState state, String message)
     {
         assert(instance != null);
-        GameState state = (GameState) data.clone();
+
+        // Make a clone of the mutable state object
+        GameState stateClone = (GameState)state.clone();
+
         if (instance.message == null) {
-            state.message = message;
+            stateClone.message = message;
         } else {
-            state.message = instance.message;
-            toFile(state.message);
+            stateClone.message = instance.message;
+            toFile(stateClone.message);
             instance.message = null;
         }
-        instance.states.add(state);
+        instance.states.add(stateClone);
         toFile(message);
     }
     
     /**
-     * Changes the data used in all actions via the EventHandler to a data from
-     * the timeline. So this is the undo function.
+     * Reverts the game state to some prior position in the timeline. Supports 'undo'.
+     *
      * If a game state change is undone, the time when it was left is restored.
-     * Thereby, there whole remaining log is moved into the new timeframe.
+     * Thereby, there whole remaining log is moved into the new time frame.
      * 
-     * @param states    How far you want to go back, how many states.
-     * 
-     * @return The message that was attached to the data you went back to.
+     * @param states the number of states to go back
+     * @return the message of the state reverted to
      */
     public static String goBack(int states)
     {
@@ -159,12 +155,12 @@ public class Log
     }
     
     /**
-     * Gives you the messages attached to the latest data in the timeline.
+     * Gets an array of the last N messages of states in the timeline.
      * 
-     * @param states    Of how many states back you want to have the messages.
+     * @param states the number of states back you want to have the messages for
      * 
-     * @return The messages attached to the data, beginning with the latest.
-     *         The arrays length equals the states parameter.
+     * @return the messages attached to the states, beginning with the latest as an
+     *         arrays of length equals to @{link states}.
      */
     public static String[] getLast(int states)
     {
@@ -181,34 +177,43 @@ public class Log
     }
 
     /**
-     * Writes a line, beginning with a timestamp, in the error-file and creates
-     * a new one, if it does not yet exist.
+     * Appends a line to the error file. Prepends the string with a timestamp.
+     *
+     * Creates the error log file if it does not already exist.
      * 
      * This can be used before initialising the log!
      * 
-     * @param s     The string to be written in the error-file.
+     * @param s the string to be written to the error log file.
      */
     public static void error(String s)
     {
+        // TODO documentation says this function can be called before initialisation, but that's not true
         assert(instance != null);
         System.err.println(s);
-        try{
+        try {
             if (instance.errorFile == null) {
-                instance.errorFile = new FileWriter(new File(instance.errorPath));
+                instance.errorFile = new FileWriter(new File("error.txt"));
             }
-            instance.errorFile.write(timestampFormat.format(new Date(System.currentTimeMillis()))+": "+s+"\n");
+            instance.errorFile.write(createTimestamp() + ": " + s + '\n');
             instance.errorFile.flush();
         } catch (IOException e) {
              System.err.println("cannot write to error file!");
         }
     }
-    
+
+    /** Produces a uniformly formatted string representing the current time to be prepended to log file entries. */
+    private static String createTimestamp()
+    {
+        return timestampFormat.format(new Date(System.currentTimeMillis()));
+    }
+
     /**
-     * Closes the Log
+     * Closes the Log file(s) and tears down the singleton.
      *
      * @throws IOException if an error occurred while trying to close the FileWriters
      */
     public static void close() throws IOException {
+        // TODO does closing the FileWriter close the underlying File object too?
         if (instance.errorFile != null) {
             instance.errorFile.close();
         }
