@@ -1,6 +1,5 @@
 package controller.action.ui.penalty;
 
-import common.Log;
 import data.GameState;
 import data.PlayMode;
 import data.Penalty;
@@ -29,7 +28,7 @@ public class Pushing extends PenaltyAction
             }
         }
         
-        Log.state(state, "Player Pushing " + state.team[side].teamColor + " " + (number+1));
+        log(state, null, "Player Pushing " + state.team[side].teamColor + " " + (number+1));
     }
     
     @Override

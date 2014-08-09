@@ -1,11 +1,9 @@
 package controller.action.ui.period;
 
-import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.*;
 import rules.Rules;
-
 
 /**
  * This action means that the half is to be set to the first half of overtime.
@@ -20,7 +18,7 @@ public class FirstHalfOvertime extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (!state.firstHalf || state.period == Period.PenaltyShootout) {
             state.firstHalf = true;
@@ -32,7 +30,7 @@ public class FirstHalfOvertime extends GCAction
             FirstHalf.changeSide(state);
             state.kickOffTeam = (state.leftSideKickoff ? state.team[0].teamColor : state.team[1].teamColor);
             state.playMode = PlayMode.Initial;
-            Log.state(state, "1st Half Extra Time");
+            log(state, message, "1st Half Extra Time");
         }
     }
 

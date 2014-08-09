@@ -1,6 +1,5 @@
 package controller.action.ui.penalty;
 
-import common.Log;
 import data.GameState;
 import data.Penalty;
 import data.PlayerInfo;
@@ -17,10 +16,10 @@ public class ServiceHL extends PickUp
         if (player.penalty == Penalty.None) {
             state.whenPenalized[side][number] = state.getTime();
             player.penalty = Penalty.HLService;
-            Log.state(state, "Request for Service " + state.team[side].teamColor + " " + (number+1));
+            log(state, null, "Request for Service " + state.team[side].teamColor + " " + (number+1));
         } else {
             player.penalty = Penalty.HLService;
-            Log.state(state, "Additional Request for Service " + state.team[side].teamColor + " " + (number+1));
+            log(state, null, "Additional Request for Service " + state.team[side].teamColor + " " + (number+1));
         }
     }
 }

@@ -32,9 +32,7 @@ public class Log
     private FileWriter errorFile;
     /** The timeline. */
     private final LinkedList<GameState> states = new LinkedList<GameState>();
-    /** If != null, the next log entry will use this message. */ 
-    private String message = null;
-    
+
     /** The format of timestamps. */
     public static final SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy.M.dd-kk.mm.ss");
     
@@ -79,20 +77,6 @@ public class Log
     }
     
     /**
-     * Specify the message that will be used for the next log entry. It will
-     * replace the one that is specified during that log entry. This allows
-     * to replace rather generic messages by more specific ones if an
-     * action calls another action to perform its task.
-     *
-     * @param message The message that will be used for the next log entry.
-     */
-    public static void setNextMessage(String message)
-    {
-        assert(instance != null);
-        instance.message = message;
-    }
-    
-    /**
      * Puts a copy of the given state into the timeline, attaching the message
      * to it and writing it to the file using toFile method.
      * This should be used at the very end of all actions that are meant to be
@@ -109,13 +93,7 @@ public class Log
         // Make a clone of the mutable state object
         GameState stateClone = (GameState)state.clone();
 
-        if (instance.message == null) {
-            stateClone.message = message;
-        } else {
-            stateClone.message = instance.message;
-            toFile(stateClone.message);
-            instance.message = null;
-        }
+        stateClone.message = message;
         instance.states.add(stateClone);
         toFile(message);
     }

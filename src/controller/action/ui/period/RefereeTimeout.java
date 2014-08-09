@@ -1,7 +1,5 @@
 package controller.action.ui.period;
 
-import common.Log;
-
 import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
@@ -17,13 +15,12 @@ public class RefereeTimeout extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (!state.refereeTimeout) {
             state.previousPeriod = state.period;
             state.period = Period.Timeout;
             state.refereeTimeout = true;
-            Log.setNextMessage("Referee Timeout");
             if (state.playMode == PlayMode.Playing) {
                 state.addTimeInCurrentPlayMode();
             }
@@ -31,14 +28,13 @@ public class RefereeTimeout extends GCAction
                     && (state.playMode == PlayMode.Set || state.playMode == PlayMode.Playing)) {
                 state.team[state.kickOffTeam == state.team[0].teamColor ? 0 : 1].penaltyShot--;
             }
-            ActionBoard.initial.forcePerform(state);
+            ActionBoard.initial.forcePerform(state, "Referee Timeout");
         } else {
             state.period = state.previousPeriod;
             state.previousPeriod = Period.Timeout;
             state.refereeTimeout = false;
-            Log.setNextMessage("End of Referee Timeout");
             if (state.period != Period.PenaltyShootout) {
-                ActionBoard.ready.perform(state);
+                ActionBoard.ready.perform(state, "End of Referee Timeout");
             }
         }
     }

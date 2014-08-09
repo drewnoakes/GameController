@@ -4,7 +4,6 @@
  */
 package controller.action.ui.penalty;
 
-import common.Log;
 import data.GameState;
 import data.PlayMode;
 import data.Penalty;
@@ -21,7 +20,7 @@ public class BallManipulation extends PenaltyAction
     {
         player.penalty = Penalty.HLBallManipulation;
         state.whenPenalized[side][number] = state.getTime();
-        Log.state(state, "Ball Manipulation " + state.team[side].teamColor + " " + (number+1));
+        log(state, null, "Ball Manipulation " + state.team[side].teamColor + " " + (number+1));
     }
     
     @Override

@@ -1,13 +1,11 @@
 package controller.action.ui;
 
-import common.Log;
 import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.GameState;
 import data.PlayMode;
 import rules.Rules;
-
 
 /**
  * This action means that a global game stuck has occurred.
@@ -29,15 +27,19 @@ public class GlobalStuck extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         state.kickOffTeam = state.team[side == 0 ? 1 : 0].teamColor;
-        if (state.getRemainingSeconds(state.whenCurrentPlayModeBegan, Rules.league.kickoffTime + Rules.league.minDurationBeforeStuck) > 0) {
-            Log.setNextMessage("Kickoff Goal "+ state.team[side].teamColor);
-        } else {
-            Log.setNextMessage("Global Game Stuck, Kickoff "+ state.kickOffTeam);
+
+        if (message == null) {
+            if (state.getRemainingSeconds(state.whenCurrentPlayModeBegan, Rules.league.kickoffTime + Rules.league.minDurationBeforeStuck) > 0) {
+                message = "Kickoff Goal " + state.team[side].teamColor;
+            } else {
+                message = "Global Game Stuck, Kickoff " + state.kickOffTeam;
+            }
         }
-        ActionBoard.ready.perform(state);
+
+        ActionBoard.ready.perform(state, message);
     }
     
     @Override

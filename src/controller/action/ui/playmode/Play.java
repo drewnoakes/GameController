@@ -1,6 +1,5 @@
 package controller.action.ui.playmode;
 
-import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.GameState;
@@ -19,7 +18,7 @@ public class Play extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (state.playMode == PlayMode.Playing) {
             return;
@@ -29,7 +28,7 @@ public class Play extends GCAction
         }
         state.whenCurrentPlayModeBegan = state.getTime();
         state.playMode = PlayMode.Playing;
-        Log.state(state, "Playing");
+        log(state, message, "Playing");
     }
     
     @Override

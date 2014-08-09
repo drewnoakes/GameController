@@ -1,12 +1,10 @@
 package controller.action.ui.playmode;
 
-import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.GameState;
 import data.PlayMode;
 import rules.Rules;
-
 
 /**
  * Sets play mode to @{link PlayMode#Finished}.
@@ -21,7 +19,7 @@ public class Finish extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (state.playMode == PlayMode.Finished) {
             return;
@@ -32,7 +30,7 @@ public class Finish extends GCAction
         state.addTimeInCurrentPlayMode();
         state.whenCurrentPlayModeBegan = state.getTime();
         state.playMode = PlayMode.Finished;
-        Log.state(state, "Finished");
+        log(state, message, "Finished");
     }
     
     @Override

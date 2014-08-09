@@ -1,6 +1,5 @@
 package controller.action.ui;
 
-import common.Log;
 import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
@@ -33,21 +32,20 @@ public class Goal extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         state.team[side].score += set;
+
         if (set == 1) {
             if (state.period != Period.PenaltyShootout) {
                 state.kickOffTeam = state.team[side].teamColor.other();
-                Log.setNextMessage("Goal for "+ state.team[side].teamColor);
-                ActionBoard.ready.perform(state);
+                ActionBoard.ready.perform(state, "Goal for " + state.team[side].teamColor);
             } else {
                 state.team[side].singleShots += (1<<(state.team[side].penaltyShot-1));
-                Log.setNextMessage("Goal for "+ state.team[side].teamColor);
-                ActionBoard.finish.perform(state);
+                ActionBoard.finish.perform(state, "Goal for " + state.team[side].teamColor);
             }
         } else {
-            Log.state(state, "Goal decrease for " + state.team[side].teamColor);
+            log(state, message, "Goal decrease for " + state.team[side].teamColor);
         }
     }
     

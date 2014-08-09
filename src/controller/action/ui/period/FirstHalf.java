@@ -1,6 +1,5 @@
 package controller.action.ui.period;
 
-import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.*;
@@ -19,7 +18,7 @@ public class FirstHalf extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (!state.firstHalf || state.period == Period.PenaltyShootout) {
             state.firstHalf = true;
@@ -28,7 +27,7 @@ public class FirstHalf extends GCAction
             state.kickOffTeam = (state.leftSideKickoff ? state.team[0].teamColor : state.team[1].teamColor);
             state.playMode = PlayMode.Initial;
             // Don't set data.whenCurrentPlayModeBegan, because it's used to count the pause
-            Log.state(state, "1st Half");
+            log(state, message, "1st Half");
         }
     }
     

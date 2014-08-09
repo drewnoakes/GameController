@@ -1,6 +1,5 @@
 package controller.action.ui.penalty;
 
-import common.Log;
 import data.GameState;
 import data.Penalty;
 import data.PlayerInfo;
@@ -22,7 +21,7 @@ public class Substitute extends PenaltyAction
 
         player.penalty = Penalty.Substitute;
         state.whenPenalized[side][number] = state.getTime();
-        Log.state(state, "Leaving Player " + state.team[side].teamColor + " " + (number+1));
+        log(state, null, "Leaving Player " + state.team[side].teamColor + " " + (number+1));
     }
     
     @Override

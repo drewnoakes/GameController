@@ -1,6 +1,5 @@
 package controller.action.ui;
 
-import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.GameState;
@@ -26,11 +25,11 @@ public class Out extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         state.whenDropIn = state.getTime();
         state.dropInTeam = state.team[side].teamColor;
-        Log.state(state, "Out by " + state.team[side].teamColor);
+        log(state, message, "Out by " + state.team[side].teamColor);
     }
     
     @Override

@@ -1,6 +1,5 @@
 package controller.action.ui.playmode;
 
-import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.GameState;
@@ -20,10 +19,10 @@ public class Initial extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (state.playMode != PlayMode.Initial) {
-            forcePerform(state);
+            forcePerform(state, "Initial");
         }
     }
 
@@ -31,15 +30,16 @@ public class Initial extends GCAction
      * Performs this action, even if the current play mode is @{link PlayMode#Initial}.
      *
      * @param data The current data to work on.
+     * @param message the message to associate with this action
      */
-    public void forcePerform(GameState data)
+    public void forcePerform(GameState data, String message)
     {
         if (Rules.league.returnRobotsInGameStoppages) {
             data.resetPenaltyTimes();
         }
         data.whenCurrentPlayModeBegan = data.getTime();
         data.playMode = PlayMode.Initial;
-        Log.state(data, "Initial");
+        log(data, message, message);
     }
 
     @Override

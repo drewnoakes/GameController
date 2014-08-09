@@ -1,6 +1,5 @@
 package controller.action.ui;
 
-import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.GameState;
@@ -29,7 +28,7 @@ public class KickOff extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (state.kickOffTeam == state.team[side].teamColor) {
             return;
@@ -41,7 +40,7 @@ public class KickOff extends GCAction
                 && state.playMode == PlayMode.Initial) {
             state.leftSideKickoff = side == 0;
         }
-        Log.state(state, "Kickoff " + state.team[side].teamColor);
+        log(state, message, "Kickoff " + state.team[side].teamColor);
     }
     
     @Override

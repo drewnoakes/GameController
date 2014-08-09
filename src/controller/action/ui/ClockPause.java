@@ -1,6 +1,5 @@
 package controller.action.ui;
 
-import common.Log;
 import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
@@ -19,7 +18,7 @@ public class ClockPause extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (ActionBoard.clock.isClockRunning(state)) {
             if (state.manPlay) {
@@ -29,7 +28,7 @@ public class ClockPause extends GCAction
                 state.manWhenClockChanged = state.getTime();
                 state.manPause = true;
             }
-            Log.state(state, "Time manual paused");
+            log(state, message, "Time manual paused");
         } else {
             if (state.manPause) {
                 state.manPause = false;
@@ -38,10 +37,10 @@ public class ClockPause extends GCAction
                 state.manWhenClockChanged = state.getTime();
                 state.manPlay = true;
             }
-            Log.state(state, "Time manual running");
+            log(state, message, "Time manual running");
         }
     }
-    
+
     @Override
     public boolean isLegal(GameState state)
     {

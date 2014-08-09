@@ -25,7 +25,7 @@ public class ClockTick extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (state.playMode == PlayMode.Ready
                && state.getSecondsSince(state.whenCurrentPlayModeBegan) >= Rules.league.readyTime) {

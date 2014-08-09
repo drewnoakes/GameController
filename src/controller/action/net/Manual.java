@@ -1,6 +1,7 @@
 package controller.action.net;
 
-import common.Log;
+import common.annotations.NotNull;
+import common.annotations.Nullable;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.GameState;
@@ -39,20 +40,20 @@ public class Manual extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (!unpen) {
             state.team[side].player[number].penalty = Penalty.Manual;
             state.whenPenalized[side][number] = state.getTime();
 
             if (state.playMode != PlayMode.Initial && state.playMode != PlayMode.Finished) {
-                Log.state(state, "Manually Penalised " + state.team[side].teamColor + " " + (number+1));
+                log(state, message, "Manually Penalised " + state.team[side].teamColor + " " + (number + 1));
             }
         } else {
             state.team[side].player[number].penalty = Penalty.None;
 
             if (state.playMode != PlayMode.Initial && state.playMode != PlayMode.Finished) {
-                Log.state(state, "Manually Unpenalised " + state.team[side].teamColor + " " + (number+1));
+                log(state, message, "Manually Unpenalised " + state.team[side].teamColor + " " + (number + 1));
             }
         }
     }

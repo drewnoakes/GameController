@@ -1,6 +1,5 @@
 package controller.action.ui;
 
-import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.GameState;
@@ -18,13 +17,13 @@ public class ClockReset extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         state.timeBeforeCurrentPlayMode = 0;
         state.whenCurrentPlayModeBegan = state.getTime();
         state.manWhenClockChanged = state.whenCurrentPlayModeBegan;
         state.manRemainingGameTimeOffset = 0;
-        Log.state(state, "Time reset");
+        log(state, message, "Time reset");
     }
     
     @Override

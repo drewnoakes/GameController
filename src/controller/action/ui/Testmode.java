@@ -18,9 +18,9 @@ public class Testmode extends GCAction
     }
     
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         state.testmode = !state.testmode;
-        Log.toFile("Testmode = "+ state.testmode);
+        Log.toFile("Testmode = " + state.testmode);
     }
 }

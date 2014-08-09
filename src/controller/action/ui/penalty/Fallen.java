@@ -1,6 +1,5 @@
 package controller.action.ui.penalty;
 
-import common.Log;
 import data.GameState;
 import data.PlayMode;
 import data.Penalty;
@@ -18,7 +17,7 @@ public class Fallen extends PenaltyAction
     {
         player.penalty = Penalty.SplObstruction;
         state.whenPenalized[side][number] = state.getTime();
-        Log.state(state, "Fallen Robot " + state.team[side].teamColor + " " + (number+1));
+        log(state, null, "Fallen Robot " + state.team[side].teamColor + " " + (number+1));
     }
     
     @Override

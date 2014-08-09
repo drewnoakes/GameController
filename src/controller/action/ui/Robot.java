@@ -2,7 +2,6 @@ package controller.action.ui;
 
 import java.util.ArrayList;
 
-import common.Log;
 import controller.EventHandler;
 import controller.action.ActionType;
 import controller.action.GCAction;
@@ -40,7 +39,7 @@ public class Robot extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         PlayerInfo player = state.team[side].player[number];
         if (player.penalty == Penalty.Substitute && !isCoach()) {
@@ -58,13 +57,13 @@ public class Robot extends GCAction
                 state.whenPenalized[side][number] = playerInfo.whenPenalized;
                 playerInfoList.remove(0);
             }
-            Log.state(state, "Entering Player " + state.team[side].teamColor + " " + (number+1));
+            log(state, message, "Entering Player " + state.team[side].teamColor + " " + (number + 1));
         }
         else if (EventHandler.getInstance().lastUIAction instanceof PenaltyAction || EventHandler.getInstance().lastUIAction instanceof TeammatePushing) {
             EventHandler.getInstance().lastUIAction.performOn(state, player, side, number);
         }
         else if (player.penalty != Penalty.None) {
-            Log.state(state, "Unpenalised " + state.team[side].teamColor + " " + (number+1));
+            log(state, message, "Unpenalised " + state.team[side].teamColor + " " + (number + 1));
             player.penalty = Penalty.None;
         }
     }

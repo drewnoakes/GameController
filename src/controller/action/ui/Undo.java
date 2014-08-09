@@ -30,7 +30,7 @@ public class Undo extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (EventHandler.getInstance().lastUIAction == this && !executed) {
             executed = true;

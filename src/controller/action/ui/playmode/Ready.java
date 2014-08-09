@@ -1,6 +1,5 @@
 package controller.action.ui.playmode;
 
-import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.GameState;
@@ -21,7 +20,7 @@ public class Ready extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (state.playMode == PlayMode.Ready) {
             return;
@@ -34,7 +33,7 @@ public class Ready extends GCAction
         }
         state.whenCurrentPlayModeBegan = state.getTime();
         state.playMode = PlayMode.Ready;
-        Log.state(state, "Ready");
+        log(state, message, "Ready");
     }
     
     @Override

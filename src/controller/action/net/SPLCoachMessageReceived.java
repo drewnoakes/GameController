@@ -18,14 +18,14 @@ public class SPLCoachMessageReceived extends GCAction
     }
     
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
-        byte team = state.team[0].teamNumber == message.teamNumber ? (byte)0 : (byte)1;
+        byte team = state.team[0].teamNumber == this.message.teamNumber ? (byte)0 : (byte)1;
         RobotWatcher.updateCoach(team);
         if ((System.currentTimeMillis() - state.timestampCoachMessage[team]) >= SPLCoachMessage.SPL_COACH_MESSAGE_RECEIVE_INTERVAL
                 && state.team[team].coach.penalty != Penalty.SplCoachMotion) {
             state.timestampCoachMessage[team] = System.currentTimeMillis();
-            state.splCoachMessageQueue.add(message);
+            state.splCoachMessageQueue.add(this.message);
         }
     }
 }

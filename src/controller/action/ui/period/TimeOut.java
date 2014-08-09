@@ -1,6 +1,5 @@
 package controller.action.ui.period;
 
-import common.Log;
 import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
@@ -27,7 +26,7 @@ public class TimeOut extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (!state.timeOutActive[side]) {
             // Starting a timeout
@@ -41,16 +40,14 @@ public class TimeOut extends GCAction
             } else if (state.playMode == PlayMode.Set) {
                 state.team[state.kickOffTeam == state.team[0].teamColor ? 0 : 1].penaltyShot--;
             }
-            Log.setNextMessage("Timeout "+ state.team[side].teamColor);
-            ActionBoard.initial.forcePerform(state);
+            ActionBoard.initial.forcePerform(state, "Timeout " + state.team[side].teamColor);
         } else {
             // Completing
             state.period = state.previousPeriod;
             state.previousPeriod = Period.Timeout;
             state.timeOutActive[side] = false;
-            Log.setNextMessage("End of Timeout "+ state.team[side].teamColor);
             if (state.period != Period.PenaltyShootout) {
-                ActionBoard.ready.perform(state);
+                ActionBoard.ready.perform(state, "End of Timeout " + state.team[side].teamColor);
             }
         }
     }

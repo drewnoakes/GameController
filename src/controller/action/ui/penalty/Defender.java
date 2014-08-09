@@ -1,6 +1,5 @@
 package controller.action.ui.penalty;
 
-import common.Log;
 import data.GameState;
 import data.PlayMode;
 import data.Penalty;
@@ -18,7 +17,7 @@ public class Defender extends PenaltyAction
     {
         player.penalty = Penalty.SplIllegalDefender;
         state.whenPenalized[side][number] = state.getTime();
-        Log.state(state, "Illegal Defender " + state.team[side].teamColor + " " + (number+1));
+        log(state, null, "Illegal Defender " + state.team[side].teamColor + " " + (number+1));
     }
     
     @Override

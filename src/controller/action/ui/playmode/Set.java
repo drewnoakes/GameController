@@ -1,6 +1,5 @@
 package controller.action.ui.playmode;
 
-import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import controller.action.ui.period.FirstHalf;
@@ -20,7 +19,7 @@ public class Set extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (state.playMode == PlayMode.Set) {
             return;
@@ -45,7 +44,7 @@ public class Set extends GCAction
             }
         }
         state.playMode = PlayMode.Set;
-        Log.state(state, "Set");
+        log(state, message, "Set");
     }
     
     @Override

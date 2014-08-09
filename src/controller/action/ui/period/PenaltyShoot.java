@@ -1,13 +1,11 @@
 package controller.action.ui.period;
 
-import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.GameState;
 import data.PlayMode;
 import data.Period;
 import rules.Rules;
-
 
 /**
  * This action means that a penalty shoot is to be starting.
@@ -22,7 +20,7 @@ public class PenaltyShoot extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         if (state.period != Period.PenaltyShootout) {
             state.period = Period.PenaltyShootout;
@@ -33,7 +31,7 @@ public class PenaltyShoot extends GCAction
             if (Rules.league.timeOutPerHalf) {
                 state.timeOutTaken = new boolean[] {false, false};
             }
-            Log.state(state, "Penalty Shoot-out");
+            log(state, message, "Penalty Shoot-out");
         }
     }
     

@@ -20,6 +20,6 @@ public class CancelUndo extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {}
 }

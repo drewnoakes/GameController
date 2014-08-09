@@ -1,7 +1,5 @@
 package controller.action.ui.penalty;
 
-import common.Log;
-
 import data.GameState;
 import data.Penalty;
 import data.PlayerInfo;
@@ -15,7 +13,7 @@ public class CoachMotion extends PenaltyAction
         state.whenPenalized[side][number] = state.getTime();
         state.team[side].coach.penalty = Penalty.SplCoachMotion;
         state.ejected[side][number] = true;
-        Log.state(state, "Coach Motion " + state.team[side].teamColor);
+        log(state, null, "Coach Motion " + state.team[side].teamColor);
     }
     
     @Override

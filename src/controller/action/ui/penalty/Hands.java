@@ -1,6 +1,5 @@
 package controller.action.ui.penalty;
 
-import common.Log;
 import data.GameState;
 import data.PlayMode;
 import data.Penalty;
@@ -18,7 +17,7 @@ public class Hands extends PenaltyAction
     {
         player.penalty = Penalty.SplPlayingWithHands;
         state.whenPenalized[side][number] = state.getTime();
-        Log.state(state, "Playing with Hands " + state.team[side].teamColor + " " + (number+1));
+        log(state, null, "Playing with Hands " + state.team[side].teamColor + " " + (number+1));
     }
     
     @Override

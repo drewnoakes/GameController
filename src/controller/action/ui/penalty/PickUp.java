@@ -1,7 +1,5 @@
 package controller.action.ui.penalty;
 
-import common.Log;
-
 import data.GameState;
 import data.Penalty;
 import data.PlayerInfo;
@@ -21,6 +19,6 @@ public class PickUp extends PenaltyAction
         }
 
         player.penalty = Penalty.SplRequestForPickup;
-        Log.state(state, "Request for PickUp " + state.team[side].teamColor + " " + (number+1));
+        log(state, null, "Request for PickUp " + state.team[side].teamColor + " " + (number+1));
     }
 }

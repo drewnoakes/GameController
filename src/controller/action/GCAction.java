@@ -1,5 +1,8 @@
 package controller.action;
 
+import common.Log;
+import common.annotations.NotNull;
+import common.annotations.Nullable;
 import controller.EventHandler;
 import data.GameState;
 import data.PlayerInfo;
@@ -32,16 +35,25 @@ public abstract class GCAction
     }
 
     /**
-     * This is the essential method of each action.
-     * It is called automatically after the actionPerformed method was called.
-     * Here you can manipulate the given data without worrying.
+     * Executes the action on the specified @{link GameState}.
+     *
+     * @param state the game state to operate on.
+     * @param message the message to associate with this action. If null, the GCAction applies its default message.
+     */
+    public abstract void perform(GameState state, String message);
+
+    /**
+     * Executes the action on the specified @{link GameState}.
      *
      * @param state the game state to operate on.
      */
-    public abstract void perform(GameState state);
-    
+    public void perform(GameState state)
+    {
+        perform(state, null);
+    }
+
     /**
-     * Perform a action on a specific player.
+     * Executes the action against a specific player on the specified @{link GameState}.
      *
      * Subclasses only override this function if needed.
      *
@@ -52,7 +64,19 @@ public abstract class GCAction
      */
     public void performOn(GameState state, PlayerInfo player, int side, int number)
     {}
-    
+
+    /**
+     * Records the game state after the execution of the action.
+     *
+     * @param state the state after the action completes
+     * @param overrideMessage a custom message as provided by the caller of @{link perform}.
+     * @param defaultMessage the default message, used if @{link overrideMessage} is null.
+     */
+    protected void log(GameState state, String overrideMessage, String defaultMessage)
+    {
+        Log.state(state, overrideMessage == null ? defaultMessage : overrideMessage);
+    }
+
     /**
      * Specifies if this action is legal at a specific state of the game.
      *

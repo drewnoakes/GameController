@@ -1,7 +1,5 @@
 package controller.action.ui;
 
-import common.Log;
-
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.GameState;
@@ -15,10 +13,10 @@ public class IncGameClock extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         state.timeBeforeCurrentPlayMode -= 1000*60;
-        Log.state(state, "Increase Game Clock");
+        log(state, message, "Increase Game Clock");
     }
 
     @Override

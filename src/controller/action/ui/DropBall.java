@@ -1,6 +1,5 @@
 package controller.action.ui;
 
-import common.Log;
 import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
@@ -20,12 +19,11 @@ public class DropBall extends GCAction
     }
 
     @Override
-    public void perform(GameState state)
+    public void perform(GameState state, String message)
     {
         // Set to null, indicating no team has kick off
         state.kickOffTeam = null;
-        Log.setNextMessage("Dropped Ball");
-        ActionBoard.ready.perform(state);
+        ActionBoard.ready.perform(state, "Dropped Ball");
     }
     
     @Override
