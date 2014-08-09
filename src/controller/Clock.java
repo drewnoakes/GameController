@@ -4,7 +4,7 @@ import common.Interval;
 import controller.action.ActionBoard;
 
 /**
- * Periodically fires action ClockTick action at {@link ActionBoard#clock}.
+ * Periodically executes the {@link controller.action.clock.ClockTick} action (at {@link ActionBoard#clock}).
  *
  * @author Michel Bartsch
  */
@@ -38,7 +38,7 @@ public class Clock
     }
 
     /**
-     * Blocks until {@link Clock#stop} is called, firing {@link ActionBoard#clock}
+     * Blocks until {@link Clock#stop} is called, executing {@link ActionBoard#clock}
      * every {@link Clock#HEARTBEAT} milliseconds.
      */
     public void start()

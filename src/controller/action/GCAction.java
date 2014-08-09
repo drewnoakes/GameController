@@ -8,10 +8,19 @@ import data.GameState;
 import data.PlayerInfo;
 
 /**
- * This is an abstract class every action needs to extend to provide the
- * basic features.
+ * Action classes mutate the game state in some way.
+ *
+ * <p>
+ * Actions have several types:
+ * <ul>
+ *     <li>{@link controller.action.ActionType#UI} triggered in response to some user activity</li>
+ *     <li>{@link controller.action.ActionType#NET} triggered in response to a message received on the network</li>
+ *     <li>{@link controller.action.ActionType#CLOCK} a periodic update triggered at a regular interval</li>
+ * </ul>
+ * </p>
  *
  * @author Michel Bartsch
+ * @author Drew Noakes https://drewnoakes.com
  */
 public abstract class GCAction
 {

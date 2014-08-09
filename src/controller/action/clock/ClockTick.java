@@ -1,6 +1,5 @@
 package controller.action.clock;
 
-
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import controller.action.ActionBoard;
@@ -10,7 +9,6 @@ import data.GameState;
 import data.PlayMode;
 import rules.Rules;
 
-
 /**
  * This action means that some time has been passed.
  *
@@ -18,10 +16,6 @@ import rules.Rules;
  */
 public class ClockTick extends GCAction
 {
-    /**
-     * Creates a new ClockTick action.
-     * Look at the ActionBoard before using this.
-     */
     public ClockTick()
     {
         super(ActionType.CLOCK);

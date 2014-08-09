@@ -23,9 +23,6 @@ public class Manual extends GCAction
     private final boolean unpen;
     
     /**
-     * Creates a new Manual action.
-     * Look at the ActionBoard before using this.
-     * 
      * @param side      On which side (0:left, 1:right)
      * @param number    The players`s number, beginning with 0!
      * @param unpen     If true, this action means manual unpenalising,
