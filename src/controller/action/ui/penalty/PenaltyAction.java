@@ -11,7 +11,7 @@ import data.GameState;
  */
 public abstract class PenaltyAction extends GCAction
 {
-    public PenaltyAction()
+    protected PenaltyAction()
     {
         super(ActionType.UI);
     }

@@ -15,7 +15,7 @@ public abstract class SPLCoachProtocol implements ReceivingProtocol<SPLCoachMess
 {
     private static final String HEADER = "SPLC";
 
-    protected final byte versionNumber;
+    private final byte versionNumber;
 
     protected SPLCoachProtocol(byte versionNumber)
     {

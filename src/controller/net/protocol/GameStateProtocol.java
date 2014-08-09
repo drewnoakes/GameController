@@ -16,7 +16,7 @@ public abstract class GameStateProtocol implements ReceivingProtocol<GameStateSn
 {
     private static final String HEADER = "RGme";
 
-    protected final byte versionNumber;
+    private final byte versionNumber;
 
     protected byte nextPacketNumber = 0;
 

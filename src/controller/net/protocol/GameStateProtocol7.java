@@ -54,7 +54,7 @@ public class GameStateProtocol7 extends GameStateProtocol
     {
         ByteBuffer buffer = writeHeader();
 
-        buffer.putInt(versionNumber);
+        buffer.putInt(getVersionNumber());
         buffer.put((byte)Rules.league.teamSize);
         buffer.put(data.playMode.getValue());
         buffer.put(data.firstHalf ? (byte)1 : 0);

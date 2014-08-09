@@ -13,7 +13,7 @@ import java.util.LinkedList;
 public class Main
 {
     /* Path the the log files to analyze. */
-    public final static String PATH = "logs";
+    private final static String PATH = "logs";
     /* Path where dropped logs will be moved to by the clean feature. */
     public final static String PATH_DROPPED = "logs/dropped";
     

@@ -20,7 +20,7 @@ public abstract class GCAction
      * 
      * @param type the type of the action.
      */
-    public GCAction(ActionType type)
+    protected GCAction(ActionType type)
     {
         this.type = type;
     }

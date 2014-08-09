@@ -14,7 +14,7 @@ public abstract class RobotStatusProtocol implements ReceivingProtocol<RobotMess
 {
     private static final String HEADER = "RGrt";
 
-    protected final byte versionNumber;
+    private final byte versionNumber;
 
     protected RobotStatusProtocol(byte versionNumber)
     {
