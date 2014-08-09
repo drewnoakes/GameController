@@ -33,7 +33,7 @@ public class GameStateProtocol7 extends GameStateProtocol
                 1 + // teamColor
                 1 + // goal color
                 1 + // score
-                (TeamInfo.MAX_NUM_PLAYERS) * playerSize;
+                (TeamInfo.NUM_PLAYERS_IN_GAME_STATE_MESSAGE) * playerSize;
 
         return  4 + // header
                 4 + // version
@@ -92,7 +92,7 @@ public class GameStateProtocol7 extends GameStateProtocol
         buffer.put(teamInfo.score);
 
         // Write player data
-        for (int i=0; i < TeamInfo.MAX_NUM_PLAYERS; i++) {
+        for (int i=0; i < TeamInfo.NUM_PLAYERS_IN_GAME_STATE_MESSAGE; i++) {
             buffer.putShort(teamInfo.player[i].penalty.getValue());
             buffer.putShort(teamInfo.player[i].secsTillUnpenalised);
         }

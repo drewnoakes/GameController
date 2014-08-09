@@ -15,11 +15,10 @@ import java.io.Serializable;
 public class TeamInfo implements Serializable
 {
     /**
-     * How many players a team may have.
-     * Actually that many players in each team need to be sent, even if
-     * playersPerTeam in GameState is less.
+     * The number of player entries in a game state message.
+     * This may be more than the number of players allowed by the rules.
      */
-    public static final byte MAX_NUM_PLAYERS = 11;
+    public static final byte NUM_PLAYERS_IN_GAME_STATE_MESSAGE = 11;
 
     /** This team's uniquely identifying number. */
     public byte teamNumber;
@@ -36,7 +35,7 @@ public class TeamInfo implements Serializable
     /** Data about the team's coach (only used in SPL). */
     public final PlayerInfo coach = new PlayerInfo();
     /** Data about the players in this team. */
-    public final PlayerInfo[] player = new PlayerInfo[MAX_NUM_PLAYERS];
+    public final PlayerInfo[] player = new PlayerInfo[NUM_PLAYERS_IN_GAME_STATE_MESSAGE];
 
     public TeamInfo()
     {

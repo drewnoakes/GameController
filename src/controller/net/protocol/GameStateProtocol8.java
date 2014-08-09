@@ -33,7 +33,7 @@ public class GameStateProtocol8 extends GameStateProtocol
                 1 + // penaltyShot
                 2 + // singleShots
                 SPLCoachMessage.SPL_COACH_MESSAGE_SIZE + // coach's message
-                (TeamInfo.MAX_NUM_PLAYERS + 1) * playerSize; // +1 for the coach
+                (TeamInfo.NUM_PLAYERS_IN_GAME_STATE_MESSAGE + 1) * playerSize; // +1 for the coach
 
         return  4 + // header
                 1 + // version
@@ -125,7 +125,7 @@ public class GameStateProtocol8 extends GameStateProtocol
 
         writePlayerInfo(buffer, teamInfo.coach);
 
-        for (int i=0; i< TeamInfo.MAX_NUM_PLAYERS; i++) {
+        for (int i=0; i< TeamInfo.NUM_PLAYERS_IN_GAME_STATE_MESSAGE; i++) {
             writePlayerInfo(buffer, teamInfo.player[i]);
         }
     }
