@@ -25,7 +25,7 @@ import java.util.LinkedList;
 public class Log
 {
     /** The instance of the singleton. */
-    private static final Log instance = new Log();
+    private static Log instance;
     
     /** The file to write into. */
     private FileWriter file;
@@ -53,14 +53,18 @@ public class Log
      */
     public synchronized static void init(String path)
     {
-        if (instance.file != null) {
+        if (instance != null) {
             throw new IllegalStateException("logger already initialized");
         }
-        try{
+
+        instance = new Log();
+
+        try {
             instance.file = new FileWriter(new File(path));
         } catch (IOException e) {
             error("cannot write to logfile "+path);
         }
+
         toFile(Main.version);
     }
     
@@ -72,6 +76,7 @@ public class Log
      */
     public static void toFile(String s)
     {
+        assert(instance != null);
         try{
             instance.file.write(timestampFormat.format(new Date(System.currentTimeMillis()))+": "+s+"\n");
             instance.file.flush();
@@ -89,6 +94,7 @@ public class Log
      */
     public static void setNextMessage(String message)
     {
+        assert(instance != null);
         instance.message = message;
     }
     
@@ -104,6 +110,7 @@ public class Log
      */
     public static void state(GameState data, String message)
     {
+        assert(instance != null);
         GameState state = (GameState) data.clone();
         if (instance.message == null) {
             state.message = message;
@@ -128,6 +135,7 @@ public class Log
      */
     public static String goBack(int states)
     {
+        assert(instance != null);
         if (states >= instance.states.size()) {
             states = instance.states.size()-1;
         }
@@ -153,13 +161,14 @@ public class Log
     /**
      * Gives you the messages attached to the latest data in the timeline.
      * 
-     * @param states    Of how many datas back you want to have the messages.
+     * @param states    Of how many states back you want to have the messages.
      * 
      * @return The messages attached to the data, beginning with the latest.
      *         The arrays length equals the states parameter.
      */
     public static String[] getLast(int states)
     {
+        assert(instance != null);
         String[] out = new String[states];
         for (int i=0; i<states; i++) {
             if (instance.states.size()-1-i >= 0) {
@@ -181,6 +190,7 @@ public class Log
      */
     public static void error(String s)
     {
+        assert(instance != null);
         System.err.println(s);
         try{
             if (instance.errorFile == null) {
@@ -203,5 +213,7 @@ public class Log
             instance.errorFile.close();
         }
         instance.file.close();
+
+        instance = null;
     }
 }
