@@ -8,9 +8,10 @@ import data.PlayMode;
 import data.PlayerInfo;
 import rules.Rules;
 
-public class TeammatePushing extends GCAction {
-    
-    public TeammatePushing() {
+public class TeammatePushing extends GCAction
+{
+    public TeammatePushing()
+    {
         super(ActionType.UI);
     }
 
@@ -29,7 +30,8 @@ public class TeammatePushing extends GCAction {
     }
 
     @Override
-    public boolean isLegal(GameState state) {
+    public boolean isLegal(GameState state)
+    {
         return Rules.league.dropInPlayerMode
                 && (state.playMode == PlayMode.Ready || state.playMode == PlayMode.Playing)
                 || state.testmode;

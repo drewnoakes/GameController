@@ -190,8 +190,8 @@ public class Log
      *
      * @throws IOException if an error occurred while trying to close the FileWriters
      */
-    public static void close() throws IOException {
-        // TODO does closing the FileWriter close the underlying File object too?
+    public static void close() throws IOException
+    {
         if (instance.errorFile != null) {
             instance.errorFile.close();
         }
