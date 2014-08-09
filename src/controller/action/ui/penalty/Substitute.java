@@ -1,5 +1,6 @@
 package controller.action.ui.penalty;
 
+import common.annotations.NotNull;
 import data.GameState;
 import data.Penalty;
 import data.PlayerInfo;
@@ -13,7 +14,7 @@ import rules.Rules;
 public class Substitute extends PenaltyAction
 {
     @Override
-    public void performOn(GameState state, PlayerInfo player, int side, int number)
+    public void performOn(@NotNull GameState state, @NotNull PlayerInfo player, int side, int number)
     {
         if (player.penalty != Penalty.None) {
             state.addToPenaltyQueue(side, state.whenPenalized[side][number], player.penalty);

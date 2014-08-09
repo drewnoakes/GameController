@@ -1,5 +1,7 @@
 package controller;
 
+import common.annotations.NotNull;
+import common.annotations.Nullable;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import controller.net.GameStateSender;
@@ -24,9 +26,10 @@ public class EventHandler
     /* SINGLETON MEMBERS ------------------------------------------------------------------- */
 
     /** The instance of the singleton. */
+    @Nullable
     private static EventHandler instance;
 
-    public static void initialise(GameStateSender gameStateSender)
+    public static void initialise(@NotNull GameStateSender gameStateSender)
     {
         if (instance != null) {
             throw new AssertionError("Singleton has already been initialised initialised.");
@@ -39,6 +42,7 @@ public class EventHandler
      *
      * @return The singleton`s instance.
      */
+    @NotNull
     public static EventHandler getInstance()
     {
         if (instance == null) {
@@ -78,7 +82,7 @@ public class EventHandler
     /**
      * Initialises an EventHandler.
      */
-    private EventHandler(GameStateSender gameStateSender)
+    private EventHandler(@NotNull GameStateSender gameStateSender)
     {
         this.gameStateSender = gameStateSender;
     }
@@ -88,7 +92,7 @@ public class EventHandler
      * 
      * @param gui   The GUI to be updated when the  changes.
      */
-    public void setGUI(GCGUI gui)
+    public void setGUI(@NotNull GCGUI gui)
     {
         this.gui = gui;
     }
@@ -100,7 +104,7 @@ public class EventHandler
      * 
      * @param action the action calling.
      */
-    public void register(final GCAction action)
+    public void register(@NotNull final GCAction action)
     {
         // Ensure we are running on the GUI thread
         if (!EventQueue.isDispatchThread()) {
@@ -125,7 +129,7 @@ public class EventHandler
      * 
      * @param action the action that has been called.
      */
-    private void update(GCAction action)
+    private void update(@NotNull GCAction action)
     {
         if (action.type != ActionType.CLOCK && action.type == ActionType.UI) {
             lastUIAction = action;

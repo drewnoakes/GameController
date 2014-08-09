@@ -1,5 +1,6 @@
 package controller.action.ui.penalty;
 
+import common.annotations.NotNull;
 import data.GameState;
 import data.PlayMode;
 import data.Penalty;
@@ -13,7 +14,7 @@ import data.PlayerInfo;
 public class Inactive extends PenaltyAction
 {
     @Override
-    public void performOn(GameState state, PlayerInfo player, int side, int number)
+    public void performOn(@NotNull GameState state, @NotNull PlayerInfo player, int side, int number)
     {
         player.penalty = Penalty.SplInactivePlayer;
         state.whenPenalized[side][number] = state.getTime();

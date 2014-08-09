@@ -1,5 +1,7 @@
 package controller.action.ui.playmode;
 
+import common.annotations.NotNull;
+import common.annotations.Nullable;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.GameState;
@@ -20,7 +22,7 @@ public class Ready extends GCAction
     }
 
     @Override
-    public void perform(GameState state, String message)
+    public void perform(@NotNull GameState state, @Nullable String message)
     {
         if (state.playMode == PlayMode.Ready) {
             return;

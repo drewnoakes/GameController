@@ -40,7 +40,7 @@ public class Manual extends GCAction
     }
 
     @Override
-    public void perform(GameState state, String message)
+    public void perform(@NotNull GameState state, @Nullable String message)
     {
         if (!unpen) {
             state.team[side].player[number].penalty = Penalty.Manual;

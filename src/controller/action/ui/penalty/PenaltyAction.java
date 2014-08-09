@@ -1,5 +1,7 @@
 package controller.action.ui.penalty;
 
+import common.annotations.NotNull;
+import common.annotations.Nullable;
 import controller.EventHandler;
 import controller.action.ActionType;
 import controller.action.GCAction;
@@ -17,7 +19,7 @@ public abstract class PenaltyAction extends GCAction
     }
 
     @Override
-    public void perform(GameState state, String message)
+    public void perform(@NotNull GameState state, @Nullable String message)
     {
         if (EventHandler.getInstance().lastUIAction == this) {
             EventHandler.getInstance().noLastUIAction = true;

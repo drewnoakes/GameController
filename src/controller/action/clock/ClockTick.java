@@ -1,5 +1,8 @@
 package controller.action.clock;
 
+
+import common.annotations.NotNull;
+import common.annotations.Nullable;
 import controller.action.ActionBoard;
 import controller.action.ActionType;
 import controller.action.GCAction;
@@ -25,7 +28,7 @@ public class ClockTick extends GCAction
     }
 
     @Override
-    public void perform(GameState state, String message)
+    public void perform(@NotNull GameState state, @Nullable String message)
     {
         if (state.playMode == PlayMode.Ready
                && state.getSecondsSince(state.whenCurrentPlayModeBegan) >= Rules.league.readyTime) {
@@ -49,7 +52,7 @@ public class ClockTick extends GCAction
      * @param state the game state to consider
      * @return true if the clock should be running, otherwise false
      */
-    public boolean isClockRunning(GameState state)
+    public boolean isClockRunning(@NotNull GameState state)
     {
         boolean halfNotStarted = state.timeBeforeCurrentPlayMode == 0 && state.playMode != PlayMode.Playing;
         return

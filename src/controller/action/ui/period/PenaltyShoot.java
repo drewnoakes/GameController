@@ -1,5 +1,7 @@
 package controller.action.ui.period;
 
+import common.annotations.NotNull;
+import common.annotations.Nullable;
 import controller.action.ActionType;
 import controller.action.GCAction;
 import data.GameState;
@@ -20,7 +22,7 @@ public class PenaltyShoot extends GCAction
     }
 
     @Override
-    public void perform(GameState state, String message)
+    public void perform(@NotNull GameState state, @Nullable String message)
     {
         if (state.period != Period.PenaltyShootout) {
             state.period = Period.PenaltyShootout;

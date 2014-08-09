@@ -40,14 +40,14 @@ public abstract class GCAction
      * @param state the game state to operate on.
      * @param message the message to associate with this action. If null, the GCAction applies its default message.
      */
-    public abstract void perform(GameState state, String message);
+    public abstract void perform(@NotNull GameState state, @Nullable String message);
 
     /**
      * Executes the action on the specified @{link GameState}.
      *
      * @param state the game state to operate on.
      */
-    public void perform(GameState state)
+    public void perform(@NotNull GameState state)
     {
         perform(state, null);
     }
@@ -62,7 +62,7 @@ public abstract class GCAction
      * @param side the side this player is playing for, 0: left, 1: right
      * @param number the players number, beginning at 0!
      */
-    public void performOn(GameState state, PlayerInfo player, int side, int number)
+    public void performOn(@NotNull GameState state, @NotNull PlayerInfo player, int side, int number)
     {}
 
     /**
