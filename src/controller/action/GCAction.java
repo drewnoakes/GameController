@@ -19,7 +19,7 @@ public abstract class GCAction
     public final ActionType type;
 
     /**
-     * Initialises a @{link GCAction}.
+     * Initialises a {@link GCAction}.
      * 
      * @param type the type of the action.
      */
@@ -35,7 +35,7 @@ public abstract class GCAction
     }
 
     /**
-     * Executes the action on the specified @{link GameState}.
+     * Executes the action on the specified {@link GameState}.
      *
      * @param state the game state to operate on.
      * @param message the message to associate with this action. If null, the GCAction applies its default message.
@@ -43,7 +43,7 @@ public abstract class GCAction
     public abstract void perform(@NotNull GameState state, @Nullable String message);
 
     /**
-     * Executes the action on the specified @{link GameState}.
+     * Executes the action on the specified {@link GameState}.
      *
      * @param state the game state to operate on.
      */
@@ -53,7 +53,7 @@ public abstract class GCAction
     }
 
     /**
-     * Executes the action against a specific player on the specified @{link GameState}.
+     * Executes the action against a specific player on the specified {@link GameState}.
      *
      * Subclasses only override this function if needed.
      *
@@ -69,8 +69,8 @@ public abstract class GCAction
      * Records the game state after the execution of the action.
      *
      * @param state the state after the action completes
-     * @param overrideMessage a custom message as provided by the caller of @{link perform}.
-     * @param defaultMessage the default message, used if @{link overrideMessage} is null.
+     * @param overrideMessage a custom message as provided by the caller of {@link GCAction#perform}.
+     * @param defaultMessage the default message, used if <code>overrideMessage</code> is null.
      */
     protected void log(GameState state, String overrideMessage, String defaultMessage)
     {

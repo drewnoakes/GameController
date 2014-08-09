@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 public class PlayerInfo implements Serializable
 {
-    /** The penalty applied to this player. May be @{link Penalty#None}. */
+    /** The penalty applied to this player. May be {@link Penalty#None}. */
     public Penalty penalty = Penalty.None;
     /** Estimate of remaining penalty time for player. */
     public byte secsTillUnpenalised;

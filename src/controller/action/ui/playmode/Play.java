@@ -8,7 +8,7 @@ import data.GameState;
 import data.PlayMode;
 
 /**
- * Sets play mode to @{link PlayMode#Playing}.
+ * Sets play mode to {@link PlayMode#Playing}.
  *
  * @author Michel Bartsch
  */

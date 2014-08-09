@@ -9,7 +9,7 @@ import data.*;
 import rules.Rules;
 
 /**
- * Sets play mode to @{link PlayMode#Set}.
+ * Sets play mode to {@link PlayMode#Set}.
  *
  * @author Michel Bartsch
  */

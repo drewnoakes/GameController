@@ -16,7 +16,7 @@ import controller.net.protocol.ReceivingProtocol;
 /**
  * Asynchronously receives messages via UDP broadcast.
  *
- * Client code must call @{link start()}, then @{link stop()} when no longer required.
+ * Client code must call {@link MessageReceiver#start}, then {@link MessageReceiver#stop} when no longer required.
  *
  * @author Marcel Steinbeck
  * @author Drew Noakes https://drewnoakes.com

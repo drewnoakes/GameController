@@ -18,8 +18,10 @@ import rules.Rules;
  * represent a state of the game, for example time in millis.
  *
  * There are no synchronized get and set methods because in this architecture.
- * Only actions in their @{link GCAction#perform} method are allowed to write into this and they
- * are all in the same thread. Look in the EventHandler for more information.
+ * Only actions in their {@link controller.action.GCAction#perform} method are
+ * allowed to write into this and they are all in the same thread.
+ *
+ * See {@link controller.EventHandler} for more information.
  *
  * @author Michel Bartsch
  */

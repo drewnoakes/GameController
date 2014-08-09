@@ -10,7 +10,7 @@ import data.Period;
 import rules.Rules;
 
 /**
- * Sets play mode to @{link PlayMode#Ready}.
+ * Sets play mode to {@link PlayMode#Ready}.
  *
  * @author Michel Bartsch
  */

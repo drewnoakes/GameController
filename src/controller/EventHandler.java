@@ -98,11 +98,11 @@ public class EventHandler
     }
     
     /**
-     * Very important method called automatically by every action in its
-     * @{link GCAction#actionPerformed} method to later call its
-     * @{link GCAction#perform} method in the GUI-Thread.
+     * Enqueues the specified action to be performed against the global game state object.
+     * <p>
+     * Actions will be run on the UI thread.
      * 
-     * @param action the action calling.
+     * @param action the action to execute.
      */
     public void register(@NotNull final GCAction action)
     {

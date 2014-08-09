@@ -9,7 +9,7 @@ import data.PlayMode;
 import rules.Rules;
 
 /**
- * Sets play mode to @{link PlayMode#Finished}.
+ * Sets play mode to {@link PlayMode#Finished}.
  *
  * @author Michel Bartsch
  */

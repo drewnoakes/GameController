@@ -138,7 +138,7 @@ public class Log
      * @param states the number of states back you want to have the messages for
      * 
      * @return the messages attached to the states, beginning with the latest as an
-     *         arrays of length equals to @{link states}.
+     *         arrays of length equals to <code>states</code>.
      */
     public static String[] getLast(int states)
     {

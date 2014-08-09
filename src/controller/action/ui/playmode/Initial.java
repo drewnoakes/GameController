@@ -9,7 +9,7 @@ import data.PlayMode;
 import rules.Rules;
 
 /**
- * Sets play mode to @{link PlayMode#Initial}.
+ * Sets play mode to {@link PlayMode#Initial}.
  *
  * @author Michel Bartsch
  */
@@ -29,7 +29,7 @@ public class Initial extends GCAction
     }
 
     /**
-     * Performs this action, even if the current play mode is @{link PlayMode#Initial}.
+     * Performs this action, even if the current play mode is {@link PlayMode#Initial}.
      *
      * @param data The current data to work on.
      * @param message the message to associate with this action

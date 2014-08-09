@@ -9,7 +9,7 @@ import data.PlayMode;
 import data.Penalty;
 
 /**
- * This action means that a player has been penalised or unpenalised manually via a @{link data.RobotMessage}.
+ * This action means that a player has been penalised or unpenalised manually via a {@link data.RobotMessage}.
  *
  * @author Michel Bartsch
  */
