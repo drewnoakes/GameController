@@ -49,8 +49,15 @@ public class Main
      * 
      * @param args the array of command line arguments provided to the executable
      */
-    @SuppressWarnings("unchecked")
     public static void main(String[] args)
+    {
+        while (true) {
+            runGameController(args);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void runGameController(String[] args)
     {
         StartOptions options = parseCommandLineArguments(args);
 
@@ -153,13 +160,14 @@ public class Main
         } catch (InterruptedException e) {
             Log.error("Waiting for threads to shutdown was interrupted.");
         }
+
+        EventHandler.destroy();
+
         try {
             Log.close();
         } catch (IOException e) {
             Log.error("Error while trying to close the log.");
         }
-
-        System.exit(0);
     }
 
     private static ApplicationLock getApplicationLock()
