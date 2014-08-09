@@ -1,5 +1,8 @@
 package data;
 
+import rules.Rules;
+import rules.SPL;
+
 import java.awt.*;
 
 /**
@@ -9,16 +12,24 @@ import java.awt.*;
  */
 public enum TeamColor
 {
-    Blue((byte)0, Color.BLUE),
-    Red((byte)1, Color.RED);
+    Blue((byte)0),
+    Red((byte)1);
+
+    private static final Color[] splColors = { Color.BLUE, Color.RED };
+
+    private static final Color[] hlColors = {
+        // Cyan (not at full brightness)
+        new Color(0.0f, 0.75f, 0.75f),
+        // Magenta (not at full brightness)
+        new Color(0.75f, 0.0f, 0.7f)
+    };
+
 
     private final byte value;
-    private final Color color;
 
-    TeamColor(byte value, Color color)
+    TeamColor(byte value)
     {
         this.value = value;
-        this.color = color;
     }
 
     public byte getValue()
@@ -28,7 +39,7 @@ public enum TeamColor
 
     public Color getColor()
     {
-        return color;
+        return (Rules.league instanceof SPL ? splColors : hlColors)[value];
     }
 
     public static TeamColor fromValue(byte value)
