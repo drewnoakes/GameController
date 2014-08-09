@@ -47,6 +47,14 @@ public class EventHandler
         return instance;
     }
 
+    public static void destroy()
+    {
+        if (instance == null) {
+            throw new AssertionError("Singleton not yet initialised.");
+        }
+        instance = null;
+    }
+
     /* INSTANCE MEMBERS ------------------------------------------------------------------- */
 
     /** This GUI`s update method will be called. */
