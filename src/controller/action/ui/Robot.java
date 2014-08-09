@@ -72,33 +72,36 @@ public class Robot extends GCAction
     @Override
     public boolean isLegal(GameState state)
     {
+        GCAction lastUIAction = EventHandler.getInstance().lastUIAction;
+        Penalty penalty = state.team[side].player[number].penalty;
+
         return !state.ejected[side][number]
-                && (!(EventHandler.getInstance().lastUIAction instanceof PenaltyAction)
-                && state.team[side].player[number].penalty != Penalty.None
+                && (!(lastUIAction instanceof PenaltyAction)
+                && penalty != Penalty.None
                 && (state.getRemainingPenaltyTime(side, number) == 0 || Rules.league instanceof HL)
-                && (state.team[side].player[number].penalty != Penalty.Substitute || state.getNumberOfRobotsInPlay(side) < Rules.league.robotsPlaying)
+                && (penalty != Penalty.Substitute || state.getNumberOfRobotsInPlay(side) < Rules.league.robotsPlaying)
                 && !isCoach()
-                || EventHandler.getInstance().lastUIAction instanceof PickUpHL
-                && state.team[side].player[number].penalty != Penalty.HLService
-                && state.team[side].player[number].penalty != Penalty.Substitute
-                || EventHandler.getInstance().lastUIAction instanceof ServiceHL
-                && state.team[side].player[number].penalty != Penalty.HLService
-                && state.team[side].player[number].penalty != Penalty.Substitute
-                || (EventHandler.getInstance().lastUIAction instanceof PickUp && Rules.league instanceof SPL)
-                && state.team[side].player[number].penalty != Penalty.SplRequestForPickup
-                && state.team[side].player[number].penalty != Penalty.Substitute
-                || EventHandler.getInstance().lastUIAction instanceof Substitute
-                && state.team[side].player[number].penalty != Penalty.Substitute
+                || lastUIAction instanceof PickUpHL
+                && penalty != Penalty.HLService
+                && penalty != Penalty.Substitute
+                || lastUIAction instanceof ServiceHL
+                && penalty != Penalty.HLService
+                && penalty != Penalty.Substitute
+                || (lastUIAction instanceof PickUp && Rules.league instanceof SPL)
+                && penalty != Penalty.SplRequestForPickup
+                && penalty != Penalty.Substitute
+                || lastUIAction instanceof Substitute
+                && penalty != Penalty.Substitute
                 && (!isCoach() && (!(Rules.league instanceof SPL) || number != 0))
-                || (EventHandler.getInstance().lastUIAction instanceof CoachMotion)
+                || (lastUIAction instanceof CoachMotion)
                     && (isCoach() && (state.team[side].coach.penalty != Penalty.SplCoachMotion))
-                || state.team[side].player[number].penalty == Penalty.None
-                    && (EventHandler.getInstance().lastUIAction instanceof PenaltyAction)
-                    && !(EventHandler.getInstance().lastUIAction instanceof CoachMotion)
-                    && !(EventHandler.getInstance().lastUIAction instanceof Substitute)
+                || penalty == Penalty.None
+                    && (lastUIAction instanceof PenaltyAction)
+                    && !(lastUIAction instanceof CoachMotion)
+                    && !(lastUIAction instanceof Substitute)
                     && (!isCoach())
-                || (state.team[side].player[number].penalty == Penalty.None)
-                    && (EventHandler.getInstance().lastUIAction instanceof TeammatePushing))
+                || (penalty == Penalty.None)
+                    && (lastUIAction instanceof TeammatePushing))
                 || state.testmode;
     }
     
