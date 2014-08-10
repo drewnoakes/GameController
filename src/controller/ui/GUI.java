@@ -93,10 +93,8 @@ public class GUI extends JFrame
     
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Some constants defining this GUI`s appearance as their names say.
-     * Feel free to change them and see what happens.
-     */
+    // Various UI constants
+
     private static final int WINDOW_WIDTH = 1024;
     private static final int WINDOW_HEIGHT = 768;
     private static final int STANDARD_FONT_SIZE = 17;
@@ -177,7 +175,8 @@ public class GUI extends JFrame
     private static final int FINISH_HIGHLIGHT_SECONDS = 10;
     private static final int KICKOFF_BLOCKED_HIGHLIGHT_SECONDS = 3;
 
-    /** Some attributes used in the GUI components. */
+    // Some attributes used in the GUI components
+
     private double lastSize = 0;
     private Font standardFont;
     private Font titleFont;
@@ -196,7 +195,8 @@ public class GUI extends JFrame
     private final ImageIcon lanUnknown;
     private final ImageIcon[][] backgroundSide;
     
-    /** All the components of this GUI. */
+    // All the components of this GUI
+
     private final ImagePanel[] side;
     private final JLabel[] name;
     private final JButton[] goalDec;
@@ -240,16 +240,13 @@ public class GUI extends JFrame
     private final JToggleButton[] undo;
     private final JButton cancelUndo;
   
-    
     /**
-     * Creates a new GUI.
+     * Initialises the GUI.
      * 
-     * @param fullscreen    If true, the GUI tries to start using the full
-     *                      size of the screen. Actually this means changing
-     *                      the display`s resolution to the GUI`s size.
-     * @param data      The starting data.
+     * @param fullscreen whether the window should fill the screen.
+     * @param state the initial game state.
      */
-    public GUI(boolean fullscreen, GameState data)
+    public GUI(boolean fullscreen, GameState state)
     {
         super(WINDOW_TITLE);
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -304,9 +301,9 @@ public class GUI extends JFrame
         kickOffGroup = new ButtonGroup();
         pushes = new JLabel[2];
         for (int i=0; i<2; i++) {
-            name[i] = new JLabel(Teams.getNames(false)[data.team[i].teamNumber]);
+            name[i] = new JLabel(Teams.getNames(false)[state.team[i].teamNumber]);
             name[i].setHorizontalAlignment(JLabel.CENTER);
-            name[i].setForeground(data.team[i].teamColor.getColor());
+            name[i].setForeground(state.team[i].teamColor.getColor());
             goalInc[i] = new Button("+");
             goalDec[i] = new Button("-");
             kickOff[i] = new JRadioButton(KICKOFF);
@@ -763,56 +760,48 @@ public class GUI extends JFrame
      *
      * This method should never have other effects than updating the view!
      * 
-     * @param data the game state to use when populating the UI.
+     * @param state the game state to use when populating the UI.
      */
-    public void update(GameState data)
+    public void update(GameState state)
     {
-        updateClock(data);
-        updateHalf(data);
-        updateColor(data);
-        updatePlayMode(data);
-        updateGoal(data);
-        updateKickoff(data);
-        updateRobots(data);
-        updatePushes(data);
-        updateTimeOut(data);
-        updateRefereeTimeout(data);
-        updateOut(data);
+        updateClock(state);
+        updateHalf(state);
+        updateTeamColors(state);
+        updatePlayMode(state);
+        updateGoal(state);
+        updateKickoff(state);
+        updateRobots(state);
+        updatePushes(state);
+        updateTimeOut(state);
+        updateRefereeTimeout(state);
+        updateOut(state);
         
         if (Rules.league instanceof SPL) {
-            updateGlobalStuck(data);
-            updatePenaltiesSPL(data);
+            updateGlobalStuck(state);
+            updatePenaltiesSPL(state);
         } else if (Rules.league instanceof HL) {
-            updatePenaltiesHL(data);
-            updateDropBall(data);
+            updatePenaltiesHL(state);
+            updateDropBall(state);
         }
-        updateUndo();
+        updateTimelineUndo();
         repaint();
     }
 
-    /**
-     * Always update fonts before drawing.
-     *
-     * @param g     The graphics context to draw to.
-     */
     @Override
     public void paint(Graphics g)
     {
+        // This method only updates the fonts if the window size has changed
         updateFonts();
+
         super.paint(g);
     }
 
-    /**
-     * Updates the clock.
-     * 
-     * @param data     The current data (model) the GUI should view.
-     */
-    private void updateClock(GameState data)
+    private void updateClock(GameState state)
     {
-        clock.setText(formatTime(data.getRemainingGameTime()));
-        Integer secondaryTime = data.getSecondaryTime(KICKOFF_BLOCKED_HIGHLIGHT_SECONDS - 1);
+        clock.setText(formatTime(state.getRemainingGameTime()));
+        Integer secondaryTime = state.getSecondaryTime(KICKOFF_BLOCKED_HIGHLIGHT_SECONDS - 1);
         if (secondaryTime != null) {
-            if (data.playMode == PlayMode.Playing) {
+            if (state.playMode == PlayMode.Playing) {
                 clockSub.setText(formatTime(Math.max(0, secondaryTime)));
                 clockSub.setForeground(secondaryTime <= 0
                         && clockSub.getForeground() != COLOR_HIGHLIGHT ? COLOR_HIGHLIGHT : Color.BLACK);
@@ -826,124 +815,99 @@ public class GUI extends JFrame
         }
         
         ImageIcon tmp;
-        if (ActionBoard.clock.isClockRunning(data)) {
+        if (ActionBoard.clock.isClockRunning(state)) {
             tmp = clockImgPause;
         } else {
             tmp = clockImgPlay;
         }
         clockPause.setImage(tmp.getImage());
-        clockReset.setVisible(ActionBoard.clockReset.isLegal(data));
-        clockPause.setVisible(ActionBoard.clockPause.isLegal(data));
+        clockReset.setVisible(ActionBoard.clockReset.isLegal(state));
+        clockPause.setVisible(ActionBoard.clockPause.isLegal(state));
         if (Rules.league.lostTime) {
-            incGameClock.setEnabled(ActionBoard.incGameClock.isLegal(data));
+            incGameClock.setEnabled(ActionBoard.incGameClock.isLegal(state));
         }
     }
     
-    /**
-     * Updates the half.
-     * 
-     * @param data     The current data (model) the GUI should view.
-     */
-    private void updateHalf(GameState data)
+    private void updateHalf(GameState state)
     {
         for (int i=0; i<2; i++) {
-            name[i].setText(Teams.getNames(false)[data.team[i].teamNumber]);
+            name[i].setText(Teams.getNames(false)[state.team[i].teamNumber]);
         }
-        firstHalf.setEnabled(ActionBoard.firstHalf.isLegal(data));
-        secondHalf.setEnabled(ActionBoard.secondHalf.isLegal(data));
+        firstHalf.setEnabled(ActionBoard.firstHalf.isLegal(state));
+        secondHalf.setEnabled(ActionBoard.secondHalf.isLegal(state));
         if (Rules.league.overtime) {
-            firstHalfOvertime.setEnabled(ActionBoard.firstHalfOvertime.isLegal(data));
-            secondHalfOvertime.setEnabled(ActionBoard.secondHalfOvertime.isLegal(data));
+            firstHalfOvertime.setEnabled(ActionBoard.firstHalfOvertime.isLegal(state));
+            secondHalfOvertime.setEnabled(ActionBoard.secondHalfOvertime.isLegal(state));
         }
-        penaltyShoot.setEnabled(ActionBoard.penaltyShoot.isLegal(data));
-        firstHalf.setSelected((data.period == Period.Normal)
-                            && (data.firstHalf));
-        secondHalf.setSelected((data.period == Period.Normal)
-                            && (!data.firstHalf));
+        penaltyShoot.setEnabled(ActionBoard.penaltyShoot.isLegal(state));
+        firstHalf.setSelected((state.period == Period.Normal)
+                            && (state.firstHalf));
+        secondHalf.setSelected((state.period == Period.Normal)
+                            && (!state.firstHalf));
         if (Rules.league.overtime) {
-           firstHalfOvertime.setSelected((data.period == Period.Overtime)
-                            && (data.firstHalf));
-           secondHalfOvertime.setSelected((data.period == Period.Overtime)
-                            && (!data.firstHalf));
+           firstHalfOvertime.setSelected((state.period == Period.Overtime)
+                            && (state.firstHalf));
+           secondHalfOvertime.setSelected((state.period == Period.Overtime)
+                            && (!state.firstHalf));
         }
-        penaltyShoot.setSelected(data.period == Period.PenaltyShootout || data.previousPeriod == Period.PenaltyShootout);
+        penaltyShoot.setSelected(state.period == Period.PenaltyShootout || state.previousPeriod == Period.PenaltyShootout);
     }
     
-    /**
-     * Updates left and right background picture.
-     * 
-     * @param data     The current data (model) the GUI should view.
-     */
-    private void updateColor(GameState data)
+    private void updateTeamColors(GameState state)
     {
         for (int i=0; i<2; i++) {
-            name[i].setForeground(data.team[i].teamColor.getColor());
-            side[i].setImage(backgroundSide[i][data.team[i].teamColor.getValue()].getImage());
+            name[i].setForeground(state.team[i].teamColor.getColor());
+            side[i].setImage(backgroundSide[i][state.team[i].teamColor.getValue()].getImage());
         }
     }
     
-    /**
-     * Updates the play mode.
-     * 
-     * @param data     The current data (model) the GUI should view.
-     */
-    private void updatePlayMode(GameState data)
+    private void updatePlayMode(GameState state)
     {
-        initial.setEnabled(ActionBoard.initial.isLegal(data));
-        ready.setEnabled(ActionBoard.ready.isLegal(data));
-        set.setEnabled(ActionBoard.set.isLegal(data));
-        play.setEnabled(ActionBoard.play.isLegal(data));
-        finish.setEnabled(ActionBoard.finish.isLegal(data));
+        initial.setEnabled(ActionBoard.initial.isLegal(state));
+        ready.setEnabled(ActionBoard.ready.isLegal(state));
+        set.setEnabled(ActionBoard.set.isLegal(state));
+        play.setEnabled(ActionBoard.play.isLegal(state));
+        finish.setEnabled(ActionBoard.finish.isLegal(state));
 
-        if (data.playMode == PlayMode.Initial) {
+        if (state.playMode == PlayMode.Initial) {
             initial.setSelected(true);
-        } else if (data.playMode == PlayMode.Ready) {
+        } else if (state.playMode == PlayMode.Ready) {
             ready.setSelected(true);
-        } else if (data.playMode == PlayMode.Set) {
+        } else if (state.playMode == PlayMode.Set) {
             set.setSelected(true);
-        } else if (data.playMode == PlayMode.Playing) {
+        } else if (state.playMode == PlayMode.Playing) {
             play.setSelected(true);
-        } else if (data.playMode == PlayMode.Finished) {
+        } else if (state.playMode == PlayMode.Finished) {
             finish.setSelected(true);
         }
 
         highlight(finish,
-                data.playMode != PlayMode.Finished
-                && data.getRemainingGameTime() <= FINISH_HIGHLIGHT_SECONDS
+                state.playMode != PlayMode.Finished
+                && state.getRemainingGameTime() <= FINISH_HIGHLIGHT_SECONDS
                 && finish.getBackground() != COLOR_HIGHLIGHT);
     }
     
-    /**
-     * Updates the goal.
-     * 
-     * @param data     The current data (model) the GUI should view.
-     */
-    private void updateGoal(GameState data)
+    private void updateGoal(GameState state)
     {
         for (int i=0; i<2; i++) {
-            goals[i].setText(""+data.team[i].score);
-            goalInc[i].setEnabled(ActionBoard.goalInc[i].isLegal(data));
-            goalDec[i].setVisible(ActionBoard.goalDec[i].isLegal(data));
+            goals[i].setText(""+state.team[i].score);
+            goalInc[i].setEnabled(ActionBoard.goalInc[i].isLegal(state));
+            goalDec[i].setVisible(ActionBoard.goalDec[i].isLegal(state));
         }
     }
     
-    /**
-     * Updates the kickoff.
-     * 
-     * @param data     The current data (model) the GUI should view.
-     */
-    private void updateKickoff(GameState data)
+    private void updateKickoff(GameState state)
     {
-        if (data.kickOffTeam == null) {
+        if (state.kickOffTeam == null) {
             // drop ball
             kickOff[2].setSelected(true);
         } else {
-            kickOff[data.team[0].teamColor == data.kickOffTeam ? 0 : 1].setSelected(true);
+            kickOff[state.team[0].teamColor == state.kickOffTeam ? 0 : 1].setSelected(true);
         }
         for (int i=0; i<2; i++) {
-            kickOff[i].setEnabled(ActionBoard.kickOff[i].isLegal(data));
-            if (data.period != Period.PenaltyShootout
-                && data.previousPeriod != Period.PenaltyShootout) {
+            kickOff[i].setEnabled(ActionBoard.kickOff[i].isLegal(state));
+            if (state.period != Period.PenaltyShootout
+                && state.previousPeriod != Period.PenaltyShootout) {
                 kickOff[i].setText(KICKOFF);
             } else {
                 kickOff[i].setText(KICKOFF_PENALTY_SHOOTOUT);
@@ -951,72 +915,62 @@ public class GUI extends JFrame
         }
     }
     
-    /**
-     * Updates the pushes.
-     * 
-     * @param data     The current data (model) the GUI should view.
-     */
-    private void updatePushes(GameState data)
+    private void updatePushes(GameState state)
     {
         for (int i=0; i<2; i++) {
-            if (data.period != Period.PenaltyShootout && data.previousPeriod != Period.PenaltyShootout) {
+            if (state.period != Period.PenaltyShootout && state.previousPeriod != Period.PenaltyShootout) {
                 if (Rules.league.pushesToEjection == null || Rules.league.pushesToEjection.length == 0) {
                     pushes[i].setText("");
                 } else {
-                    pushes[i].setText(PUSHES+": "+data.pushes[i]);
+                    pushes[i].setText(PUSHES+": "+state.pushes[i]);
                 }
             } else {
-                pushes[i].setText((i == 0 && (data.playMode == PlayMode.Set
-                        || data.playMode == PlayMode.Playing) ? SHOT : SHOTS)+": "+data.team[i].penaltyShot);
+                pushes[i].setText((i == 0 && (state.playMode == PlayMode.Set
+                        || state.playMode == PlayMode.Playing) ? SHOT : SHOTS)+": "+state.team[i].penaltyShot);
             }
         }
     }
     
-    /**
-     * Updates the robots.
-     * 
-     * @param data     The current data (model) the GUI should view.
-     */
-    private void updateRobots(GameState data)
+    private void updateRobots(GameState state)
     {
         RobotOnlineStatus[][] onlineStatus = RobotWatcher.updateRobotOnlineStatus();
         for (int i=0; i<robot.length; i++) {
             for (int j=0; j<robot[i].length; j++) {
                 if (ActionBoard.robot[i][j].isCoach()) {
-                   if (data.team[i].coach.penalty == Penalty.SplCoachMotion) {
+                   if (state.team[i].coach.penalty == Penalty.SplCoachMotion) {
                       robot[i][j].setEnabled(false);
                       robotLabel[i][j].setText(EJECTED);
                   } else {
-                      robotLabel[i][j].setText(data.team[i].teamColor+" "+COACH);
+                      robotLabel[i][j].setText(state.team[i].teamColor+" "+COACH);
                   }
                 }
                 else {
-                    if (data.team[i].player[j].penalty != Penalty.None) {
-                        if (!data.ejected[i][j]) {
-                            int seconds = data.getRemainingPenaltyTime(i, j);
+                    if (state.team[i].player[j].penalty != Penalty.None) {
+                        if (!state.ejected[i][j]) {
+                            int seconds = state.getRemainingPenaltyTime(i, j);
                             boolean pickup = ((Rules.league instanceof SPL &&
-                                        data.team[i].player[j].penalty == Penalty.SplRequestForPickup)
+                                        state.team[i].player[j].penalty == Penalty.SplRequestForPickup)
                                    || (Rules.league instanceof HL &&
-                                       ( data.team[i].player[j].penalty == Penalty.HLPickupOrIncapable
-                                      || data.team[i].player[j].penalty == Penalty.HLService ))
+                                       ( state.team[i].player[j].penalty == Penalty.HLPickupOrIncapable
+                                      || state.team[i].player[j].penalty == Penalty.HLService ))
                                     );
                             if (seconds == 0) {
                                 if (pickup) {
-                                    robotLabel[i][j].setText(data.team[i].teamColor+" "+(j+1)+" ("+PEN_PICKUP+")");
+                                    robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1)+" ("+PEN_PICKUP+")");
                                     highlight(robot[i][j], true);
-                                } else if (data.team[i].player[j].penalty == Penalty.Substitute) {
-                                    robotLabel[i][j].setText(data.team[i].teamColor+" "+(j+1)+" ("+PEN_SUBSTITUTE_SHORT+")");
+                                } else if (state.team[i].player[j].penalty == Penalty.Substitute) {
+                                    robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1)+" ("+PEN_SUBSTITUTE_SHORT+")");
                                     highlight(robot[i][j], false);
                                 } else if (!(Rules.league instanceof SPL) ||
-                                        !(data.team[i].player[j].penalty == Penalty.SplCoachMotion)) {
-                                    robotLabel[i][j].setText(data.team[i].teamColor+" "+(j+1)+": "+formatTime(seconds));
+                                        !(state.team[i].player[j].penalty == Penalty.SplCoachMotion)) {
+                                    robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1)+": "+formatTime(seconds));
                                     highlight(robot[i][j], seconds <= UNPEN_HIGHLIGHT_SECONDS && robot[i][j].getBackground() != COLOR_HIGHLIGHT);
                                 }
                             }  else {
-                                robotLabel[i][j].setText(data.team[i].teamColor+" "+(j+1)+": "+formatTime(seconds)+(pickup ? " (P)" : ""));
+                                robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1)+": "+formatTime(seconds)+(pickup ? " (P)" : ""));
                                 highlight(robot[i][j], seconds <= UNPEN_HIGHLIGHT_SECONDS && robot[i][j].getBackground() != COLOR_HIGHLIGHT);
                             }
-                            int penTime = (seconds + data.getSecondsSince(data.whenPenalized[i][j]));
+                            int penTime = (seconds + state.getSecondsSince(state.whenPenalized[i][j]));
                             if (seconds != 0) {
                                 robotTime[i][j].setValue(1000 * seconds / penTime);
                             }
@@ -1027,13 +981,13 @@ public class GUI extends JFrame
                             highlight(robot[i][j], false);
                         }
                     } else {
-                        robotLabel[i][j].setText(data.team[i].teamColor+" "+(j+1));
+                        robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1));
                         robotTime[i][j].setVisible(false);
                         highlight(robot[i][j], false);
                     }
                 }    
                 
-                robot[i][j].setEnabled(ActionBoard.robot[i][j].isLegal(data));
+                robot[i][j].setEnabled(ActionBoard.robot[i][j].isLegal(state));
                 
                 ImageIcon currentLanIcon;
                 if (onlineStatus[i][j] == RobotOnlineStatus.ONLINE) {
@@ -1050,44 +1004,35 @@ public class GUI extends JFrame
         }
     }
     
-    /**
-     * Updates the time-out.
-     * 
-     * @param data     The current data (model) the GUI should view.
-     */
-    private void updateTimeOut(GameState data)
+    private void updateTimeOut(GameState state)
     {
         for (int i=0; i<2; i++) {
-            if (!data.timeOutActive[i]) {
+            if (!state.timeOutActive[i]) {
                 timeOut[i].setSelected(false);
                 highlight(timeOut[i], false);
             } else {
-                boolean shouldHighlight = (data.getRemainingSeconds(data.whenCurrentPlayModeBegan, Rules.league.timeOutTime) < TIMEOUT_HIGHLIGHT_SECONDS)
+                boolean shouldHighlight = (state.getRemainingSeconds(state.whenCurrentPlayModeBegan, Rules.league.timeOutTime) < TIMEOUT_HIGHLIGHT_SECONDS)
                         && (timeOut[i].getBackground() != COLOR_HIGHLIGHT);
                 timeOut[i].setSelected(!IS_OSX || !shouldHighlight);
                 highlight(timeOut[i], shouldHighlight);
             }
-            timeOut[i].setEnabled(ActionBoard.timeOut[i].isLegal(data));
+            timeOut[i].setEnabled(ActionBoard.timeOut[i].isLegal(state));
         }
     }
     
-    private void updateRefereeTimeout(GameState data) {
-        refereeTimeout.setSelected(data.refereeTimeout);
-        refereeTimeout.setEnabled(ActionBoard.refereeTimeout.isLegal(data));
+    private void updateRefereeTimeout(GameState state)
+    {
+        refereeTimeout.setSelected(state.refereeTimeout);
+        refereeTimeout.setEnabled(ActionBoard.refereeTimeout.isLegal(state));
     }
     
-    /**
-     * Updates the global game stuck.
-     * 
-     * @param data     The current data (model) the GUI should view.
-     */
-    private void updateGlobalStuck(GameState data)
+    private void updateGlobalStuck(GameState state)
     {
         for (int i=0; i<2; i++) {
-            if (data.playMode == PlayMode.Playing
-                    && data.getRemainingSeconds(data.whenCurrentPlayModeBegan, Rules.league.kickoffTime + Rules.league.minDurationBeforeStuck) > 0)
+            if (state.playMode == PlayMode.Playing
+                    && state.getRemainingSeconds(state.whenCurrentPlayModeBegan, Rules.league.kickoffTime + Rules.league.minDurationBeforeStuck) > 0)
             {
-                if (data.kickOffTeam == data.team[i].teamColor)
+                if (state.kickOffTeam == state.team[i].teamColor)
                 {
                     stuck[i].setEnabled(true);
                     stuck[i].setText("<font color=#000000>"+KICKOFF_GOAL);
@@ -1096,55 +1041,40 @@ public class GUI extends JFrame
                     stuck[i].setText("<font color=#808080>"+STUCK);
                 }
             } else {
-                stuck[i].setEnabled(ActionBoard.stuck[i].isLegal(data));
-                stuck[i].setText((ActionBoard.stuck[i].isLegal(data) ? "<font color=#000000>" : "<font color=#808080>")+STUCK);
+                stuck[i].setEnabled(ActionBoard.stuck[i].isLegal(state));
+                stuck[i].setText((ActionBoard.stuck[i].isLegal(state) ? "<font color=#000000>" : "<font color=#808080>")+STUCK);
             }
         }
     }
     
-    /**
-     * Updates the dropped-ball button.
-     * 
-     * @param data     The current data (model) the GUI should view.
-     */
-    private void updateDropBall(GameState data)
+    private void updateDropBall(GameState state)
     {
-        dropBall.setEnabled(ActionBoard.dropBall.isLegal(data));
+        dropBall.setEnabled(ActionBoard.dropBall.isLegal(state));
     }
     
-    /**
-     * Updates the out.
-     * 
-     * @param data     The current data (model) the GUI should view.
-     */
-    private void updateOut(GameState data)
+    private void updateOut(GameState state)
     {
         for (int i=0; i<2; i++) {
-            out[i].setEnabled(ActionBoard.out[i].isLegal(data));
+            out[i].setEnabled(ActionBoard.out[i].isLegal(state));
         }
     }
 
-    /**
-     * Updates the SPL penalties.
-     * 
-     * @param data     The current data (model) the GUI should view.
-     */
-    private void updatePenaltiesSPL(GameState data)
+    private void updatePenaltiesSPL(GameState state)
     {
-        pen[0].setEnabled(ActionBoard.pushing.isLegal(data));
-        pen[1].setEnabled(ActionBoard.leaving.isLegal(data));
-        pen[2].setEnabled(ActionBoard.fallen.isLegal(data));
-        pen[3].setEnabled(ActionBoard.inactive.isLegal(data));
+        pen[0].setEnabled(ActionBoard.pushing.isLegal(state));
+        pen[1].setEnabled(ActionBoard.leaving.isLegal(state));
+        pen[2].setEnabled(ActionBoard.fallen.isLegal(state));
+        pen[3].setEnabled(ActionBoard.inactive.isLegal(state));
         pen[3].setText("<html><center>"
-                +(ActionBoard.inactive.isLegal(data) ? "<font color=#000000>" : "<font color=#808080>")
+                +(ActionBoard.inactive.isLegal(state) ? "<font color=#000000>" : "<font color=#808080>")
                 +PEN_INACTIVE);
-        pen[4].setEnabled(ActionBoard.defender.isLegal(data));
-        pen[5].setEnabled(ActionBoard.holding.isLegal(data));
-        pen[6].setEnabled(ActionBoard.hands.isLegal(data));
-        pen[7].setEnabled(ActionBoard.pickUp.isLegal(data));
-        pen[8].setEnabled(Rules.league.dropInPlayerMode ? ActionBoard.teammatePushing.isLegal(data)
-                : ActionBoard.coachMotion.isLegal(data));
-        pen[9].setEnabled(ActionBoard.substitute.isLegal(data));
+        pen[4].setEnabled(ActionBoard.defender.isLegal(state));
+        pen[5].setEnabled(ActionBoard.holding.isLegal(state));
+        pen[6].setEnabled(ActionBoard.hands.isLegal(state));
+        pen[7].setEnabled(ActionBoard.pickUp.isLegal(state));
+        pen[8].setEnabled(Rules.league.dropInPlayerMode ? ActionBoard.teammatePushing.isLegal(state)
+                : ActionBoard.coachMotion.isLegal(state));
+        pen[9].setEnabled(ActionBoard.substitute.isLegal(state));
         
         GCAction highlightAction = ActionHandler.getInstance().lastUserAction;
         pen[0].setSelected(highlightAction == ActionBoard.pushing);
@@ -1160,20 +1090,15 @@ public class GUI extends JFrame
         pen[9].setSelected(highlightAction == ActionBoard.substitute);
     }
     
-    /**
-     * Updates the HL penalties.
-     * 
-     * @param data     The current data (model) the GUI should view.
-     */
-    private void updatePenaltiesHL(GameState data)
+    private void updatePenaltiesHL(GameState state)
     {
-        pen[0].setEnabled(ActionBoard.ballManipulation.isLegal(data));
-        pen[1].setEnabled(ActionBoard.pushing.isLegal(data));
-        pen[2].setEnabled(ActionBoard.attack.isLegal(data));
-        pen[3].setEnabled(ActionBoard.defense.isLegal(data));
-        pen[4].setEnabled(ActionBoard.pickUpHL.isLegal(data));
-        pen[5].setEnabled(ActionBoard.serviceHL.isLegal(data));
-        pen[6].setEnabled(ActionBoard.substitute.isLegal(data));
+        pen[0].setEnabled(ActionBoard.ballManipulation.isLegal(state));
+        pen[1].setEnabled(ActionBoard.pushing.isLegal(state));
+        pen[2].setEnabled(ActionBoard.attack.isLegal(state));
+        pen[3].setEnabled(ActionBoard.defense.isLegal(state));
+        pen[4].setEnabled(ActionBoard.pickUpHL.isLegal(state));
+        pen[5].setEnabled(ActionBoard.serviceHL.isLegal(state));
+        pen[6].setEnabled(ActionBoard.substitute.isLegal(state));
 
         GCAction highlightAction = ActionHandler.getInstance().lastUserAction;
         pen[0].setSelected(highlightAction == ActionBoard.ballManipulation);
@@ -1185,11 +1110,7 @@ public class GUI extends JFrame
         pen[6].setSelected(highlightAction == ActionBoard.substitute);
     }
     
-    /**
-     * Updates the timeline/undo.
-     *
-     */
-    private void updateUndo()
+    private void updateTimelineUndo()
     {
         GCAction highlightAction = ActionHandler.getInstance().lastUserAction;
         String[] undos = Log.getLast(ActionBoard.MAX_NUM_UNDOS_AT_ONCE);
@@ -1290,7 +1211,8 @@ public class GUI extends JFrame
         }
     }
 
-    private String formatTime(int seconds) {
+    private static String formatTime(int seconds)
+    {
         int displaySeconds = Math.abs(seconds) % 60;
         int displayMinutes = Math.abs(seconds) / 60;
         return (seconds < 0 ? "-" : "") + String.format("%02d:%02d", displayMinutes, displaySeconds);

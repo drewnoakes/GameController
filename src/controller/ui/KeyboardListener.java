@@ -11,7 +11,6 @@ import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 
-
 /**
  * This class listens to the keyboard. It does not depend on the GUI.
  *
@@ -37,7 +36,8 @@ public class KeyboardListener implements KeyEventDispatcher
      * @return If false, the key will be consumed.
      */
     @Override
-    public boolean dispatchKeyEvent(KeyEvent e) {
+    public boolean dispatchKeyEvent(KeyEvent e)
+    {
         if (e.getID() == KeyEvent.KEY_RELEASED) {
             pressing = 0;
         } else if (e.getID() == KeyEvent.KEY_PRESSED) {
@@ -47,7 +47,7 @@ public class KeyboardListener implements KeyEventDispatcher
                 return false;
             }
             pressing = key;
-            return pressed(key);
+            return onKeyPress(key);
         }
         
         return false;
@@ -56,15 +56,16 @@ public class KeyboardListener implements KeyEventDispatcher
     /**
      * This is called once every time a key is pressed. It is called once and
      * not as long as the key is pressed.
+     *
      * You can easily set the keys for each action here. The actions are
      * to be performed via the actionPerformed method as they are in the
      * GUI.
      * 
-     * @param key  The key that has just been pressed.
+     * @param key the pressed key.
      * 
-     * @return If false, the key was used and should be consumed.
+     * @return true if the keystroke was handled, otherwise false.
      */
-    private boolean pressed(int key)
+    private boolean onKeyPress(int key)
     {
         GCAction action = null;
         
