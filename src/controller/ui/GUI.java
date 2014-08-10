@@ -6,8 +6,6 @@ import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.AbstractButton;
@@ -28,6 +26,10 @@ import controller.action.ActionBoard;
 import controller.action.GCAction;
 import controller.net.RobotOnlineStatus;
 import controller.net.RobotWatcher;
+import controller.ui.controls.Button;
+import controller.ui.controls.ImageButton;
+import controller.ui.controls.ImagePanel;
+import controller.ui.controls.ToggleButton;
 import data.*;
 import rules.HL;
 import rules.Rules;
@@ -44,52 +46,7 @@ import rules.SPL;
 public class GUI extends JFrame
 {
     private static final boolean IS_OSX = System.getProperty("os.name").contains("OS X");
-    private static final boolean IS_APPLE_JAVA = IS_OSX && System.getProperty("java.version").compareTo("1.7") < 0;
-    private static final Insets insets = IS_APPLE_JAVA ? new Insets (2, -30, 2, -30) : null;
-    private static final String BUTTON_MASK = IS_APPLE_JAVA
-            ? "<html><div style=\"padding: 0px 12px\"><center>%s</center></div></html>"
-            : "<html><center>%s</center></html>";
 
-    /** Fix button centering for Apple Java. */
-    private class Button extends JButton
-    {
-        public Button()
-        {
-            setMargin(insets);
-        }
-        
-        public Button(String text)
-        {
-            setMargin(insets);
-            setText(text);
-        }
-        
-        public void setText(String text)
-        {
-            super.setText(String.format(BUTTON_MASK, text));
-        }
-    }
-    
-    /** Fix button centering for Apple Java. */
-    private class ToggleButton extends JToggleButton
-    {
-        public ToggleButton()
-        {
-            setMargin(insets);
-        }
-        
-        public ToggleButton(String text)
-        {
-            setMargin(insets);
-            setText(text);
-        }
-        
-        public void setText(String text)
-        {
-            super.setText(String.format(BUTTON_MASK, text));
-        }
-    }
-    
     private static final long serialVersionUID = 1L;
 
     // Various UI constants
@@ -652,102 +609,6 @@ public class GUI extends JFrame
         }
         
         setVisible(true);
-    }
-    
-    /**
-     * This is a normal JPanel, but it has a background image.
-     *
-     * @author Michel Bartsch
-     */
-    class ImagePanel extends JPanel
-    {
-        private static final long serialVersionUID = 1L;
-
-        /** The image that is shown in the background. */
-        private Image image;
-
-        /**
-         * Creates a new ImagePanel.
-         * 
-         * @param image     The Image to be shown in the background.
-         */
-        public ImagePanel(Image image)
-        {
-            this.image = image;
-        }
-        
-        /**
-         * Changes the background image.
-         * 
-         * @param image     Changes the image to this one.
-         */
-        public void setImage(Image image)
-        {
-            this.image = image;
-        }
-        
-        /**
-         * Paints this Component, should be called automatically.
-         * 
-         * @param g     This components graphical content.
-         */
-        @Override
-        public void paintComponent(Graphics g)
-        {
-            if (super.isOpaque()) {
-                g.setColor(Color.WHITE);
-                g.fillRect(0, 0, getWidth(), getHeight());
-            }
-            g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-        }
-    }
-    
-    /**
-     * This is a normal JButton, but it has a background image.
-     *
-     * @author Michel Bartsch
-     */
-    class ImageButton extends JButton
-    {
-        private static final long serialVersionUID = 1L;
-        
-        
-        /** The image that is shown in the background. */
-        private Image image;
-
-        /**
-         * Creates a new ImageButton.
-         * 
-         * @param image     The Image to be shown in the background.
-         */
-        public ImageButton(Image image)
-        {
-            this.image = image;
-        }
-        
-        /**
-         * Changes the background image.
-         * 
-         * @param image     Changes the image to this one.
-         */
-        public void setImage(Image image)
-        {
-            this.image = image;
-        }
-        
-        /**
-         * Paints this Component, should be called automatically.
-         * 
-         * @param g     This components graphical content.
-         */
-        @Override
-        public void paintComponent(Graphics g)
-        {
-            if (super.isOpaque()) {
-                g.clearRect(0, 0, getWidth(), getHeight());
-            }
-            g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-        }
     }
 
     /**
