@@ -21,20 +21,20 @@ import java.awt.EventQueue;
  *
  * @author Michel Bartsch
  */
-public class EventHandler
+public class ActionHandler
 {
     /* SINGLETON MEMBERS ------------------------------------------------------------------- */
 
     /** The instance of the singleton. */
     @Nullable
-    private static EventHandler instance;
+    private static ActionHandler instance;
 
     public static void initialise(@NotNull GameStateSender gameStateSender)
     {
         if (instance != null) {
             throw new AssertionError("Singleton has already been initialised initialised.");
         }
-        instance = new EventHandler(gameStateSender);
+        instance = new ActionHandler(gameStateSender);
     }
 
     /**
@@ -43,7 +43,7 @@ public class EventHandler
      * @return The singleton`s instance.
      */
     @NotNull
-    public static EventHandler getInstance()
+    public static ActionHandler getInstance()
     {
         if (instance == null) {
             throw new AssertionError("Singleton must be initialised.");
@@ -79,10 +79,7 @@ public class EventHandler
      */
     public boolean noLastUserAction = false;
 
-    /**
-     * Initialises an EventHandler.
-     */
-    private EventHandler(@NotNull GameStateSender gameStateSender)
+    private ActionHandler(@NotNull GameStateSender gameStateSender)
     {
         this.gameStateSender = gameStateSender;
     }

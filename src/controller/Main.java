@@ -89,8 +89,8 @@ public class Main
             gameStateSender.start();
 
             //event-handler
-            EventHandler.initialise(gameStateSender);
-            EventHandler.getInstance().state = state;
+            ActionHandler.initialise(gameStateSender);
+            ActionHandler.getInstance().state = state;
 
             robotMessageReceiver = new MessageReceiver<RobotMessage>(
                     Config.ROBOT_STATUS_PORT,
@@ -138,7 +138,7 @@ public class Main
         Log.state(state, Teams.getNames(false)[state.team[0].teamNumber] + " vs " + Teams.getNames(false)[state.team[1].teamNumber]);
         GCGUI gui = new GUI(options.fullScreenMode, state);
         new KeyboardListener();
-        EventHandler.getInstance().setGUI(gui);
+        ActionHandler.getInstance().setGUI(gui);
         gui.update(state);
 
         //clock runs until window is closed
@@ -161,7 +161,7 @@ public class Main
             Log.error("Waiting for threads to shutdown was interrupted.");
         }
 
-        EventHandler.destroy();
+        ActionHandler.destroy();
 
         try {
             Log.close();

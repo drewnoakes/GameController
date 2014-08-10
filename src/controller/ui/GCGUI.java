@@ -9,7 +9,7 @@ import data.GameState;
  * model as data.
  *
  * In additional a GUI can get the last action that caused the change from
- * the EventHandler, but this should not be used too often to avoid
+ * the ActionHandler, but this should not be used too often to avoid
  * dependencies.
  *
  * @author Michel Bartsch

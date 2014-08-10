@@ -3,7 +3,7 @@ package controller.action;
 import common.Log;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.EventHandler;
+import controller.ActionHandler;
 import data.GameState;
 import data.PlayerInfo;
 
@@ -40,7 +40,7 @@ public abstract class GCAction
     /** Causes this action to register itself for execution. */
     public void invoke()
     {
-        EventHandler.getInstance().register(this);
+        ActionHandler.getInstance().register(this);
     }
 
     /**
@@ -88,8 +88,6 @@ public abstract class GCAction
 
     /**
      * Specifies if this action is legal at a specific state of the game.
-     *
-     * Actions that are not legal will not be executed by the EventHandler.
      *
      * By default, actions are legal unless this method is overridden.
      * 

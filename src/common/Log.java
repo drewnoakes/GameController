@@ -1,6 +1,6 @@
 package common;
 
-import controller.EventHandler;
+import controller.ActionHandler;
 import controller.Main;
 import data.GameState;
 
@@ -128,7 +128,7 @@ public class Log
             }
         }
         GameState state = (GameState) instance.states.getLast().clone();
-        EventHandler.getInstance().state = state;
+        ActionHandler.getInstance().state = state;
         return state.message;
     }
     

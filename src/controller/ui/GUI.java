@@ -23,8 +23,8 @@ import javax.swing.JToggleButton;
 
 import common.Log;
 import common.TotalScaleLayout;
+import controller.ActionHandler;
 import controller.Clock;
-import controller.EventHandler;
 import controller.action.ActionBoard;
 import controller.action.GCAction;
 import controller.net.RobotOnlineStatus;
@@ -752,16 +752,18 @@ public class GUI extends JFrame implements GCGUI
     }
 
     /**
-     * This is called by the EventHandler after an action has been performed.
-     * Here the GUI should update its view based on the data parameter.
+     * Updates the UI to reflect the provided game state.
+     *
      * There are three additional sources of information that can be used here:
+     *
      *  1. The RobotWatcher, you can ask him for the robots online-status.
-     *  2. The last events from the EventHandler, but you should try to avoid
+     *  2. The last action from the ActionHandler, but you should try to avoid
      *     this for less dependencies between actions and GUI (view and control).
      *  3. The actions isLegal method to enable or disable buttons.
+     *
      * This method should never have other effects than updating the view!
      * 
-     * @param data     The current data (model) the GUI should view.
+     * @param data the game state to use when populating the UI.
      */
     @Override
     public void update(GameState data)
@@ -1145,7 +1147,7 @@ public class GUI extends JFrame implements GCGUI
                 : ActionBoard.coachMotion.isLegal(data));
         pen[9].setEnabled(ActionBoard.substitute.isLegal(data));
         
-        GCAction highlightAction = EventHandler.getInstance().lastUserAction;
+        GCAction highlightAction = ActionHandler.getInstance().lastUserAction;
         pen[0].setSelected(highlightAction == ActionBoard.pushing);
         pen[1].setSelected(highlightAction == ActionBoard.leaving);
         pen[2].setSelected(highlightAction == ActionBoard.fallen);
@@ -1174,7 +1176,7 @@ public class GUI extends JFrame implements GCGUI
         pen[5].setEnabled(ActionBoard.serviceHL.isLegal(data));
         pen[6].setEnabled(ActionBoard.substitute.isLegal(data));
 
-        GCAction highlightAction = EventHandler.getInstance().lastUserAction;
+        GCAction highlightAction = ActionHandler.getInstance().lastUserAction;
         pen[0].setSelected(highlightAction == ActionBoard.ballManipulation);
         pen[1].setSelected(highlightAction == ActionBoard.pushing);
         pen[2].setSelected(highlightAction == ActionBoard.attack);
@@ -1190,7 +1192,7 @@ public class GUI extends JFrame implements GCGUI
      */
     private void updateUndo()
     {
-        GCAction highlightAction = EventHandler.getInstance().lastUserAction;
+        GCAction highlightAction = ActionHandler.getInstance().lastUserAction;
         String[] undos = Log.getLast(ActionBoard.MAX_NUM_UNDOS_AT_ONCE);
         boolean undoFromHere = false;
         for (int i=undo.length - 1; i >= 0; i--) {

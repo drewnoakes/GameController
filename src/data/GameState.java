@@ -21,8 +21,6 @@ import rules.Rules;
  * Only actions in their {@link controller.action.GCAction#perform} method are
  * allowed to write into this and they are all in the same thread.
  *
- * See {@link controller.EventHandler} for more information.
- *
  * @author Michel Bartsch
  */
 public class GameState extends GameStateSnapshot implements Cloneable

@@ -1,6 +1,6 @@
 package controller.net;
 
-import controller.EventHandler;
+import controller.ActionHandler;
 import controller.action.ActionBoard;
 import data.RobotMessage;
 import data.Penalty;
@@ -55,9 +55,9 @@ public class RobotWatcher
     public static synchronized void update(RobotMessage robotMessage)
     {
         int team;
-        if (robotMessage.getTeamNumber() == EventHandler.getInstance().state.team[0].teamNumber) {
+        if (robotMessage.getTeamNumber() == ActionHandler.getInstance().state.team[0].teamNumber) {
             team = 0;
-        } else if (robotMessage.getTeamNumber() == EventHandler.getInstance().state.team[1].teamNumber) {
+        } else if (robotMessage.getTeamNumber() == ActionHandler.getInstance().state.team[1].teamNumber) {
             team = 1;
         } else {
             return;
@@ -70,10 +70,10 @@ public class RobotWatcher
         if (instance.robotLastStatus[team][number-1] != robotMessage.getStatus()) {
             instance.robotLastStatus[team][number-1] = robotMessage.getStatus();
             if ((robotMessage.getStatus() == RobotStatus.ManuallyPenalised)
-                    && (EventHandler.getInstance().state.team[team].player[number-1].penalty == Penalty.None)) {
+                    && (ActionHandler.getInstance().state.team[team].player[number-1].penalty == Penalty.None)) {
                 ActionBoard.manualPen[team][number-1].invoke();
             } else if ((robotMessage.getStatus() == RobotStatus.ManuallyUnpenalised)
-                    && (EventHandler.getInstance().state.team[team].player[number-1].penalty != Penalty.None)) {
+                    && (ActionHandler.getInstance().state.team[team].player[number-1].penalty != Penalty.None)) {
                 ActionBoard.manualUnpen[team][number-1].invoke();
             }
         }

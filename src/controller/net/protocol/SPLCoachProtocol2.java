@@ -1,7 +1,7 @@
 package controller.net.protocol;
 
 import common.annotations.Nullable;
-import controller.EventHandler;
+import controller.ActionHandler;
 import data.SPLCoachMessage;
 import data.TeamInfo;
 
@@ -37,7 +37,7 @@ public class SPLCoachProtocol2 extends SPLCoachProtocol
             return null;
 
         byte team = buffer.get();
-        TeamInfo[] teams = EventHandler.getInstance().state.team;
+        TeamInfo[] teams = ActionHandler.getInstance().state.team;
         if (team != teams[0].teamNumber && team != teams[1].teamNumber)
             return null;
 

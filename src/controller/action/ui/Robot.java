@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.EventHandler;
+import controller.ActionHandler;
 import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import controller.action.ui.penalty.*;
@@ -61,8 +61,8 @@ public class Robot extends GCAction
             }
             log(state, message, "Entering Player " + state.team[side].teamColor + " " + (number + 1));
         }
-        else if (EventHandler.getInstance().lastUserAction instanceof PenaltyAction || EventHandler.getInstance().lastUserAction instanceof TeammatePushing) {
-            EventHandler.getInstance().lastUserAction.performOn(state, player, side, number);
+        else if (ActionHandler.getInstance().lastUserAction instanceof PenaltyAction || ActionHandler.getInstance().lastUserAction instanceof TeammatePushing) {
+            ActionHandler.getInstance().lastUserAction.performOn(state, player, side, number);
         }
         else if (player.penalty != Penalty.None) {
             log(state, message, "Unpenalised " + state.team[side].teamColor + " " + (number + 1));
@@ -73,7 +73,7 @@ public class Robot extends GCAction
     @Override
     public boolean isLegal(GameState state)
     {
-        GCAction lastUIAction = EventHandler.getInstance().lastUserAction;
+        GCAction lastUIAction = ActionHandler.getInstance().lastUserAction;
         Penalty penalty = state.team[side].player[number].penalty;
 
         return !state.ejected[side][number]
