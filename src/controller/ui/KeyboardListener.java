@@ -66,49 +66,50 @@ public class KeyboardListener implements KeyEventDispatcher
      */
     private boolean pressed(int key)
     {
-        GCAction event = null;
+        GCAction action = null;
         
         switch (key) {
-            case KeyEvent.VK_ESCAPE: event = ActionBoard.quit; break;
-            case KeyEvent.VK_DELETE: event = ActionBoard.testmode; break;
-            case KeyEvent.VK_BACK_SPACE: event = ActionBoard.undo[1]; break;
+            case KeyEvent.VK_ESCAPE: action = ActionBoard.quit; break;
+            case KeyEvent.VK_DELETE: action = ActionBoard.testmode; break;
+            case KeyEvent.VK_BACK_SPACE: action = ActionBoard.undo[1]; break;
             default:
                 if (Rules.league instanceof SPL) {
                     switch (key) {
-                        case KeyEvent.VK_B: event = ActionBoard.out[ActionHandler.getInstance().state.team[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
-                        case KeyEvent.VK_R: event = ActionBoard.out[ActionHandler.getInstance().state.team[0].teamColor == TeamColor.Red ? 0 : 1]; break;
+                        case KeyEvent.VK_B: action = ActionBoard.out[ActionHandler.getInstance().state.team[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
+                        case KeyEvent.VK_R: action = ActionBoard.out[ActionHandler.getInstance().state.team[0].teamColor == TeamColor.Red ? 0 : 1]; break;
 
-                        case KeyEvent.VK_P: event = ActionBoard.pushing; break;
-                        case KeyEvent.VK_L: event = ActionBoard.leaving; break;
-                        case KeyEvent.VK_F: event = ActionBoard.fallen; break;
-                        case KeyEvent.VK_I: event = ActionBoard.inactive; break;
-                        case KeyEvent.VK_D: event = ActionBoard.defender; break;
-                        case KeyEvent.VK_O: event = ActionBoard.holding; break;
-                        case KeyEvent.VK_H: event = ActionBoard.hands; break;
-                        case KeyEvent.VK_U: event = ActionBoard.pickUp; break;
-                        case KeyEvent.VK_C: event = ActionBoard.coachMotion; break;
-                        case KeyEvent.VK_T: event = ActionBoard.teammatePushing; break;
-                        case KeyEvent.VK_S: event = ActionBoard.substitute; break;
+                        case KeyEvent.VK_P: action = ActionBoard.pushing; break;
+                        case KeyEvent.VK_L: action = ActionBoard.leaving; break;
+                        case KeyEvent.VK_F: action = ActionBoard.fallen; break;
+                        case KeyEvent.VK_I: action = ActionBoard.inactive; break;
+                        case KeyEvent.VK_D: action = ActionBoard.defender; break;
+                        case KeyEvent.VK_O: action = ActionBoard.holding; break;
+                        case KeyEvent.VK_H: action = ActionBoard.hands; break;
+                        case KeyEvent.VK_U: action = ActionBoard.pickUp; break;
+                        case KeyEvent.VK_C: action = ActionBoard.coachMotion; break;
+                        case KeyEvent.VK_T: action = ActionBoard.teammatePushing; break;
+                        case KeyEvent.VK_S: action = ActionBoard.substitute; break;
                     }
                 } else if (Rules.league instanceof HL) {
                     switch (key) {
-                        case KeyEvent.VK_B: event = ActionBoard.out[ActionHandler.getInstance().state.team[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
-                        case KeyEvent.VK_R: event = ActionBoard.out[ActionHandler.getInstance().state.team[0].teamColor == TeamColor.Red ? 0 : 1]; break;
+                        case KeyEvent.VK_B: action = ActionBoard.out[ActionHandler.getInstance().state.team[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
+                        case KeyEvent.VK_R: action = ActionBoard.out[ActionHandler.getInstance().state.team[0].teamColor == TeamColor.Red ? 0 : 1]; break;
 
-                        case KeyEvent.VK_P: event = ActionBoard.pushing; break;
-                        case KeyEvent.VK_D: event = ActionBoard.defense; break;
-                        case KeyEvent.VK_M: event = ActionBoard.ballManipulation; break;
-                        case KeyEvent.VK_I: event = ActionBoard.pickUpHL; break;
-                        case KeyEvent.VK_A: event = ActionBoard.attack; break;
-                        case KeyEvent.VK_S: event = ActionBoard.substitute; break;
+                        case KeyEvent.VK_P: action = ActionBoard.pushing; break;
+                        case KeyEvent.VK_D: action = ActionBoard.defense; break;
+                        case KeyEvent.VK_M: action = ActionBoard.ballManipulation; break;
+                        case KeyEvent.VK_I: action = ActionBoard.pickUpHL; break;
+                        case KeyEvent.VK_A: action = ActionBoard.attack; break;
+                        case KeyEvent.VK_S: action = ActionBoard.substitute; break;
                     }
                 }
         }
         
-        if (event != null) {
-            event.invoke();
+        if (action != null) {
+            action.invoke();
             return true;
         }
+
         return false;
     }
 }
