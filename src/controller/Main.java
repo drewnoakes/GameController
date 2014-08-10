@@ -73,9 +73,10 @@ public class Main
         state.playoff = options.playOff;
         state.kickOffTeam = options.initialKickOffTeam;
 
-        MessageReceiver robotMessageReceiver;
-        MessageReceiver splReceiver = null;
+        final RobotWatcher robotWatcher = new RobotWatcher();
         final GameStateSender gameStateSender;
+        final MessageReceiver robotMessageReceiver;
+        MessageReceiver splReceiver = null;
 
         try {
             //sender
@@ -97,7 +98,7 @@ public class Main
                     new MessageHandler<RobotMessage>()
                     {
                         @Override
-                        public void handle(RobotMessage message) { RobotWatcher.update(message); }
+                        public void handle(RobotMessage message) { robotWatcher.update(message); }
                     });
             robotMessageReceiver.addProtocol(new RobotStatusProtocol1());
             robotMessageReceiver.addProtocol(new RobotStatusProtocol2());
@@ -110,7 +111,11 @@ public class Main
                         new MessageHandler<SPLCoachMessage>()
                         {
                             @Override
-                            public void handle(SPLCoachMessage message) { new SPLCoachMessageReceived(message).invoke(); }
+                            public void handle(SPLCoachMessage message)
+                            {
+                                robotWatcher.updateCoach(message.teamNumber);
+                                new SPLCoachMessageReceived(message).invoke();
+                            }
                         });
                 splReceiver.addProtocol(new SPLCoachProtocol2(options.teamNumberBlue, options.teamNumberRed));
                 splReceiver.start();
@@ -135,7 +140,7 @@ public class Main
         //ui
         ActionBoard.init();
         Log.state(state, Teams.getNames(false)[state.team[0].teamNumber] + " vs " + Teams.getNames(false)[state.team[1].teamNumber]);
-        final GUI gui = new GUI(options.fullScreenMode, state);
+        final GUI gui = new GUI(options.fullScreenMode, state, robotWatcher);
         ActionHandler.getInstance().gameStateUpdated.subscribe(new EventHandler<GameState>()
         {
             @Override

@@ -9,16 +9,12 @@ import rules.Rules;
 /**
  * Processes messages received from robots, triggering manual penalisation/unpenalisation and tracking who is online.
  *
- * This class is a singleton!
- *
  * @author Marcel Steinbeck
  * @author Michel Bartsch
+ * @author Drew Noakes https://drewnoakes.com
  */
 public class RobotWatcher
 {
-    /** The instance of the singleton. */
-    private static final RobotWatcher instance = new RobotWatcher();
-
     /** A timestamp when the last reply from each robot was received. */
     private final long [][] robotLastHeardTime = Rules.league.isCoachAvailable ? new long[2][Rules.league.teamSize+1] : new long[2][Rules.league.teamSize];
     /** Last status received from each robot. */
@@ -29,10 +25,7 @@ public class RobotWatcher
     private final static int MILLIS_UNTIL_ROBOT_IS_OFFLINE = 4*1000;
     private final static int MILLIS_UNTIL_ROBOT_HAS_HIGH_LATENCY = 2*1000;
 
-    /**
-     * Creates a new RobotWatcher.
-     */
-    private RobotWatcher()
+    public RobotWatcher()
     {
         // Initialise array structures
         for (int i  = 0; i < 2; i++) {
@@ -52,7 +45,7 @@ public class RobotWatcher
      * 
      * @param robotMessage a message received from a robot
      */
-    public static synchronized void update(RobotMessage robotMessage)
+    public synchronized void update(RobotMessage robotMessage)
     {
         int team;
         if (robotMessage.getTeamNumber() == ActionHandler.getInstance().state.team[0].teamNumber) {
@@ -66,9 +59,9 @@ public class RobotWatcher
         if (number <= 0 || number > Rules.league.teamSize) {
             return;
         }
-        instance.robotLastHeardTime[team][number-1] = System.currentTimeMillis();
-        if (instance.robotLastStatus[team][number-1] != robotMessage.getStatus()) {
-            instance.robotLastStatus[team][number-1] = robotMessage.getStatus();
+        robotLastHeardTime[team][number-1] = System.currentTimeMillis();
+        if (robotLastStatus[team][number-1] != robotMessage.getStatus()) {
+            robotLastStatus[team][number-1] = robotMessage.getStatus();
             if ((robotMessage.getStatus() == RobotStatus.ManuallyPenalised)
                     && (ActionHandler.getInstance().state.team[team].player[number-1].penalty == Penalty.None)) {
                 ActionBoard.manualPen[team][number-1].invoke();
@@ -82,36 +75,44 @@ public class RobotWatcher
     /**
      * Calculates new online-status for each robot.
      * 
-     * @return The updated online-status of each robot.
+     * @return the updated online-status of each robot.
      */
-    public static synchronized RobotOnlineStatus[][] updateRobotOnlineStatus()
+    public synchronized RobotOnlineStatus[][] updateRobotOnlineStatus()
     {
         long currentTime = System.currentTimeMillis();
         for (int i=0; i<2; i++) {
             int robotsOffline = 0;
-            for (int j=0; j < instance.status[i].length; j++) {
-                if (currentTime - instance.robotLastHeardTime[i][j] > MILLIS_UNTIL_ROBOT_IS_OFFLINE) {
-                    instance.status[i][j] = RobotOnlineStatus.OFFLINE;
+            for (int j=0; j < status[i].length; j++) {
+                if (currentTime - robotLastHeardTime[i][j] > MILLIS_UNTIL_ROBOT_IS_OFFLINE) {
+                    status[i][j] = RobotOnlineStatus.OFFLINE;
                     if (++robotsOffline >= Rules.league.teamSize + (Rules.league.isCoachAvailable ? 1 : 0)) {
                         for (int k=0; k < Rules.league.teamSize; k++) {
-                            instance.status[i][k] = RobotOnlineStatus.UNKNOWN;
+                            status[i][k] = RobotOnlineStatus.UNKNOWN;
                         }
                         if (Rules.league.isCoachAvailable) {
-                            instance.status[i][Rules.league.teamSize] = RobotOnlineStatus.UNKNOWN;
+                            status[i][Rules.league.teamSize] = RobotOnlineStatus.UNKNOWN;
                         }
                     }
-                } else if (currentTime - instance.robotLastHeardTime[i][j] > MILLIS_UNTIL_ROBOT_HAS_HIGH_LATENCY) {
-                    instance.status[i][j] = RobotOnlineStatus.HIGH_LATENCY;
+                } else if (currentTime - robotLastHeardTime[i][j] > MILLIS_UNTIL_ROBOT_HAS_HIGH_LATENCY) {
+                    status[i][j] = RobotOnlineStatus.HIGH_LATENCY;
                 } else {
-                    instance.status[i][j] = RobotOnlineStatus.ONLINE;
+                    status[i][j] = RobotOnlineStatus.ONLINE;
                 }
             }
         }
-        return instance.status;
+        return status;
     }
     
-    public static synchronized void updateCoach(byte team)
+    public synchronized void updateCoach(int teamNumber)
     {
-        instance.robotLastHeardTime[team][Rules.league.teamSize] = System.currentTimeMillis();
+        int team;
+        if (teamNumber == ActionHandler.getInstance().state.team[0].teamNumber) {
+            team = 0;
+        } else if (teamNumber == ActionHandler.getInstance().state.team[1].teamNumber) {
+            team = 1;
+        } else {
+            return;
+        }
+        robotLastHeardTime[team][Rules.league.teamSize] = System.currentTimeMillis();
     }
 }

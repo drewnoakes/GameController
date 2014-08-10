@@ -50,7 +50,7 @@ public class GUI extends JFrame
     private static final String BUTTON_MASK = IS_APPLE_JAVA
             ? "<html><div style=\"padding: 0px 12px\"><center>%s</center></div></html>"
             : "<html><center>%s</center></html>";
-    
+
     /** Fix button centering for Apple Java. */
     private class Button extends JButton
     {
@@ -239,16 +239,20 @@ public class GUI extends JFrame
     private final JPanel log;
     private final JToggleButton[] undo;
     private final JButton cancelUndo;
-  
+
+    private final RobotWatcher robotWatcher;
+
     /**
-     * Initialises the GUI.
-     * 
+     * Initialises and displays the GUI.
+     *
      * @param fullscreen whether the window should fill the screen.
      * @param state the initial game state.
+     * @param robotWatcher the robot watcher which track the online status of bots.
      */
-    public GUI(boolean fullscreen, GameState state)
+    public GUI(boolean fullscreen, GameState state, RobotWatcher robotWatcher)
     {
         super(WINDOW_TITLE);
+        this.robotWatcher = robotWatcher;
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setResizable(true);
 
@@ -933,7 +937,8 @@ public class GUI extends JFrame
     
     private void updateRobots(GameState state)
     {
-        RobotOnlineStatus[][] onlineStatus = RobotWatcher.updateRobotOnlineStatus();
+        RobotOnlineStatus[][] onlineStatus = robotWatcher.updateRobotOnlineStatus();
+
         for (int i=0; i<robot.length; i++) {
             for (int j=0; j<robot[i].length; j++) {
                 if (ActionBoard.robot[i][j].isCoach()) {
