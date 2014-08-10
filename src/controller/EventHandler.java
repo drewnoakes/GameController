@@ -131,7 +131,7 @@ public class EventHandler
      */
     private void update(@NotNull GCAction action)
     {
-        if (action.type != ActionTrigger.Clock && action.type == ActionTrigger.User) {
+        if (action.type == ActionTrigger.User) {
             lastUserAction = action;
         }
 
