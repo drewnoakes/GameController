@@ -49,18 +49,14 @@ public class RobotWatcher
      */
     public synchronized void update(RobotMessage robotMessage)
     {
-        int team;
-        if (robotMessage.getTeamNumber() == ActionHandler.getInstance().state.team[0].teamNumber) {
-            team = 0;
-        } else if (robotMessage.getTeamNumber() == ActionHandler.getInstance().state.team[1].teamNumber) {
-            team = 1;
-        } else {
+        int team = ActionHandler.getInstance().state.getTeamIndex(robotMessage.getTeamNumber());
+        if (team == -1)
             return;
-        }
+
         int number = robotMessage.getPlayerNumber();
-        if (number <= 0 || number > Rules.league.teamSize) {
+        if (number <= 0 || number > Rules.league.teamSize)
             return;
-        }
+
         robotLastHeardTime[team][number-1] = System.currentTimeMillis();
         if (robotLastStatus[team][number-1] != robotMessage.getStatus()) {
             robotLastStatus[team][number-1] = robotMessage.getStatus();
@@ -74,17 +70,11 @@ public class RobotWatcher
         }
     }
 
-    public synchronized void updateCoach(int teamNumber)
+    public synchronized void updateCoach(byte teamNumber)
     {
-        int team;
-        if (teamNumber == ActionHandler.getInstance().state.team[0].teamNumber) {
-            team = 0;
-        } else if (teamNumber == ActionHandler.getInstance().state.team[1].teamNumber) {
-            team = 1;
-        } else {
-            return;
-        }
-        robotLastHeardTime[team][Rules.league.teamSize] = System.currentTimeMillis();
+        int team = ActionHandler.getInstance().state.getTeamIndex(teamNumber);
+        if (team != -1)
+            robotLastHeardTime[team][Rules.league.teamSize] = System.currentTimeMillis();
     }
 
     /**

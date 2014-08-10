@@ -22,7 +22,8 @@ public class SPLCoachMessageReceived extends GCAction
     @Override
     public void perform(@NotNull GameState state, @Nullable String message)
     {
-        byte team = state.team[0].teamNumber == this.message.teamNumber ? (byte)0 : (byte)1;
+        int team = state.getTeamIndex(this.message.teamNumber);
+        assert(team != -1);
         if ((System.currentTimeMillis() - state.timestampCoachMessage[team]) >= SPLCoachMessage.SPL_COACH_MESSAGE_RECEIVE_INTERVAL
                 && state.team[team].coach.penalty != Penalty.SplCoachMotion) {
             state.timestampCoachMessage[team] = System.currentTimeMillis();

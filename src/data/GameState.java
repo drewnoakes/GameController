@@ -132,19 +132,6 @@ public class GameState extends GameStateSnapshot implements Cloneable
     }
     
     /**
-     * Returns the side on which a team plays. The team should be playing
-     * via this GameController.
-     * 
-     * @param teamNumber    The unique teamNumber.
-     * 
-     * @return The side of the team, 0:left side, 1:right side.
-     */
-    public int getSide(short teamNumber)
-    {
-        return teamNumber == team[0].teamNumber ? 0 : 1;
-    }
-    
-    /**
      * Returns the current time. Can be stopped in test mode.
      * @return The current time in ms. May become incompatible to
      *         the time delivered by System.currentTimeMillis().
@@ -360,24 +347,23 @@ public class GameState extends GameStateSnapshot implements Cloneable
         int i = 0;
         while (i < splCoachMessageQueue.size()) {
             if (splCoachMessageQueue.get(i).getRemainingTimeToSend() == 0) {
-                for (int j = 0; j < 2; j++) {
-                    if (team[j].teamNumber == splCoachMessageQueue.get(i).teamNumber) {
-                        byte[] message = splCoachMessageQueue.get(i).message;
+                int j = getTeamIndex(splCoachMessageQueue.get(i).teamNumber);
+                if (j != -1) {
+                    byte[] message = splCoachMessageQueue.get(i).message;
 
-                        // All chars after the first zero are zeroed, too
-                        int k = 0;
-                        while (k < message.length && message[k] != 0) {
-                            k++;
-                        }
-                        while (k < message.length) {
-                            message[k++] = 0;
-                        }
-
-                        team[j].coachMessage = message;
-                        Log.toFile("Coach Message Team " + team[j].teamColor + " " + new String(message));
-                        splCoachMessageQueue.remove(i);
-                        break;
+                    // All chars after the first zero are zeroed, too
+                    int k = 0;
+                    while (k < message.length && message[k] != 0) {
+                        k++;
                     }
+                    while (k < message.length) {
+                        message[k++] = 0;
+                    }
+
+                    team[j].coachMessage = message;
+                    Log.toFile("Coach Message Team " + team[j].teamColor + " " + new String(message));
+                    splCoachMessageQueue.remove(i);
+                    break;
                 }
             } else {
                 i++;

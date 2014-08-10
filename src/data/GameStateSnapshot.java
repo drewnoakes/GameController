@@ -68,4 +68,14 @@ public class GameStateSnapshot implements Serializable
                "      secsRemaining: " + secsRemaining + '\n' +
                "      secondaryTime: " + secondaryTime + '\n';
     }
+
+    /** Gets the index of the specified team number, or -1 if the team number is unknown. */
+    public int getTeamIndex(byte teamNumber)
+    {
+        return teamNumber == team[0].teamNumber
+                ? 0
+                : teamNumber == team[1].teamNumber
+                    ? 1
+                    : -1;
+    }
 }
