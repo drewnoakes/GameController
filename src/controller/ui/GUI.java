@@ -134,13 +134,6 @@ public class GUI extends JFrame
     // Some attributes used in the GUI components
 
     private double lastSize = 0;
-    private Font standardFont;
-    private Font titleFont;
-    private Font goalsFont;
-    private Font timeFont;
-    private Font timeSubFont;
-    private Font timeoutFont;
-    private Font playModeFont;
     private final ImageIcon clockImgReset;
     private final ImageIcon clockImgPlay;
     private final ImageIcon clockImgPause;
@@ -999,19 +992,20 @@ public class GUI extends JFrame
     private void updateFonts()
     {
         double size = Math.min((getWidth()/(double)WINDOW_WIDTH), (getHeight()/(double)WINDOW_HEIGHT));
-        
+
+        // Only update fonts if the window size has actually changed
         if (size == lastSize) {
             return;
         }
         lastSize = size;
         
-        titleFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(TITLE_FONT_SIZE*(size)));
-        standardFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STANDARD_FONT_SIZE*(size)));
-        goalsFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(GOALS_FONT_SIZE*(size)));
-        timeFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(TIME_FONT_SIZE*(size)));
-        timeSubFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(TIME_SUB_FONT_SIZE*(size)));
-        timeoutFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(TIMEOUT_FONT_SIZE*(size)));
-        playModeFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(PLAY_MODE_FONT_SIZE *(size)));
+        Font titleFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(TITLE_FONT_SIZE*(size)));
+        Font standardFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STANDARD_FONT_SIZE * (size)));
+        Font goalsFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(GOALS_FONT_SIZE*(size)));
+        Font timeFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(TIME_FONT_SIZE*(size)));
+        Font timeSubFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(TIME_SUB_FONT_SIZE*(size)));
+        Font timeoutFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(TIMEOUT_FONT_SIZE*(size)));
+        Font playModeFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(PLAY_MODE_FONT_SIZE *(size)));
 
         for (int i=0; i<=1; i++) {
             name[i].setFont(titleFont);
