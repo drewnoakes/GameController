@@ -3,7 +3,7 @@ package controller.action.ui;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import controller.EventHandler;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import data.GameState;
 import data.PlayMode;
@@ -14,7 +14,7 @@ public class TeammatePushing extends GCAction
 {
     public TeammatePushing()
     {
-        super(ActionType.UI);
+        super(ActionTrigger.User);
     }
 
     @Override
@@ -26,8 +26,8 @@ public class TeammatePushing extends GCAction
     @Override
     public void perform(@NotNull GameState state, @Nullable String message)
     {
-        if (EventHandler.getInstance().lastUIAction == this) {
-            EventHandler.getInstance().noLastUIAction = true;
+        if (EventHandler.getInstance().lastUserAction == this) {
+            EventHandler.getInstance().noLastUserAction = true;
         }
     }
 

@@ -3,7 +3,7 @@ package controller.action.ui;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import controller.action.ActionBoard;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import data.GameState;
 
@@ -16,7 +16,7 @@ public class ClockPause extends GCAction
 {
     public ClockPause()
     {
-        super(ActionType.UI);
+        super(ActionTrigger.User);
     }
 
     @Override

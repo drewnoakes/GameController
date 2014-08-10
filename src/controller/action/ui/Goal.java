@@ -3,7 +3,7 @@ package controller.action.ui;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import controller.action.ActionBoard;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import data.*;
 
@@ -25,7 +25,7 @@ public class Goal extends GCAction
      */
     public Goal(int side, int set)
     {
-        super(ActionType.UI);
+        super(ActionTrigger.User);
 
         assert(set == 1 || set == -1);
 

@@ -2,7 +2,7 @@ package controller.action.ui.playmode;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import controller.action.ui.period.FirstHalf;
 import data.*;
@@ -17,7 +17,7 @@ public class Set extends GCAction
 {
     public Set()
     {
-        super(ActionType.UI);
+        super(ActionTrigger.User);
     }
 
     @Override

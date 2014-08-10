@@ -2,7 +2,7 @@ package controller.action.ui;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import data.GameState;
 
@@ -15,7 +15,7 @@ public class ClockReset extends GCAction
 {
     public ClockReset()
     {
-        super(ActionType.UI);
+        super(ActionTrigger.User);
     }
 
     @Override

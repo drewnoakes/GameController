@@ -3,7 +3,7 @@ package controller.action.ui.period;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import controller.action.ActionBoard;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import data.*;
 import rules.Rules;
@@ -23,7 +23,7 @@ public class TimeOut extends GCAction
      */
     public TimeOut(int side)
     {
-        super(ActionType.UI);
+        super(ActionTrigger.User);
         this.side = side;
     }
 

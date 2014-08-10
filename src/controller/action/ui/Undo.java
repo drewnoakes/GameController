@@ -4,7 +4,7 @@ import common.Log;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import controller.EventHandler;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import data.GameState;
 
@@ -26,7 +26,7 @@ public class Undo extends GCAction
      */
     public Undo(int states)
     {
-        super(ActionType.UI);
+        super(ActionTrigger.User);
         assert(states > 0);
         this.states = states;
     }
@@ -34,7 +34,7 @@ public class Undo extends GCAction
     @Override
     public void perform(@NotNull GameState state, @Nullable String message)
     {
-        if (EventHandler.getInstance().lastUIAction == this && !executed) {
+        if (EventHandler.getInstance().lastUserAction == this && !executed) {
             executed = true;
             Log.toFile("Undo " + states + " States to " + Log.goBack(states));
         } else {

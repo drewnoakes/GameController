@@ -13,9 +13,9 @@ import data.PlayerInfo;
  * <p>
  * Actions have several types:
  * <ul>
- *     <li>{@link controller.action.ActionType#UI} triggered in response to some user activity</li>
- *     <li>{@link controller.action.ActionType#NET} triggered in response to a message received on the network</li>
- *     <li>{@link controller.action.ActionType#CLOCK} a periodic update triggered at a regular interval</li>
+ *     <li>{@link ActionTrigger#User} triggered in response to some user activity</li>
+ *     <li>{@link ActionTrigger#Network} triggered in response to a message received on the network</li>
+ *     <li>{@link ActionTrigger#Clock} a periodic update triggered at a regular interval</li>
  * </ul>
  * </p>
  *
@@ -25,14 +25,14 @@ import data.PlayerInfo;
 public abstract class GCAction
 {
     /** The type of the action. */
-    public final ActionType type;
+    public final ActionTrigger type;
 
     /**
      * Initialises a {@link GCAction}.
      * 
      * @param type the type of the action.
      */
-    protected GCAction(ActionType type)
+    protected GCAction(ActionTrigger type)
     {
         this.type = type;
     }

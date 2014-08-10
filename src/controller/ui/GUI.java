@@ -1145,7 +1145,7 @@ public class GUI extends JFrame implements GCGUI
                 : ActionBoard.coachMotion.isLegal(data));
         pen[9].setEnabled(ActionBoard.substitute.isLegal(data));
         
-        GCAction highlightAction = EventHandler.getInstance().lastUIAction;
+        GCAction highlightAction = EventHandler.getInstance().lastUserAction;
         pen[0].setSelected(highlightAction == ActionBoard.pushing);
         pen[1].setSelected(highlightAction == ActionBoard.leaving);
         pen[2].setSelected(highlightAction == ActionBoard.fallen);
@@ -1174,7 +1174,7 @@ public class GUI extends JFrame implements GCGUI
         pen[5].setEnabled(ActionBoard.serviceHL.isLegal(data));
         pen[6].setEnabled(ActionBoard.substitute.isLegal(data));
 
-        GCAction highlightAction = EventHandler.getInstance().lastUIAction;
+        GCAction highlightAction = EventHandler.getInstance().lastUserAction;
         pen[0].setSelected(highlightAction == ActionBoard.ballManipulation);
         pen[1].setSelected(highlightAction == ActionBoard.pushing);
         pen[2].setSelected(highlightAction == ActionBoard.attack);
@@ -1190,7 +1190,7 @@ public class GUI extends JFrame implements GCGUI
      */
     private void updateUndo()
     {
-        GCAction highlightAction = EventHandler.getInstance().lastUIAction;
+        GCAction highlightAction = EventHandler.getInstance().lastUserAction;
         String[] undos = Log.getLast(ActionBoard.MAX_NUM_UNDOS_AT_ONCE);
         boolean undoFromHere = false;
         for (int i=undo.length - 1; i >= 0; i--) {

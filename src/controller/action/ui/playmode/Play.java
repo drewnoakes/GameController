@@ -2,7 +2,7 @@ package controller.action.ui.playmode;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import data.GameState;
 import data.PlayMode;
@@ -16,7 +16,7 @@ public class Play extends GCAction
 {
     public Play()
     {
-        super(ActionType.UI);
+        super(ActionTrigger.User);
     }
 
     @Override

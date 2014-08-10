@@ -3,7 +3,7 @@ package controller.action.clock;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import controller.action.ActionBoard;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import data.GameState;
 import data.PlayMode;
@@ -18,7 +18,7 @@ public class ClockTick extends GCAction
 {
     public ClockTick()
     {
-        super(ActionType.CLOCK);
+        super(ActionTrigger.Clock);
     }
 
     @Override

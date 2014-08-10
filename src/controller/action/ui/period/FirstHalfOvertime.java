@@ -2,7 +2,7 @@ package controller.action.ui.period;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import data.*;
 import rules.Rules;
@@ -16,7 +16,7 @@ public class FirstHalfOvertime extends GCAction
 {
     public FirstHalfOvertime()
     {
-        super(ActionType.UI);
+        super(ActionTrigger.User);
     }
 
     @Override

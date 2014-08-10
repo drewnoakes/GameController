@@ -2,7 +2,7 @@ package controller.action.net;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import data.GameState;
 import data.PlayMode;
@@ -30,7 +30,7 @@ public class Manual extends GCAction
      */
     public Manual(int side, int number, boolean unpen)
     {
-        super(ActionType.NET);
+        super(ActionTrigger.Network);
         this.side = side;
         this.number = number;
         this.unpen = unpen;

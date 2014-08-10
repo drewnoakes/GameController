@@ -2,7 +2,7 @@ package controller.action.net;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import controller.net.RobotWatcher;
 import data.GameState;
@@ -16,7 +16,7 @@ public class SPLCoachMessageReceived extends GCAction
     
     public SPLCoachMessageReceived(SPLCoachMessage message)
     {
-        super(ActionType.NET);
+        super(ActionTrigger.Network);
         this.message = message;
     }
     

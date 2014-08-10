@@ -4,7 +4,7 @@ import common.annotations.NotNull;
 import common.annotations.Nullable;
 import controller.Clock;
 import controller.EventHandler;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import data.GameState;
 
@@ -17,13 +17,13 @@ public class Quit extends GCAction
 {
     public Quit()
     {
-        super(ActionType.UI);
+        super(ActionTrigger.User);
     }
 
     @Override
     public void perform(@NotNull GameState state, @Nullable String message)
     {
-        if (EventHandler.getInstance().lastUIAction == this) {
+        if (EventHandler.getInstance().lastUserAction == this) {
             Clock.getInstance().stop();
         }
     }

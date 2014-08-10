@@ -2,7 +2,7 @@ package controller;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import controller.net.GameStateSender;
 import controller.ui.GCGUI;
@@ -71,13 +71,13 @@ public class EventHandler
      * only because the Log may change it to a later version.
      */
     public GameState state;
-    /** The last UI action. */
-    public GCAction lastUIAction = null;
+    /** The last user action. */
+    public GCAction lastUserAction = null;
     /**
-     * This may be set only in actions. If true, lastUIAction will be set to
-     * null, even if the current action is an UI action.
+     * This may be set only in actions. If true, lastUserAction will be set to
+     * null, even if the current action is an User action.
      */
-    public boolean noLastUIAction = false;
+    public boolean noLastUserAction = false;
 
     /**
      * Initialises an EventHandler.
@@ -131,13 +131,13 @@ public class EventHandler
      */
     private void update(@NotNull GCAction action)
     {
-        if (action.type != ActionType.CLOCK && action.type == ActionType.UI) {
-            lastUIAction = action;
+        if (action.type != ActionTrigger.Clock && action.type == ActionTrigger.User) {
+            lastUserAction = action;
         }
 
-        if (noLastUIAction) {
-            noLastUIAction = false;
-            lastUIAction = null;
+        if (noLastUserAction) {
+            noLastUserAction = false;
+            lastUserAction = null;
         }
         gameStateSender.send(state);
         gui.update(state);

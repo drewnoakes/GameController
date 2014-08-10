@@ -3,7 +3,7 @@ package controller.action.ui;
 import common.Log;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.action.ActionType;
+import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import data.GameState;
 
@@ -16,7 +16,7 @@ public class Testmode extends GCAction
 {
     public Testmode()
     {
-        super(ActionType.UI);
+        super(ActionTrigger.User);
     }
     
     @Override
