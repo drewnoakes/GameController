@@ -118,28 +118,20 @@ public class EventHandler
         }
 
         if (action.isLegal(state)) {
-            action.perform(state);
-            update(action);
-        }
-    }
-    
-    /**
-     * After the perform method this updates some attributes, calls the GUI`s
-     * update method and changes the data to be send.
-     * 
-     * @param action the action that has been called.
-     */
-    private void update(@NotNull GCAction action)
-    {
-        if (action.type == ActionTrigger.User) {
-            lastUserAction = action;
-        }
 
-        if (noLastUserAction) {
-            noLastUserAction = false;
-            lastUserAction = null;
+            action.perform(state);
+
+            if (action.type == ActionTrigger.User) {
+                lastUserAction = action;
+            }
+
+            if (noLastUserAction) {
+                noLastUserAction = false;
+                lastUserAction = null;
+            }
+
+            gameStateSender.send(state);
+            gui.update(state);
         }
-        gameStateSender.send(state);
-        gui.update(state);
     }
 }
