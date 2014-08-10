@@ -165,7 +165,8 @@ public class Main
                 return;
             }
         }
-        gui.dispose();
+
+        gui.close();
 
         // shutdown
         Log.toFile("Shutdown GameController");

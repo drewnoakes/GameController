@@ -19,6 +19,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
 
+import common.EventHandler;
 import common.Log;
 import common.TotalScaleLayout;
 import controller.ActionHandler;
@@ -26,10 +27,7 @@ import controller.action.ActionBoard;
 import controller.action.GCAction;
 import controller.net.RobotOnlineStatus;
 import controller.net.RobotWatcher;
-import controller.ui.controls.Button;
-import controller.ui.controls.ImageButton;
-import controller.ui.controls.ImagePanel;
-import controller.ui.controls.ToggleButton;
+import controller.ui.controls.*;
 import data.*;
 import rules.HL;
 import rules.Rules;
@@ -43,11 +41,9 @@ import rules.SPL;
  *
  * @author Michel Bartsch
  */
-public class GUI extends JFrame
+public class GUI
 {
     private static final boolean IS_OSX = System.getProperty("os.name").contains("OS X");
-
-    private static final long serialVersionUID = 1L;
 
     // Various UI constants
 
@@ -145,6 +141,7 @@ public class GUI extends JFrame
     private final ImageIcon[][] backgroundSide;
     
     // All the components of this GUI
+    private final PaintableFrame frame;
 
     private final ImagePanel[] side;
     private final JLabel[] name;
@@ -200,17 +197,26 @@ public class GUI extends JFrame
      */
     public GUI(boolean fullscreen, GameState state, RobotWatcher robotWatcher)
     {
-        super(WINDOW_TITLE);
         this.robotWatcher = robotWatcher;
-        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        setResizable(true);
+
+        frame = new PaintableFrame(WINDOW_TITLE);
+        frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        frame.setResizable(true);
+        frame.beforePaint.subscribe(new EventHandler<Graphics>()
+        {
+            @Override
+            public void handle(Graphics value)
+            {
+                updateFonts();
+            }
+        });
 
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         int width = gd.getDisplayMode().getWidth();
         int height = gd.getDisplayMode().getHeight();
-        setLocation((width-WINDOW_WIDTH)/2, (height-WINDOW_HEIGHT)/2);
-        
-        addWindowListener(new WindowAdapter()
+        frame.setLocation((width-WINDOW_WIDTH)/2, (height-WINDOW_HEIGHT)/2);
+
+        frame.addWindowListener(new WindowAdapter()
         {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -425,8 +431,8 @@ public class GUI extends JFrame
         cancelUndo.setVisible(false);
       
         //--layout--
-        TotalScaleLayout layout = new TotalScaleLayout(this);
-        setLayout(layout);
+        TotalScaleLayout layout = new TotalScaleLayout(frame);
+        frame.setLayout(layout);
         
         layout.add(0, 0, .3, .04, name[0]);
         layout.add(.7, 0, .3, .04, name[1]);
@@ -593,15 +599,15 @@ public class GUI extends JFrame
       
         //fullscreen
         if (fullscreen) {
-            setUndecorated(true);
+            frame.setUndecorated(true);
             GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-            devices[0].setFullScreenWindow(this);
+            devices[0].setFullScreenWindow(frame);
             if (IS_OSX) {
-                setVisible(false); // without this, keyboard input is missing on OS X
+                frame.setVisible(false); // without this, keyboard input is missing on OS X
             }
         }
-        
-        setVisible(true);
+
+        frame.setVisible(true);
     }
 
     /**
@@ -640,16 +646,13 @@ public class GUI extends JFrame
             updateDropBall(state);
         }
         updateTimelineUndo();
-        repaint();
+        frame.repaint();
     }
 
-    @Override
-    public void paint(Graphics g)
+    /** Closes the UI and disposes held resources. */
+    public void close()
     {
-        // This method only updates the fonts if the window size has changed
-        updateFonts();
-
-        super.paint(g);
+        frame.dispose();
     }
 
     private void updateClock(GameState state)
@@ -991,7 +994,7 @@ public class GUI extends JFrame
     
     private void updateFonts()
     {
-        double size = Math.min((getWidth()/(double)WINDOW_WIDTH), (getHeight()/(double)WINDOW_HEIGHT));
+        double size = Math.min((frame.getWidth()/(double)WINDOW_WIDTH), (frame.getHeight()/(double)WINDOW_HEIGHT));
 
         // Only update fonts if the window size has actually changed
         if (size == lastSize) {
