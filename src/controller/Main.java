@@ -112,7 +112,7 @@ public class Main
                             @Override
                             public void handle(SPLCoachMessage message) { new SPLCoachMessageReceived(message).invoke(); }
                         });
-                splReceiver.addProtocol(new SPLCoachProtocol2());
+                splReceiver.addProtocol(new SPLCoachProtocol2(options.teamNumberBlue, options.teamNumberRed));
                 splReceiver.start();
             }
         } catch (Exception e) {

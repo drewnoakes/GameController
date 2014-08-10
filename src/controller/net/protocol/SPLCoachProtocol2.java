@@ -14,9 +14,15 @@ import java.nio.ByteBuffer;
  */
 public class SPLCoachProtocol2 extends SPLCoachProtocol
 {
-    public SPLCoachProtocol2()
+    private final byte teamNumberBlue;
+    private final byte teamNumberRed;
+
+    public SPLCoachProtocol2(byte teamNumberBlue, byte teamNumberRed)
     {
         super((byte)2);
+
+        this.teamNumberBlue = teamNumberBlue;
+        this.teamNumberRed = teamNumberRed;
     }
 
     @Override
@@ -37,8 +43,7 @@ public class SPLCoachProtocol2 extends SPLCoachProtocol
             return null;
 
         byte team = buffer.get();
-        TeamInfo[] teams = ActionHandler.getInstance().state.team;
-        if (team != teams[0].teamNumber && team != teams[1].teamNumber)
+        if (team != teamNumberBlue && team != teamNumberRed)
             return null;
 
         byte[] message = new byte[SPLCoachMessage.SPL_COACH_MESSAGE_SIZE];
