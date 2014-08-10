@@ -3,7 +3,6 @@ package controller.action.ui;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import controller.ActionHandler;
-import controller.Clock;
 import controller.action.ActionTrigger;
 import controller.action.GCAction;
 import data.GameState;
@@ -24,7 +23,7 @@ public class Quit extends GCAction
     public void perform(@NotNull GameState state, @Nullable String message)
     {
         if (ActionHandler.getInstance().lastUserAction == this) {
-            Clock.getInstance().stop();
+            ActionHandler.getInstance().state.shutdown = true;
         }
     }
 }

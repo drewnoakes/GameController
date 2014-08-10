@@ -24,7 +24,6 @@ import javax.swing.JToggleButton;
 import common.Log;
 import common.TotalScaleLayout;
 import controller.ActionHandler;
-import controller.Clock;
 import controller.action.ActionBoard;
 import controller.action.GCAction;
 import controller.net.RobotOnlineStatus;
@@ -265,7 +264,7 @@ public class GUI extends JFrame
         {
             @Override
             public void windowClosing(WindowEvent e) {
-                Clock.getInstance().stop();
+                ActionHandler.getInstance().state.shutdown = true;
             }
         });
         
@@ -284,7 +283,6 @@ public class GUI extends JFrame
                 backgroundSide[i][j] = new ImageIcon(ICONS_PATH+Rules.league.leagueDirectory+"/"+BACKGROUND_SIDE[i][j]);
             }
         }
-        
         
         //Components
         side = new ImagePanel[2];

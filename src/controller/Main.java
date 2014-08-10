@@ -2,6 +2,7 @@ package controller;
 
 import common.ApplicationLock;
 import common.EventHandler;
+import common.Interval;
 import common.Log;
 import controller.action.ActionBoard;
 import controller.action.net.SPLCoachMessageReceived;
@@ -154,8 +155,17 @@ public class Main
 
         new KeyboardListener();
 
-        //clock runs until window is closed
-        Clock.getInstance().start();
+        // Execute the clock until shutdown is requested
+        Interval interval = new Interval(500);
+        while (!ActionHandler.getInstance().state.shutdown) {
+            ActionBoard.clock.invoke();
+            try {
+                interval.sleep();
+            } catch (InterruptedException e) {
+                return;
+            }
+        }
+        gui.dispose();
 
         // shutdown
         Log.toFile("Shutdown GameController");

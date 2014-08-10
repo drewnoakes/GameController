@@ -94,6 +94,9 @@ public class GameState extends GameStateSnapshot implements Cloneable
     /** Keep the coach messages. */
     public final ArrayList<SPLCoachMessage> splCoachMessageQueue = new ArrayList<SPLCoachMessage>();
 
+    /** A flag that, when set, shuts down the game controller UI. */
+    public boolean shutdown = false;
+
     /**
      * Creates a new AdvancedData.
      */
