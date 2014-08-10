@@ -1,15 +1,13 @@
 package controller;
 
+import common.Event;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import controller.action.ActionTrigger;
 import controller.action.GCAction;
-import controller.net.GameStateSender;
-import controller.ui.GCGUI;
 import data.GameState;
 
 import java.awt.EventQueue;
-
 
 /**
  * If the actionPerformed method of an action is called, it executes the register
@@ -29,14 +27,6 @@ public class ActionHandler
     @Nullable
     private static ActionHandler instance;
 
-    public static void initialise(@NotNull GameStateSender gameStateSender)
-    {
-        if (instance != null) {
-            throw new AssertionError("Singleton has already been initialised initialised.");
-        }
-        instance = new ActionHandler(gameStateSender);
-    }
-
     /**
      * To get the singleton instance for public attribute access.
      *
@@ -46,7 +36,7 @@ public class ActionHandler
     public static ActionHandler getInstance()
     {
         if (instance == null) {
-            throw new AssertionError("Singleton must be initialised.");
+            instance = new ActionHandler();
         }
         return instance;
     }
@@ -61,10 +51,6 @@ public class ActionHandler
 
     /* INSTANCE MEMBERS ------------------------------------------------------------------- */
 
-    /** This GUI`s update method will be called. */
-    private GCGUI gui;
-    /** The sender has a send method to update the data to send */
-    private final GameStateSender gameStateSender;
     /**
      * The current game state. You should write into data only in actions
      * and than use the data giving as parameters. The data is not private,
@@ -79,20 +65,9 @@ public class ActionHandler
      */
     public boolean noLastUserAction = false;
 
-    private ActionHandler(@NotNull GameStateSender gameStateSender)
-    {
-        this.gameStateSender = gameStateSender;
-    }
-    
-    /**
-     * Sets the GUI.
-     * 
-     * @param gui   The GUI to be updated when the  changes.
-     */
-    public void setGUI(@NotNull GCGUI gui)
-    {
-        this.gui = gui;
-    }
+    public final Event<GameState> gameStateUpdated = new Event<GameState>();
+
+    private ActionHandler() {}
     
     /**
      * Enqueues the specified action to be performed against the global game state object.
@@ -127,8 +102,7 @@ public class ActionHandler
                 lastUserAction = null;
             }
 
-            gameStateSender.send(state);
-            gui.update(state);
+            gameStateUpdated.fire(state);
         }
     }
 }

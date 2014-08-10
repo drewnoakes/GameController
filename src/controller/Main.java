@@ -1,12 +1,12 @@
 package controller;
 
 import common.ApplicationLock;
+import common.EventHandler;
 import common.Log;
 import controller.action.ActionBoard;
 import controller.action.net.SPLCoachMessageReceived;
 import controller.net.*;
 import controller.net.protocol.*;
-import controller.ui.GCGUI;
 import controller.ui.GUI;
 import controller.ui.KeyboardListener;
 import controller.ui.StartInput;
@@ -75,7 +75,7 @@ public class Main
 
         MessageReceiver robotMessageReceiver;
         MessageReceiver splReceiver = null;
-        GameStateSender gameStateSender;
+        final GameStateSender gameStateSender;
 
         try {
             //sender
@@ -89,7 +89,6 @@ public class Main
             gameStateSender.start();
 
             //event-handler
-            ActionHandler.initialise(gameStateSender);
             ActionHandler.getInstance().state = state;
 
             robotMessageReceiver = new MessageReceiver<RobotMessage>(
@@ -136,10 +135,19 @@ public class Main
         //ui
         ActionBoard.init();
         Log.state(state, Teams.getNames(false)[state.team[0].teamNumber] + " vs " + Teams.getNames(false)[state.team[1].teamNumber]);
-        GCGUI gui = new GUI(options.fullScreenMode, state);
-        new KeyboardListener();
-        ActionHandler.getInstance().setGUI(gui);
+        final GUI gui = new GUI(options.fullScreenMode, state);
+        ActionHandler.getInstance().gameStateUpdated.subscribe(new EventHandler<GameState>()
+        {
+            @Override
+            public void handle(GameState value)
+            {
+                gui.update(value);
+                gameStateSender.send(value);
+            }
+        });
         gui.update(state);
+
+        new KeyboardListener();
 
         //clock runs until window is closed
         Clock.getInstance().start();

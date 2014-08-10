@@ -42,7 +42,7 @@ import rules.SPL;
  *
  * @author Michel Bartsch
  */
-public class GUI extends JFrame implements GCGUI
+public class GUI extends JFrame
 {
     private static final boolean IS_OSX = System.getProperty("os.name").contains("OS X");
     private static final boolean IS_APPLE_JAVA = IS_OSX && System.getProperty("java.version").compareTo("1.7") < 0;
@@ -765,7 +765,6 @@ public class GUI extends JFrame implements GCGUI
      * 
      * @param data the game state to use when populating the UI.
      */
-    @Override
     public void update(GameState data)
     {
         updateClock(data);
