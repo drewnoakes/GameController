@@ -15,12 +15,17 @@ import rules.Rules;
  */
 public class RobotWatcher
 {
+    /** The number of robots on each team, including any coach. */
+    private final int robotCount = Rules.league.teamSize + (Rules.league.isCoachAvailable ? 1 : 0);
+
     /** A timestamp when the last reply from each robot was received. */
-    private final long [][] robotLastHeardTime = Rules.league.isCoachAvailable ? new long[2][Rules.league.teamSize+1] : new long[2][Rules.league.teamSize];
+    private final long[][] robotLastHeardTime = new long[2][robotCount];
+
     /** Last status received from each robot. */
-    private final RobotStatus[][] robotLastStatus = Rules.league.isCoachAvailable ? new RobotStatus[2][Rules.league.teamSize+1] : new RobotStatus[2][Rules.league.teamSize];
+    private final RobotStatus[][] robotLastStatus = new RobotStatus[2][robotCount];
+
     /** The calculated information about the online-status. */
-    private final RobotOnlineStatus [][] status = Rules.league.isCoachAvailable ? new RobotOnlineStatus[2][Rules.league.teamSize+1] : new RobotOnlineStatus[2][Rules.league.teamSize];
+    private final RobotOnlineStatus[][] status = new RobotOnlineStatus[2][robotCount];
 
     private final static int MILLIS_UNTIL_ROBOT_IS_OFFLINE = 4*1000;
     private final static int MILLIS_UNTIL_ROBOT_HAS_HIGH_LATENCY = 2*1000;
@@ -29,12 +34,9 @@ public class RobotWatcher
     {
         // Initialise array structures
         for (int i  = 0; i < 2; i++) {
-            for (int j = 0; j < Rules.league.teamSize; j++) {
+            for (int j = 0; j < robotCount; j++) {
                 robotLastStatus[i][j] = null;
                 status[i][j] = RobotOnlineStatus.UNKNOWN;
-            }
-            if (Rules.league.isCoachAvailable) {
-                status[i][Rules.league.teamSize] = RobotOnlineStatus.UNKNOWN;
             }
         }
     }
@@ -72,37 +74,6 @@ public class RobotWatcher
         }
     }
 
-    /**
-     * Calculates new online-status for each robot.
-     * 
-     * @return the updated online-status of each robot.
-     */
-    public synchronized RobotOnlineStatus[][] updateRobotOnlineStatus()
-    {
-        long currentTime = System.currentTimeMillis();
-        for (int i=0; i<2; i++) {
-            int robotsOffline = 0;
-            for (int j=0; j < status[i].length; j++) {
-                if (currentTime - robotLastHeardTime[i][j] > MILLIS_UNTIL_ROBOT_IS_OFFLINE) {
-                    status[i][j] = RobotOnlineStatus.OFFLINE;
-                    if (++robotsOffline >= Rules.league.teamSize + (Rules.league.isCoachAvailable ? 1 : 0)) {
-                        for (int k=0; k < Rules.league.teamSize; k++) {
-                            status[i][k] = RobotOnlineStatus.UNKNOWN;
-                        }
-                        if (Rules.league.isCoachAvailable) {
-                            status[i][Rules.league.teamSize] = RobotOnlineStatus.UNKNOWN;
-                        }
-                    }
-                } else if (currentTime - robotLastHeardTime[i][j] > MILLIS_UNTIL_ROBOT_HAS_HIGH_LATENCY) {
-                    status[i][j] = RobotOnlineStatus.HIGH_LATENCY;
-                } else {
-                    status[i][j] = RobotOnlineStatus.ONLINE;
-                }
-            }
-        }
-        return status;
-    }
-    
     public synchronized void updateCoach(int teamNumber)
     {
         int team;
@@ -114,5 +85,37 @@ public class RobotWatcher
             return;
         }
         robotLastHeardTime[team][Rules.league.teamSize] = System.currentTimeMillis();
+    }
+
+    /**
+     * Calculates new online-status for each robot.
+     * 
+     * @return the updated online-status of each robot.
+     */
+    public synchronized RobotOnlineStatus[][] updateRobotOnlineStatus()
+    {
+        long currentTime = System.currentTimeMillis();
+
+        for (int i=0; i<2; i++) {
+            int robotsOffline = 0;
+            for (int j=0; j < status[i].length; j++) {
+                long age = currentTime - robotLastHeardTime[i][j];
+                if (age > MILLIS_UNTIL_ROBOT_IS_OFFLINE) {
+                    status[i][j] = RobotOnlineStatus.OFFLINE;
+                    // If the whole team is offline...
+                    if (++robotsOffline >= robotCount) {
+                        // ...set all robots on the team to 'unknown' status
+                        for (int k=0; k < robotCount; k++) {
+                            status[i][k] = RobotOnlineStatus.UNKNOWN;
+                        }
+                    }
+                } else if (age > MILLIS_UNTIL_ROBOT_HAS_HIGH_LATENCY) {
+                    status[i][j] = RobotOnlineStatus.HIGH_LATENCY;
+                } else {
+                    status[i][j] = RobotOnlineStatus.ONLINE;
+                }
+            }
+        }
+        return status;
     }
 }
