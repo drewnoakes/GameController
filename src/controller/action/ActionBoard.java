@@ -59,7 +59,7 @@ import rules.Rules;
  * @author Michel Bartsch
  */
 public class ActionBoard
-{   
+{
     public static ClockTick clock;
     
     public static Quit quit;
@@ -107,8 +107,8 @@ public class ActionBoard
     public static Substitute substitute;
     public static DropBall dropBall;
 
-    public static final Manual[][] manualPen = Rules.league.isCoachAvailable ? new Manual[2][Rules.league.teamSize+1] : new Manual[2][Rules.league.teamSize];
-    public static final Manual[][] manualUnpen = Rules.league.isCoachAvailable ? new Manual[2][Rules.league.teamSize+1] : new Manual[2][Rules.league.teamSize];
+    public static Manual[][] manualPen;
+    public static Manual[][] manualUnpen;
 
     private ActionBoard() {}
 
@@ -127,13 +127,12 @@ public class ActionBoard
             undo[i] = new Undo(i);
         }
         cancelUndo = new CancelUndo();
-        
-        if (Rules.league.isCoachAvailable) {
-            robot = new Robot[2][Rules.league.teamSize+1];
-        } else {
-            robot = new Robot[2][Rules.league.teamSize];
-        }
-        
+
+        // We construct team arrays during initialisation as the league may change between runs
+        int robotCount = Rules.league.teamSize + (Rules.league.isCoachAvailable ? 1 : 0);
+
+        robot = new Robot[2][robotCount];
+
         for (int i=0; i<2; i++) {
             goalDec[i] = new Goal(i, -1);
             goalInc[i] = new Goal(i, 1);
@@ -179,9 +178,11 @@ public class ActionBoard
         teammatePushing = new TeammatePushing();
         substitute = new Substitute();
         dropBall = new DropBall();
-        
+
+        manualPen = new Manual[2][robotCount];
+        manualUnpen = new Manual[2][robotCount];
         for (int i=0; i<2; i++) {
-            for (int j=0; j<Rules.league.teamSize; j++) {
+            for (int j=0; j<robotCount; j++) {
                 manualPen[i][j] = new Manual(i, j, false);
                 manualUnpen[i][j] = new Manual(i, j, true);
             }
