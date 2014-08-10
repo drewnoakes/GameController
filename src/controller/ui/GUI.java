@@ -607,6 +607,9 @@ public class GUI
             }
         }
 
+        // Populate the initial state
+        update(state);
+
         frame.setVisible(true);
     }
 

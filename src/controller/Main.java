@@ -151,7 +151,6 @@ public class Main
                 gameStateSender.send(value);
             }
         });
-        gui.update(state);
 
         new KeyboardListener();
 
