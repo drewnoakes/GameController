@@ -104,20 +104,20 @@ public class Log
      * If a game state change is undone, the time when it was left is restored.
      * Thereby, there whole remaining log is moved into the new time frame.
      * 
-     * @param states the number of states to go back
+     * @param count the number of states to go back
      * @return the message of the state reverted to
      */
-    public static String goBack(int states)
+    public static String goBack(int count)
     {
         assert(instance != null);
-        if (states >= instance.states.size()) {
-            states = instance.states.size()-1;
-        }
-        
+
+        // Don't allow undoing the first state
+        count = Math.max(count, instance.states.size() - 1);
+
         long laterTimestamp = instance.states.getLast().whenCurrentPlayModeBegan;
         long earlierTimestamp = 0;
         long timeInCurrentState = instance.states.getLast().getTime() - laterTimestamp;
-        for (int i=0; i<states; i++) {
+        for (int i=0; i<count; i++) {
             earlierTimestamp = instance.states.getLast().whenCurrentPlayModeBegan;
             instance.states.removeLast();
         }
@@ -135,16 +135,16 @@ public class Log
     /**
      * Gets an array of the last N messages of states in the timeline.
      * 
-     * @param states the number of states back you want to have the messages for
+     * @param count the number of states back you want to have the messages for
      * 
      * @return the messages attached to the states, beginning with the latest as an
      *         arrays of length equals to <code>states</code>.
      */
-    public static String[] getLast(int states)
+    public static String[] getLast(int count)
     {
         assert(instance != null);
-        String[] out = new String[states];
-        for (int i=0; i<states; i++) {
+        String[] out = new String[count];
+        for (int i=0; i<count; i++) {
             if (instance.states.size()-1-i >= 0) {
                 out[i] = instance.states.get(instance.states.size()-1-i).message;
             } else {
