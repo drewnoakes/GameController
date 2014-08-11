@@ -141,47 +141,40 @@ public class GUI
     // All the components of this GUI
     private final PaintableFrame frame;
 
-    private final ImagePanel[] side;
-    private final JLabel[] name;
-    private final JButton[] goalDec;
-    private final JButton[] goalInc;
-    private final JLabel[] goals;
-    private final JRadioButton[] kickOff;
-    private final ButtonGroup kickOffGroup;
-    private final JLabel[] pushes;
-    private final JPanel[] robots;
-    private final JButton[][] robot;
+    private final ImagePanel[] sidePanel;
+    private final JLabel[] nameLabels;
+    private final JButton[] goalDecButton;
+    private final JButton[] goalIncButton;
+    private final JLabel[] goalCountLabels;
+    private final JRadioButton[] kickOffRadioButtons;
+    private final JLabel[] pushLabels;
+    private final JButton[][] robotButtons;
     private final JLabel[][] robotLabel;
-    private final ImageIcon[][] lanIcon;
-    private final JProgressBar[][] robotTime;
-    private final JToggleButton refereeTimeout;
-    private final JToggleButton[] timeOut;
-    private JButton[] stuck;
-    private final JButton[] out;
-    private final JPanel mid;
-    private final JToggleButton initial;
-    private final JToggleButton ready;
-    private final JToggleButton set;
-    private final JToggleButton play;
-    private final JToggleButton finish;
-    private final ButtonGroup playModeGroup;
-    private final ImageButton clockReset;
-    private final ImagePanel clockContainer;
-    private final JLabel clock;
-    private final JLabel clockSub;
-    private final ImageButton incGameClock;
-    private final ImageButton clockPause;
-    private final JToggleButton firstHalf;
-    private final JToggleButton secondHalf;
-    private JToggleButton firstHalfOvertime;
-    private JToggleButton secondHalfOvertime;
-    private final JToggleButton penaltyShoot;
-    private final ButtonGroup halfGroup;
-    private JToggleButton[] pen;
-    private JButton dropBall;
-    private final ImagePanel bottom;
+    private final ImageIcon[][] robotOnlineStatusIcons;
+    private final JProgressBar[][] robotProgressBars;
+    private final JToggleButton refereeTimeoutButton;
+    private final JToggleButton[] timeOutButton;
+    private JButton[] gameStuckButtons;
+    private final JButton[] outButtons;
+    private final JToggleButton initialPlayModeButton;
+    private final JToggleButton readyPlayModeButton;
+    private final JToggleButton setPlayModeButton;
+    private final JToggleButton playPlayModeButton;
+    private final JToggleButton finishPlayModeButton;
+    private final ImageButton clockResetButton;
+    private final JLabel clockLabel;
+    private final JLabel secondaryTimeLabel;
+    private final ImageButton incGameClockButton;
+    private final ImageButton clockPauseButton;
+    private final JToggleButton firstHalfPeriodButton;
+    private final JToggleButton secondHalfPeriodButton;
+    private JToggleButton firstHalfOvertimePeriodButton;
+    private JToggleButton secondHalfOvertimePeriodButton;
+    private final JToggleButton penaltyShootPeriodButton;
+    private JToggleButton[] penaltyButtons;
+    private JButton dropBallButton;
     private final JToggleButton[] undoButtons;
-    private final JButton cancelUndo;
+    private final JButton cancelUndoButton;
 
     private final RobotWatcher robotWatcher;
     private final Game game;
@@ -240,7 +233,7 @@ public class GUI
         lanHighLatency = new ImageIcon(ICONS_PATH+HIGH_LATENCY);
         lanOffline = new ImageIcon(ICONS_PATH+OFFLINE);
         lanUnknown = new ImageIcon(ICONS_PATH+UNKNOWN_ONLINE_STATUS);
-        
+
         backgroundSide = new ImageIcon[2][2];
         for (int i=0; i<BACKGROUND_SIDE.length; i++) {
             for (int j=0; j<BACKGROUND_SIDE[i].length; j++) {
@@ -249,180 +242,182 @@ public class GUI
         }
         
         //Components
-        side = new ImagePanel[2];
+        sidePanel = new ImagePanel[2];
         for (int i=0; i<2; i++) {
-            side[i] = new ImagePanel(backgroundSide[i][i].getImage());
-            side[i].setOpaque(true);
+            sidePanel[i] = new ImagePanel(backgroundSide[i][i].getImage());
+            sidePanel[i].setOpaque(true);
         }
-        mid = new ImagePanel(new ImageIcon(ICONS_PATH+BACKGROUND_MID).getImage());
-        bottom = new ImagePanel(new ImageIcon(ICONS_PATH+BACKGROUND_BOTTOM).getImage());
+        JPanel midPanel = new ImagePanel(new ImageIcon(ICONS_PATH + BACKGROUND_MID).getImage());
+        ImagePanel bottomPanel = new ImagePanel(new ImageIcon(ICONS_PATH + BACKGROUND_BOTTOM).getImage());
         
         //--side--
         //  score
-        name = new JLabel[2];
-        goalDec = new JButton[2];
-        goalInc = new JButton[2];
-        goals = new JLabel[2];
-        kickOff = new JRadioButton[3];
-        kickOffGroup = new ButtonGroup();
-        pushes = new JLabel[2];
+        nameLabels = new JLabel[2];
+        goalDecButton = new JButton[2];
+        goalIncButton = new JButton[2];
+        goalCountLabels = new JLabel[2];
+        kickOffRadioButtons = new JRadioButton[3];
+        ButtonGroup kickOffGroup = new ButtonGroup();
+        pushLabels = new JLabel[2];
         for (int i=0; i<2; i++) {
-            name[i] = new JLabel(Teams.getNames(false)[game.getGameState().team[i].teamNumber]);
-            name[i].setHorizontalAlignment(JLabel.CENTER);
-            name[i].setForeground(game.getGameState().team[i].teamColor.getColor());
-            goalInc[i] = new Button("+");
-            goalDec[i] = new Button("-");
-            kickOff[i] = new JRadioButton(KICKOFF);
-            kickOff[i].setOpaque(false);
-            kickOff[i].setHorizontalAlignment(JLabel.CENTER);
-            kickOffGroup.add(kickOff[i]);
-            goals[i] = new JLabel("0");
-            goals[i].setHorizontalAlignment(JLabel.CENTER);
-            pushes[i] = new JLabel("0");
-            pushes[i].setHorizontalAlignment(JLabel.CENTER);
+            nameLabels[i] = new JLabel(Teams.getNames(false)[game.getGameState().team[i].teamNumber]);
+            nameLabels[i].setHorizontalAlignment(JLabel.CENTER);
+            nameLabels[i].setForeground(game.getGameState().team[i].teamColor.getColor());
+            goalIncButton[i] = new Button("+");
+            goalDecButton[i] = new Button("-");
+            kickOffRadioButtons[i] = new JRadioButton(KICKOFF);
+            kickOffRadioButtons[i].setOpaque(false);
+            kickOffRadioButtons[i].setHorizontalAlignment(JLabel.CENTER);
+            kickOffGroup.add(kickOffRadioButtons[i]);
+            goalCountLabels[i] = new JLabel("0");
+            goalCountLabels[i].setHorizontalAlignment(JLabel.CENTER);
+            pushLabels[i] = new JLabel("0");
+            pushLabels[i].setHorizontalAlignment(JLabel.CENTER);
         }
-        kickOff[2] = new JRadioButton();
-        kickOffGroup.add(kickOff[2]);
+        kickOffRadioButtons[2] = new JRadioButton();
+        kickOffGroup.add(kickOffRadioButtons[2]);
         
         //  robots
-        robots = new JPanel[2];
+        JPanel[] robotPanels = new JPanel[2];
         if (Rules.league.isCoachAvailable) {
-            robot = new JButton[2][Rules.league.teamSize+1];
+            robotButtons = new JButton[2][Rules.league.teamSize+1];
             robotLabel = new JLabel[2][Rules.league.teamSize+1];
-            lanIcon = new ImageIcon[2][Rules.league.teamSize+1];
-            robotTime = new JProgressBar[2][Rules.league.teamSize+1];
+            robotOnlineStatusIcons = new ImageIcon[2][Rules.league.teamSize+1];
+            robotProgressBars = new JProgressBar[2][Rules.league.teamSize+1];
         } else {
-            robot = new JButton[2][Rules.league.teamSize];
+            robotButtons = new JButton[2][Rules.league.teamSize];
             robotLabel = new JLabel[2][Rules.league.teamSize];
-            lanIcon = new ImageIcon[2][Rules.league.teamSize];
-            robotTime = new JProgressBar[2][Rules.league.teamSize];
+            robotOnlineStatusIcons = new ImageIcon[2][Rules.league.teamSize];
+            robotProgressBars = new JProgressBar[2][Rules.league.teamSize];
         }
         for (int i=0; i<2; i++) {
-            robots[i] = new JPanel();
-            robots[i].setLayout(new GridLayout(robot[i].length, 1, 0, 10));
-            robots[i].setOpaque(false);
+            robotPanels[i] = new JPanel();
+            robotPanels[i].setLayout(new GridLayout(robotButtons[i].length, 1, 0, 10));
+            robotPanels[i].setOpaque(false);
             
-            for (int j=0; j<robot[i].length; j++) {
-                robot[i][j] = new Button();
+            for (int j=0; j< robotButtons[i].length; j++) {
+                robotButtons[i][j] = new Button();
                 robotLabel[i][j] = new JLabel();
                 robotLabel[i][j].setHorizontalAlignment(JLabel.CENTER);
-                lanIcon[i][j] = lanUnknown;
-                robotLabel[i][j].setIcon(lanIcon[i][j]);
-                robotTime[i][j] = new JProgressBar();
-                robotTime[i][j].setMaximum(1000);
-                robotTime[i][j].setVisible(false);
-                TotalScaleLayout robotLayout = new TotalScaleLayout(robot[i][j]);
-                robot[i][j].setLayout(robotLayout);
+                robotOnlineStatusIcons[i][j] = lanUnknown;
+                robotLabel[i][j].setIcon(robotOnlineStatusIcons[i][j]);
+                robotProgressBars[i][j] = new JProgressBar();
+                robotProgressBars[i][j].setMaximum(1000);
+                robotProgressBars[i][j].setVisible(false);
+                TotalScaleLayout robotLayout = new TotalScaleLayout(robotButtons[i][j]);
+                robotButtons[i][j].setLayout(robotLayout);
                 robotLayout.add(.1, .1, .8, .5, robotLabel[i][j]);
-                robotLayout.add(.1, .7, .8, .2, robotTime[i][j]);
-                robots[i].add(robot[i][j]);
+                robotLayout.add(.1, .7, .8, .2, robotProgressBars[i][j]);
+                robotPanels[i].add(robotButtons[i][j]);
             }
         }
         //  team
-        timeOut = new JToggleButton[2];
-        out = new JButton[2];
+        timeOutButton = new JToggleButton[2];
+        outButtons = new JButton[2];
         for (int i=0; i<2; i++) {
-            timeOut[i] = new ToggleButton(TIMEOUT);
-            out[i] = new JButton(OUT);
+            timeOutButton[i] = new ToggleButton(TIMEOUT);
+            outButtons[i] = new JButton(OUT);
         }
         if (Rules.league instanceof SPL) {
-            stuck = new Button[2];
+            gameStuckButtons = new Button[2];
             for (int i=0; i<2; i++) {
-                stuck[i] = new Button();
+                gameStuckButtons[i] = new Button();
             }
         }
         
         //--mid--
         //  time
-        clockReset = new ImageButton(clockImgReset.getImage());
-        clockReset.setOpaque(false);
-        clockReset.setBorder(null);
+        clockResetButton = new ImageButton(clockImgReset.getImage());
+        clockResetButton.setOpaque(false);
+        clockResetButton.setBorder(null);
+        ImagePanel clockPanel;
         if (Rules.league.lostTime) {
-            clockContainer = new ImagePanel(new ImageIcon(ICONS_PATH+BACKGROUND_CLOCK_SMALL).getImage());
+            clockPanel = new ImagePanel(new ImageIcon(ICONS_PATH+BACKGROUND_CLOCK_SMALL).getImage());
         } else {
-            clockContainer = new ImagePanel(new ImageIcon(ICONS_PATH+BACKGROUND_CLOCK).getImage());
+            clockPanel = new ImagePanel(new ImageIcon(ICONS_PATH+BACKGROUND_CLOCK).getImage());
         }
-        clockContainer.setOpaque(false);
-        clock = new JLabel("10:00");
-        clock.setForeground(Color.WHITE);
-        clock.setHorizontalAlignment(JLabel.CENTER);
-        clockPause = new ImageButton(clockImgReset.getImage());
-        clockPause.setOpaque(false);
-        clockPause.setBorder(null);
-        clockSub = new JLabel("0:00");
-        clockSub.setHorizontalAlignment(JLabel.CENTER);
-        incGameClock = new ImageButton(clockImgPlus.getImage());
-        incGameClock.setOpaque(false);
-        incGameClock.setBorder(null);
+        clockPanel.setOpaque(false);
+        clockLabel = new JLabel("10:00");
+        clockLabel.setForeground(Color.WHITE);
+        clockLabel.setHorizontalAlignment(JLabel.CENTER);
+        clockPauseButton = new ImageButton(clockImgReset.getImage());
+        clockPauseButton.setOpaque(false);
+        clockPauseButton.setBorder(null);
+        secondaryTimeLabel = new JLabel("0:00");
+        secondaryTimeLabel.setHorizontalAlignment(JLabel.CENTER);
+        incGameClockButton = new ImageButton(clockImgPlus.getImage());
+        incGameClockButton.setOpaque(false);
+        incGameClockButton.setBorder(null);
+        ButtonGroup halfGroup;
         if (!Rules.league.overtime) {
-            firstHalf = new ToggleButton(FIRST_HALF);
-            firstHalf.setSelected(true);
-            secondHalf = new ToggleButton(SECOND_HALF);
-            penaltyShoot = new ToggleButton(PENALTY_SHOOT);
-            refereeTimeout = new ToggleButton(REFEREE_TIMEOUT);
+            firstHalfPeriodButton = new ToggleButton(FIRST_HALF);
+            firstHalfPeriodButton.setSelected(true);
+            secondHalfPeriodButton = new ToggleButton(SECOND_HALF);
+            penaltyShootPeriodButton = new ToggleButton(PENALTY_SHOOT);
+            refereeTimeoutButton = new ToggleButton(REFEREE_TIMEOUT);
             halfGroup = new ButtonGroup();
-            halfGroup.add(firstHalf);
-            halfGroup.add(secondHalf);
-            halfGroup.add(penaltyShoot);
+            halfGroup.add(firstHalfPeriodButton);
+            halfGroup.add(secondHalfPeriodButton);
+            halfGroup.add(penaltyShootPeriodButton);
             
             if (Rules.league.isRefereeTimeoutAvailable) {
-                halfGroup.add(refereeTimeout);
+                halfGroup.add(refereeTimeoutButton);
             }
         } else {
-            firstHalf = new ToggleButton(FIRST_HALF_SHORT);
-            firstHalf.setSelected(true);
-            secondHalf = new ToggleButton(SECOND_HALF_SHORT);
-            firstHalfOvertime = new ToggleButton(FIRST_HALF_OVERTIME);
-            secondHalfOvertime = new ToggleButton(SECOND_HALF_OVERTIME);
-            penaltyShoot = new ToggleButton(PENALTY_SHOOT_SHORT);
-            refereeTimeout = new ToggleButton(REFEREE_TIMEOUT);
+            firstHalfPeriodButton = new ToggleButton(FIRST_HALF_SHORT);
+            firstHalfPeriodButton.setSelected(true);
+            secondHalfPeriodButton = new ToggleButton(SECOND_HALF_SHORT);
+            firstHalfOvertimePeriodButton = new ToggleButton(FIRST_HALF_OVERTIME);
+            secondHalfOvertimePeriodButton = new ToggleButton(SECOND_HALF_OVERTIME);
+            penaltyShootPeriodButton = new ToggleButton(PENALTY_SHOOT_SHORT);
+            refereeTimeoutButton = new ToggleButton(REFEREE_TIMEOUT);
             halfGroup = new ButtonGroup();
-            halfGroup.add(firstHalf);
-            halfGroup.add(secondHalf);
-            halfGroup.add(firstHalfOvertime);
-            halfGroup.add(secondHalfOvertime);
-            halfGroup.add(penaltyShoot);
+            halfGroup.add(firstHalfPeriodButton);
+            halfGroup.add(secondHalfPeriodButton);
+            halfGroup.add(firstHalfOvertimePeriodButton);
+            halfGroup.add(secondHalfOvertimePeriodButton);
+            halfGroup.add(penaltyShootPeriodButton);
             
             if (Rules.league.isRefereeTimeoutAvailable) {
-                halfGroup.add(refereeTimeout);
+                halfGroup.add(refereeTimeoutButton);
             }
         }
         // play mode
-        initial = new ToggleButton(PLAY_MODE_INITIAL);
-        initial.setSelected(true);
-        ready = new ToggleButton(PLAY_MODE_READY);
-        set = new ToggleButton(PLAY_MODE_SET);
-        play = new ToggleButton(PLAY_MODE_PLAY);
-        finish = new ToggleButton(PLAY_MODE_FINISH);
-        playModeGroup = new ButtonGroup();
-        playModeGroup.add(initial);
-        playModeGroup.add(ready);
-        playModeGroup.add(set);
-        playModeGroup.add(play);
-        playModeGroup.add(finish);
+        initialPlayModeButton = new ToggleButton(PLAY_MODE_INITIAL);
+        initialPlayModeButton.setSelected(true);
+        readyPlayModeButton = new ToggleButton(PLAY_MODE_READY);
+        setPlayModeButton = new ToggleButton(PLAY_MODE_SET);
+        playPlayModeButton = new ToggleButton(PLAY_MODE_PLAY);
+        finishPlayModeButton = new ToggleButton(PLAY_MODE_FINISH);
+        ButtonGroup playModeGroup = new ButtonGroup();
+        playModeGroup.add(initialPlayModeButton);
+        playModeGroup.add(readyPlayModeButton);
+        playModeGroup.add(setPlayModeButton);
+        playModeGroup.add(playPlayModeButton);
+        playModeGroup.add(finishPlayModeButton);
         // penalties
         if (Rules.league instanceof SPL) {
-            pen = new JToggleButton[10];
-            pen[0] = new ToggleButton(PEN_PUSHING);
-            pen[1] = new ToggleButton(PEN_LEAVING);
-            pen[2] = new ToggleButton(PEN_FALLEN);
-            pen[3] = new ToggleButton(PEN_INACTIVE);
-            pen[4] = new ToggleButton(PEN_DEFENDER);
-            pen[5] = new ToggleButton(PEN_HOLDING);
-            pen[6] = new ToggleButton(PEN_HANDS);
-            pen[7] = new ToggleButton(PEN_PICKUP);
-            pen[8] = new ToggleButton(Rules.league.dropInPlayerMode ? TEAMMATE_PUSHING : PEN_COACH_MOTION);
-            pen[9] = new ToggleButton(PEN_SUBSTITUTE);
+            penaltyButtons = new JToggleButton[10];
+            penaltyButtons[0] = new ToggleButton(PEN_PUSHING);
+            penaltyButtons[1] = new ToggleButton(PEN_LEAVING);
+            penaltyButtons[2] = new ToggleButton(PEN_FALLEN);
+            penaltyButtons[3] = new ToggleButton(PEN_INACTIVE);
+            penaltyButtons[4] = new ToggleButton(PEN_DEFENDER);
+            penaltyButtons[5] = new ToggleButton(PEN_HOLDING);
+            penaltyButtons[6] = new ToggleButton(PEN_HANDS);
+            penaltyButtons[7] = new ToggleButton(PEN_PICKUP);
+            penaltyButtons[8] = new ToggleButton(Rules.league.dropInPlayerMode ? TEAMMATE_PUSHING : PEN_COACH_MOTION);
+            penaltyButtons[9] = new ToggleButton(PEN_SUBSTITUTE);
         } else if (Rules.league instanceof HL) {
-            pen = new JToggleButton[7];
-            pen[0] = new ToggleButton(PEN_MANIPULATION);
-            pen[1] = new ToggleButton(PEN_PHYSICAL);
-            pen[2] = new ToggleButton(PEN_ATTACK);
-            pen[3] = new ToggleButton(PEN_DEFENSE);
-            pen[4] = new ToggleButton(PEN_PICKUP_INCAPABLE);
-            pen[5] = new ToggleButton(PEN_SERVICE);
-            pen[6] = new ToggleButton(PEN_SUBSTITUTE);
-            dropBall = new Button(DROP_BALL);
+            penaltyButtons = new JToggleButton[7];
+            penaltyButtons[0] = new ToggleButton(PEN_MANIPULATION);
+            penaltyButtons[1] = new ToggleButton(PEN_PHYSICAL);
+            penaltyButtons[2] = new ToggleButton(PEN_ATTACK);
+            penaltyButtons[3] = new ToggleButton(PEN_DEFENSE);
+            penaltyButtons[4] = new ToggleButton(PEN_PICKUP_INCAPABLE);
+            penaltyButtons[5] = new ToggleButton(PEN_SERVICE);
+            penaltyButtons[6] = new ToggleButton(PEN_SUBSTITUTE);
+            dropBallButton = new Button(DROP_BALL);
         }
         //--bottom--
         //  timeline
@@ -435,175 +430,175 @@ public class GUI
             undoButtons[i].setVisible(false);
             timelinePanel.add(undoButtons[i]);
         }
-        cancelUndo = new Button(CANCEL);
-        cancelUndo.setVisible(false);
+        cancelUndoButton = new Button(CANCEL);
+        cancelUndoButton.setVisible(false);
       
         //--layout--
         TotalScaleLayout layout = new TotalScaleLayout(frame);
         frame.setLayout(layout);
         
-        layout.add(0, 0, .3, .04, name[0]);
-        layout.add(.7, 0, .3, .04, name[1]);
-        layout.add(.01, .05, .08, .07, goalInc[0]);
-        layout.add(.91, .05, .08, .07, goalInc[1]);
-        layout.add(.01, .13, .08, .06, goalDec[0]);
-        layout.add(.91, .13, .08, .06, goalDec[1]);
-        layout.add(.17, .05, .12, .04, kickOff[0]);
-        layout.add(.71, .05, .12, .04, kickOff[1]);
-        layout.add(.21, .09, .08, .07, goals[0]);
-        layout.add(.71, .09, .08, .07, goals[1]);
-        layout.add(.21, .16, .08, .04, pushes[0]);
-        layout.add(.71, .16, .08, .04, pushes[1]);
-        layout.add(.01, .21, .28, .55, robots[0]);
-        layout.add(.71, .21, .28, .55, robots[1]);
+        layout.add(0, 0, .3, .04, nameLabels[0]);
+        layout.add(.7, 0, .3, .04, nameLabels[1]);
+        layout.add(.01, .05, .08, .07, goalIncButton[0]);
+        layout.add(.91, .05, .08, .07, goalIncButton[1]);
+        layout.add(.01, .13, .08, .06, goalDecButton[0]);
+        layout.add(.91, .13, .08, .06, goalDecButton[1]);
+        layout.add(.17, .05, .12, .04, kickOffRadioButtons[0]);
+        layout.add(.71, .05, .12, .04, kickOffRadioButtons[1]);
+        layout.add(.21, .09, .08, .07, goalCountLabels[0]);
+        layout.add(.71, .09, .08, .07, goalCountLabels[1]);
+        layout.add(.21, .16, .08, .04, pushLabels[0]);
+        layout.add(.71, .16, .08, .04, pushLabels[1]);
+        layout.add(.01, .21, .28, .55, robotPanels[0]);
+        layout.add(.71, .21, .28, .55, robotPanels[1]);
         if (Rules.league instanceof SPL && !Rules.league.dropInPlayerMode) {
-            layout.add(.01, .77, .09, .09, timeOut[0]);
-            layout.add(.9, .77, .09, .09, timeOut[1]);
-            layout.add(.11, .77, .08, .09, stuck[0]);
-            layout.add(.81, .77, .08, .09, stuck[1]);
-            layout.add(.20, .77, .09, .09, out[0]);
-            layout.add(.71, .77, .09, .09, out[1]);
+            layout.add(.01, .77, .09, .09, timeOutButton[0]);
+            layout.add(.9, .77, .09, .09, timeOutButton[1]);
+            layout.add(.11, .77, .08, .09, gameStuckButtons[0]);
+            layout.add(.81, .77, .08, .09, gameStuckButtons[1]);
+            layout.add(.20, .77, .09, .09, outButtons[0]);
+            layout.add(.71, .77, .09, .09, outButtons[1]);
         } else {
             if (Rules.league instanceof SPL) {
-                layout.add(.01, .77, .135, .09, stuck[0]);
-                layout.add(.855, .77, .135, .09, stuck[1]);
+                layout.add(.01, .77, .135, .09, gameStuckButtons[0]);
+                layout.add(.855, .77, .135, .09, gameStuckButtons[1]);
             } else {
-                layout.add(.01, .77, .135, .09, timeOut[0]);
-                layout.add(.855, .77, .135, .09, timeOut[1]);
+                layout.add(.01, .77, .135, .09, timeOutButton[0]);
+                layout.add(.855, .77, .135, .09, timeOutButton[1]);
             }
-            layout.add(.155, .77, .135, .09, out[0]);
-            layout.add(.71, .77, .135, .09, out[1]);
+            layout.add(.155, .77, .135, .09, outButtons[0]);
+            layout.add(.71, .77, .135, .09, outButtons[1]);
         }
-        layout.add(.31, .0, .08, .11, clockReset);
-        layout.add(.4, .012, .195, .10, clock);
-        layout.add(.61, .0, .08, .11, clockPause);
-        layout.add(.4, .11, .2, .07, clockSub);
+        layout.add(.31, .0, .08, .11, clockResetButton);
+        layout.add(.4, .012, .195, .10, clockLabel);
+        layout.add(.61, .0, .08, .11, clockPauseButton);
+        layout.add(.4, .11, .2, .07, secondaryTimeLabel);
         if (Rules.league.lostTime) {
-            layout.add(.590, .0, .03, .11, incGameClock);
-            layout.add(.4, .0, .195, .11, clockContainer);
+            layout.add(.590, .0, .03, .11, incGameClockButton);
+            layout.add(.4, .0, .195, .11, clockPanel);
         }
         else{
-            layout.add(.4, .0, .2, .11, clockContainer);
+            layout.add(.4, .0, .2, .11, clockPanel);
         }
         if (!Rules.league.overtime) {
             if (Rules.league.isRefereeTimeoutAvailable && !Rules.league.dropInPlayerMode) {
-                layout.add(.31, .19, .09, .06, firstHalf);
-                layout.add(.407, .19, .09, .06, secondHalf);
-                layout.add(.503, .19, .09, .06, penaltyShoot);
-                layout.add(.60, .19, .09, .06, refereeTimeout);
+                layout.add(.31, .19, .09, .06, firstHalfPeriodButton);
+                layout.add(.407, .19, .09, .06, secondHalfPeriodButton);
+                layout.add(.503, .19, .09, .06, penaltyShootPeriodButton);
+                layout.add(.60, .19, .09, .06, refereeTimeoutButton);
             } else { // no referee timeout in dropInPlayerMode is not supported!
-                layout.add(.31, .19, .12, .06, firstHalf);
-                layout.add(.44, .19, .12, .06, secondHalf);
-                layout.add(.57, .19, .12, .06, Rules.league.dropInPlayerMode ? refereeTimeout : penaltyShoot);
+                layout.add(.31, .19, .12, .06, firstHalfPeriodButton);
+                layout.add(.44, .19, .12, .06, secondHalfPeriodButton);
+                layout.add(.57, .19, .12, .06, Rules.league.dropInPlayerMode ? refereeTimeoutButton : penaltyShootPeriodButton);
             }
         } else {
             if (Rules.league.isRefereeTimeoutAvailable) {
-                layout.add(.31, .19, .06, .06, firstHalf);
-                layout.add(.375, .19, .06, .06, secondHalf);
-                layout.add(.439, .19, .06, .06, firstHalfOvertime);
-                layout.add(.501, .19, .06, .06, secondHalfOvertime);
-                layout.add(.565, .19, .06, .06, penaltyShoot);
-                layout.add(.63, .19, .06, .06, refereeTimeout);
+                layout.add(.31, .19, .06, .06, firstHalfPeriodButton);
+                layout.add(.375, .19, .06, .06, secondHalfPeriodButton);
+                layout.add(.439, .19, .06, .06, firstHalfOvertimePeriodButton);
+                layout.add(.501, .19, .06, .06, secondHalfOvertimePeriodButton);
+                layout.add(.565, .19, .06, .06, penaltyShootPeriodButton);
+                layout.add(.63, .19, .06, .06, refereeTimeoutButton);
             } else {
-                layout.add(.31, .19, .07, .06, firstHalf);
-                layout.add(.3875, .19, .07, .06, secondHalf);
-                layout.add(.465, .19, .07, .06, firstHalfOvertime);
-                layout.add(.5425, .19, .07, .06, secondHalfOvertime);
-                layout.add(.62, .19, .07, .06, penaltyShoot);
+                layout.add(.31, .19, .07, .06, firstHalfPeriodButton);
+                layout.add(.3875, .19, .07, .06, secondHalfPeriodButton);
+                layout.add(.465, .19, .07, .06, firstHalfOvertimePeriodButton);
+                layout.add(.5425, .19, .07, .06, secondHalfOvertimePeriodButton);
+                layout.add(.62, .19, .07, .06, penaltyShootPeriodButton);
             }
         }
-        layout.add(.31, .26, .07, .08, initial);
-        layout.add(.3875, .26, .07, .08, ready);
-        layout.add(.465, .26, .07, .08, set);
-        layout.add(.5425, .26, .07, .08, play);
-        layout.add(.62, .26, .07, .08, finish);
+        layout.add(.31, .26, .07, .08, initialPlayModeButton);
+        layout.add(.3875, .26, .07, .08, readyPlayModeButton);
+        layout.add(.465, .26, .07, .08, setPlayModeButton);
+        layout.add(.5425, .26, .07, .08, playPlayModeButton);
+        layout.add(.62, .26, .07, .08, finishPlayModeButton);
         if (Rules.league instanceof SPL) {
-            layout.add(.31, .37, .185, .08, pen[0]);
-            layout.add(.505, .37, .185, .08, pen[1]);
-            layout.add(.31, .47, .185, .08, pen[2]);
-            layout.add(.505, .47, .185, .08, pen[3]);
-            layout.add(.31, .57, .185, .08, pen[4]);
-            layout.add(.505, .57, .185, .08, pen[5]);
-            layout.add(.31, .67, .185, .08, pen[6]);
-            layout.add(.505, .67, .185, .08, pen[7]);
-            layout.add(.31, .77, .185, .08, pen[8]);
+            layout.add(.31, .37, .185, .08, penaltyButtons[0]);
+            layout.add(.505, .37, .185, .08, penaltyButtons[1]);
+            layout.add(.31, .47, .185, .08, penaltyButtons[2]);
+            layout.add(.505, .47, .185, .08, penaltyButtons[3]);
+            layout.add(.31, .57, .185, .08, penaltyButtons[4]);
+            layout.add(.505, .57, .185, .08, penaltyButtons[5]);
+            layout.add(.31, .67, .185, .08, penaltyButtons[6]);
+            layout.add(.505, .67, .185, .08, penaltyButtons[7]);
+            layout.add(.31, .77, .185, .08, penaltyButtons[8]);
             if (Rules.league.teamSize > Rules.league.robotsPlaying) {
-                layout.add(.505, .77, .185, .08, pen[9]);
+                layout.add(.505, .77, .185, .08, penaltyButtons[9]);
             }
         } else if (Rules.league instanceof HL) {
-            layout.add(.31,  .38, .185, .08, pen[0]);
-            layout.add(.505, .38, .185, .08, pen[1]);
-            layout.add(.31,  .48, .185, .08, pen[2]);
-            layout.add(.505, .48, .185, .08, pen[3]);
-            layout.add(.31,  .58, .185, .08, pen[4]);
-            layout.add(.505, .58, .185, .08, pen[5]);
-            layout.add(.31,  .68, .185, .08, pen[6]);
-            layout.add(.31,  .78, .38,  .08, dropBall);
+            layout.add(.31,  .38, .185, .08, penaltyButtons[0]);
+            layout.add(.505, .38, .185, .08, penaltyButtons[1]);
+            layout.add(.31,  .48, .185, .08, penaltyButtons[2]);
+            layout.add(.505, .48, .185, .08, penaltyButtons[3]);
+            layout.add(.31,  .58, .185, .08, penaltyButtons[4]);
+            layout.add(.505, .58, .185, .08, penaltyButtons[5]);
+            layout.add(.31,  .68, .185, .08, penaltyButtons[6]);
+            layout.add(.31,  .78, .38,  .08, dropBallButton);
         }
         layout.add(.08, .88, .84, .11, timelinePanel);
-        layout.add(.925, .88, .07, .11, cancelUndo);
-        layout.add(0, 0, .3, .87, side[0]);
-        layout.add(.3, 0, .4, .87, mid);
-        layout.add(.7, 0, .3, .87, side[1]);
-        layout.add(0, .87, 1, .132, bottom);
+        layout.add(.925, .88, .07, .11, cancelUndoButton);
+        layout.add(0, 0, .3, .87, sidePanel[0]);
+        layout.add(.3, 0, .4, .87, midPanel);
+        layout.add(.7, 0, .3, .87, sidePanel[1]);
+        layout.add(0, .87, 1, .132, bottomPanel);
         
         //--listener--
         for (int i=0; i<2; i++) {
-            goalDec[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.goalDec[i]));
-            goalInc[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.goalInc[i]));
-            kickOff[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.kickOff[i]));
-            for (int j=0; j<robot[i].length; j++) {
-                robot[i][j].addActionListener(new ActionListenerAdapter(game, ActionBoard.robotButton[i][j]));
+            goalDecButton[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.goalDec[i]));
+            goalIncButton[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.goalInc[i]));
+            kickOffRadioButtons[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.kickOff[i]));
+            for (int j=0; j< robotButtons[i].length; j++) {
+                robotButtons[i][j].addActionListener(new ActionListenerAdapter(game, ActionBoard.robotButton[i][j]));
             }
-            timeOut[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.timeOut[i]));
-            out[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.out[i]));
+            timeOutButton[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.timeOut[i]));
+            outButtons[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.out[i]));
             if (Rules.league instanceof SPL) {
-                stuck[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.stuck[i]));
+                gameStuckButtons[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.stuck[i]));
             }
         }
-        refereeTimeout.addActionListener(new ActionListenerAdapter(game, ActionBoard.refereeTimeout));
-        initial.addActionListener(new ActionListenerAdapter(game, ActionBoard.initial));
-        ready.addActionListener(new ActionListenerAdapter(game, ActionBoard.ready));
-        set.addActionListener(new ActionListenerAdapter(game, ActionBoard.set));
-        play.addActionListener(new ActionListenerAdapter(game, ActionBoard.play));
-        finish.addActionListener(new ActionListenerAdapter(game, ActionBoard.finish));
-        clockReset.addActionListener(new ActionListenerAdapter(game, ActionBoard.clockReset));
-        clockPause.addActionListener(new ActionListenerAdapter(game, ActionBoard.clockPause));
+        refereeTimeoutButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.refereeTimeout));
+        initialPlayModeButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.initial));
+        readyPlayModeButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.ready));
+        setPlayModeButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.set));
+        playPlayModeButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.play));
+        finishPlayModeButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.finish));
+        clockResetButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.clockReset));
+        clockPauseButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.clockPause));
         if (Rules.league.lostTime) {
-            incGameClock.addActionListener(new ActionListenerAdapter(game, ActionBoard.incGameClock));
+            incGameClockButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.incGameClock));
         }
-        firstHalf.addActionListener(new ActionListenerAdapter(game, ActionBoard.firstHalf));
-        secondHalf.addActionListener(new ActionListenerAdapter(game, ActionBoard.secondHalf));
+        firstHalfPeriodButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.firstHalf));
+        secondHalfPeriodButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.secondHalf));
         if (Rules.league.overtime) {
-            firstHalfOvertime.addActionListener(new ActionListenerAdapter(game, ActionBoard.firstHalfOvertime));
-            secondHalfOvertime.addActionListener(new ActionListenerAdapter(game, ActionBoard.secondHalfOvertime));
+            firstHalfOvertimePeriodButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.firstHalfOvertime));
+            secondHalfOvertimePeriodButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.secondHalfOvertime));
         }
-        penaltyShoot.addActionListener(new ActionListenerAdapter(game, ActionBoard.penaltyShoot));
+        penaltyShootPeriodButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.penaltyShoot));
         if (Rules.league instanceof SPL) {
-            pen[0].addActionListener(new ActionListenerAdapter(game, ActionBoard.pushing));
-            pen[1].addActionListener(new ActionListenerAdapter(game, ActionBoard.leaving));
-            pen[2].addActionListener(new ActionListenerAdapter(game, ActionBoard.fallen));
-            pen[3].addActionListener(new ActionListenerAdapter(game, ActionBoard.inactive));
-            pen[4].addActionListener(new ActionListenerAdapter(game, ActionBoard.defender));
-            pen[5].addActionListener(new ActionListenerAdapter(game, ActionBoard.holding));
-            pen[6].addActionListener(new ActionListenerAdapter(game, ActionBoard.hands));
-            pen[7].addActionListener(new ActionListenerAdapter(game, ActionBoard.pickUpSPL));
-            pen[8].addActionListener(new ActionListenerAdapter(game, Rules.league.dropInPlayerMode ? ActionBoard.teammatePushing : ActionBoard.coachMotion));
-            pen[9].addActionListener(new ActionListenerAdapter(game, ActionBoard.substitute));
+            penaltyButtons[0].addActionListener(new ActionListenerAdapter(game, ActionBoard.pushing));
+            penaltyButtons[1].addActionListener(new ActionListenerAdapter(game, ActionBoard.leaving));
+            penaltyButtons[2].addActionListener(new ActionListenerAdapter(game, ActionBoard.fallen));
+            penaltyButtons[3].addActionListener(new ActionListenerAdapter(game, ActionBoard.inactive));
+            penaltyButtons[4].addActionListener(new ActionListenerAdapter(game, ActionBoard.defender));
+            penaltyButtons[5].addActionListener(new ActionListenerAdapter(game, ActionBoard.holding));
+            penaltyButtons[6].addActionListener(new ActionListenerAdapter(game, ActionBoard.hands));
+            penaltyButtons[7].addActionListener(new ActionListenerAdapter(game, ActionBoard.pickUpSPL));
+            penaltyButtons[8].addActionListener(new ActionListenerAdapter(game, Rules.league.dropInPlayerMode ? ActionBoard.teammatePushing : ActionBoard.coachMotion));
+            penaltyButtons[9].addActionListener(new ActionListenerAdapter(game, ActionBoard.substitute));
         } else if (Rules.league instanceof HL) {
-            pen[0].addActionListener(new ActionListenerAdapter(game, ActionBoard.ballManipulation));
-            pen[1].addActionListener(new ActionListenerAdapter(game, ActionBoard.pushing));
-            pen[2].addActionListener(new ActionListenerAdapter(game, ActionBoard.attack));
-            pen[3].addActionListener(new ActionListenerAdapter(game, ActionBoard.defense));
-            pen[4].addActionListener(new ActionListenerAdapter(game, ActionBoard.pickUpHL));
-            pen[5].addActionListener(new ActionListenerAdapter(game, ActionBoard.service));
-            pen[6].addActionListener(new ActionListenerAdapter(game, ActionBoard.substitute));
-            dropBall.addActionListener(new ActionListenerAdapter(game, ActionBoard.dropBall));
+            penaltyButtons[0].addActionListener(new ActionListenerAdapter(game, ActionBoard.ballManipulation));
+            penaltyButtons[1].addActionListener(new ActionListenerAdapter(game, ActionBoard.pushing));
+            penaltyButtons[2].addActionListener(new ActionListenerAdapter(game, ActionBoard.attack));
+            penaltyButtons[3].addActionListener(new ActionListenerAdapter(game, ActionBoard.defense));
+            penaltyButtons[4].addActionListener(new ActionListenerAdapter(game, ActionBoard.pickUpHL));
+            penaltyButtons[5].addActionListener(new ActionListenerAdapter(game, ActionBoard.service));
+            penaltyButtons[6].addActionListener(new ActionListenerAdapter(game, ActionBoard.substitute));
+            dropBallButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.dropBall));
         }
         for (int i=0; i< undoButtons.length; i++) {
             undoButtons[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.undo[i+1]));
         }
-        cancelUndo.addActionListener(new ActionListenerAdapter(game, ActionBoard.cancelUndo));
+        cancelUndoButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.cancelUndo));
       
         //fullscreen
         if (fullscreen) {
@@ -670,20 +665,20 @@ public class GUI
 
     private void updateClock(GameState state)
     {
-        clock.setText(formatTime(state.getRemainingGameTime()));
+        clockLabel.setText(formatTime(state.getRemainingGameTime()));
         Integer secondaryTime = state.getSecondaryTime(KICKOFF_BLOCKED_HIGHLIGHT_SECONDS - 1);
         if (secondaryTime != null) {
             if (state.playMode == PlayMode.Playing) {
-                clockSub.setText(formatTime(Math.max(0, secondaryTime)));
-                clockSub.setForeground(secondaryTime <= 0
-                        && clockSub.getForeground() != COLOR_HIGHLIGHT ? COLOR_HIGHLIGHT : Color.BLACK);
+                secondaryTimeLabel.setText(formatTime(Math.max(0, secondaryTime)));
+                secondaryTimeLabel.setForeground(secondaryTime <= 0
+                        && secondaryTimeLabel.getForeground() != COLOR_HIGHLIGHT ? COLOR_HIGHLIGHT : Color.BLACK);
             } else {
-                clockSub.setText(formatTime(secondaryTime));
-                clockSub.setForeground(Color.BLACK);
+                secondaryTimeLabel.setText(formatTime(secondaryTime));
+                secondaryTimeLabel.setForeground(Color.BLACK);
             }
         } else {
-            clockSub.setText("");
-            clockSub.setForeground(Color.BLACK);
+            secondaryTimeLabel.setText("");
+            secondaryTimeLabel.setForeground(Color.BLACK);
         }
         
         ImageIcon tmp;
@@ -692,79 +687,79 @@ public class GUI
         } else {
             tmp = clockImgPlay;
         }
-        clockPause.setImage(tmp.getImage());
-        clockReset.setVisible(ActionBoard.clockReset.canExecute(game, state));
-        clockPause.setVisible(ActionBoard.clockPause.canExecute(game, state));
+        clockPauseButton.setImage(tmp.getImage());
+        clockResetButton.setVisible(ActionBoard.clockReset.canExecute(game, state));
+        clockPauseButton.setVisible(ActionBoard.clockPause.canExecute(game, state));
         if (Rules.league.lostTime) {
-            incGameClock.setEnabled(ActionBoard.incGameClock.canExecute(game, state));
+            incGameClockButton.setEnabled(ActionBoard.incGameClock.canExecute(game, state));
         }
     }
     
     private void updateHalf(GameState state)
     {
         for (int i=0; i<2; i++) {
-            name[i].setText(Teams.getNames(false)[state.team[i].teamNumber]);
+            nameLabels[i].setText(Teams.getNames(false)[state.team[i].teamNumber]);
         }
-        firstHalf.setEnabled(ActionBoard.firstHalf.canExecute(game, state));
-        secondHalf.setEnabled(ActionBoard.secondHalf.canExecute(game, state));
+        firstHalfPeriodButton.setEnabled(ActionBoard.firstHalf.canExecute(game, state));
+        secondHalfPeriodButton.setEnabled(ActionBoard.secondHalf.canExecute(game, state));
         if (Rules.league.overtime) {
-            firstHalfOvertime.setEnabled(ActionBoard.firstHalfOvertime.canExecute(game, state));
-            secondHalfOvertime.setEnabled(ActionBoard.secondHalfOvertime.canExecute(game, state));
+            firstHalfOvertimePeriodButton.setEnabled(ActionBoard.firstHalfOvertime.canExecute(game, state));
+            secondHalfOvertimePeriodButton.setEnabled(ActionBoard.secondHalfOvertime.canExecute(game, state));
         }
-        penaltyShoot.setEnabled(ActionBoard.penaltyShoot.canExecute(game, state));
-        firstHalf.setSelected((state.period == Period.Normal)
-                            && (state.firstHalf));
-        secondHalf.setSelected((state.period == Period.Normal)
-                            && (!state.firstHalf));
+        penaltyShootPeriodButton.setEnabled(ActionBoard.penaltyShoot.canExecute(game, state));
+        firstHalfPeriodButton.setSelected((state.period == Period.Normal)
+                && (state.firstHalf));
+        secondHalfPeriodButton.setSelected((state.period == Period.Normal)
+                && (!state.firstHalf));
         if (Rules.league.overtime) {
-           firstHalfOvertime.setSelected((state.period == Period.Overtime)
-                            && (state.firstHalf));
-           secondHalfOvertime.setSelected((state.period == Period.Overtime)
-                            && (!state.firstHalf));
+           firstHalfOvertimePeriodButton.setSelected((state.period == Period.Overtime)
+                   && (state.firstHalf));
+           secondHalfOvertimePeriodButton.setSelected((state.period == Period.Overtime)
+                   && (!state.firstHalf));
         }
-        penaltyShoot.setSelected(state.period == Period.PenaltyShootout || state.previousPeriod == Period.PenaltyShootout);
+        penaltyShootPeriodButton.setSelected(state.period == Period.PenaltyShootout || state.previousPeriod == Period.PenaltyShootout);
     }
     
     private void updateTeamColors(GameState state)
     {
         for (int i=0; i<2; i++) {
-            name[i].setForeground(state.team[i].teamColor.getColor());
-            side[i].setImage(backgroundSide[i][state.team[i].teamColor.getValue()].getImage());
+            nameLabels[i].setForeground(state.team[i].teamColor.getColor());
+            sidePanel[i].setImage(backgroundSide[i][state.team[i].teamColor.getValue()].getImage());
         }
     }
     
     private void updatePlayMode(GameState state)
     {
-        initial.setEnabled(ActionBoard.initial.canExecute(game, state));
-        ready.setEnabled(ActionBoard.ready.canExecute(game, state));
-        set.setEnabled(ActionBoard.set.canExecute(game, state));
-        play.setEnabled(ActionBoard.play.canExecute(game, state));
-        finish.setEnabled(ActionBoard.finish.canExecute(game, state));
+        initialPlayModeButton.setEnabled(ActionBoard.initial.canExecute(game, state));
+        readyPlayModeButton.setEnabled(ActionBoard.ready.canExecute(game, state));
+        setPlayModeButton.setEnabled(ActionBoard.set.canExecute(game, state));
+        playPlayModeButton.setEnabled(ActionBoard.play.canExecute(game, state));
+        finishPlayModeButton.setEnabled(ActionBoard.finish.canExecute(game, state));
 
         if (state.playMode == PlayMode.Initial) {
-            initial.setSelected(true);
+            initialPlayModeButton.setSelected(true);
         } else if (state.playMode == PlayMode.Ready) {
-            ready.setSelected(true);
+            readyPlayModeButton.setSelected(true);
         } else if (state.playMode == PlayMode.Set) {
-            set.setSelected(true);
+            setPlayModeButton.setSelected(true);
         } else if (state.playMode == PlayMode.Playing) {
-            play.setSelected(true);
+            playPlayModeButton.setSelected(true);
         } else if (state.playMode == PlayMode.Finished) {
-            finish.setSelected(true);
+            finishPlayModeButton.setSelected(true);
         }
 
-        highlight(finish,
+        highlight(finishPlayModeButton,
                 state.playMode != PlayMode.Finished
                 && state.getRemainingGameTime() <= FINISH_HIGHLIGHT_SECONDS
-                && finish.getBackground() != COLOR_HIGHLIGHT);
+                && finishPlayModeButton.getBackground() != COLOR_HIGHLIGHT);
     }
     
     private void updateGoal(GameState state)
     {
         for (int i=0; i<2; i++) {
-            goals[i].setText(""+state.team[i].score);
-            goalInc[i].setEnabled(ActionBoard.goalInc[i].canExecute(game, state));
-            goalDec[i].setVisible(ActionBoard.goalDec[i].canExecute(game, state));
+            goalCountLabels[i].setText("" + state.team[i].score);
+            goalIncButton[i].setEnabled(ActionBoard.goalInc[i].canExecute(game, state));
+            goalDecButton[i].setVisible(ActionBoard.goalDec[i].canExecute(game, state));
         }
     }
     
@@ -772,17 +767,17 @@ public class GUI
     {
         if (state.kickOffTeam == null) {
             // drop ball
-            kickOff[2].setSelected(true);
+            kickOffRadioButtons[2].setSelected(true);
         } else {
-            kickOff[state.team[0].teamColor == state.kickOffTeam ? 0 : 1].setSelected(true);
+            kickOffRadioButtons[state.team[0].teamColor == state.kickOffTeam ? 0 : 1].setSelected(true);
         }
         for (int i=0; i<2; i++) {
-            kickOff[i].setEnabled(ActionBoard.kickOff[i].canExecute(game, state));
+            kickOffRadioButtons[i].setEnabled(ActionBoard.kickOff[i].canExecute(game, state));
             if (state.period != Period.PenaltyShootout
                 && state.previousPeriod != Period.PenaltyShootout) {
-                kickOff[i].setText(KICKOFF);
+                kickOffRadioButtons[i].setText(KICKOFF);
             } else {
-                kickOff[i].setText(KICKOFF_PENALTY_SHOOTOUT);
+                kickOffRadioButtons[i].setText(KICKOFF_PENALTY_SHOOTOUT);
             }
         }
     }
@@ -792,13 +787,13 @@ public class GUI
         for (int i=0; i<2; i++) {
             if (state.period != Period.PenaltyShootout && state.previousPeriod != Period.PenaltyShootout) {
                 if (Rules.league.pushesToEjection == null || Rules.league.pushesToEjection.length == 0) {
-                    pushes[i].setText("");
+                    pushLabels[i].setText("");
                 } else {
-                    pushes[i].setText(PUSHES+": "+state.pushes[i]);
+                    pushLabels[i].setText(PUSHES + ": " + state.pushes[i]);
                 }
             } else {
-                pushes[i].setText((i == 0 && (state.playMode == PlayMode.Set
-                        || state.playMode == PlayMode.Playing) ? SHOT : SHOTS)+": "+state.team[i].penaltyShot);
+                pushLabels[i].setText((i == 0 && (state.playMode == PlayMode.Set
+                        || state.playMode == PlayMode.Playing) ? SHOT : SHOTS) + ": " + state.team[i].penaltyShot);
             }
         }
     }
@@ -807,11 +802,11 @@ public class GUI
     {
         RobotOnlineStatus[][] onlineStatus = robotWatcher.updateRobotOnlineStatus();
 
-        for (int i=0; i<robot.length; i++) {
-            for (int j=0; j<robot[i].length; j++) {
+        for (int i=0; i< robotButtons.length; i++) {
+            for (int j=0; j< robotButtons[i].length; j++) {
                 if (ActionBoard.robotButton[i][j].isCoach()) {
                    if (state.team[i].coach.penalty == Penalty.SplCoachMotion) {
-                      robot[i][j].setEnabled(false);
+                      robotButtons[i][j].setEnabled(false);
                       robotLabel[i][j].setText(EJECTED);
                   } else {
                       robotLabel[i][j].setText(state.team[i].teamColor+" "+COACH);
@@ -830,37 +825,37 @@ public class GUI
                             if (seconds == 0) {
                                 if (pickup) {
                                     robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1)+" ("+PEN_PICKUP+")");
-                                    highlight(robot[i][j], true);
+                                    highlight(robotButtons[i][j], true);
                                 } else if (state.team[i].player[j].penalty == Penalty.Substitute) {
                                     robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1)+" ("+PEN_SUBSTITUTE_SHORT+")");
-                                    highlight(robot[i][j], false);
+                                    highlight(robotButtons[i][j], false);
                                 } else if (!(Rules.league instanceof SPL) ||
                                         !(state.team[i].player[j].penalty == Penalty.SplCoachMotion)) {
                                     robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1)+": "+formatTime(seconds));
-                                    highlight(robot[i][j], seconds <= UNPEN_HIGHLIGHT_SECONDS && robot[i][j].getBackground() != COLOR_HIGHLIGHT);
+                                    highlight(robotButtons[i][j], seconds <= UNPEN_HIGHLIGHT_SECONDS && robotButtons[i][j].getBackground() != COLOR_HIGHLIGHT);
                                 }
                             }  else {
                                 robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1)+": "+formatTime(seconds)+(pickup ? " (P)" : ""));
-                                highlight(robot[i][j], seconds <= UNPEN_HIGHLIGHT_SECONDS && robot[i][j].getBackground() != COLOR_HIGHLIGHT);
+                                highlight(robotButtons[i][j], seconds <= UNPEN_HIGHLIGHT_SECONDS && robotButtons[i][j].getBackground() != COLOR_HIGHLIGHT);
                             }
                             int penTime = (seconds + state.getSecondsSince(state.whenPenalized[i][j]));
                             if (seconds != 0) {
-                                robotTime[i][j].setValue(1000 * seconds / penTime);
+                                robotProgressBars[i][j].setValue(1000 * seconds / penTime);
                             }
-                            robotTime[i][j].setVisible(seconds != 0);
+                            robotProgressBars[i][j].setVisible(seconds != 0);
                         } else {
                             robotLabel[i][j].setText(EJECTED);
-                            robotTime[i][j].setVisible(false);
-                            highlight(robot[i][j], false);
+                            robotProgressBars[i][j].setVisible(false);
+                            highlight(robotButtons[i][j], false);
                         }
                     } else {
                         robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1));
-                        robotTime[i][j].setVisible(false);
-                        highlight(robot[i][j], false);
+                        robotProgressBars[i][j].setVisible(false);
+                        highlight(robotButtons[i][j], false);
                     }
                 }    
                 
-                robot[i][j].setEnabled(ActionBoard.robotButton[i][j].canExecute(game, state));
+                robotButtons[i][j].setEnabled(ActionBoard.robotButton[i][j].canExecute(game, state));
                 
                 ImageIcon currentLanIcon;
                 if (onlineStatus[i][j] == RobotOnlineStatus.ONLINE) {
@@ -881,22 +876,22 @@ public class GUI
     {
         for (int i=0; i<2; i++) {
             if (!state.timeOutActive[i]) {
-                timeOut[i].setSelected(false);
-                highlight(timeOut[i], false);
+                timeOutButton[i].setSelected(false);
+                highlight(timeOutButton[i], false);
             } else {
                 boolean shouldHighlight = (state.getRemainingSeconds(state.whenCurrentPlayModeBegan, Rules.league.timeOutTime) < TIMEOUT_HIGHLIGHT_SECONDS)
-                        && (timeOut[i].getBackground() != COLOR_HIGHLIGHT);
-                timeOut[i].setSelected(!IS_OSX || !shouldHighlight);
-                highlight(timeOut[i], shouldHighlight);
+                        && (timeOutButton[i].getBackground() != COLOR_HIGHLIGHT);
+                timeOutButton[i].setSelected(!IS_OSX || !shouldHighlight);
+                highlight(timeOutButton[i], shouldHighlight);
             }
-            timeOut[i].setEnabled(ActionBoard.timeOut[i].canExecute(game, state));
+            timeOutButton[i].setEnabled(ActionBoard.timeOut[i].canExecute(game, state));
         }
     }
     
     private void updateRefereeTimeout(GameState state)
     {
-        refereeTimeout.setSelected(state.refereeTimeout);
-        refereeTimeout.setEnabled(ActionBoard.refereeTimeout.canExecute(game, state));
+        refereeTimeoutButton.setSelected(state.refereeTimeout);
+        refereeTimeoutButton.setEnabled(ActionBoard.refereeTimeout.canExecute(game, state));
     }
     
     private void updateGlobalStuck(GameState state)
@@ -907,82 +902,82 @@ public class GUI
             {
                 if (state.kickOffTeam == state.team[i].teamColor)
                 {
-                    stuck[i].setEnabled(true);
-                    stuck[i].setText("<font color=#000000>"+KICKOFF_GOAL);
+                    gameStuckButtons[i].setEnabled(true);
+                    gameStuckButtons[i].setText("<font color=#000000>" + KICKOFF_GOAL);
                 } else {
-                    stuck[i].setEnabled(false);
-                    stuck[i].setText("<font color=#808080>"+STUCK);
+                    gameStuckButtons[i].setEnabled(false);
+                    gameStuckButtons[i].setText("<font color=#808080>" + STUCK);
                 }
             } else {
-                stuck[i].setEnabled(ActionBoard.stuck[i].canExecute(game, state));
-                stuck[i].setText((ActionBoard.stuck[i].canExecute(game, state) ? "<font color=#000000>" : "<font color=#808080>")+STUCK);
+                gameStuckButtons[i].setEnabled(ActionBoard.stuck[i].canExecute(game, state));
+                gameStuckButtons[i].setText((ActionBoard.stuck[i].canExecute(game, state) ? "<font color=#000000>" : "<font color=#808080>") + STUCK);
             }
         }
     }
     
     private void updateDropBall(GameState state)
     {
-        dropBall.setEnabled(ActionBoard.dropBall.canExecute(game, state));
+        dropBallButton.setEnabled(ActionBoard.dropBall.canExecute(game, state));
     }
     
     private void updateOut(GameState state)
     {
         for (int i=0; i<2; i++) {
-            out[i].setEnabled(ActionBoard.out[i].canExecute(game, state));
+            outButtons[i].setEnabled(ActionBoard.out[i].canExecute(game, state));
         }
     }
 
     private void updatePenaltiesSPL(GameState state)
     {
-        pen[0].setEnabled(ActionBoard.pushing.canExecute(game, state));
-        pen[1].setEnabled(ActionBoard.leaving.canExecute(game, state));
-        pen[2].setEnabled(ActionBoard.fallen.canExecute(game, state));
-        pen[3].setEnabled(ActionBoard.inactive.canExecute(game, state));
-        pen[3].setText("<html><center>"
+        penaltyButtons[0].setEnabled(ActionBoard.pushing.canExecute(game, state));
+        penaltyButtons[1].setEnabled(ActionBoard.leaving.canExecute(game, state));
+        penaltyButtons[2].setEnabled(ActionBoard.fallen.canExecute(game, state));
+        penaltyButtons[3].setEnabled(ActionBoard.inactive.canExecute(game, state));
+        penaltyButtons[3].setText("<html><center>"
                 +(ActionBoard.inactive.canExecute(game, state) ? "<font color=#000000>" : "<font color=#808080>")
                 +PEN_INACTIVE);
-        pen[4].setEnabled(ActionBoard.defender.canExecute(game, state));
-        pen[5].setEnabled(ActionBoard.holding.canExecute(game, state));
-        pen[6].setEnabled(ActionBoard.hands.canExecute(game, state));
-        pen[7].setEnabled(ActionBoard.pickUpSPL.canExecute(game, state));
-        pen[8].setEnabled(Rules.league.dropInPlayerMode
+        penaltyButtons[4].setEnabled(ActionBoard.defender.canExecute(game, state));
+        penaltyButtons[5].setEnabled(ActionBoard.holding.canExecute(game, state));
+        penaltyButtons[6].setEnabled(ActionBoard.hands.canExecute(game, state));
+        penaltyButtons[7].setEnabled(ActionBoard.pickUpSPL.canExecute(game, state));
+        penaltyButtons[8].setEnabled(Rules.league.dropInPlayerMode
                 ? ActionBoard.teammatePushing.canExecute(game, state)
                 : ActionBoard.coachMotion.canExecute(game, state));
-        pen[9].setEnabled(ActionBoard.substitute.canExecute(game, state));
+        penaltyButtons[9].setEnabled(ActionBoard.substitute.canExecute(game, state));
         
         Action highlightAction = game.getLastUserAction();
-        pen[0].setSelected(highlightAction == ActionBoard.pushing);
-        pen[1].setSelected(highlightAction == ActionBoard.leaving);
-        pen[2].setSelected(highlightAction == ActionBoard.fallen);
-        pen[3].setSelected(highlightAction == ActionBoard.inactive);
-        pen[4].setSelected(highlightAction == ActionBoard.defender);
-        pen[5].setSelected(highlightAction == ActionBoard.holding);
-        pen[6].setSelected(highlightAction == ActionBoard.hands);
-        pen[7].setSelected(highlightAction == ActionBoard.pickUpSPL);
-        pen[8].setSelected(Rules.league.dropInPlayerMode
+        penaltyButtons[0].setSelected(highlightAction == ActionBoard.pushing);
+        penaltyButtons[1].setSelected(highlightAction == ActionBoard.leaving);
+        penaltyButtons[2].setSelected(highlightAction == ActionBoard.fallen);
+        penaltyButtons[3].setSelected(highlightAction == ActionBoard.inactive);
+        penaltyButtons[4].setSelected(highlightAction == ActionBoard.defender);
+        penaltyButtons[5].setSelected(highlightAction == ActionBoard.holding);
+        penaltyButtons[6].setSelected(highlightAction == ActionBoard.hands);
+        penaltyButtons[7].setSelected(highlightAction == ActionBoard.pickUpSPL);
+        penaltyButtons[8].setSelected(Rules.league.dropInPlayerMode
                 ? highlightAction == ActionBoard.teammatePushing
                 : highlightAction == ActionBoard.coachMotion);
-        pen[9].setSelected(highlightAction == ActionBoard.substitute);
+        penaltyButtons[9].setSelected(highlightAction == ActionBoard.substitute);
     }
     
     private void updatePenaltiesHL(GameState state)
     {
-        pen[0].setEnabled(ActionBoard.ballManipulation.canExecute(game, state));
-        pen[1].setEnabled(ActionBoard.pushing.canExecute(game, state));
-        pen[2].setEnabled(ActionBoard.attack.canExecute(game, state));
-        pen[3].setEnabled(ActionBoard.defense.canExecute(game, state));
-        pen[4].setEnabled(ActionBoard.pickUpHL.canExecute(game, state));
-        pen[5].setEnabled(ActionBoard.service.canExecute(game, state));
-        pen[6].setEnabled(ActionBoard.substitute.canExecute(game, state));
+        penaltyButtons[0].setEnabled(ActionBoard.ballManipulation.canExecute(game, state));
+        penaltyButtons[1].setEnabled(ActionBoard.pushing.canExecute(game, state));
+        penaltyButtons[2].setEnabled(ActionBoard.attack.canExecute(game, state));
+        penaltyButtons[3].setEnabled(ActionBoard.defense.canExecute(game, state));
+        penaltyButtons[4].setEnabled(ActionBoard.pickUpHL.canExecute(game, state));
+        penaltyButtons[5].setEnabled(ActionBoard.service.canExecute(game, state));
+        penaltyButtons[6].setEnabled(ActionBoard.substitute.canExecute(game, state));
 
         Action highlightAction = game.getLastUserAction();
-        pen[0].setSelected(highlightAction == ActionBoard.ballManipulation);
-        pen[1].setSelected(highlightAction == ActionBoard.pushing);
-        pen[2].setSelected(highlightAction == ActionBoard.attack);
-        pen[3].setSelected(highlightAction == ActionBoard.defense);
-        pen[4].setSelected(highlightAction == ActionBoard.pickUpHL);
-        pen[5].setSelected(highlightAction == ActionBoard.service);
-        pen[6].setSelected(highlightAction == ActionBoard.substitute);
+        penaltyButtons[0].setSelected(highlightAction == ActionBoard.ballManipulation);
+        penaltyButtons[1].setSelected(highlightAction == ActionBoard.pushing);
+        penaltyButtons[2].setSelected(highlightAction == ActionBoard.attack);
+        penaltyButtons[3].setSelected(highlightAction == ActionBoard.defense);
+        penaltyButtons[4].setSelected(highlightAction == ActionBoard.pickUpHL);
+        penaltyButtons[5].setSelected(highlightAction == ActionBoard.service);
+        penaltyButtons[6].setSelected(highlightAction == ActionBoard.substitute);
     }
     
     private void updateTimelineUndo()
@@ -1002,7 +997,7 @@ public class GUI
                 undoButtons[i].setSelected(false);
             }
         }
-        cancelUndo.setVisible(isUndoingAnything);
+        cancelUndoButton.setVisible(isUndoingAnything);
     }
     
     private void updateFonts()
@@ -1024,50 +1019,50 @@ public class GUI
         Font playModeFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(PLAY_MODE_FONT_SIZE *(size)));
 
         for (int i=0; i<=1; i++) {
-            name[i].setFont(titleFont);
-            goalInc[i].setFont(standardFont);
-            goalDec[i].setFont(standardFont);
-            kickOff[i].setFont(standardFont);
-            goals[i].setFont(goalsFont);
-            pushes[i].setFont(standardFont);
-            for (int j=0; j<robot[i].length; j++) {
+            nameLabels[i].setFont(titleFont);
+            goalIncButton[i].setFont(standardFont);
+            goalDecButton[i].setFont(standardFont);
+            kickOffRadioButtons[i].setFont(standardFont);
+            goalCountLabels[i].setFont(goalsFont);
+            pushLabels[i].setFont(standardFont);
+            for (int j=0; j< robotButtons[i].length; j++) {
                 robotLabel[i][j].setFont(titleFont);
             }
-            timeOut[i].setFont(timeoutFont);
-            out[i].setFont(timeoutFont);
+            timeOutButton[i].setFont(timeoutFont);
+            outButtons[i].setFont(timeoutFont);
             if (Rules.league instanceof SPL) {
-                stuck[i].setFont(timeoutFont);
+                gameStuckButtons[i].setFont(timeoutFont);
             }
         }
-        clock.setFont(timeFont);
-        clockSub.setFont(timeSubFont);
+        clockLabel.setFont(timeFont);
+        secondaryTimeLabel.setFont(timeSubFont);
         
-        firstHalf.setFont(timeoutFont);
-        secondHalf.setFont(timeoutFont);
+        firstHalfPeriodButton.setFont(timeoutFont);
+        secondHalfPeriodButton.setFont(timeoutFont);
         if (Rules.league.overtime) {
-            firstHalfOvertime.setFont(timeoutFont);
-            secondHalfOvertime.setFont(timeoutFont);
+            firstHalfOvertimePeriodButton.setFont(timeoutFont);
+            secondHalfOvertimePeriodButton.setFont(timeoutFont);
         }
-        penaltyShoot.setFont(timeoutFont);
+        penaltyShootPeriodButton.setFont(timeoutFont);
         if (Rules.league.isRefereeTimeoutAvailable) {
-            refereeTimeout.setFont(timeoutFont);
+            refereeTimeoutButton.setFont(timeoutFont);
         }
 
-        initial.setFont(playModeFont);
-        ready.setFont(playModeFont);
-        set.setFont(playModeFont);
-        play.setFont(playModeFont);
-        finish.setFont(playModeFont);
-        for (JToggleButton penaltyButton : pen) {
+        initialPlayModeButton.setFont(playModeFont);
+        readyPlayModeButton.setFont(playModeFont);
+        setPlayModeButton.setFont(playModeFont);
+        playPlayModeButton.setFont(playModeFont);
+        finishPlayModeButton.setFont(playModeFont);
+        for (JToggleButton penaltyButton : penaltyButtons) {
             penaltyButton.setFont(standardFont);
         }
-        if (dropBall != null) {
-            dropBall.setFont(standardFont);
+        if (dropBallButton != null) {
+            dropBallButton.setFont(standardFont);
         }
         for (JToggleButton undoButton : undoButtons) {
             undoButton.setFont(timeoutFont);
         }
-        cancelUndo.setFont(standardFont);
+        cancelUndoButton.setFont(standardFont);
     }
     
     /**
