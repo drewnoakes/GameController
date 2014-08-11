@@ -150,7 +150,6 @@ public class GUI
     private final JLabel[] pushLabels;
     private final JButton[][] robotButtons;
     private final JLabel[][] robotLabel;
-    private final ImageIcon[][] robotOnlineStatusIcons;
     private final JProgressBar[][] robotProgressBars;
     private final JToggleButton refereeTimeoutButton;
     private final JToggleButton[] timeOutButton;
@@ -282,12 +281,10 @@ public class GUI
         if (Rules.league.isCoachAvailable) {
             robotButtons = new JButton[2][Rules.league.teamSize+1];
             robotLabel = new JLabel[2][Rules.league.teamSize+1];
-            robotOnlineStatusIcons = new ImageIcon[2][Rules.league.teamSize+1];
             robotProgressBars = new JProgressBar[2][Rules.league.teamSize+1];
         } else {
             robotButtons = new JButton[2][Rules.league.teamSize];
             robotLabel = new JLabel[2][Rules.league.teamSize];
-            robotOnlineStatusIcons = new ImageIcon[2][Rules.league.teamSize];
             robotProgressBars = new JProgressBar[2][Rules.league.teamSize];
         }
         for (int i=0; i<2; i++) {
@@ -299,8 +296,6 @@ public class GUI
                 robotButtons[i][j] = new Button();
                 robotLabel[i][j] = new JLabel();
                 robotLabel[i][j].setHorizontalAlignment(JLabel.CENTER);
-                robotOnlineStatusIcons[i][j] = lanUnknown;
-                robotLabel[i][j].setIcon(robotOnlineStatusIcons[i][j]);
                 robotProgressBars[i][j] = new JProgressBar();
                 robotProgressBars[i][j].setMaximum(1000);
                 robotProgressBars[i][j].setVisible(false);
