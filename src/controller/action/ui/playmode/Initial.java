@@ -1,9 +1,8 @@
 package controller.action.ui.playmode;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import data.GameState;
 import data.PlayMode;
 import rules.Rules;
@@ -13,39 +12,31 @@ import rules.Rules;
  *
  * @author Michel Bartsch
  */
-public class Initial extends GCAction
+public class Initial extends Action
 {
-    public Initial()
-    {
-        super(ActionTrigger.User);
-    }
-
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (state.playMode != PlayMode.Initial) {
-            forcePerform(state, "Initial");
+            forceExecute(state);
+            game.pushState("Initial");
         }
     }
 
     /**
      * Performs this action, even if the current play mode is {@link PlayMode#Initial}.
-     *
-     * @param data The current data to work on.
-     * @param message the message to associate with this action
      */
-    public void forcePerform(GameState data, String message)
+    public void forceExecute(@NotNull GameState state)
     {
         if (Rules.league.returnRobotsInGameStoppages) {
-            data.resetPenaltyTimes();
+            state.resetPenaltyTimes();
         }
-        data.whenCurrentPlayModeBegan = data.getTime();
-        data.playMode = PlayMode.Initial;
-        log(data, message, message);
+        state.whenCurrentPlayModeBegan = state.getTime();
+        state.playMode = PlayMode.Initial;
     }
 
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return state.playMode == PlayMode.Initial || state.testmode;
     }

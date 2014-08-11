@@ -1,9 +1,8 @@
 package controller.action.ui.period;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import data.GameState;
 import data.PlayMode;
 import data.Period;
@@ -14,15 +13,10 @@ import rules.Rules;
  *
  * @author Michel Bartsch
  */
-public class PenaltyShoot extends GCAction
+public class PenaltyShoot extends Action
 {
-    public PenaltyShoot()
-    {
-        super(ActionTrigger.User);
-    }
-
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (state.period != Period.PenaltyShootout) {
             state.period = Period.PenaltyShootout;
@@ -33,12 +27,12 @@ public class PenaltyShoot extends GCAction
             if (Rules.league.timeOutPerHalf) {
                 state.timeOutTaken = new boolean[] {false, false};
             }
-            log(state, message, "Penalty Shoot-out");
+            game.pushState("Penalty Shoot-out");
         }
     }
     
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return state.period == Period.PenaltyShootout
           || state.previousPeriod == Period.PenaltyShootout

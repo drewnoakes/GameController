@@ -1,9 +1,8 @@
 package controller.action.ui.playmode;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import data.GameState;
 import data.PlayMode;
 import rules.Rules;
@@ -13,15 +12,10 @@ import rules.Rules;
  *
  * @author Michel Bartsch
  */
-public class Finish extends GCAction
+public class Finish extends Action
 {
-    public Finish()
-    {
-        super(ActionTrigger.User);
-    }
-
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (state.playMode == PlayMode.Finished) {
             return;
@@ -32,11 +26,12 @@ public class Finish extends GCAction
         state.addTimeInCurrentPlayMode();
         state.whenCurrentPlayModeBegan = state.getTime();
         state.playMode = PlayMode.Finished;
-        log(state, message, "Finished");
+
+        game.pushState("Finished");
     }
     
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return state.playMode == PlayMode.Ready
             || state.playMode == PlayMode.Set

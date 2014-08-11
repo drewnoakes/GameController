@@ -1,23 +1,18 @@
 package controller.action.ui.period;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
+import controller.Action;
+import controller.Game;
 import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
-import controller.action.GCAction;
 import data.GameState;
 import data.PlayMode;
 import data.Period;
 
-public class RefereeTimeout extends GCAction
+public class RefereeTimeout extends Action
 {
-    public RefereeTimeout()
-    {
-        super(ActionTrigger.User);
-    }
-
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (!state.refereeTimeout) {
             state.previousPeriod = state.period;
@@ -30,19 +25,21 @@ public class RefereeTimeout extends GCAction
                     && (state.playMode == PlayMode.Set || state.playMode == PlayMode.Playing)) {
                 state.team[state.kickOffTeam == state.team[0].teamColor ? 0 : 1].penaltyShot--;
             }
-            ActionBoard.initial.forcePerform(state, "Referee Timeout");
+            game.apply(ActionBoard.initial, ActionTrigger.User);
+            game.pushState("Referee Timeout");
         } else {
             state.period = state.previousPeriod;
             state.previousPeriod = Period.Timeout;
             state.refereeTimeout = false;
             if (state.period != Period.PenaltyShootout) {
-                ActionBoard.ready.perform(state, "End of Referee Timeout");
+                game.apply(ActionBoard.ready, ActionTrigger.User);
+                game.pushState("End of Referee Timeout");
             }
         }
     }
 
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return state.playMode != PlayMode.Finished
                 && !state.timeOutActive[0]

@@ -27,7 +27,7 @@ public enum Penalty
     HLIllegalAttack(3, 30, "Illegal Attack"),
     HLIllegalDefense(4, 30, "Illegal Defense"),
     HLPickupOrIncapable(5, 30, "Pickup or Incapable"),
-    HLService(6, 60, "Service"),
+    Service(6, 60, "Service"),
 
     Substitute(14, -1, "Substitute"),
     Manual(15, -1, "Manual");
@@ -88,7 +88,7 @@ public enum Penalty
                 case 3: return HLIllegalAttack;
                 case 4: return HLIllegalDefense;
                 case 5: return HLPickupOrIncapable;
-                case 6: return HLService;
+                case 6: return Service;
                 case 14: return Substitute;
                 case 15: return Manual;
                 default:

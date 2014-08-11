@@ -1,31 +1,24 @@
 package controller.action.ui;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import data.GameState;
 import data.PlayMode;
 
-public class IncGameClock extends GCAction
+public class IncGameClock extends Action
 {
-    public IncGameClock()
-    {
-        super(ActionTrigger.User);
-    }
-
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         state.timeBeforeCurrentPlayMode -= 1000*60;
-        log(state, message, "Increase Game Clock");
+        game.pushState("Increase Game Clock");
     }
 
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
-        return state.playMode != PlayMode.Playing
-                && state.timeBeforeCurrentPlayMode >= 1000*60
-                || state.testmode;
+        return (state.playMode != PlayMode.Playing && state.timeBeforeCurrentPlayMode >= 1000*60)
+            || state.testmode;
     }
 }

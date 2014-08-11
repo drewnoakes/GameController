@@ -1,6 +1,7 @@
 package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
+import controller.Game;
 import data.GameState;
 import data.Penalty;
 import data.PlayerInfo;
@@ -10,16 +11,16 @@ import data.PlayerInfo;
  *
  * @author Michel Bartsch
  */
-public class PickUp extends PenaltyAction
+public class PickUpSPL extends PenaltyAction
 {
     @Override
-    public void performOn(@NotNull GameState state, @NotNull PlayerInfo player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerInfo player, int side, int number)
     {
         if (player.penalty == Penalty.None) {
             state.whenPenalized[side][number] = state.getTime();
         }
 
         player.penalty = Penalty.SplRequestForPickup;
-        log(state, null, "Request for PickUp " + state.team[side].teamColor + " " + (number+1));
+        game.pushState("Request for PickUp " + state.team[side].teamColor + " " + (number + 1));
     }
 }

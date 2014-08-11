@@ -12,7 +12,6 @@ import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -20,11 +19,10 @@ import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
 
 import common.EventHandler;
-import common.Log;
 import common.TotalScaleLayout;
-import controller.ActionHandler;
+import controller.Action;
+import controller.Game;
 import controller.action.ActionBoard;
-import controller.action.GCAction;
 import controller.net.RobotOnlineStatus;
 import controller.net.RobotWatcher;
 import controller.ui.controls.*;
@@ -182,22 +180,32 @@ public class GUI
     private JToggleButton[] pen;
     private JButton dropBall;
     private final ImagePanel bottom;
-    private final JPanel log;
-    private final JToggleButton[] undo;
+    private final JToggleButton[] undoButtons;
     private final JButton cancelUndo;
 
     private final RobotWatcher robotWatcher;
+    private final Game game;
 
     /**
      * Initialises and displays the GUI.
      *
+     * @param game the game to bind the UI to.
      * @param fullscreen whether the window should fill the screen.
-     * @param state the initial game state.
      * @param robotWatcher the robot watcher which track the online status of bots.
      */
-    public GUI(boolean fullscreen, GameState state, RobotWatcher robotWatcher)
+    public GUI(Game game, boolean fullscreen, RobotWatcher robotWatcher)
     {
+        this.game = game;
         this.robotWatcher = robotWatcher;
+
+        game.gameStateChanged.subscribe(new EventHandler<GameState>()
+        {
+            @Override
+            public void handle(GameState state)
+            {
+                GUI.this.update(state);
+            }
+        });
 
         frame = new PaintableFrame(WINDOW_TITLE);
         frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -220,7 +228,7 @@ public class GUI
         {
             @Override
             public void windowClosing(WindowEvent e) {
-                ActionHandler.getInstance().state.shutdown = true;
+                GUI.this.game.requestShutdown();
             }
         });
         
@@ -259,9 +267,9 @@ public class GUI
         kickOffGroup = new ButtonGroup();
         pushes = new JLabel[2];
         for (int i=0; i<2; i++) {
-            name[i] = new JLabel(Teams.getNames(false)[state.team[i].teamNumber]);
+            name[i] = new JLabel(Teams.getNames(false)[game.getGameState().team[i].teamNumber]);
             name[i].setHorizontalAlignment(JLabel.CENTER);
-            name[i].setForeground(state.team[i].teamColor.getColor());
+            name[i].setForeground(game.getGameState().team[i].teamColor.getColor());
             goalInc[i] = new Button("+");
             goalDec[i] = new Button("-");
             kickOff[i] = new JRadioButton(KICKOFF);
@@ -417,15 +425,15 @@ public class GUI
             dropBall = new Button(DROP_BALL);
         }
         //--bottom--
-        //  log
-        log = new JPanel();
-        log.setOpaque(false);
-        log.setLayout(new GridLayout(1, ActionBoard.MAX_NUM_UNDOS_AT_ONCE-1, 10, 0));
-        undo = new JToggleButton[ActionBoard.MAX_NUM_UNDOS_AT_ONCE-1];
-        for (int i=undo.length-1; i>=0; i--) {
-            undo[i] = new ToggleButton();
-            undo[i].setVisible(false);
-            log.add(undo[i]);
+        //  timeline
+        JPanel timelinePanel = new JPanel();
+        timelinePanel.setOpaque(false);
+        timelinePanel.setLayout(new GridLayout(1, ActionBoard.MAX_NUM_UNDOS_AT_ONCE - 1, 10, 0));
+        undoButtons = new JToggleButton[ActionBoard.MAX_NUM_UNDOS_AT_ONCE - 1];
+        for (int i = undoButtons.length - 1; i >= 0; i--) {
+            undoButtons[i] = new ToggleButton();
+            undoButtons[i].setVisible(false);
+            timelinePanel.add(undoButtons[i]);
         }
         cancelUndo = new Button(CANCEL);
         cancelUndo.setVisible(false);
@@ -532,7 +540,7 @@ public class GUI
             layout.add(.31,  .68, .185, .08, pen[6]);
             layout.add(.31,  .78, .38,  .08, dropBall);
         }
-        layout.add(.08, .88, .84, .11, log);
+        layout.add(.08, .88, .84, .11, timelinePanel);
         layout.add(.925, .88, .07, .11, cancelUndo);
         layout.add(0, 0, .3, .87, side[0]);
         layout.add(.3, 0, .4, .87, mid);
@@ -541,61 +549,61 @@ public class GUI
         
         //--listener--
         for (int i=0; i<2; i++) {
-            goalDec[i].addActionListener(new ActionListenerAdapter(ActionBoard.goalDec[i]));
-            goalInc[i].addActionListener(new ActionListenerAdapter(ActionBoard.goalInc[i]));
-            kickOff[i].addActionListener(new ActionListenerAdapter(ActionBoard.kickOff[i]));
+            goalDec[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.goalDec[i]));
+            goalInc[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.goalInc[i]));
+            kickOff[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.kickOff[i]));
             for (int j=0; j<robot[i].length; j++) {
-                robot[i][j].addActionListener(new ActionListenerAdapter(ActionBoard.robot[i][j]));
+                robot[i][j].addActionListener(new ActionListenerAdapter(game, ActionBoard.robotButton[i][j]));
             }
-            timeOut[i].addActionListener(new ActionListenerAdapter(ActionBoard.timeOut[i]));
-            out[i].addActionListener(new ActionListenerAdapter(ActionBoard.out[i]));
+            timeOut[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.timeOut[i]));
+            out[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.out[i]));
             if (Rules.league instanceof SPL) {
-                stuck[i].addActionListener(new ActionListenerAdapter(ActionBoard.stuck[i]));
+                stuck[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.stuck[i]));
             }
         }
-        refereeTimeout.addActionListener(new ActionListenerAdapter(ActionBoard.refereeTimeout));
-        initial.addActionListener(new ActionListenerAdapter(ActionBoard.initial));
-        ready.addActionListener(new ActionListenerAdapter(ActionBoard.ready));
-        set.addActionListener(new ActionListenerAdapter(ActionBoard.set));
-        play.addActionListener(new ActionListenerAdapter(ActionBoard.play));
-        finish.addActionListener(new ActionListenerAdapter(ActionBoard.finish));
-        clockReset.addActionListener(new ActionListenerAdapter(ActionBoard.clockReset));
-        clockPause.addActionListener(new ActionListenerAdapter(ActionBoard.clockPause));
+        refereeTimeout.addActionListener(new ActionListenerAdapter(game, ActionBoard.refereeTimeout));
+        initial.addActionListener(new ActionListenerAdapter(game, ActionBoard.initial));
+        ready.addActionListener(new ActionListenerAdapter(game, ActionBoard.ready));
+        set.addActionListener(new ActionListenerAdapter(game, ActionBoard.set));
+        play.addActionListener(new ActionListenerAdapter(game, ActionBoard.play));
+        finish.addActionListener(new ActionListenerAdapter(game, ActionBoard.finish));
+        clockReset.addActionListener(new ActionListenerAdapter(game, ActionBoard.clockReset));
+        clockPause.addActionListener(new ActionListenerAdapter(game, ActionBoard.clockPause));
         if (Rules.league.lostTime) {
-            incGameClock.addActionListener(new ActionListenerAdapter(ActionBoard.incGameClock));
+            incGameClock.addActionListener(new ActionListenerAdapter(game, ActionBoard.incGameClock));
         }
-        firstHalf.addActionListener(new ActionListenerAdapter(ActionBoard.firstHalf));
-        secondHalf.addActionListener(new ActionListenerAdapter(ActionBoard.secondHalf));
+        firstHalf.addActionListener(new ActionListenerAdapter(game, ActionBoard.firstHalf));
+        secondHalf.addActionListener(new ActionListenerAdapter(game, ActionBoard.secondHalf));
         if (Rules.league.overtime) {
-            firstHalfOvertime.addActionListener(new ActionListenerAdapter(ActionBoard.firstHalfOvertime));
-            secondHalfOvertime.addActionListener(new ActionListenerAdapter(ActionBoard.secondHalfOvertime));
+            firstHalfOvertime.addActionListener(new ActionListenerAdapter(game, ActionBoard.firstHalfOvertime));
+            secondHalfOvertime.addActionListener(new ActionListenerAdapter(game, ActionBoard.secondHalfOvertime));
         }
-        penaltyShoot.addActionListener(new ActionListenerAdapter(ActionBoard.penaltyShoot));
+        penaltyShoot.addActionListener(new ActionListenerAdapter(game, ActionBoard.penaltyShoot));
         if (Rules.league instanceof SPL) {
-            pen[0].addActionListener(new ActionListenerAdapter(ActionBoard.pushing));
-            pen[1].addActionListener(new ActionListenerAdapter(ActionBoard.leaving));
-            pen[2].addActionListener(new ActionListenerAdapter(ActionBoard.fallen));
-            pen[3].addActionListener(new ActionListenerAdapter(ActionBoard.inactive));
-            pen[4].addActionListener(new ActionListenerAdapter(ActionBoard.defender));
-            pen[5].addActionListener(new ActionListenerAdapter(ActionBoard.holding));
-            pen[6].addActionListener(new ActionListenerAdapter(ActionBoard.hands));
-            pen[7].addActionListener(new ActionListenerAdapter(ActionBoard.pickUp));
-            pen[8].addActionListener(new ActionListenerAdapter(Rules.league.dropInPlayerMode ? ActionBoard.teammatePushing : ActionBoard.coachMotion));
-            pen[9].addActionListener(new ActionListenerAdapter(ActionBoard.substitute));
+            pen[0].addActionListener(new ActionListenerAdapter(game, ActionBoard.pushing));
+            pen[1].addActionListener(new ActionListenerAdapter(game, ActionBoard.leaving));
+            pen[2].addActionListener(new ActionListenerAdapter(game, ActionBoard.fallen));
+            pen[3].addActionListener(new ActionListenerAdapter(game, ActionBoard.inactive));
+            pen[4].addActionListener(new ActionListenerAdapter(game, ActionBoard.defender));
+            pen[5].addActionListener(new ActionListenerAdapter(game, ActionBoard.holding));
+            pen[6].addActionListener(new ActionListenerAdapter(game, ActionBoard.hands));
+            pen[7].addActionListener(new ActionListenerAdapter(game, ActionBoard.pickUpSPL));
+            pen[8].addActionListener(new ActionListenerAdapter(game, Rules.league.dropInPlayerMode ? ActionBoard.teammatePushing : ActionBoard.coachMotion));
+            pen[9].addActionListener(new ActionListenerAdapter(game, ActionBoard.substitute));
         } else if (Rules.league instanceof HL) {
-            pen[0].addActionListener(new ActionListenerAdapter(ActionBoard.ballManipulation));
-            pen[1].addActionListener(new ActionListenerAdapter(ActionBoard.pushing));
-            pen[2].addActionListener(new ActionListenerAdapter(ActionBoard.attack));
-            pen[3].addActionListener(new ActionListenerAdapter(ActionBoard.defense));
-            pen[4].addActionListener(new ActionListenerAdapter(ActionBoard.pickUpHL));
-            pen[5].addActionListener(new ActionListenerAdapter(ActionBoard.serviceHL));
-            pen[6].addActionListener(new ActionListenerAdapter(ActionBoard.substitute));
-            dropBall.addActionListener(new ActionListenerAdapter(ActionBoard.dropBall));
+            pen[0].addActionListener(new ActionListenerAdapter(game, ActionBoard.ballManipulation));
+            pen[1].addActionListener(new ActionListenerAdapter(game, ActionBoard.pushing));
+            pen[2].addActionListener(new ActionListenerAdapter(game, ActionBoard.attack));
+            pen[3].addActionListener(new ActionListenerAdapter(game, ActionBoard.defense));
+            pen[4].addActionListener(new ActionListenerAdapter(game, ActionBoard.pickUpHL));
+            pen[5].addActionListener(new ActionListenerAdapter(game, ActionBoard.service));
+            pen[6].addActionListener(new ActionListenerAdapter(game, ActionBoard.substitute));
+            dropBall.addActionListener(new ActionListenerAdapter(game, ActionBoard.dropBall));
         }
-        for (int i=0; i<undo.length; i++) {
-            undo[i].addActionListener(new ActionListenerAdapter(ActionBoard.undo[i+1]));
+        for (int i=0; i< undoButtons.length; i++) {
+            undoButtons[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.undo[i+1]));
         }
-        cancelUndo.addActionListener(new ActionListenerAdapter(ActionBoard.cancelUndo));
+        cancelUndo.addActionListener(new ActionListenerAdapter(game, ActionBoard.cancelUndo));
       
         //fullscreen
         if (fullscreen) {
@@ -607,8 +615,8 @@ public class GUI
             }
         }
 
-        // Populate the initial state
-        update(state);
+        // Populate the UI with the initial game state
+        update(game.getGameState());
 
         frame.setVisible(true);
     }
@@ -621,13 +629,13 @@ public class GUI
      *  1. The RobotWatcher, you can ask him for the robots online-status.
      *  2. The last action from the ActionHandler, but you should try to avoid
      *     this for less dependencies between actions and GUI (view and control).
-     *  3. The actions isLegal method to enable or disable buttons.
+     *  3. The actions canExecute method to enable or disable buttons.
      *
      * This method should never have other effects than updating the view!
      * 
      * @param state the game state to use when populating the UI.
      */
-    public void update(GameState state)
+    private void update(GameState state)
     {
         updateClock(state);
         updateHalf(state);
@@ -648,7 +656,9 @@ public class GUI
             updatePenaltiesHL(state);
             updateDropBall(state);
         }
+
         updateTimelineUndo();
+
         frame.repaint();
     }
 
@@ -683,10 +693,10 @@ public class GUI
             tmp = clockImgPlay;
         }
         clockPause.setImage(tmp.getImage());
-        clockReset.setVisible(ActionBoard.clockReset.isLegal(state));
-        clockPause.setVisible(ActionBoard.clockPause.isLegal(state));
+        clockReset.setVisible(ActionBoard.clockReset.canExecute(game, state));
+        clockPause.setVisible(ActionBoard.clockPause.canExecute(game, state));
         if (Rules.league.lostTime) {
-            incGameClock.setEnabled(ActionBoard.incGameClock.isLegal(state));
+            incGameClock.setEnabled(ActionBoard.incGameClock.canExecute(game, state));
         }
     }
     
@@ -695,13 +705,13 @@ public class GUI
         for (int i=0; i<2; i++) {
             name[i].setText(Teams.getNames(false)[state.team[i].teamNumber]);
         }
-        firstHalf.setEnabled(ActionBoard.firstHalf.isLegal(state));
-        secondHalf.setEnabled(ActionBoard.secondHalf.isLegal(state));
+        firstHalf.setEnabled(ActionBoard.firstHalf.canExecute(game, state));
+        secondHalf.setEnabled(ActionBoard.secondHalf.canExecute(game, state));
         if (Rules.league.overtime) {
-            firstHalfOvertime.setEnabled(ActionBoard.firstHalfOvertime.isLegal(state));
-            secondHalfOvertime.setEnabled(ActionBoard.secondHalfOvertime.isLegal(state));
+            firstHalfOvertime.setEnabled(ActionBoard.firstHalfOvertime.canExecute(game, state));
+            secondHalfOvertime.setEnabled(ActionBoard.secondHalfOvertime.canExecute(game, state));
         }
-        penaltyShoot.setEnabled(ActionBoard.penaltyShoot.isLegal(state));
+        penaltyShoot.setEnabled(ActionBoard.penaltyShoot.canExecute(game, state));
         firstHalf.setSelected((state.period == Period.Normal)
                             && (state.firstHalf));
         secondHalf.setSelected((state.period == Period.Normal)
@@ -725,11 +735,11 @@ public class GUI
     
     private void updatePlayMode(GameState state)
     {
-        initial.setEnabled(ActionBoard.initial.isLegal(state));
-        ready.setEnabled(ActionBoard.ready.isLegal(state));
-        set.setEnabled(ActionBoard.set.isLegal(state));
-        play.setEnabled(ActionBoard.play.isLegal(state));
-        finish.setEnabled(ActionBoard.finish.isLegal(state));
+        initial.setEnabled(ActionBoard.initial.canExecute(game, state));
+        ready.setEnabled(ActionBoard.ready.canExecute(game, state));
+        set.setEnabled(ActionBoard.set.canExecute(game, state));
+        play.setEnabled(ActionBoard.play.canExecute(game, state));
+        finish.setEnabled(ActionBoard.finish.canExecute(game, state));
 
         if (state.playMode == PlayMode.Initial) {
             initial.setSelected(true);
@@ -753,8 +763,8 @@ public class GUI
     {
         for (int i=0; i<2; i++) {
             goals[i].setText(""+state.team[i].score);
-            goalInc[i].setEnabled(ActionBoard.goalInc[i].isLegal(state));
-            goalDec[i].setVisible(ActionBoard.goalDec[i].isLegal(state));
+            goalInc[i].setEnabled(ActionBoard.goalInc[i].canExecute(game, state));
+            goalDec[i].setVisible(ActionBoard.goalDec[i].canExecute(game, state));
         }
     }
     
@@ -767,7 +777,7 @@ public class GUI
             kickOff[state.team[0].teamColor == state.kickOffTeam ? 0 : 1].setSelected(true);
         }
         for (int i=0; i<2; i++) {
-            kickOff[i].setEnabled(ActionBoard.kickOff[i].isLegal(state));
+            kickOff[i].setEnabled(ActionBoard.kickOff[i].canExecute(game, state));
             if (state.period != Period.PenaltyShootout
                 && state.previousPeriod != Period.PenaltyShootout) {
                 kickOff[i].setText(KICKOFF);
@@ -799,7 +809,7 @@ public class GUI
 
         for (int i=0; i<robot.length; i++) {
             for (int j=0; j<robot[i].length; j++) {
-                if (ActionBoard.robot[i][j].isCoach()) {
+                if (ActionBoard.robotButton[i][j].isCoach()) {
                    if (state.team[i].coach.penalty == Penalty.SplCoachMotion) {
                       robot[i][j].setEnabled(false);
                       robotLabel[i][j].setText(EJECTED);
@@ -815,7 +825,7 @@ public class GUI
                                         state.team[i].player[j].penalty == Penalty.SplRequestForPickup)
                                    || (Rules.league instanceof HL &&
                                        ( state.team[i].player[j].penalty == Penalty.HLPickupOrIncapable
-                                      || state.team[i].player[j].penalty == Penalty.HLService ))
+                                      || state.team[i].player[j].penalty == Penalty.Service))
                                     );
                             if (seconds == 0) {
                                 if (pickup) {
@@ -850,7 +860,7 @@ public class GUI
                     }
                 }    
                 
-                robot[i][j].setEnabled(ActionBoard.robot[i][j].isLegal(state));
+                robot[i][j].setEnabled(ActionBoard.robotButton[i][j].canExecute(game, state));
                 
                 ImageIcon currentLanIcon;
                 if (onlineStatus[i][j] == RobotOnlineStatus.ONLINE) {
@@ -879,14 +889,14 @@ public class GUI
                 timeOut[i].setSelected(!IS_OSX || !shouldHighlight);
                 highlight(timeOut[i], shouldHighlight);
             }
-            timeOut[i].setEnabled(ActionBoard.timeOut[i].isLegal(state));
+            timeOut[i].setEnabled(ActionBoard.timeOut[i].canExecute(game, state));
         }
     }
     
     private void updateRefereeTimeout(GameState state)
     {
         refereeTimeout.setSelected(state.refereeTimeout);
-        refereeTimeout.setEnabled(ActionBoard.refereeTimeout.isLegal(state));
+        refereeTimeout.setEnabled(ActionBoard.refereeTimeout.canExecute(game, state));
     }
     
     private void updateGlobalStuck(GameState state)
@@ -904,42 +914,43 @@ public class GUI
                     stuck[i].setText("<font color=#808080>"+STUCK);
                 }
             } else {
-                stuck[i].setEnabled(ActionBoard.stuck[i].isLegal(state));
-                stuck[i].setText((ActionBoard.stuck[i].isLegal(state) ? "<font color=#000000>" : "<font color=#808080>")+STUCK);
+                stuck[i].setEnabled(ActionBoard.stuck[i].canExecute(game, state));
+                stuck[i].setText((ActionBoard.stuck[i].canExecute(game, state) ? "<font color=#000000>" : "<font color=#808080>")+STUCK);
             }
         }
     }
     
     private void updateDropBall(GameState state)
     {
-        dropBall.setEnabled(ActionBoard.dropBall.isLegal(state));
+        dropBall.setEnabled(ActionBoard.dropBall.canExecute(game, state));
     }
     
     private void updateOut(GameState state)
     {
         for (int i=0; i<2; i++) {
-            out[i].setEnabled(ActionBoard.out[i].isLegal(state));
+            out[i].setEnabled(ActionBoard.out[i].canExecute(game, state));
         }
     }
 
     private void updatePenaltiesSPL(GameState state)
     {
-        pen[0].setEnabled(ActionBoard.pushing.isLegal(state));
-        pen[1].setEnabled(ActionBoard.leaving.isLegal(state));
-        pen[2].setEnabled(ActionBoard.fallen.isLegal(state));
-        pen[3].setEnabled(ActionBoard.inactive.isLegal(state));
+        pen[0].setEnabled(ActionBoard.pushing.canExecute(game, state));
+        pen[1].setEnabled(ActionBoard.leaving.canExecute(game, state));
+        pen[2].setEnabled(ActionBoard.fallen.canExecute(game, state));
+        pen[3].setEnabled(ActionBoard.inactive.canExecute(game, state));
         pen[3].setText("<html><center>"
-                +(ActionBoard.inactive.isLegal(state) ? "<font color=#000000>" : "<font color=#808080>")
+                +(ActionBoard.inactive.canExecute(game, state) ? "<font color=#000000>" : "<font color=#808080>")
                 +PEN_INACTIVE);
-        pen[4].setEnabled(ActionBoard.defender.isLegal(state));
-        pen[5].setEnabled(ActionBoard.holding.isLegal(state));
-        pen[6].setEnabled(ActionBoard.hands.isLegal(state));
-        pen[7].setEnabled(ActionBoard.pickUp.isLegal(state));
-        pen[8].setEnabled(Rules.league.dropInPlayerMode ? ActionBoard.teammatePushing.isLegal(state)
-                : ActionBoard.coachMotion.isLegal(state));
-        pen[9].setEnabled(ActionBoard.substitute.isLegal(state));
+        pen[4].setEnabled(ActionBoard.defender.canExecute(game, state));
+        pen[5].setEnabled(ActionBoard.holding.canExecute(game, state));
+        pen[6].setEnabled(ActionBoard.hands.canExecute(game, state));
+        pen[7].setEnabled(ActionBoard.pickUpSPL.canExecute(game, state));
+        pen[8].setEnabled(Rules.league.dropInPlayerMode
+                ? ActionBoard.teammatePushing.canExecute(game, state)
+                : ActionBoard.coachMotion.canExecute(game, state));
+        pen[9].setEnabled(ActionBoard.substitute.canExecute(game, state));
         
-        GCAction highlightAction = ActionHandler.getInstance().lastUserAction;
+        Action highlightAction = game.getLastUserAction();
         pen[0].setSelected(highlightAction == ActionBoard.pushing);
         pen[1].setSelected(highlightAction == ActionBoard.leaving);
         pen[2].setSelected(highlightAction == ActionBoard.fallen);
@@ -947,52 +958,51 @@ public class GUI
         pen[4].setSelected(highlightAction == ActionBoard.defender);
         pen[5].setSelected(highlightAction == ActionBoard.holding);
         pen[6].setSelected(highlightAction == ActionBoard.hands);
-        pen[7].setSelected(highlightAction == ActionBoard.pickUp);
-        pen[8].setSelected(Rules.league.dropInPlayerMode ? highlightAction == ActionBoard.teammatePushing
+        pen[7].setSelected(highlightAction == ActionBoard.pickUpSPL);
+        pen[8].setSelected(Rules.league.dropInPlayerMode
+                ? highlightAction == ActionBoard.teammatePushing
                 : highlightAction == ActionBoard.coachMotion);
         pen[9].setSelected(highlightAction == ActionBoard.substitute);
     }
     
     private void updatePenaltiesHL(GameState state)
     {
-        pen[0].setEnabled(ActionBoard.ballManipulation.isLegal(state));
-        pen[1].setEnabled(ActionBoard.pushing.isLegal(state));
-        pen[2].setEnabled(ActionBoard.attack.isLegal(state));
-        pen[3].setEnabled(ActionBoard.defense.isLegal(state));
-        pen[4].setEnabled(ActionBoard.pickUpHL.isLegal(state));
-        pen[5].setEnabled(ActionBoard.serviceHL.isLegal(state));
-        pen[6].setEnabled(ActionBoard.substitute.isLegal(state));
+        pen[0].setEnabled(ActionBoard.ballManipulation.canExecute(game, state));
+        pen[1].setEnabled(ActionBoard.pushing.canExecute(game, state));
+        pen[2].setEnabled(ActionBoard.attack.canExecute(game, state));
+        pen[3].setEnabled(ActionBoard.defense.canExecute(game, state));
+        pen[4].setEnabled(ActionBoard.pickUpHL.canExecute(game, state));
+        pen[5].setEnabled(ActionBoard.service.canExecute(game, state));
+        pen[6].setEnabled(ActionBoard.substitute.canExecute(game, state));
 
-        GCAction highlightAction = ActionHandler.getInstance().lastUserAction;
+        Action highlightAction = game.getLastUserAction();
         pen[0].setSelected(highlightAction == ActionBoard.ballManipulation);
         pen[1].setSelected(highlightAction == ActionBoard.pushing);
         pen[2].setSelected(highlightAction == ActionBoard.attack);
         pen[3].setSelected(highlightAction == ActionBoard.defense);
         pen[4].setSelected(highlightAction == ActionBoard.pickUpHL);
-        pen[5].setSelected(highlightAction == ActionBoard.serviceHL);
+        pen[5].setSelected(highlightAction == ActionBoard.service);
         pen[6].setSelected(highlightAction == ActionBoard.substitute);
     }
     
     private void updateTimelineUndo()
     {
-        GCAction highlightAction = ActionHandler.getInstance().lastUserAction;
-        String[] undos = Log.getLast(ActionBoard.MAX_NUM_UNDOS_AT_ONCE);
-        boolean undoFromHere = false;
-        for (int i=undo.length - 1; i >= 0; i--) {
-            undo[i].setVisible(!undos[i].equals(""));
-            undo[i].setEnabled(!undos[i].contains(" vs "));
-            if ((highlightAction == ActionBoard.undo[i+1]) && (!ActionBoard.undo[i+1].executed)) {
-                undoFromHere = true;
-            }
-            if (undoFromHere) {
-                undo[i].setText("<html><center>Undo '"+undos[i] + "\'?");
-                undo[i].setSelected(true);
+        Action highlightAction = game.getLastUserAction();
+        String[] undos = game.getLastTimelineTitles(ActionBoard.MAX_NUM_UNDOS_AT_ONCE);
+        boolean isUndoingAnything = false;
+        for (int i = undoButtons.length - 1; i >= 0; i--) {
+            undoButtons[i].setVisible(!undos[i].equals(""));
+            undoButtons[i].setEnabled(!undos[i].contains(" vs "));
+            if (highlightAction == ActionBoard.undo[i + 1] && ActionBoard.undo[i + 1].isPreview()) {
+                isUndoingAnything = true;
+                undoButtons[i].setText("<html><center>Undo '" + undos[i] + "'?");
+                undoButtons[i].setSelected(true);
             } else {
-                undo[i].setText("<html><center>"+undos[i]);
-                undo[i].setSelected(false);
+                undoButtons[i].setText("<html><center>" + undos[i]);
+                undoButtons[i].setSelected(false);
             }
         }
-        cancelUndo.setVisible(undoFromHere);
+        cancelUndo.setVisible(isUndoingAnything);
     }
     
     private void updateFonts()
@@ -1054,7 +1064,7 @@ public class GUI
         if (dropBall != null) {
             dropBall.setFont(standardFont);
         }
-        for (JToggleButton undoButton : undo) {
+        for (JToggleButton undoButton : undoButtons) {
             undoButton.setFont(timeoutFont);
         }
         cancelUndo.setFont(standardFont);

@@ -1,10 +1,9 @@
 package controller.action.ui;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
+import controller.Action;
+import controller.Game;
 import controller.action.ActionBoard;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
 import data.GameState;
 import data.PlayMode;
 
@@ -13,23 +12,19 @@ import data.PlayMode;
  *
  * @author Michel Bartsch
  */
-public class DropBall extends GCAction
+public class DropBall extends Action
 {    
-    public DropBall()
-    {
-        super(ActionTrigger.User);
-    }
-
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         // Set to null, indicating no team has kick off
         state.kickOffTeam = null;
-        ActionBoard.ready.perform(state, "Dropped Ball");
+        ActionBoard.ready.forceExecute(state);
+        game.pushState("Dropped Ball");
     }
     
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return state.playMode == PlayMode.Playing || state.testmode;
     }

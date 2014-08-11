@@ -1,9 +1,8 @@
 package controller.action.ui.playmode;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import data.GameState;
 import data.PlayMode;
 
@@ -12,15 +11,10 @@ import data.PlayMode;
  *
  * @author Michel Bartsch
  */
-public class Play extends GCAction
+public class Play extends Action
 {
-    public Play()
-    {
-        super(ActionTrigger.User);
-    }
-
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (state.playMode == PlayMode.Playing) {
             return;
@@ -30,14 +24,14 @@ public class Play extends GCAction
         }
         state.whenCurrentPlayModeBegan = state.getTime();
         state.playMode = PlayMode.Playing;
-        log(state, message, "Playing");
+        game.pushState("Playing");
     }
     
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
-        return (state.playMode == PlayMode.Set)
-            || (state.playMode == PlayMode.Playing)
+        return state.playMode == PlayMode.Set
+            || state.playMode == PlayMode.Playing
             || state.testmode;
     }
 }

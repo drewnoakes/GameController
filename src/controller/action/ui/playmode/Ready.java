@@ -1,12 +1,11 @@
 package controller.action.ui.playmode;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import data.GameState;
-import data.PlayMode;
 import data.Period;
+import data.PlayMode;
 import rules.Rules;
 
 /**
@@ -14,19 +13,20 @@ import rules.Rules;
  *
  * @author Michel Bartsch
  */
-public class Ready extends GCAction
+public class Ready extends Action
 {
-    public Ready()
-    {
-        super(ActionTrigger.User);
-    }
-
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (state.playMode == PlayMode.Ready) {
             return;
         }
+        forceExecute(state);
+        game.pushState("Ready");
+    }
+
+    public void forceExecute(GameState state)
+    {
         if (Rules.league.returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
@@ -35,11 +35,10 @@ public class Ready extends GCAction
         }
         state.whenCurrentPlayModeBegan = state.getTime();
         state.playMode = PlayMode.Ready;
-        log(state, message, "Ready");
     }
-    
+
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return
             (state.playMode == PlayMode.Initial

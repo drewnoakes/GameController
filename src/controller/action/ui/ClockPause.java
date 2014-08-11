@@ -1,10 +1,9 @@
 package controller.action.ui;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
+import controller.Action;
+import controller.Game;
 import controller.action.ActionBoard;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
 import data.GameState;
 
 /**
@@ -12,15 +11,10 @@ import data.GameState;
  *
  * @author Michel Bartsch
  */
-public class ClockPause extends GCAction
+public class ClockPause extends Action
 {
-    public ClockPause()
-    {
-        super(ActionTrigger.User);
-    }
-
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (ActionBoard.clock.isClockRunning(state)) {
             if (state.manPlay) {
@@ -30,7 +24,7 @@ public class ClockPause extends GCAction
                 state.manWhenClockChanged = state.getTime();
                 state.manPause = true;
             }
-            log(state, message, "Time manual paused");
+            game.pushState("Time manual paused");
         } else {
             if (state.manPause) {
                 state.manPause = false;
@@ -39,12 +33,12 @@ public class ClockPause extends GCAction
                 state.manWhenClockChanged = state.getTime();
                 state.manPlay = true;
             }
-            log(state, message, "Time manual running");
+            game.pushState("Time manual running");
         }
     }
 
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return state.testmode;
     }

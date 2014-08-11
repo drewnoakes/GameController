@@ -1,8 +1,9 @@
 package controller.ui;
 
-import controller.ActionHandler;
+import controller.Action;
+import controller.Game;
 import controller.action.ActionBoard;
-import controller.action.GCAction;
+import controller.action.ActionTrigger;
 import data.TeamColor;
 import rules.HL;
 import rules.Rules;
@@ -18,13 +19,16 @@ import java.awt.event.KeyEvent;
  */
 public class KeyboardListener implements KeyEventDispatcher
 {
+    private final Game game;
     /** The key that is actually pressed, 0 if no key is pressed. */
     private int pressing = 0;
     
     /**
      * Creates a new KeyboardListener and sets himself to listening.
      */
-    public KeyboardListener() {
+    public KeyboardListener(Game game)
+    {
+        this.game = game;
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
     }
     
@@ -67,15 +71,15 @@ public class KeyboardListener implements KeyEventDispatcher
      */
     private boolean onKeyPress(int key)
     {
-        GCAction action = null;
+        Action action = null;
         
         switch (key) {
             case KeyEvent.VK_ESCAPE: action = ActionBoard.quit; break;
             case KeyEvent.VK_DELETE: action = ActionBoard.testmode; break;
             case KeyEvent.VK_BACK_SPACE: action = ActionBoard.undo[1]; break;
 
-            case KeyEvent.VK_B: action = ActionBoard.out[ActionHandler.getInstance().state.team[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
-            case KeyEvent.VK_R: action = ActionBoard.out[ActionHandler.getInstance().state.team[0].teamColor == TeamColor.Red ? 0 : 1]; break;
+            case KeyEvent.VK_B: action = ActionBoard.out[game.getGameState().team[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
+            case KeyEvent.VK_R: action = ActionBoard.out[game.getGameState().team[0].teamColor == TeamColor.Red ? 0 : 1]; break;
 
             default:
                 if (Rules.league instanceof SPL) {
@@ -87,7 +91,7 @@ public class KeyboardListener implements KeyEventDispatcher
                         case KeyEvent.VK_D: action = ActionBoard.defender; break;
                         case KeyEvent.VK_O: action = ActionBoard.holding; break;
                         case KeyEvent.VK_H: action = ActionBoard.hands; break;
-                        case KeyEvent.VK_U: action = ActionBoard.pickUp; break;
+                        case KeyEvent.VK_U: action = ActionBoard.pickUpSPL; break;
                         case KeyEvent.VK_C: action = ActionBoard.coachMotion; break;
                         case KeyEvent.VK_T: action = ActionBoard.teammatePushing; break;
                         case KeyEvent.VK_S: action = ActionBoard.substitute; break;
@@ -105,7 +109,7 @@ public class KeyboardListener implements KeyEventDispatcher
         }
         
         if (action != null) {
-            action.invoke();
+            game.apply(action, ActionTrigger.User);
             return true;
         }
 

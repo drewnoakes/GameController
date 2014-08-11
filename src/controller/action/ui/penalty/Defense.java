@@ -1,8 +1,8 @@
 package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
+import controller.Game;
 import data.GameState;
-import data.PlayMode;
 import data.Penalty;
 import data.PlayerInfo;
 
@@ -13,16 +13,10 @@ import data.PlayerInfo;
 public class Defense extends PenaltyAction
 {
     @Override
-    public void performOn(@NotNull GameState state, @NotNull PlayerInfo player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerInfo player, int side, int number)
     {
         player.penalty = Penalty.HLIllegalDefense;
         state.whenPenalized[side][number] = state.getTime();
-        log(state, null, "Illegal Defense " + state.team[side].teamColor + " " + (number+1));
-    }
-    
-    @Override
-    public boolean isLegal(GameState state)
-    {
-        return state.playMode == PlayMode.Playing || state.testmode;
+        game.pushState("Illegal Defense " + state.team[side].teamColor + " " + (number + 1));
     }
 }

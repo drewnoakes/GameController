@@ -1,6 +1,7 @@
 package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
+import controller.Game;
 import data.GameState;
 import data.Penalty;
 import data.PlayerInfo;
@@ -14,7 +15,7 @@ import rules.Rules;
 public class Substitute extends PenaltyAction
 {
     @Override
-    public void performOn(@NotNull GameState state, @NotNull PlayerInfo player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerInfo player, int side, int number)
     {
         if (player.penalty != Penalty.None) {
             state.addToPenaltyQueue(side, state.whenPenalized[side][number], player.penalty);
@@ -22,11 +23,11 @@ public class Substitute extends PenaltyAction
 
         player.penalty = Penalty.Substitute;
         state.whenPenalized[side][number] = state.getTime();
-        log(state, null, "Leaving Player " + state.team[side].teamColor + " " + (number+1));
+        game.pushState("Leaving Player " + state.team[side].teamColor + " " + (number + 1));
     }
     
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return Rules.league.teamSize > Rules.league.robotsPlaying;
     }

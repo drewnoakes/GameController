@@ -1,10 +1,10 @@
 package controller;
 
 import common.ApplicationLock;
-import common.EventHandler;
 import common.Interval;
 import common.Log;
 import controller.action.ActionBoard;
+import controller.action.ActionTrigger;
 import controller.action.net.SPLCoachMessageReceived;
 import controller.net.*;
 import controller.net.protocol.*;
@@ -60,19 +60,16 @@ public class Main
     @SuppressWarnings("unchecked")
     private static void runGameController(String[] args)
     {
+        // Process command line input
         StartOptions options = parseCommandLineArguments(args);
 
+        // Ensure only one instance of the application is running
         ApplicationLock applicationLock = getApplicationLock();
 
-        //collect the start parameters and put them into the first state.
+        // Allow the user to specify the starting parameters for the game
         StartInput.showDialog(options);
 
-        GameState state = new GameState();
-        state.team[0].teamNumber = options.teamNumberBlue;
-        state.team[1].teamNumber = options.teamNumberRed;
-        state.colorChangeAuto = options.colorChangeAuto;
-        state.playoff = options.playOff;
-        state.kickOffTeam = options.initialKickOffTeam;
+        final Game game = new Game(options);
 
         final RobotWatcher robotWatcher = new RobotWatcher();
         final GameStateSender gameStateSender;
@@ -80,18 +77,13 @@ public class Main
         MessageReceiver splReceiver = null;
 
         try {
-            //sender
-            gameStateSender = new GameStateSender(options.broadcastAddress);
+            gameStateSender = new GameStateSender(game, options.broadcastAddress);
             gameStateSender.addProtocol(new GameStateProtocol9());
             if (Rules.league.supportGameStateVersion8)
                 gameStateSender.addProtocol(new GameStateProtocol8());
             if (Rules.league.supportGameStateVersion7)
                 gameStateSender.addProtocol(new GameStateProtocol7());
-            gameStateSender.send(state);
             gameStateSender.start();
-
-            //event-handler
-            ActionHandler.getInstance().state = state;
 
             robotMessageReceiver = new MessageReceiver<RobotMessage>(
                     Config.ROBOT_STATUS_PORT,
@@ -99,7 +91,7 @@ public class Main
                     new MessageHandler<RobotMessage>()
                     {
                         @Override
-                        public void handle(RobotMessage message) { robotWatcher.update(message); }
+                        public void handle(RobotMessage message) { robotWatcher.update(game, message); }
                     });
             robotMessageReceiver.addProtocol(new RobotStatusProtocol1());
             robotMessageReceiver.addProtocol(new RobotStatusProtocol2());
@@ -114,8 +106,8 @@ public class Main
                             @Override
                             public void handle(SPLCoachMessage message)
                             {
-                                robotWatcher.updateCoach(message.teamNumber);
-                                new SPLCoachMessageReceived(message).invoke();
+                                robotWatcher.updateCoach(game, message.teamNumber);
+                                game.apply(new SPLCoachMessageReceived(message), ActionTrigger.Network);
                             }
                         });
                 splReceiver.addProtocol(new SPLCoachProtocol2(options.teamNumberBlue, options.teamNumberRed));
@@ -130,34 +122,23 @@ public class Main
             return;
         }
 
-        //log
         initialiseLogging();
 
         Log.toFile("League = " + Rules.league.leagueName);
-        Log.toFile("Play-off = " + state.playoff);
-        Log.toFile("Auto color change = " + state.colorChangeAuto);
+        Log.toFile("Play-off = " + options.playOff);
+        Log.toFile("Auto color change = " + options.colorChangeAuto);
         Log.toFile("Using broadcast address " + options.broadcastAddress);
 
-        //ui
         ActionBoard.init();
-        Log.state(state, Teams.getNames(false)[state.team[0].teamNumber] + " vs " + Teams.getNames(false)[state.team[1].teamNumber]);
-        final GUI gui = new GUI(options.fullScreenMode, state, robotWatcher);
-        ActionHandler.getInstance().gameStateUpdated.subscribe(new EventHandler<GameState>()
-        {
-            @Override
-            public void handle(GameState value)
-            {
-                gui.update(value);
-                gameStateSender.send(value);
-            }
-        });
 
-        new KeyboardListener();
+        GUI gui = new GUI(game, options.fullScreenMode, robotWatcher);
+
+        new KeyboardListener(game);
 
         // Execute the clock until shutdown is requested
         Interval interval = new Interval(500);
-        while (!ActionHandler.getInstance().state.shutdown) {
-            ActionBoard.clock.invoke();
+        while (!game.isShutdownRequested()) {
+            game.apply(ActionBoard.clock, ActionTrigger.Clock);
             try {
                 interval.sleep();
             } catch (InterruptedException e) {
@@ -183,8 +164,6 @@ public class Main
         } catch (InterruptedException e) {
             Log.error("Waiting for threads to shutdown was interrupted.");
         }
-
-        ActionHandler.destroy();
 
         try {
             Log.close();

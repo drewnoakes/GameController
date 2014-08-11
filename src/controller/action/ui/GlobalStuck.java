@@ -1,10 +1,10 @@
 package controller.action.ui;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
+import controller.Action;
+import controller.Game;
 import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
-import controller.action.GCAction;
 import data.GameState;
 import data.PlayMode;
 import rules.Rules;
@@ -14,7 +14,7 @@ import rules.Rules;
  *
  * @author Michel Bartsch
  */
-public class GlobalStuck extends GCAction
+public class GlobalStuck extends Action
 {
     /** On which side (0:left, 1:right) */
     private final int side;
@@ -24,28 +24,25 @@ public class GlobalStuck extends GCAction
      */
     public GlobalStuck(int side)
     {
-        super(ActionTrigger.User);
         this.side = side;
     }
 
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         state.kickOffTeam = state.team[side == 0 ? 1 : 0].teamColor;
 
-        if (message == null) {
-            if (state.getRemainingSeconds(state.whenCurrentPlayModeBegan, Rules.league.kickoffTime + Rules.league.minDurationBeforeStuck) > 0) {
-                message = "Kickoff Goal " + state.team[side].teamColor;
-            } else {
-                message = "Global Game Stuck, Kickoff " + state.kickOffTeam;
-            }
-        }
+        game.apply(ActionBoard.ready, ActionTrigger.User);
 
-        ActionBoard.ready.perform(state, message);
+        if (state.getRemainingSeconds(state.whenCurrentPlayModeBegan, Rules.league.kickoffTime + Rules.league.minDurationBeforeStuck) > 0) {
+            game.pushState("Kickoff Goal " + state.team[side].teamColor);
+        } else {
+            game.pushState("Global Game Stuck, Kickoff " + state.kickOffTeam);
+        }
     }
     
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return state.playMode == PlayMode.Playing || state.testmode;
     }

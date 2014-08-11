@@ -1,44 +1,50 @@
 package controller.action.ui;
 
-import common.Log;
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.ActionHandler;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import data.GameState;
 
 /**
- * This action means that the operator wants to go back in the timeline.
+ * Reverts the game state by one or more states from the timeline.
  *
  * @author Michel Bartsch
  */
-public class Undo extends GCAction
+public class Undo extends Action
 {
     /** How far to go back in the timeline by this action. */
-    private final int states;
+    private final int count;
 
-    /** This is true, if this action has just been executed */
-    public boolean executed = false;
+    private boolean isPreview;
 
     /**
-     * @param states the number of actions to go back in the timeline
+     * @param count the number of actions to revert in the timeline
      */
-    public Undo(int states)
+    public Undo(int count)
     {
-        super(ActionTrigger.User);
-        assert(states > 0);
-        this.states = states;
+        assert(count > 0);
+        this.count = count;
+    }
+
+    /**
+     * Gets whether this action was most recently ran to preview an undo operation.
+     * <p>
+     * Undo operations require two presses. The first on any button causes this
+     * value to be <code>true</code>.
+     */
+    public boolean isPreview()
+    {
+        return isPreview;
     }
 
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
-        if (ActionHandler.getInstance().lastUserAction == this && !executed) {
-            executed = true;
-            Log.toFile("Undo " + states + " States to " + Log.goBack(states));
+        if (game.getLastUserAction() == this) {
+            game.undo(count);
+            isPreview = false;
         } else {
-            executed = false;
+            isPreview = true;
         }
     }
 }

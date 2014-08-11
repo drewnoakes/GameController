@@ -1,10 +1,9 @@
 package controller.action.ui.period;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
+import controller.Action;
+import controller.Game;
 import controller.action.ActionBoard;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
 import data.*;
 import rules.Rules;
 
@@ -13,7 +12,7 @@ import rules.Rules;
  *
  * @author Michel Bartsch
  */
-public class TimeOut extends GCAction
+public class TimeOut extends Action
 {
     /** On which side (0:left, 1:right) */
     private final int side;
@@ -23,12 +22,11 @@ public class TimeOut extends GCAction
      */
     public TimeOut(int side)
     {
-        super(ActionTrigger.User);
         this.side = side;
     }
 
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (!state.timeOutActive[side]) {
             // Starting a timeout
@@ -42,20 +40,22 @@ public class TimeOut extends GCAction
             } else if (state.playMode == PlayMode.Set) {
                 state.team[state.kickOffTeam == state.team[0].teamColor ? 0 : 1].penaltyShot--;
             }
-            ActionBoard.initial.forcePerform(state, "Timeout " + state.team[side].teamColor);
+            ActionBoard.initial.forceExecute(state);
+            game.pushState("Timeout " + state.team[side].teamColor);
         } else {
             // Completing
             state.period = state.previousPeriod;
             state.previousPeriod = Period.Timeout;
             state.timeOutActive[side] = false;
             if (state.period != Period.PenaltyShootout) {
-                ActionBoard.ready.perform(state, "End of Timeout " + state.team[side].teamColor);
+                ActionBoard.ready.forceExecute(state);
+                game.pushState("End of Timeout " + state.team[side].teamColor);
             }
         }
     }
     
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
       return state.timeOutActive[side]
             || ((state.playMode == PlayMode.Initial ||

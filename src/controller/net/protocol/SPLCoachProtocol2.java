@@ -1,9 +1,7 @@
 package controller.net.protocol;
 
 import common.annotations.Nullable;
-import controller.ActionHandler;
 import data.SPLCoachMessage;
-import data.TeamInfo;
 
 import java.nio.ByteBuffer;
 

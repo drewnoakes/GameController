@@ -2,9 +2,8 @@ package controller.action.ui;
 
 import common.Log;
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import data.GameState;
 
 /**
@@ -12,15 +11,10 @@ import data.GameState;
  *
  * @author Michel Bartsch
  */
-public class Testmode extends GCAction
+public class Testmode extends Action
 {
-    public Testmode()
-    {
-        super(ActionTrigger.User);
-    }
-    
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         state.testmode = !state.testmode;
         Log.toFile("Testmode = " + state.testmode);

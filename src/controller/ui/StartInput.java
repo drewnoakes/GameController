@@ -314,7 +314,7 @@ public class StartInput extends JFrame
         // Trigger selection of the league
         league.getActionListeners()[league.getActionListeners().length - 1].actionPerformed(null);
 
-        // Set window size, perform layout, then show on screen
+        // Set window size, execute layout, then show on screen
         getContentPane().setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         pack();
         setVisible(true);

@@ -1,7 +1,8 @@
 package controller.net;
 
-import controller.ActionHandler;
+import controller.Game;
 import controller.action.ActionBoard;
+import controller.action.ActionTrigger;
 import data.RobotMessage;
 import data.Penalty;
 import rules.Rules;
@@ -44,12 +45,13 @@ public class RobotWatcher
     /**
      * Integrates messages received from robots, updating corresponding timestamps and firing
      * actions required by manual penalising/unpenalising of the robot.
-     * 
+     *
+     * @param game the active game
      * @param robotMessage a message received from a robot
      */
-    public synchronized void update(RobotMessage robotMessage)
+    public synchronized void update(Game game, RobotMessage robotMessage)
     {
-        int team = ActionHandler.getInstance().state.getTeamIndex(robotMessage.getTeamNumber());
+        int team = game.getGameState().getTeamIndex(robotMessage.getTeamNumber());
         if (team == -1)
             return;
 
@@ -57,22 +59,27 @@ public class RobotWatcher
         if (number <= 0 || number > Rules.league.teamSize)
             return;
 
-        robotLastHeardTime[team][number-1] = System.currentTimeMillis();
-        if (robotLastStatus[team][number-1] != robotMessage.getStatus()) {
-            robotLastStatus[team][number-1] = robotMessage.getStatus();
-            if ((robotMessage.getStatus() == RobotStatus.ManuallyPenalised)
-                    && (ActionHandler.getInstance().state.team[team].player[number-1].penalty == Penalty.None)) {
-                ActionBoard.manualPen[team][number-1].invoke();
-            } else if ((robotMessage.getStatus() == RobotStatus.ManuallyUnpenalised)
-                    && (ActionHandler.getInstance().state.team[team].player[number-1].penalty != Penalty.None)) {
-                ActionBoard.manualUnpen[team][number-1].invoke();
-            }
+        int i = number - 1;
+
+        robotLastHeardTime[team][i] = System.currentTimeMillis();
+
+        if (robotLastStatus[team][i] == robotMessage.getStatus())
+            return;
+
+        robotLastStatus[team][i] = robotMessage.getStatus();
+
+        if (robotMessage.getStatus() == RobotStatus.ManuallyPenalised) {
+            if (game.getGameState().team[team].player[i].penalty == Penalty.None)
+                game.apply(ActionBoard.manualPen[team][i], ActionTrigger.Network);
+        } else if (robotMessage.getStatus() == RobotStatus.ManuallyUnpenalised) {
+            if (game.getGameState().team[team].player[i].penalty != Penalty.None)
+                game.apply(ActionBoard.manualUnpen[team][i], ActionTrigger.Network);
         }
     }
 
-    public synchronized void updateCoach(byte teamNumber)
+    public synchronized void updateCoach(Game game, byte teamNumber)
     {
-        int team = ActionHandler.getInstance().state.getTeamIndex(teamNumber);
+        int team = game.getGameState().getTeamIndex(teamNumber);
         if (team != -1)
             robotLastHeardTime[team][Rules.league.teamSize] = System.currentTimeMillis();
     }

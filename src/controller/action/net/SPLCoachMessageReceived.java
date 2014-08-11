@@ -1,26 +1,23 @@
 package controller.action.net;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import data.GameState;
 import data.Penalty;
 import data.SPLCoachMessage;
 
-public class SPLCoachMessageReceived extends GCAction
+public class SPLCoachMessageReceived extends Action
 {
     @NotNull private final SPLCoachMessage message;
 
     public SPLCoachMessageReceived(@NotNull SPLCoachMessage message)
     {
-        super(ActionTrigger.Network);
-
         this.message = message;
     }
     
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         int team = state.getTeamIndex(this.message.teamNumber);
         assert(team != -1);

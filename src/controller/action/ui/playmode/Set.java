@@ -1,11 +1,13 @@
 package controller.action.ui.playmode;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import controller.action.ui.period.FirstHalf;
-import data.*;
+import data.GameState;
+import data.Period;
+import data.PlayMode;
+import data.TeamColor;
 import rules.Rules;
 
 /**
@@ -13,15 +15,10 @@ import rules.Rules;
  *
  * @author Michel Bartsch
  */
-public class Set extends GCAction
+public class Set extends Action
 {
-    public Set()
-    {
-        super(ActionTrigger.User);
-    }
-
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (state.playMode == PlayMode.Set) {
             return;
@@ -46,11 +43,11 @@ public class Set extends GCAction
             }
         }
         state.playMode = PlayMode.Set;
-        log(state, message, "Set");
+        game.pushState("Set");
     }
     
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return state.playMode == PlayMode.Ready
             || state.playMode == PlayMode.Set

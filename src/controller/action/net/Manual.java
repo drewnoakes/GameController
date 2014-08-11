@@ -1,9 +1,8 @@
 package controller.action.net;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import data.GameState;
 import data.PlayMode;
 import data.Penalty;
@@ -13,7 +12,7 @@ import data.Penalty;
  *
  * @author Michel Bartsch
  */
-public class Manual extends GCAction
+public class Manual extends Action
 {
     /** On which side (0:left, 1:right) */
     private final int side;
@@ -30,27 +29,26 @@ public class Manual extends GCAction
      */
     public Manual(int side, int number, boolean unpen)
     {
-        super(ActionTrigger.Network);
         this.side = side;
         this.number = number;
         this.unpen = unpen;
     }
 
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (!unpen) {
             state.team[side].player[number].penalty = Penalty.Manual;
             state.whenPenalized[side][number] = state.getTime();
 
             if (state.playMode != PlayMode.Initial && state.playMode != PlayMode.Finished) {
-                log(state, message, "Manually Penalised " + state.team[side].teamColor + " " + (number + 1));
+                game.pushState("Manually Penalised " + state.team[side].teamColor + " " + (number + 1));
             }
         } else {
             state.team[side].player[number].penalty = Penalty.None;
 
             if (state.playMode != PlayMode.Initial && state.playMode != PlayMode.Finished) {
-                log(state, message, "Manually Unpenalised " + state.team[side].teamColor + " " + (number + 1));
+                game.pushState("Manually Unpenalised " + state.team[side].teamColor + " " + (number + 1));
             }
         }
     }

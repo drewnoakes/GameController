@@ -1,29 +1,25 @@
 package controller.action.ui;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.ActionHandler;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import data.GameState;
 
 /**
- * This action means that the operator tries to close the GameController.
+ * Causes the current game to end.
+ * <p>
+ * For safety, this action must be run twice in a row by the user.
  *
  * @author Michel Bartsch
  */
-public class Quit extends GCAction
+public class Quit extends Action
 {
-    public Quit()
-    {
-        super(ActionTrigger.User);
-    }
-
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
-        if (ActionHandler.getInstance().lastUserAction == this) {
-            ActionHandler.getInstance().state.shutdown = true;
+        if (game.getLastUserAction() == this) {
+            // User executed this action twice in a row -- so actually perform it
+            game.requestShutdown();
         }
     }
 }

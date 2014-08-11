@@ -1,42 +1,38 @@
 package controller.action.clock;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
+import controller.Action;
+import controller.Game;
 import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
-import controller.action.GCAction;
 import data.GameState;
 import data.PlayMode;
 import rules.Rules;
 
 /**
- * This action means that some time has been passed.
+ * This action means that some time has passed.
  *
  * @author Michel Bartsch
  */
-public class ClockTick extends GCAction
+public class ClockTick extends Action
 {
-    public ClockTick()
-    {
-        super(ActionTrigger.Clock);
-    }
-
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (state.playMode == PlayMode.Ready
                && state.getSecondsSince(state.whenCurrentPlayModeBegan) >= Rules.league.readyTime) {
-            ActionBoard.set.perform(state);
+            game.apply(ActionBoard.set, ActionTrigger.Clock);
         } else if (state.playMode == PlayMode.Finished) {
             Integer remainingPauseTime = state.getRemainingPauseTime();
             if (remainingPauseTime != null) {
                 if (state.firstHalf && remainingPauseTime <= Rules.league.pauseTime / 2) {
-                    ActionBoard.secondHalf.perform(state);
+                    game.apply(ActionBoard.secondHalf, ActionTrigger.Clock);
                 } else if (!state.firstHalf && remainingPauseTime <= Rules.league.pausePenaltyShootOutTime / 2) {
-                    ActionBoard.penaltyShoot.perform(state);
+                    game.apply(ActionBoard.secondHalf, ActionTrigger.Clock);
                 }
             }
         }
+
         state.updateCoachMessages();
     }
 

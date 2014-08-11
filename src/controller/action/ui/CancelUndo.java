@@ -1,9 +1,8 @@
 package controller.action.ui;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import data.GameState;
 
 /**
@@ -14,14 +13,9 @@ import data.GameState;
  *
  * @author Thomas Roefer
  */
-public class CancelUndo extends GCAction
+public class CancelUndo extends Action
 {
-    public CancelUndo()
-    {
-      super(ActionTrigger.User);
-    }
-
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {}
 }

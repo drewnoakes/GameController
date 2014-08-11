@@ -1,10 +1,5 @@
 package data;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -18,7 +13,7 @@ import rules.Rules;
  * represent a state of the game, for example time in millis.
  *
  * There are no synchronized get and set methods because in this architecture.
- * Only actions in their {@link controller.action.GCAction#perform} method are
+ * Only actions in their {@link controller.Action#execute} method are
  * allowed to write into this and they are all in the same thread.
  *
  * @author Michel Bartsch
@@ -26,6 +21,7 @@ import rules.Rules;
 public class GameState extends GameStateSnapshot implements Cloneable
 {
     /** This message to be used when the state is added to the timeline. */
+    @Deprecated
     public String message = "";
 
     /** How much time summed up before the current play mode? (ms)*/
@@ -114,25 +110,6 @@ public class GameState extends GameStateSnapshot implements Cloneable
             penaltyQueueForSubPlayers.add(new ArrayList<PenaltyQueueData>());
         }
     }
-
-    /**
-     * Generically clone this object. Everything referenced must be Serializable.
-     * @return A deep copy of this object.
-     */
-    public Object clone()
-    {
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            new ObjectOutputStream(out).writeObject(this);
-            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-            return new ObjectInputStream(in).readObject();
-        } catch (ClassNotFoundException e) {
-            System.out.println(e.getClass().getName() + ": " + e.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getClass().getName() + ": " + e.getMessage());
-        }
-        return null; // Should never be reached
-    }
     
     /**
      * Returns the current time. Can be stopped in test mode.
@@ -149,17 +126,18 @@ public class GameState extends GameStateSnapshot implements Cloneable
      * @param millis The timestamp in ms.
      * @return The number of seconds since the timestamp.
      */
-    public int getSecondsSince(long millis) {
+    public int getSecondsSince(long millis)
+    {
         return millis == 0 ? 100000 : (int) (getTime() - millis) / 1000;
     }
     
     /**
      * The number of seconds until a certain duration is over. The time
      * already passed is specified as a timestamp when it began.
+     *
      * @param millis The timestamp in ms.
      * @param durationInSeconds The full duration in s.
-     * @return The number of seconds that still remain from the duration.
-     *        Can be negative.
+     * @return The number of seconds that still remain from the duration. Can be negative.
      */
     public int getRemainingSeconds(long millis, int durationInSeconds)
     {
@@ -262,7 +240,7 @@ public class GameState extends GameStateSnapshot implements Cloneable
         for (int i = 0; i < team.length; ++i) {
             pushes[i] = 0;
             for (int j = 0; j < Rules.league.teamSize; j++) {
-                if (!ActionBoard.robot[i][j].isCoach() && team[i].player[j].penalty != Penalty.Substitute) {
+                if (!ActionBoard.robotButton[i][j].isCoach() && team[i].player[j].penalty != Penalty.Substitute) {
                     team[i].player[j].penalty = Penalty.None;
                     ejected[i][j] = false;
                 }

@@ -1,9 +1,8 @@
 package controller.action.ui.period;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import data.*;
 
 /**
@@ -11,15 +10,10 @@ import data.*;
  *
  * @author Michel Bartsch
  */
-public class SecondHalfOvertime extends GCAction
+public class SecondHalfOvertime extends Action
 {
-    public SecondHalfOvertime()
-    {
-        super(ActionTrigger.User);
-    }
-
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (state.firstHalf || state.period == Period.PenaltyShootout) {
             state.firstHalf = false;
@@ -31,12 +25,12 @@ public class SecondHalfOvertime extends GCAction
             FirstHalf.changeSide(state);
             state.kickOffTeam = (state.leftSideKickoff ? state.team[0].teamColor : state.team[1].teamColor);
             state.playMode = PlayMode.Initial;
-            log(state, message, "2nd Half Extra Time");
+            game.pushState("2nd Half Extra Time");
         }
     }
 
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return (!state.firstHalf && state.period == Period.Overtime)
             || (state.period == Period.Overtime && state.playMode == PlayMode.Finished)

@@ -2,42 +2,15 @@ package controller.action;
 
 import controller.action.clock.ClockTick;
 import controller.action.net.Manual;
-import controller.action.ui.CancelUndo;
-import controller.action.ui.ClockPause;
-import controller.action.ui.ClockReset;
-import controller.action.ui.DropBall;
-import controller.action.ui.GlobalStuck;
-import controller.action.ui.Goal;
-import controller.action.ui.IncGameClock;
-import controller.action.ui.KickOff;
-import controller.action.ui.Out;
-import controller.action.ui.Quit;
+import controller.action.ui.*;
+import controller.action.ui.penalty.*;
 import controller.action.ui.period.RefereeTimeout;
-import controller.action.ui.Robot;
-import controller.action.ui.TeammatePushing;
-import controller.action.ui.Testmode;
 import controller.action.ui.period.TimeOut;
-import controller.action.ui.Undo;
 import controller.action.ui.period.FirstHalf;
 import controller.action.ui.period.FirstHalfOvertime;
 import controller.action.ui.period.PenaltyShoot;
 import controller.action.ui.period.SecondHalf;
 import controller.action.ui.period.SecondHalfOvertime;
-import controller.action.ui.penalty.Attack;
-import controller.action.ui.penalty.BallManipulation;
-import controller.action.ui.penalty.CoachMotion;
-import controller.action.ui.penalty.Defender;
-import controller.action.ui.penalty.Defense;
-import controller.action.ui.penalty.Fallen;
-import controller.action.ui.penalty.Hands;
-import controller.action.ui.penalty.Holding;
-import controller.action.ui.penalty.Inactive;
-import controller.action.ui.penalty.Leaving;
-import controller.action.ui.penalty.PickUp;
-import controller.action.ui.penalty.PickUpHL;
-import controller.action.ui.penalty.Pushing;
-import controller.action.ui.penalty.ServiceHL;
-import controller.action.ui.penalty.Substitute;
 import controller.action.ui.playmode.Finish;
 import controller.action.ui.playmode.Initial;
 import controller.action.ui.playmode.Play;
@@ -48,6 +21,7 @@ import rules.Rules;
 /**
  * This class actually holds static every instance of an action to get these
  * actions wherever you want to execute or identify them.
+ *
  * It may be useful to have instances of actions that are not listed here,
  * that would be ok but for basic features it should not be needed.
  * Because of multi-threading you should not take actions from here to write
@@ -71,7 +45,7 @@ public class ActionBoard
     public static final Goal[] goalDec = new Goal[2];
     public static final Goal[] goalInc = new Goal[2];
     public static final KickOff[] kickOff = new KickOff[2];
-    public static Robot[][] robot;
+    public static RobotButton[][] robotButton;
     public static final TimeOut[] timeOut = new TimeOut[2];
     public static final GlobalStuck[] stuck = new GlobalStuck[2];
     public static final Out[] out = new Out[2];
@@ -96,12 +70,12 @@ public class ActionBoard
     public static Defender defender;
     public static Holding holding;
     public static Hands hands;
-    public static PickUp pickUp;
+    public static PickUpSPL pickUpSPL;
     public static BallManipulation ballManipulation;
     public static Attack attack;
     public static Defense defense;
     public static PickUpHL pickUpHL;
-    public static ServiceHL serviceHL;
+    public static Service service;
     public static CoachMotion coachMotion;
     public static TeammatePushing teammatePushing;
     public static Substitute substitute;
@@ -131,14 +105,14 @@ public class ActionBoard
         // We construct team arrays during initialisation as the league may change between runs
         int robotCount = Rules.league.teamSize + (Rules.league.isCoachAvailable ? 1 : 0);
 
-        robot = new Robot[2][robotCount];
+        robotButton = new RobotButton[2][robotCount];
 
         for (int i=0; i<2; i++) {
             goalDec[i] = new Goal(i, -1);
             goalInc[i] = new Goal(i, 1);
             kickOff[i] = new KickOff(i);
-            for (int j=0; j<robot[i].length; j++) {
-                robot[i][j] = new Robot(i, j);
+            for (int j=0; j< robotButton[i].length; j++) {
+                robotButton[i][j] = new RobotButton(i, j);
             }
             timeOut[i] = new TimeOut(i);
             stuck[i] = new GlobalStuck(i);
@@ -168,12 +142,12 @@ public class ActionBoard
         defender = new Defender();
         holding = new Holding();
         hands = new Hands();
-        pickUp = new PickUp();
+        pickUpSPL = new PickUpSPL();
         ballManipulation = new BallManipulation();
         attack = new Attack();
         defense = new Defense();
         pickUpHL = new PickUpHL();
-        serviceHL = new ServiceHL();
+        service = new Service();
         coachMotion = new CoachMotion();
         teammatePushing = new TeammatePushing();
         substitute = new Substitute();

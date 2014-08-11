@@ -8,18 +8,20 @@ import data.PlayerInfo;
 
 /**
  *
- * @author Michel-Zen
+ * @author Daniel Seifert
  */
-public class PickUpHL extends PenaltyAction
+public class Service extends PenaltyAction
 {
     @Override
     public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerInfo player, int side, int number)
     {
         if (player.penalty == Penalty.None) {
             state.whenPenalized[side][number] = state.getTime();
+            player.penalty = Penalty.Service;
+            game.pushState("Request for Service " + state.team[side].teamColor + " " + (number + 1));
+        } else {
+            player.penalty = Penalty.Service;
+            game.pushState("Additional Request for Service " + state.team[side].teamColor + " " + (number + 1));
         }
-
-        player.penalty = Penalty.HLPickupOrIncapable;
-        game.pushState("Request for PickUp / Incapable Player " + state.team[side].teamColor + " " + (number + 1));
     }
 }

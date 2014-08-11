@@ -1,9 +1,8 @@
 package controller.action.ui;
 
 import common.annotations.NotNull;
-import common.annotations.Nullable;
-import controller.action.ActionTrigger;
-import controller.action.GCAction;
+import controller.Action;
+import controller.Game;
 import data.GameState;
 import data.Period;
 import data.PlayMode;
@@ -15,7 +14,7 @@ import rules.Rules;
  *
  * @author Michel Bartsch
  */
-public class KickOff extends GCAction
+public class KickOff extends Action
 {
     /** On which side (0:left, 1:right) */
     private final int side;
@@ -25,12 +24,11 @@ public class KickOff extends GCAction
      */
     public KickOff(int side)
     {
-        super(ActionTrigger.User);
         this.side = side;
     }
 
     @Override
-    public void perform(@NotNull GameState state, @Nullable String message)
+    public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (state.kickOffTeam == state.team[side].teamColor) {
             return;
@@ -42,11 +40,11 @@ public class KickOff extends GCAction
                 && state.playMode == PlayMode.Initial) {
             state.leftSideKickoff = side == 0;
         }
-        log(state, message, "Kickoff " + state.team[side].teamColor);
+        game.pushState("Kickoff " + state.team[side].teamColor);
     }
     
     @Override
-    public boolean isLegal(GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return state.kickOffTeam == state.team[side].teamColor
                 || (Rules.league.kickoffChoice
