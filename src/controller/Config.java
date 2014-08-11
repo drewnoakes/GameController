@@ -30,5 +30,8 @@ public class Config
      */
     public static final int SPL_COACH_MESSAGE_PORT = 3839;
 
+    /** Relative directory of where logs are stored */
+    public final static String LOG_DIRECTORY = "logs";
+
     private Config() {}
 }

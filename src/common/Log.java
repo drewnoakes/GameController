@@ -14,21 +14,22 @@ import java.util.Date;
 /**
  * Logs to files and stderr.
  *
- * A new log file is created every time the Log is initialised.
+ * Users must call {@link Log#initialise} before calling {@link Log#toFile} in order to create
+ * a new log file.
  *
- * This class is a singleton!
+ * When done, call {@link Log#close} to release the log file.
  *
  * @author Michel Bartsch
+ * @author Drew Noakes https://drewnoakes.com
  */
 public class Log
 {
-    /** The instance of the singleton. */
-    private static Log instance;
-    
     /** The writer for normal log messages. */
-    private FileWriter file;
+    @Nullable
+    private static FileWriter file;
     /** The writer for error messages. */
-    private FileWriter errorFile;
+    @Nullable
+    private static FileWriter errorFile;
 
     /** The format of timestamps. */
     public static final SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy.M.dd-kk.mm.ss");
@@ -37,21 +38,30 @@ public class Log
     
     /**
      * Initialises the log, creating the output file. Must be called before using this class.
-     * 
-     * @param path the path of the directory into which the log file should be created.
      */
-    public synchronized static void init(String path)
+    public synchronized static void initialise()
     {
-        if (instance != null) {
-            throw new IllegalStateException("logger already initialized");
+        if (file != null) {
+            throw new IllegalStateException("Log already initialized");
         }
 
-        instance = new Log();
+        final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-S");
+        final String timestamp = df.format(new Date(System.currentTimeMillis()));
+        final File logDir = new File(Config.LOG_DIRECTORY);
+        final String path;
+        if (!logDir.exists() && !logDir.mkdirs()) {
+            // Attempting to create the log directory failed. Just log in the current folder.
+            path = "log_" + timestamp + ".txt";
+        } else {
+            // Log directory existed, or was successfully created
+            File logFile = new File(logDir, "log_" + timestamp +".txt");
+            path = logFile.getPath();
+        }
 
         try {
-            instance.file = new FileWriter(new File(path));
+            file = new FileWriter(new File(path));
         } catch (IOException e) {
-            error("cannot write to logfile "+path);
+            error("cannot write to logfile " + path);
         }
 
         toFile(Main.version);
@@ -64,10 +74,11 @@ public class Log
      */
     public static void toFile(String s)
     {
-        assert(instance != null);
+        assert(file != null);
+
         try {
-            instance.file.write(createTimestamp() + ": " + s + '\n');
-            instance.file.flush();
+            file.write(createTimestamp() + ": " + s + '\n');
+            file.flush();
         } catch (IOException e) {
             error("cannot write to logfile!");
         }
@@ -78,21 +89,19 @@ public class Log
      *
      * Creates the error log file if it does not already exist.
      * 
-     * This can be used before initialising the log!
+     * This can be used before {@link Log#initialise} is been called.
      * 
      * @param s the string to be written to the error log file.
      */
     public static void error(String s)
     {
-        // TODO documentation says this function can be called before initialisation, but that's not true
-        assert(instance != null);
         System.err.println(s);
         try {
-            if (instance.errorFile == null) {
-                instance.errorFile = new FileWriter(new File("error.txt"));
+            if (errorFile == null) {
+                errorFile = new FileWriter(new File("error.txt"));
             }
-            instance.errorFile.write(createTimestamp() + ": " + s + '\n');
-            instance.errorFile.flush();
+            errorFile.write(createTimestamp() + ": " + s + '\n');
+            errorFile.flush();
         } catch (IOException e) {
              System.err.println("cannot write to error file!");
         }
@@ -105,17 +114,19 @@ public class Log
     }
 
     /**
-     * Closes the Log file(s) and tears down the singleton.
+     * Closes the Log file(s).
      *
      * @throws IOException if an error occurred while trying to close the FileWriters
      */
     public static void close() throws IOException
     {
-        if (instance.errorFile != null) {
-            instance.errorFile.close();
+        if (errorFile != null) {
+            errorFile.close();
+            errorFile = null;
         }
-        instance.file.close();
 
-        instance = null;
+        assert(file != null);
+        file.close();
+        file = null;
     }
 }

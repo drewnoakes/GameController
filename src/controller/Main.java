@@ -14,10 +14,7 @@ import controller.ui.StartInput;
 import data.*;
 import rules.Rules;
 
-import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.regex.Pattern;
 
 import javax.swing.*;
@@ -35,9 +32,6 @@ public class Main
 {
     /** The version of the GameController. Only used in log file. */
     public static final String version = "GC2 1.3";
-    
-    /** Relative directory of where logs are stored */
-    private final static String LOG_DIRECTORY = "logs";
     
     private static final Pattern IPV4_PATTERN = Pattern.compile("^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
 
@@ -122,7 +116,7 @@ public class Main
             return;
         }
 
-        initialiseLogging();
+        Log.initialise();
 
         Log.toFile("League = " + Rules.league.leagueName);
         Log.toFile("Play-off = " + options.playOff);
@@ -191,20 +185,6 @@ public class Main
             System.exit(-1);
         }
         return applicationLock;
-    }
-
-    private static void initialiseLogging()
-    {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-S");
-
-        final File logDir = new File(LOG_DIRECTORY);
-        if (!logDir.exists() && !logDir.mkdirs()) {
-            Log.init("log_" + df.format(new Date(System.currentTimeMillis())) + ".txt");
-        } else {
-            final File logFile = new File(logDir,
-                "log_"+df.format(new Date(System.currentTimeMillis()))+".txt");
-            Log.init(logFile.getPath());
-        }
     }
 
     private static StartOptions parseCommandLineArguments(String[] args)
