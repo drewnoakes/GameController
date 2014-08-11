@@ -127,7 +127,7 @@ public class Main
 
         GUI gui = new GUI(game, options.fullScreenMode, robotWatcher);
 
-        new KeyboardListener(game);
+        KeyboardListener keyboardListener = new KeyboardListener(game);
 
         // Execute the clock until shutdown is requested
         Interval interval = new Interval(500);
@@ -140,10 +140,13 @@ public class Main
             }
         }
 
+        // Stop game
+
+        Log.toFile("Stopping game");
+
+        keyboardListener.close();
         gui.close();
 
-        // shutdown
-        Log.toFile("Shutdown GameController");
         try {
             applicationLock.release();
         } catch (IOException e) {

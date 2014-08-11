@@ -56,6 +56,11 @@ public class KeyboardListener implements KeyEventDispatcher
         
         return false;
     }
+
+    public void close()
+    {
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(this);
+    }
     
     /**
      * This is called once every time a key is pressed. It is called once and
