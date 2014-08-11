@@ -46,6 +46,8 @@ public class Main
      */
     public static void main(String[] args)
     {
+        ensureSingleInstanceRunning();
+
         while (true) {
             runGameController(args);
         }
@@ -56,9 +58,6 @@ public class Main
     {
         // Process command line input
         StartOptions options = parseCommandLineArguments(args);
-
-        // Ensure only one instance of the application is running
-        ApplicationLock applicationLock = getApplicationLock();
 
         // Allow the user to specify the starting parameters for the game
         StartInput.showDialog(options);
@@ -148,12 +147,6 @@ public class Main
         gui.close();
 
         try {
-            applicationLock.release();
-        } catch (IOException e) {
-            Log.error("Error while trying to release the application lock.");
-        }
-
-        try {
             gameStateSender.stop();
             robotMessageReceiver.stop();
             if (splReceiver != null)
@@ -169,14 +162,14 @@ public class Main
         }
     }
 
-    private static ApplicationLock getApplicationLock()
+    private static void ensureSingleInstanceRunning()
     {
         final ApplicationLock applicationLock = new ApplicationLock("GameController");
         try {
             if (!applicationLock.acquire()) {
                 JOptionPane.showMessageDialog(null,
-                        "An instance of GameController already exists.",
-                        "Multiple instances",
+                        "An instance is already running on this computer.",
+                        "RoboCup Game Controller",
                         JOptionPane.WARNING_MESSAGE);
                 System.exit(0);
             }
@@ -187,7 +180,6 @@ public class Main
                     JOptionPane.ERROR_MESSAGE);
             System.exit(-1);
         }
-        return applicationLock;
     }
 
     private static StartOptions parseCommandLineArguments(String[] args)
