@@ -1,5 +1,6 @@
 package controller.ui;
 
+import controller.Config;
 import controller.StartOptions;
 import data.TeamColor;
 import data.Teams;
@@ -45,7 +46,6 @@ public class StartInput extends JFrame
     private static final int START_HEIGHT = 30;
     /** This is not what the name says ;) */
     private static final int FULLSCREEN_WIDTH = 160;
-    private static final String ICONS_PATH = "config/icons/";
     private static final String[] BACKGROUND_SIDE = {"robot_left_blue.png",
                                                         "robot_right_red.png"};
     private static final String FULLTIME_LABEL_NO = "Preliminaries Game";
@@ -116,7 +116,7 @@ public class StartInput extends JFrame
         // Create the team selection panels
         String[] teams = getShortTeams();
         for (int i=0; i<2; i++) {
-            String backgroundImagePath = ICONS_PATH + Rules.league.leagueDirectory + "/" + BACKGROUND_SIDE[i];
+            String backgroundImagePath = Config.ICONS_PATH + Rules.league.leagueDirectory + "/" + BACKGROUND_SIDE[i];
             teamContainer[i] = new ImagePanel(new ImageIcon(backgroundImagePath).getImage());
             teamContainer[i].setPreferredSize(new Dimension(WINDOW_WIDTH/2-STANDARD_SPACE, TEAMS_HEIGHT));
             teamContainer[i].setOpaque(true);
@@ -326,7 +326,7 @@ public class StartInput extends JFrame
     {
         for (int i=0; i < 2; i++) {
             // Set background image according to active league
-            String backgroundImagePath = ICONS_PATH + Rules.league.leagueDirectory + "/" + BACKGROUND_SIDE[i];
+            String backgroundImagePath = Config.ICONS_PATH + Rules.league.leagueDirectory + "/" + BACKGROUND_SIDE[i];
             teamContainer[i].setImage(new ImageIcon(backgroundImagePath).getImage());
 
             // Determine the team number, or use zero if unspecified at this point

@@ -1,31 +1,20 @@
 package controller.ui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JRadioButton;
-import javax.swing.JToggleButton;
+import javax.swing.*;
 
 import common.EventHandler;
 import common.TotalScaleLayout;
 import controller.Action;
+import controller.Config;
 import controller.Game;
 import controller.action.ActionBoard;
 import controller.net.RobotOnlineStatus;
 import controller.net.RobotWatcher;
 import controller.ui.controls.*;
+import controller.ui.controls.Button;
 import data.*;
 import rules.HL;
 import rules.Rules;
@@ -56,7 +45,6 @@ public class GUI
     private static final int TIMEOUT_FONT_SIZE = 14;
     private static final int PLAY_MODE_FONT_SIZE = 12;
     private static final String WINDOW_TITLE = "RoboCup Game Controller";
-    private static final String ICONS_PATH = "config/icons/";
     private static final String[][] BACKGROUND_SIDE = {{"robot_left_blue.png",
                                                         "robot_left_red.png"},
                                                        {"robot_right_blue.png",
@@ -224,19 +212,19 @@ public class GUI
             }
         });
         
-        clockImgReset = new ImageIcon(ICONS_PATH+CLOCK_RESET);
-        clockImgPlay = new ImageIcon(ICONS_PATH+CLOCK_PLAY);
-        clockImgPause = new ImageIcon(ICONS_PATH+CLOCK_PAUSE);
-        clockImgPlus = new ImageIcon(ICONS_PATH+CLOCK_PLUS);
-        lanOnline = new ImageIcon(ICONS_PATH+ONLINE);
-        lanHighLatency = new ImageIcon(ICONS_PATH+HIGH_LATENCY);
-        lanOffline = new ImageIcon(ICONS_PATH+OFFLINE);
-        lanUnknown = new ImageIcon(ICONS_PATH+UNKNOWN_ONLINE_STATUS);
+        clockImgReset = new ImageIcon(Config.ICONS_PATH+CLOCK_RESET);
+        clockImgPlay = new ImageIcon(Config.ICONS_PATH+CLOCK_PLAY);
+        clockImgPause = new ImageIcon(Config.ICONS_PATH+CLOCK_PAUSE);
+        clockImgPlus = new ImageIcon(Config.ICONS_PATH+CLOCK_PLUS);
+        lanOnline = new ImageIcon(Config.ICONS_PATH+ONLINE);
+        lanHighLatency = new ImageIcon(Config.ICONS_PATH+HIGH_LATENCY);
+        lanOffline = new ImageIcon(Config.ICONS_PATH+OFFLINE);
+        lanUnknown = new ImageIcon(Config.ICONS_PATH+UNKNOWN_ONLINE_STATUS);
 
         backgroundSide = new ImageIcon[2][2];
         for (int i=0; i<BACKGROUND_SIDE.length; i++) {
             for (int j=0; j<BACKGROUND_SIDE[i].length; j++) {
-                backgroundSide[i][j] = new ImageIcon(ICONS_PATH+Rules.league.leagueDirectory+"/"+BACKGROUND_SIDE[i][j]);
+                backgroundSide[i][j] = new ImageIcon(Config.ICONS_PATH+Rules.league.leagueDirectory+"/"+BACKGROUND_SIDE[i][j]);
             }
         }
         
@@ -246,8 +234,8 @@ public class GUI
             sidePanel[i] = new ImagePanel(backgroundSide[i][i].getImage());
             sidePanel[i].setOpaque(true);
         }
-        JPanel midPanel = new ImagePanel(new ImageIcon(ICONS_PATH + BACKGROUND_MID).getImage());
-        ImagePanel bottomPanel = new ImagePanel(new ImageIcon(ICONS_PATH + BACKGROUND_BOTTOM).getImage());
+        JPanel midPanel = new ImagePanel(new ImageIcon(Config.ICONS_PATH + BACKGROUND_MID).getImage());
+        ImagePanel bottomPanel = new ImagePanel(new ImageIcon(Config.ICONS_PATH + BACKGROUND_BOTTOM).getImage());
         
         //--side--
         //  score
@@ -327,9 +315,9 @@ public class GUI
         clockResetButton.setBorder(null);
         ImagePanel clockPanel;
         if (Rules.league.lostTime) {
-            clockPanel = new ImagePanel(new ImageIcon(ICONS_PATH+BACKGROUND_CLOCK_SMALL).getImage());
+            clockPanel = new ImagePanel(new ImageIcon(Config.ICONS_PATH+BACKGROUND_CLOCK_SMALL).getImage());
         } else {
-            clockPanel = new ImagePanel(new ImageIcon(ICONS_PATH+BACKGROUND_CLOCK).getImage());
+            clockPanel = new ImagePanel(new ImageIcon(Config.ICONS_PATH+BACKGROUND_CLOCK).getImage());
         }
         clockPanel.setOpaque(false);
         clockLabel = new JLabel("10:00");

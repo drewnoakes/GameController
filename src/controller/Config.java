@@ -33,5 +33,8 @@ public class Config
     /** Relative directory of where logs are stored */
     public final static String LOG_DIRECTORY = "logs";
 
+    /** Root path for icon images. */
+    public static final String ICONS_PATH = "config/icons/";
+
     private Config() {}
 }
