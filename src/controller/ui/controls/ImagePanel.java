@@ -12,6 +12,13 @@ public class ImagePanel extends JPanel
 {
     private static final long serialVersionUID = 1L;
 
+    public enum Mode
+    {
+        Stretch,
+        TopCentre
+    }
+
+    private final Mode mode;
     /** The image that is shown in the background. */
     private Image image;
 
@@ -20,15 +27,16 @@ public class ImagePanel extends JPanel
      *
      * @param image     The Image to be shown in the background.
      */
-    public ImagePanel(Image image)
+    public ImagePanel(Mode mode, Image image)
     {
+        this.mode = mode;
         this.image = image;
     }
 
     /**
      * Changes the background image.
      *
-     * @param image     Changes the image to this one.
+     * @param image the new background image to use
      */
     public void setImage(Image image)
     {
@@ -47,6 +55,17 @@ public class ImagePanel extends JPanel
             g.setColor(Color.WHITE);
             g.fillRect(0, 0, getWidth(), getHeight());
         }
-        g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+        if (mode == Mode.Stretch) {
+            g.drawImage(
+                    image,
+                    0, 0,
+                    getWidth(), getHeight(),
+                    null);
+        } else if (mode == Mode.TopCentre) {
+            g.drawImage(image,
+                    (getWidth() - image.getWidth(null)) / 2, 0,
+                    image.getWidth(null), image.getHeight(null),
+                    null);
+        }
     }
 }

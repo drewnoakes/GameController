@@ -232,11 +232,11 @@ public class GUI
         //Components
         sidePanel = new ImagePanel[2];
         for (int i=0; i<2; i++) {
-            sidePanel[i] = new ImagePanel(backgroundSide[i][i].getImage());
+            sidePanel[i] = new ImagePanel(ImagePanel.Mode.Stretch, backgroundSide[i][i].getImage());
             sidePanel[i].setOpaque(true);
         }
-        JPanel midPanel = new ImagePanel(new ImageIcon(Config.ICONS_PATH + BACKGROUND_MID).getImage());
-        ImagePanel bottomPanel = new ImagePanel(new ImageIcon(Config.ICONS_PATH + BACKGROUND_BOTTOM).getImage());
+        JPanel midPanel = new ImagePanel(ImagePanel.Mode.Stretch, new ImageIcon(Config.ICONS_PATH + BACKGROUND_MID).getImage());
+        ImagePanel bottomPanel = new ImagePanel(ImagePanel.Mode.Stretch, new ImageIcon(Config.ICONS_PATH + BACKGROUND_BOTTOM).getImage());
         
         //--side--
         //  score
@@ -314,12 +314,9 @@ public class GUI
         clockResetButton = new ImageButton(clockImgReset.getImage());
         clockResetButton.setOpaque(false);
         clockResetButton.setBorder(null);
-        ImagePanel clockPanel;
-        if (Rules.league.lostTime) {
-            clockPanel = new ImagePanel(new ImageIcon(Config.ICONS_PATH+BACKGROUND_CLOCK_SMALL).getImage());
-        } else {
-            clockPanel = new ImagePanel(new ImageIcon(Config.ICONS_PATH+BACKGROUND_CLOCK).getImage());
-        }
+
+        String imagePath = Config.ICONS_PATH + (Rules.league.lostTime ? BACKGROUND_CLOCK_SMALL : BACKGROUND_CLOCK);
+        ImagePanel clockPanel = new ImagePanel(ImagePanel.Mode.Stretch, new ImageIcon(imagePath).getImage());
         clockPanel.setOpaque(false);
         clockLabel = new JLabel("10:00");
         clockLabel.setForeground(Color.WHITE);

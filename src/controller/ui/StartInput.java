@@ -2,6 +2,7 @@ package controller.ui;
 
 import controller.Config;
 import controller.StartOptions;
+import controller.ui.controls.ImagePanel;
 import data.TeamColor;
 import data.Teams;
 import rules.Rules;
@@ -118,7 +119,7 @@ public class StartInput extends JFrame
         String[] teams = getShortTeams();
         for (int i=0; i<2; i++) {
             String backgroundImagePath = Config.ICONS_PATH + Rules.league.leagueDirectory + "/" + BACKGROUND_SIDE[i];
-            teamContainer[i] = new ImagePanel(new ImageIcon(backgroundImagePath).getImage());
+            teamContainer[i] = new ImagePanel(ImagePanel.Mode.TopCentre, new ImageIcon(backgroundImagePath).getImage());
             teamContainer[i].setPreferredSize(new Dimension(WINDOW_WIDTH/2-STANDARD_SPACE, TEAMS_HEIGHT));
             teamContainer[i].setOpaque(true);
             teamContainer[i].setLayout(new BorderLayout());
@@ -446,53 +447,5 @@ public class StartInput extends JFrame
         isEnabled &= fulltime.isSelected() || nofulltime.isSelected() || !fulltime.isVisible();
         isEnabled &= kickOffBlue.isSelected() || kickOffRed.isSelected();
         start.setEnabled(isEnabled);
-    }
-
-    /**
-     * This is a normal JPanel, but it has a background image.
-     *
-     * @author Michel Bartsch
-     */
-    class ImagePanel extends JPanel
-    {
-        private static final long serialVersionUID = 1L;
-        
-        /** The image that is shown in the background. */
-        private Image image;
-
-        /**
-         * Creates a new ImagePanel.
-         * 
-         * @param image     The Image to be shown in the background.
-         */
-        public ImagePanel(Image image)
-        {
-            this.image = image;
-        }
-        
-        /**
-         * Changes the background image.
-         * 
-         * @param image     Changes the image to this one.
-         */
-        public void setImage(Image image)
-        {
-            this.image = image;
-        }
-        
-        /**
-         * Paints this Component, should be called automatically.
-         * 
-         * @param g     This components graphical content.
-         */
-        @Override
-        public void paintComponent(Graphics g)
-        {
-            if (super.isOpaque()) {
-                g.setColor(Color.WHITE);
-                g.fillRect(0, 0, getWidth(), getHeight());
-            }
-            g.drawImage(image, (getWidth()-image.getWidth(null))/2, 0, image.getWidth(null), image.getHeight(null), null);
-        }
     }
 }
