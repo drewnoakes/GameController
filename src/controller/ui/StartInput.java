@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import javax.swing.*;
 
-
 /**
  * This is only to be on starting the program to get starting input.
  *
@@ -102,6 +101,8 @@ public class StartInput extends JFrame
         super(WINDOW_TITLE);
 
         this.options = options;
+
+        setIconImage(new ImageIcon(Config.ICONS_PATH + "window_icon.png").getImage());
 
         // Centre window on user's screen
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();

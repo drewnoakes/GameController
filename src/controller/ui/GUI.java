@@ -190,6 +190,7 @@ public class GUI
         frame = new PaintableFrame(WINDOW_TITLE);
         frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         frame.setResizable(true);
+        frame.setIconImage(new ImageIcon(Config.ICONS_PATH + "window_icon.png").getImage());
         frame.beforePaint.subscribe(new EventHandler<Graphics>()
         {
             @Override
