@@ -20,10 +20,6 @@ import controller.action.ActionBoard;
  */
 public class GameState extends GameStateSnapshot implements Cloneable
 {
-    /** This message to be used when the state is added to the timeline. */
-    @Deprecated
-    public String message = "";
-
     /** How much time summed up before the current play mode? (ms)*/
     public long timeBeforeCurrentPlayMode;
     
@@ -89,9 +85,6 @@ public class GameState extends GameStateSnapshot implements Cloneable
 
     /** Keep the coach messages. */
     public final ArrayList<SPLCoachMessage> splCoachMessageQueue = new ArrayList<SPLCoachMessage>();
-
-    /** A flag that, when set, shuts down the game controller UI. */
-    public boolean shutdown = false;
 
     /**
      * Creates a new AdvancedData.
