@@ -7,7 +7,7 @@ import controller.net.MessageReceiver;
 import controller.net.protocol.GameStateProtocol8;
 import controller.net.protocol.GameStateProtocol9;
 import data.GameStateSnapshot;
-import rules.Rules;
+import leagues.LeagueSettings;
 
 import java.net.SocketException;
 
@@ -76,7 +76,7 @@ public class Main
         }
 
         if (args.length >= 2 && (args[0].equals("-l") || args[0].equals("--league"))) {
-            if (!Rules.trySetLeague(args[1])) {
+            if (!LeagueSettings.getRulesForLeague(args[1])) {
                 printUsage();
                 System.exit(1);
             }

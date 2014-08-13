@@ -4,7 +4,6 @@ import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
 import data.*;
-import rules.Rules;
 
 /**
  * This action means that the half is to be set to the first half.
@@ -54,7 +53,7 @@ public class FirstHalf extends Action
             state.team[1].teamColor = color;
         }
 
-        if (Rules.league.timeOutPerHalf && (state.period != Period.PenaltyShootout)) {
+        if (Game.settings.timeOutPerHalf && (state.period != Period.PenaltyShootout)) {
             state.timeOutTaken = new boolean[] {false, false};
         } else {
             boolean timeOutTaken = state.timeOutTaken[0];

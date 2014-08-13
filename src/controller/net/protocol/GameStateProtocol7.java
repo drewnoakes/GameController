@@ -2,10 +2,10 @@ package controller.net.protocol;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
+import controller.Game;
 import data.GameStateSnapshot;
 import data.TeamColor;
 import data.TeamInfo;
-import rules.Rules;
 
 import java.nio.ByteBuffer;
 
@@ -55,7 +55,7 @@ public class GameStateProtocol7 extends GameStateProtocol
         ByteBuffer buffer = writeHeader();
 
         buffer.putInt(getVersionNumber());
-        buffer.put((byte)Rules.league.teamSize);
+        buffer.put((byte)Game.settings.teamSize);
         buffer.put(data.playMode.getValue());
         buffer.put(data.firstHalf ? (byte)1 : 0);
         buffer.put(data.kickOffTeam == null ? 2 : data.kickOffTeam.getValue());

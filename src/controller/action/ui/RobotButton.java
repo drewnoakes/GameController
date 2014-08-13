@@ -12,9 +12,8 @@ import data.GameState;
 import data.GameState.PenaltyQueueData;
 import data.Penalty;
 import data.PlayerInfo;
-import rules.HL;
-import rules.Rules;
-import rules.SPL;
+import leagues.HL;
+import leagues.SPL;
 
 /**
  * This action means that a robot button has been pressed.
@@ -45,7 +44,7 @@ public class RobotButton extends Action
         if (player.penalty == Penalty.Substitute && !isCoach()) {
             ArrayList<PenaltyQueueData> playerInfoList = state.penaltyQueueForSubPlayers.get(side);
             if (playerInfoList.isEmpty()) {
-                if (Rules.league instanceof HL) {
+                if (Game.settings instanceof HL) {
                     player.penalty = Penalty.None;
                 } else {
                     player.penalty = Penalty.SplRequestForPickup;
@@ -82,8 +81,8 @@ public class RobotButton extends Action
 
         return (!(lastUIAction instanceof PenaltyAction)
                    && penalty != Penalty.None
-                   && (state.getRemainingPenaltyTime(side, number) == 0 || Rules.league instanceof HL)
-                   && (penalty != Penalty.Substitute || state.getNumberOfRobotsInPlay(side) < Rules.league.robotsPlaying)
+                   && (state.getRemainingPenaltyTime(side, number) == 0 || Game.settings instanceof HL)
+                   && (penalty != Penalty.Substitute || state.getNumberOfRobotsInPlay(side) < Game.settings.robotsPlaying)
                    && !isCoach())
                || (lastUIAction instanceof PickUpHL
                    && penalty != Penalty.Service
@@ -92,12 +91,12 @@ public class RobotButton extends Action
                    && penalty != Penalty.Service
                    && penalty != Penalty.Substitute)
                || (lastUIAction instanceof PickUpSPL
-                   && Rules.league instanceof SPL
+                   && Game.settings instanceof SPL
                    && penalty != Penalty.SplRequestForPickup
                    && penalty != Penalty.Substitute)
                || (lastUIAction instanceof Substitute
                    && penalty != Penalty.Substitute
-                   && (!isCoach() && (!(Rules.league instanceof SPL) || number != 0)))
+                   && (!isCoach() && (!(Game.settings instanceof SPL) || number != 0)))
                || (lastUIAction instanceof CoachMotion
                    && isCoach()
                    && state.team[side].coach.penalty != Penalty.SplCoachMotion)
@@ -111,6 +110,6 @@ public class RobotButton extends Action
     
     public boolean isCoach()
     {
-        return Rules.league.isCoachAvailable && number == Rules.league.teamSize;
+        return Game.settings.isCoachAvailable && number == Game.settings.teamSize;
     }
 }

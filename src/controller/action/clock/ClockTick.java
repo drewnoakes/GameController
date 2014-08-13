@@ -7,7 +7,6 @@ import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
 import data.GameState;
 import data.PlayMode;
-import rules.Rules;
 
 /**
  * This action means that some time has passed.
@@ -20,14 +19,14 @@ public class ClockTick extends Action
     public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (state.playMode == PlayMode.Ready
-               && state.getSecondsSince(state.whenCurrentPlayModeBegan) >= Rules.league.readyTime) {
+               && state.getSecondsSince(state.whenCurrentPlayModeBegan) >= Game.settings.readyTime) {
             game.apply(ActionBoard.set, ActionTrigger.Clock);
         } else if (state.playMode == PlayMode.Finished) {
             Integer remainingPauseTime = state.getRemainingPauseTime();
             if (remainingPauseTime != null) {
-                if (state.firstHalf && remainingPauseTime <= Rules.league.pauseTime / 2) {
+                if (state.firstHalf && remainingPauseTime <= Game.settings.pauseTime / 2) {
                     game.apply(ActionBoard.secondHalf, ActionTrigger.Clock);
-                } else if (!state.firstHalf && remainingPauseTime <= Rules.league.pausePenaltyShootOutTime / 2) {
+                } else if (!state.firstHalf && remainingPauseTime <= Game.settings.pausePenaltyShootOutTime / 2) {
                     game.apply(ActionBoard.secondHalf, ActionTrigger.Clock);
                 }
             }
@@ -49,7 +48,7 @@ public class ClockTick extends Action
           !(state.playMode == PlayMode.Initial
              || state.playMode == PlayMode.Finished
              || ((state.playMode == PlayMode.Ready || state.playMode == PlayMode.Set)
-                 && ((state.playoff && Rules.league.playOffTimeStop) || halfNotStarted))
+                 && ((state.playoff && Game.settings.playOffTimeStop) || halfNotStarted))
              || state.manPause)
          || state.manPlay;
     }

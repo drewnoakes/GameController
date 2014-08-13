@@ -5,7 +5,6 @@ import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
 import data.RobotMessage;
 import data.Penalty;
-import rules.Rules;
 
 /**
  * Processes messages received from robots, triggering manual penalisation/unpenalisation and tracking who is online.
@@ -17,7 +16,7 @@ import rules.Rules;
 public class RobotWatcher
 {
     /** The number of robots on each team, including any coach. */
-    private final int robotCount = Rules.league.teamSize + (Rules.league.isCoachAvailable ? 1 : 0);
+    private final int robotCount = Game.settings.teamSize + (Game.settings.isCoachAvailable ? 1 : 0);
 
     /** A timestamp when the last reply from each robot was received. */
     private final long[][] robotLastHeardTime = new long[2][robotCount];
@@ -56,7 +55,7 @@ public class RobotWatcher
             return;
 
         int number = robotMessage.getPlayerNumber();
-        if (number <= 0 || number > Rules.league.teamSize)
+        if (number <= 0 || number > Game.settings.teamSize)
             return;
 
         int i = number - 1;
@@ -81,7 +80,7 @@ public class RobotWatcher
     {
         int team = game.getGameState().getTeamIndex(teamNumber);
         if (team != -1)
-            robotLastHeardTime[team][Rules.league.teamSize] = System.currentTimeMillis();
+            robotLastHeardTime[team][Game.settings.teamSize] = System.currentTimeMillis();
     }
 
     /**

@@ -1,7 +1,7 @@
 package data;
 
-import rules.Rules;
-import rules.SPL;
+import controller.Game;
+import leagues.SPL;
 
 /**
  * Enum of penalty states.
@@ -63,7 +63,7 @@ public enum Penalty
     /** Decode a numeric value from a network message. */
     public static Penalty fromValue(byte value)
     {
-        if (Rules.league instanceof SPL) {
+        if (Game.settings instanceof SPL) {
             switch (value) {
                 case 0: return None;
                 case 1: return SplBallHolding;

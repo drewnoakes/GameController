@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import common.Log;
 import data.TeamColor;
-import rules.Rules;
+import leagues.LeagueSettings;
 
 /**
  * This class contains all methods meant to parse logs.
@@ -112,9 +112,9 @@ public class Parser
                 log.version = action;
             } else if (action.startsWith("League = ")) {
                 String league = action.substring(9);
-                for (int j=0; j<Rules.LEAGUES.length; j++) {
-                    if (Rules.LEAGUES[j].leagueName.equals(league)) {
-                        log.league = Rules.LEAGUES[j];
+                for (int j=0; j< LeagueSettings.ALL.length; j++) {
+                    if (LeagueSettings.ALL[j].leagueName.equals(league)) {
+                        log.league = LeagueSettings.ALL[j];
                     }
                 }
             } else if (action.startsWith("Auto color change = false")) {

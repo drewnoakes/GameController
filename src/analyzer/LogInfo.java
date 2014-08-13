@@ -1,7 +1,8 @@
 package analyzer;
 
 import common.Log;
-import rules.Rules;
+import leagues.LeagueSettings;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,7 +36,7 @@ public class LogInfo
     /* The version information found in the log. */
     public String version;
     /* The league this log´s game was played in. */
-    public Rules league;
+    public LeagueSettings league;
     /* If the teams have kept there team colors during the game. */
     public boolean keepColors = false;
     /* The teams`s names. */
@@ -91,7 +92,7 @@ public class LogInfo
     public boolean isRealLog()
     {
         return isRealVersion()
-                && isRealLeague()
+                && league != null
                 && isRealTeam(true)
                 && isRealTeam(false)
                 && isRealDuration();
@@ -106,17 +107,7 @@ public class LogInfo
     {
         return version != null && version.equals(controller.Main.version);
     }
-    
-    /**
-     * Makes a guess if this is a real game´s log based on its league.
-     * 
-     * @return  True, if this looks like a real game´s log or false, if not.
-     */
-    private boolean isRealLeague()
-    {
-        return league != null;
-    }
-    
+
     /**
      * Makes a guess if this is a real game´s log based on a team name.
      * 
@@ -149,7 +140,7 @@ public class LogInfo
     {
         return GUI.HTML
                 + (isRealVersion() ? version : GUI.HTML_RED + version + GUI.HTML_END) + GUI.HTML_LF
-                + (isRealLeague() ? league.leagueName : GUI.HTML_RED + league + GUI.HTML_END) + GUI.HTML_LF
+                + (league != null ? league.leagueName : GUI.HTML_RED + "(unknown)" + GUI.HTML_END) + GUI.HTML_LF
                 + (isRealTeam(true) ? team[0] : GUI.HTML_RED + team[0] + GUI.HTML_END)
                 + " vs "
                 + (isRealTeam(false) ? team[1] : GUI.HTML_RED + team[1] + GUI.HTML_END) + GUI.HTML_LF

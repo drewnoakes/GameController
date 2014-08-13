@@ -6,7 +6,6 @@ import controller.Game;
 import data.GameState;
 import data.Period;
 import data.PlayMode;
-import rules.Rules;
 
 /**
  * Sets play mode to {@link PlayMode#Ready}.
@@ -27,7 +26,7 @@ public class Ready extends Action
 
     public void forceExecute(GameState state)
     {
-        if (Rules.league.returnRobotsInGameStoppages) {
+        if (Game.settings.returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
         if (state.playMode == PlayMode.Playing) {

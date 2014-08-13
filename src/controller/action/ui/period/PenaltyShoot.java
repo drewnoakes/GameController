@@ -6,7 +6,6 @@ import controller.Game;
 import data.GameState;
 import data.PlayMode;
 import data.Period;
-import rules.Rules;
 
 /**
  * This action means that a penalty shoot is to be starting.
@@ -24,7 +23,7 @@ public class PenaltyShoot extends Action
             state.playMode = PlayMode.Initial;
             state.timeBeforeCurrentPlayMode = 0;
             state.resetPenalties();
-            if (Rules.league.timeOutPerHalf) {
+            if (Game.settings.timeOutPerHalf) {
                 state.timeOutTaken = new boolean[] {false, false};
             }
             game.pushState("Penalty Shoot-out");
@@ -38,7 +37,7 @@ public class PenaltyShoot extends Action
           || state.previousPeriod == Period.PenaltyShootout
           || (!state.firstHalf
             && state.playMode == PlayMode.Finished
-            && !(Rules.league.overtime
+            && !(Game.settings.overtime
                 && state.playoff
                 && state.period == Period.Normal
                 && state.team[0].score == state.team[1].score

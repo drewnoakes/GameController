@@ -5,7 +5,6 @@ import controller.Game;
 import data.GameState;
 import data.PlayMode;
 import data.PlayerInfo;
-import rules.Rules;
 
 public class TeammatePushing extends PenaltyAction
 {
@@ -18,7 +17,7 @@ public class TeammatePushing extends PenaltyAction
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
-        return Rules.league.dropInPlayerMode
+        return Game.settings.dropInPlayerMode
                 && (state.playMode == PlayMode.Ready || state.playMode == PlayMode.Playing)
                 || state.testmode;
     }

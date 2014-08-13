@@ -5,7 +5,6 @@ import controller.Game;
 import data.GameState;
 import data.Penalty;
 import data.PlayerInfo;
-import rules.Rules;
 
 public class CoachMotion extends PenaltyAction
 {
@@ -21,6 +20,6 @@ public class CoachMotion extends PenaltyAction
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
-        return Rules.league.isCoachAvailable;
+        return Game.settings.isCoachAvailable;
     }
 }

@@ -1,6 +1,7 @@
 package controller;
 
 import data.TeamColor;
+import leagues.LeagueSettings;
 
 /**
  * Models options that apply through the entire game and must be specified before the game commences.
@@ -31,6 +32,9 @@ public class StartOptions
      * A null value indicates that no value has been specified so far.
      */
     public Boolean playOff;
+
+    /** The set of rules to be used in this game. */
+    public LeagueSettings league;
 
     /** The UDP broadcast IP address. */
     public String broadcastAddress;

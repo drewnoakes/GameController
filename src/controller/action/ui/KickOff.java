@@ -6,8 +6,6 @@ import controller.Game;
 import data.GameState;
 import data.Period;
 import data.PlayMode;
-import rules.Rules;
-
 
 /**
  * This action means that a team get kickoff.
@@ -34,7 +32,7 @@ public class KickOff extends Action
             return;
         }
         state.kickOffTeam = state.team[side].teamColor;
-        if (Rules.league.kickoffChoice
+        if (Game.settings.kickoffChoice
                 && state.period == Period.Normal
                 && state.firstHalf
                 && state.playMode == PlayMode.Initial) {
@@ -47,7 +45,7 @@ public class KickOff extends Action
     public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return state.kickOffTeam == state.team[side].teamColor
-                || (Rules.league.kickoffChoice
+                || (Game.settings.kickoffChoice
                     && state.period == Period.Normal
                     && state.firstHalf
                     && state.playMode == PlayMode.Initial)

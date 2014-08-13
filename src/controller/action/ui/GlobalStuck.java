@@ -7,7 +7,6 @@ import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
 import data.GameState;
 import data.PlayMode;
-import rules.Rules;
 
 /**
  * This action means that a global game stuck has occurred.
@@ -34,7 +33,7 @@ public class GlobalStuck extends Action
 
         game.apply(ActionBoard.ready, ActionTrigger.User);
 
-        if (state.getRemainingSeconds(state.whenCurrentPlayModeBegan, Rules.league.kickoffTime + Rules.league.minDurationBeforeStuck) > 0) {
+        if (state.getRemainingSeconds(state.whenCurrentPlayModeBegan, Game.settings.kickoffTime + Game.settings.minDurationBeforeStuck) > 0) {
             game.pushState("Kickoff Goal " + state.team[side].teamColor);
         } else {
             game.pushState("Global Game Stuck, Kickoff " + state.kickOffTeam);

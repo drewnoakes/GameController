@@ -1,7 +1,8 @@
 package data;
 
 import common.Log;
-import rules.Rules;
+import controller.Game;
+import leagues.LeagueSettings;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -56,10 +57,10 @@ public class Teams
      */
     private Teams()
     {
-        names = new String[Rules.LEAGUES.length][];
-        icons = new BufferedImage[Rules.LEAGUES.length][];
-        for (int i=0; i < Rules.LEAGUES.length; i++) {
-            String dir = Rules.LEAGUES[i].leagueDirectory;
+        names = new String[LeagueSettings.ALL.length][];
+        icons = new BufferedImage[LeagueSettings.ALL.length][];
+        for (int i=0; i < LeagueSettings.ALL.length; i++) {
+            String dir = LeagueSettings.ALL[i].leagueDirectory;
             int value;
             int maxValue = 0;
             BufferedReader br = null;
@@ -90,19 +91,19 @@ public class Teams
     }
     
     /**
-     * Returns the index the current league has within the LEAGUES-array.
+     * Returns the index the current league has within {@link LeagueSettings#ALL}.
      * 
      * @return the leagues index.
      */
     private static int getLeagueIndex()
     {
-        for (int i=0; i < Rules.LEAGUES.length; i++) {
-            if (Rules.LEAGUES[i] == Rules.league) {
+        for (int i=0; i < LeagueSettings.ALL.length; i++) {
+            if (LeagueSettings.ALL[i] == Game.settings) {
                 return i;
             }
         }
-        //should never happen
-        Log.error("selected league is odd");
+        // should never happen
+        Log.error("selected league is unknown");
         return -1;
     }
     
@@ -116,7 +117,7 @@ public class Teams
         int value;
         BufferedReader br = null;
         try {
-            InputStream inStream = new FileInputStream(PATH+Rules.league.leagueDirectory+"/"+CONFIG);
+            InputStream inStream = new FileInputStream(PATH+ Game.settings.leagueDirectory+"/"+CONFIG);
             br = new BufferedReader(
                     new InputStreamReader(inStream, CHARSET));
             String line;
@@ -125,7 +126,7 @@ public class Teams
                 instance.names[getLeagueIndex()][value] = line.split("=")[1];
             }
         } catch (IOException e) {
-            Log.error("cannot load "+PATH+Rules.league.leagueDirectory+"/"+CONFIG);
+            Log.error("cannot load "+PATH+ Game.settings.leagueDirectory+"/"+CONFIG);
         }
         finally {
             if (br != null) {
@@ -174,7 +175,7 @@ public class Teams
         BufferedImage out = null;
         File file = null;
         for (int i=0; i< PIC_ENDING.length; i++) {
-            file = new File(PATH+Rules.league.leagueDirectory+"/"+team+"."+PIC_ENDING[i]);
+            file = new File(PATH+ Game.settings.leagueDirectory+"/"+team+"."+PIC_ENDING[i]);
             if (file.exists()) {
                 break;
             }

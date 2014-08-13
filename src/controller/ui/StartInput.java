@@ -1,13 +1,15 @@
 package controller.ui;
 
+import common.annotations.NotNull;
 import controller.Config;
+import controller.Game;
 import controller.StartOptions;
 import controller.ui.controls.ImagePanel;
 import data.TeamColor;
 import data.Teams;
-import rules.Rules;
-import rules.SPL;
-import rules.SPLDropIn;
+import leagues.LeagueSettings;
+import leagues.SPL;
+import leagues.SPLDropIn;
 import java.awt.BorderLayout;
 import java.awt.Checkbox;
 import java.awt.Color;
@@ -46,8 +48,7 @@ public class StartInput extends JFrame
     private static final int START_HEIGHT = 30;
     /** This is not what the name says ;) */
     private static final int FULLSCREEN_WIDTH = 160;
-    private static final String[] BACKGROUND_SIDE = {"robot_left_blue.png",
-                                                        "robot_right_red.png"};
+    private static final String[] BACKGROUND_SIDE = {"robot_left_blue.png", "robot_right_red.png"};
     private static final String FULLTIME_LABEL_NO = "Preliminaries Game";
     private static final String FULLTIME_LABEL_YES = "Play-off Game";
     private static final String FULLTIME_LABEL_HL_NO = "Normal Game";
@@ -79,7 +80,7 @@ public class StartInput extends JFrame
      *
      * @param options the set of options to bind this UI to
      */
-    public static void showDialog(StartOptions options)
+    public static void showDialog(@NotNull StartOptions options)
     {
         StartInput input = new StartInput(options);
         try {
@@ -118,7 +119,7 @@ public class StartInput extends JFrame
         // Create the team selection panels
         String[] teams = getShortTeams();
         for (int i=0; i<2; i++) {
-            String backgroundImagePath = Config.ICONS_PATH + Rules.league.leagueDirectory + "/" + BACKGROUND_SIDE[i];
+            String backgroundImagePath = Config.ICONS_PATH + Game.league().leagueDirectory + "/" + BACKGROUND_SIDE[i];
             teamContainer[i] = new ImagePanel(ImagePanel.Mode.TopCentre, new ImageIcon(backgroundImagePath).getImage());
             teamContainer[i].setPreferredSize(new Dimension(WINDOW_WIDTH/2-STANDARD_SPACE, TEAMS_HEIGHT));
             teamContainer[i].setOpaque(true);
@@ -223,9 +224,9 @@ public class StartInput extends JFrame
         add(optionsRight);
         Dimension optionsDim = new Dimension(WINDOW_WIDTH/3-2*STANDARD_SPACE, OPTIONS_HEIGHT);
         league = new JComboBox();
-        for (int i=0; i < Rules.LEAGUES.length; i++) {
-            league.addItem(Rules.LEAGUES[i].leagueName);
-            if (Rules.LEAGUES[i] == Rules.league) {
+        for (int i=0; i < LeagueSettings.ALL.length; i++) {
+            league.addItem(LeagueSettings.ALL[i].leagueName);
+            if (LeagueSettings.ALL[i] == Game.settings) {
                 league.setSelectedIndex(i);
             }
         }
@@ -236,28 +237,28 @@ public class StartInput extends JFrame
                 public void actionPerformed(ActionEvent e)
                 {
                     if (e != null) { // not initial setup
-                        for (int i=0; i < Rules.LEAGUES.length; i++) {
-                            if (Rules.LEAGUES[i].leagueName.equals(league.getSelectedItem())) {
-                                Rules.league = Rules.LEAGUES[i];
+                        for (int i=0; i < LeagueSettings.ALL.length; i++) {
+                            if (LeagueSettings.ALL[i].leagueName.equals(league.getSelectedItem())) {
+                                Game.settings = LeagueSettings.ALL[i];
                                 break;
                             }
                         }
                     }
-                    if (Rules.league instanceof SPLDropIn) {
+                    if (Game.settings instanceof SPLDropIn) {
                         nofulltime.setVisible(false);
                         fulltime.setVisible(false);
                         autoColorChange.setVisible(false);
                     } else {
                         nofulltime.setVisible(true);
                         fulltime.setVisible(true);
-                        if (Rules.league instanceof SPL) {
+                        if (Game.settings instanceof SPL) {
                             nofulltime.setText(FULLTIME_LABEL_NO);
                             fulltime.setText(FULLTIME_LABEL_YES);
                             autoColorChange.setVisible(false);
                         } else {
                             nofulltime.setText(FULLTIME_LABEL_HL_NO);
                             fulltime.setText(FULLTIME_LABEL_HL_YES);
-                            autoColorChange.setState(Rules.league.colorChangeAuto);
+                            autoColorChange.setState(Game.settings.colorChangeAuto);
                             autoColorChange.setVisible(true);
                         }
                     }
@@ -328,7 +329,7 @@ public class StartInput extends JFrame
     {
         for (int i=0; i < 2; i++) {
             // Set background image according to active league
-            String backgroundImagePath = Config.ICONS_PATH + Rules.league.leagueDirectory + "/" + BACKGROUND_SIDE[i];
+            String backgroundImagePath = Config.ICONS_PATH + Game.settings.leagueDirectory + "/" + BACKGROUND_SIDE[i];
             teamContainer[i].setImage(new ImageIcon(backgroundImagePath).getImage());
 
             // Determine the team number, or use zero if unspecified at this point
@@ -344,7 +345,7 @@ public class StartInput extends JFrame
             // Populate combo box
             String[] names = getShortTeams();
             team[i].removeAllItems();
-            if (Rules.league.dropInPlayerMode) {
+            if (Game.settings.dropInPlayerMode) {
                 // In SPL drop in games, there are only two teams (red and blue), plus we add team 0 (invisibles).
                 assert(names.length == 3);
                 team[i].addItem(names[0]);

@@ -5,7 +5,6 @@ import controller.Action;
 import controller.Game;
 import data.GameState;
 import data.PlayMode;
-import rules.Rules;
 
 /**
  * Sets play mode to {@link PlayMode#Initial}.
@@ -28,7 +27,7 @@ public class Initial extends Action
      */
     public void forceExecute(@NotNull GameState state)
     {
-        if (Rules.league.returnRobotsInGameStoppages) {
+        if (Game.settings.returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
         state.whenCurrentPlayModeBegan = state.getTime();

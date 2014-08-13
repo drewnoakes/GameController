@@ -12,7 +12,7 @@ import controller.ui.GUI;
 import controller.ui.KeyboardListener;
 import controller.ui.StartInput;
 import data.*;
-import rules.Rules;
+import leagues.LeagueSettings;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -72,9 +72,9 @@ public class Main
         try {
             gameStateSender = new GameStateSender(game, options.broadcastAddress);
             gameStateSender.addProtocol(new GameStateProtocol9());
-            if (Rules.league.supportGameStateVersion8)
+            if (Game.settings.supportGameStateVersion8)
                 gameStateSender.addProtocol(new GameStateProtocol8());
-            if (Rules.league.supportGameStateVersion7)
+            if (Game.settings.supportGameStateVersion7)
                 gameStateSender.addProtocol(new GameStateProtocol7());
             gameStateSender.start();
 
@@ -90,7 +90,7 @@ public class Main
             robotMessageReceiver.addProtocol(new RobotStatusProtocol2());
             robotMessageReceiver.start();
 
-            if (Rules.league.isCoachAvailable) {
+            if (Game.settings.isCoachAvailable) {
                 splReceiver = new MessageReceiver<SPLCoachMessage>(
                         Config.SPL_COACH_MESSAGE_PORT,
                         500,
@@ -117,7 +117,7 @@ public class Main
 
         Log.initialise();
 
-        Log.toFile("League = " + Rules.league.leagueName);
+        Log.toFile("League = " + Game.settings.leagueName);
         Log.toFile("Play-off = " + options.playOff);
         Log.toFile("Auto color change = " + options.colorChangeAuto);
         Log.toFile("Using broadcast address " + options.broadcastAddress);
@@ -189,8 +189,7 @@ public class Main
         options.fullScreenMode = true;
         options.initialKickOffTeam = null;
         options.playOff = null;
-
-        Rules.league = Rules.LEAGUES[0];
+        options.league = LeagueSettings.ALL[0];
 
         for (int i=0; i<args.length; i++) {
             boolean hasAnotherArg = args.length > i + 1;
@@ -203,8 +202,12 @@ public class Main
                     continue;
                 }
             } else if (args[i].equals("-l") || args[i].equals("--league")) {
-                if (hasAnotherArg && Rules.trySetLeague(args[++i]))
-                    continue;
+                if (hasAnotherArg)
+                {
+                    options.league = LeagueSettings.getRulesForLeague(args[++i]);
+                    if (options.league == null)
+                        continue;
+                }
             } else if (args[i].equals("-t") || args[i].equals("--teams")) {
                 if (hasAnotherTwoArgs) {
                     options.teamNumberBlue = Byte.parseByte(args[++i]);
@@ -258,8 +261,8 @@ public class Main
                 + "\n";
 
         String leagues = "";
-        for (Rules rules : Rules.LEAGUES) {
-            leagues += (leagues.equals("") ? "" : " | ") + rules.leagueDirectory;
+        for (LeagueSettings league : LeagueSettings.ALL) {
+            leagues += (leagues.equals("") ? "" : " | ") + league.leagueDirectory;
         }
         if (leagues.contains("|")) {
             leagues = "(" + leagues + ")";

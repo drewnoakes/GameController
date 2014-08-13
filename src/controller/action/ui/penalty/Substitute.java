@@ -5,7 +5,6 @@ import controller.Game;
 import data.GameState;
 import data.Penalty;
 import data.PlayerInfo;
-import rules.Rules;
 
 /**
  * This action means that the substitution player penalty has been selected.
@@ -29,6 +28,6 @@ public class Substitute extends PenaltyAction
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
-        return Rules.league.teamSize > Rules.league.robotsPlaying;
+        return Game.settings.teamSize > Game.settings.robotsPlaying;
     }
 }

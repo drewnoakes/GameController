@@ -2,7 +2,7 @@ package data;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import rules.Rules;
+import controller.Game;
 
 import java.io.Serializable;
 
@@ -34,7 +34,7 @@ public class GameStateSnapshot implements Serializable
     /** The number of seconds that have passed since the last drop in. Will be -1 before first drop in. */
     public short dropInTime = -1;
     /** An estimate of the number of seconds remaining in the current half. */
-    public short secsRemaining = (short) Rules.league.halfTime;
+    public short secsRemaining = (short) Game.settings.halfTime;
     /**
      * Play-mode-specific sub-time in seconds.
      *

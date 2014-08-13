@@ -5,7 +5,6 @@ import controller.Action;
 import controller.Game;
 import controller.action.ActionBoard;
 import data.*;
-import rules.Rules;
 
 /**
  * This action means that a timeOut is to be taken or ending.
@@ -35,7 +34,7 @@ public class TimeOut extends Action
             state.timeOutActive[side] = true;
             state.timeOutTaken[side] = true;
             if (state.previousPeriod != Period.PenaltyShootout) {
-                if (Rules.league.giveOpponentKickOffOnTimeOut)
+                if (Game.settings.giveOpponentKickOffOnTimeOut)
                     state.kickOffTeam = state.team[side].teamColor.other();
             } else if (state.playMode == PlayMode.Set) {
                 state.team[state.kickOffTeam == state.team[0].teamColor ? 0 : 1].penaltyShot--;

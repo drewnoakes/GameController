@@ -7,6 +7,7 @@ import common.annotations.Nullable;
 import controller.action.ActionTrigger;
 import data.GameState;
 import data.Teams;
+import leagues.LeagueSettings;
 
 import java.io.*;
 import java.util.Stack;
@@ -18,6 +19,9 @@ import java.util.Stack;
  */
 public class Game
 {
+    /** The rules that apply to the current game. */
+    public static LeagueSettings settings = LeagueSettings.ALL[0];
+
     /**
      * The stack of game states on the timeline.
      * <p>

@@ -1,4 +1,4 @@
-package rules;
+package leagues;
 
 /**
  * This class sets attributes given by the humanoid-league rules.
@@ -9,10 +9,10 @@ public class HLAdult extends HL
 {
     HLAdult()
     {
-        /** The league´s name this rules are for. */
-        leagueName = "HL Adult";
-        /** The league´s directory name with its teams and icons. */
-        leagueDirectory = "hl_adult";
+//        /** The league´s name this rules are for. */
+//        leagueName = "HL Adult";
+//        /** The league´s directory name with its teams and icons. */
+//        leagueDirectory = "hl_adult";
         /** How many robots are in a team. */
         teamSize = 2;
         /** How many robots of each team may play at one time. */

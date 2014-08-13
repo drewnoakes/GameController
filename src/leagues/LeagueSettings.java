@@ -1,45 +1,55 @@
-package rules;
+package leagues;
+
+import common.annotations.Nullable;
+import data.League;
 
 /**
  * This class holds attributes defining rules.
  *
  * @author Michel Bartsch
  */
-public abstract class Rules
+public abstract class LeagueSettings
 {   
     /** Note all league´s rules here to have them available. */
-    public static final Rules[] LEAGUES = {
+    public static final LeagueSettings[] ALL = {
         new SPL(),
         new SPLDropIn(),
-        new HL(),
+        new HLKid(),
         new HLTeen(),
         new HLAdult()
     };
-    
-    /** The rules that apply to the current game. */
-    public static Rules league = LEAGUES[0];
 
     /**
-     * Attempts to set the current league from the specified directory string.
+     * Attempts to find the {@link LeagueSettings} for the specified league.
      *
      * @param leagueDirectory the league directory name
-     * @return true if successful, otherwise false
+     * @return an instance of {@link LeagueSettings} if found, otherwise <code>null</code>.
      */
-    public static boolean trySetLeague(String leagueDirectory)
+    @Nullable
+    public static LeagueSettings getRulesForLeague(String leagueDirectory)
     {
-        for (int j=0; j < Rules.LEAGUES.length; j++) {
-            if (Rules.LEAGUES[j].leagueDirectory.equals(leagueDirectory)) {
-                Rules.league = Rules.LEAGUES[j];
-                return true;
-            }
-        }
-        return false;
+        for (LeagueSettings settings : ALL)
+            if (settings.league().equals(leagueDirectory))
+                return settings;
+        return null;
     }
 
-    /** The league´s name this rules are for. */
-    public String leagueName;
-    /** The league´s directory name with its teams and icons. */
-    public String leagueDirectory;
+    private final League league;
+
+    protected LeagueSettings(League league)
+    {
+        this.league = league;
+    }
+
+    public League league()
+    {
+        return league;
+    }
+
+    //    /** The league´s name this rules are for. */
+//    public String leagueName;
+//    /** The league´s directory name with its teams and icons. */
+//    public String leagueDirectory;
     /** How many robots are in a team. */
     public int teamSize;
     /** How many robots of each team may play at one time. */

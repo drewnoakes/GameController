@@ -6,7 +6,6 @@ import data.GameState;
 import data.PlayMode;
 import data.Penalty;
 import data.PlayerInfo;
-import rules.Rules;
 
 /**
  * This action means that the player pushing penalty has been selected.
@@ -23,7 +22,7 @@ public class Pushing extends PenaltyAction
 
         if (state.playMode == PlayMode.Playing) {
             state.pushes[side]++;
-            for (int pushes : Rules.league.pushesToEjection) {
+            for (int pushes : Game.settings.pushesToEjection) {
                 if (state.pushes[side] == pushes) {
                     state.ejected[side][number] = true;
                 }

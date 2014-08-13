@@ -5,7 +5,6 @@ import controller.Action;
 import controller.Game;
 import data.GameState;
 import data.PlayMode;
-import rules.Rules;
 
 /**
  * Sets play mode to {@link PlayMode#Finished}.
@@ -20,7 +19,7 @@ public class Finish extends Action
         if (state.playMode == PlayMode.Finished) {
             return;
         }
-        if (Rules.league.returnRobotsInGameStoppages) {
+        if (Game.settings.returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
         state.addTimeInCurrentPlayMode();

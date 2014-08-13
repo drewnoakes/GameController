@@ -1,5 +1,6 @@
 package controller.action;
 
+import controller.Game;
 import controller.action.clock.ClockTick;
 import controller.action.net.Manual;
 import controller.action.ui.*;
@@ -16,7 +17,6 @@ import controller.action.ui.playmode.Initial;
 import controller.action.ui.playmode.Play;
 import controller.action.ui.playmode.Ready;
 import controller.action.ui.playmode.Set;
-import rules.Rules;
 
 /**
  * This class actually holds static every instance of an action to get these
@@ -103,7 +103,7 @@ public class ActionBoard
         cancelUndo = new CancelUndo();
 
         // We construct team arrays during initialisation as the league may change between runs
-        int robotCount = Rules.league.teamSize + (Rules.league.isCoachAvailable ? 1 : 0);
+        int robotCount = Game.settings.teamSize + (Game.settings.isCoachAvailable ? 1 : 0);
 
         robotButton = new RobotButton[2][robotCount];
 

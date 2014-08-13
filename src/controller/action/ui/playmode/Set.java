@@ -8,7 +8,6 @@ import data.GameState;
 import data.Period;
 import data.PlayMode;
 import data.TeamColor;
-import rules.Rules;
 
 /**
  * Sets play mode to {@link PlayMode#Set}.
@@ -23,7 +22,7 @@ public class Set extends Action
         if (state.playMode == PlayMode.Set) {
             return;
         }
-        if (Rules.league.returnRobotsInGameStoppages) {
+        if (Game.settings.returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
         if (!state.playoff && state.timeBeforeCurrentPlayMode != 0) {
@@ -52,7 +51,7 @@ public class Set extends Action
         return state.playMode == PlayMode.Ready
             || state.playMode == PlayMode.Set
             || (state.period == Period.PenaltyShootout
-              && (state.playMode != PlayMode.Playing || Rules.league.penaltyShotRetries)
+              && (state.playMode != PlayMode.Playing || Game.settings.penaltyShotRetries)
               && !state.timeOutActive[0]
               && !state.timeOutActive[1]
               && !state.refereeTimeout)

@@ -4,7 +4,6 @@ import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
 import data.*;
-import rules.Rules;
 
 /**
  * This action means that the half is to be set to the first half of overtime.
@@ -34,7 +33,7 @@ public class FirstHalfOvertime extends Action
     public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return (state.firstHalf && state.period == Period.Overtime)
-                || (Rules.league.overtime
+                || (Game.settings.overtime
                     && state.playoff
                     && state.period == Period.Normal
                     && state.playMode == PlayMode.Finished

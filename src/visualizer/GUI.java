@@ -21,10 +21,10 @@ import javax.swing.JFrame;
 
 import common.Interval;
 import common.Log;
+import controller.Game;
 import data.GameStateSnapshot;
 import data.Period;
 import data.PlayMode;
-import rules.Rules;
 import data.Teams;
 
 /**
@@ -98,7 +98,7 @@ public class GUI extends JFrame
 
         for (String format : new String [] {".png", ".jpeg", ".jpg"}) {
             try {
-                background = ImageIO.read(new File(CONFIG_PATH+Rules.league.leagueDirectory+"/"+BACKGROUND+format));
+                background = ImageIO.read(new File(CONFIG_PATH+ Game.settings.leagueDirectory+"/"+BACKGROUND+format));
             } catch (IOException e) {
             }
         }
