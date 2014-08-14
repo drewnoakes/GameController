@@ -7,7 +7,7 @@ import controller.net.MessageReceiver;
 import controller.net.protocol.GameStateProtocol8;
 import controller.net.protocol.GameStateProtocol9;
 import data.GameStateSnapshot;
-import leagues.LeagueSettings;
+import data.League;
 
 import java.net.SocketException;
 
@@ -30,14 +30,14 @@ public class Main
      */
     public static void main(String[] args)
     {
-        processCommandLineArguments(args);
-        
-        final GUI gui = new GUI();
+        final VisualiserOptions options = processCommandLineArguments(args);
+        final GUI gui = new GUI(options);
 
         new KeyboardListener(gui);
 
         try {
             gameStateListener = new MessageReceiver<GameStateSnapshot>(
+                    options.getLeague(),
                     Config.GAME_STATE_PORT,
                     500,
                     new MessageHandler<GameStateSnapshot>()
@@ -45,8 +45,8 @@ public class Main
                         @Override
                         public void handle(GameStateSnapshot state) { gui.update(state); }
                     });
-            gameStateListener.addProtocol(new GameStateProtocol9());
-            gameStateListener.addProtocol(new GameStateProtocol8());
+            gameStateListener.addProtocol(new GameStateProtocol9(options.getLeague()));
+            gameStateListener.addProtocol(new GameStateProtocol8(options.getLeague()));
             gameStateListener.start();
         } catch (SocketException e) {
             System.err.println("Exception binding listener");
@@ -68,19 +68,24 @@ public class Main
         System.exit(0);
     }
 
-    private static void processCommandLineArguments(String[] args)
+    private static VisualiserOptions processCommandLineArguments(String[] args)
     {
         if (args.length > 0 && (args[0].equals("-h") || args[0].equals("--help")) ) {
             printUsage();
             System.exit(0);
         }
 
+        League league = League.SPL;
+        
         if (args.length >= 2 && (args[0].equals("-l") || args[0].equals("--league"))) {
-            if (!LeagueSettings.getRulesForLeague(args[1])) {
+            league = League.findByDirectoryName(args[1]);
+            if (league == null) {
                 printUsage();
                 System.exit(1);
             }
         }
+        
+        return new VisualiserOptions(league);
     }
 
     private static void printUsage()

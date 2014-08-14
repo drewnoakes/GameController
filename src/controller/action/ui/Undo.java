@@ -3,7 +3,7 @@ package controller.action.ui;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 
 /**
  * Reverts the game state by one or more states from the timeline.

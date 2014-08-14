@@ -3,7 +3,7 @@ package controller.action.net;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 import data.PlayMode;
 import data.Penalty;
 

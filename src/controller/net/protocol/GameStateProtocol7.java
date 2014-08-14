@@ -2,8 +2,8 @@ package controller.net.protocol;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.Game;
 import data.GameStateSnapshot;
+import data.League;
 import data.TeamColor;
 import data.TeamInfo;
 
@@ -16,9 +16,13 @@ import java.nio.ByteBuffer;
  */
 public class GameStateProtocol7 extends GameStateProtocol
 {
-    public GameStateProtocol7()
+    private final League league;
+
+    public GameStateProtocol7(@NotNull League league)
     {
         super((byte)7);
+
+        this.league = league;
     }
 
     @Override
@@ -50,28 +54,28 @@ public class GameStateProtocol7 extends GameStateProtocol
 
     @NotNull
     @Override
-    public byte[] toBytes(GameStateSnapshot data)
+    public byte[] toBytes(@NotNull GameStateSnapshot state)
     {
         ByteBuffer buffer = writeHeader();
 
         buffer.putInt(getVersionNumber());
-        buffer.put((byte)Game.settings.teamSize);
-        buffer.put(data.playMode.getValue());
-        buffer.put(data.firstHalf ? (byte)1 : 0);
-        buffer.put(data.kickOffTeam == null ? 2 : data.kickOffTeam.getValue());
-        buffer.put(data.period.getValue());
+        buffer.put((byte)league.settings().teamSize);
+        buffer.put(state.playMode.getValue());
+        buffer.put(state.firstHalf ? (byte)1 : 0);
+        buffer.put(state.kickOffTeam == null ? 2 : state.kickOffTeam.getValue());
+        buffer.put(state.period.getValue());
         // V7 sends '0' (blue) when no drop in has occurred. This is addressed in V9.
-        buffer.put(data.dropInTeam == null ? 0 : data.dropInTeam.getValue());
-        buffer.putShort(data.dropInTime);
-        buffer.putInt(data.secsRemaining);
+        buffer.put(state.dropInTeam == null ? 0 : state.dropInTeam.getValue());
+        buffer.putShort(state.dropInTime);
+        buffer.putInt(state.secsRemaining);
 
-        // in version 7, team data was sorted by team color
-        if (data.team[0].teamColor == TeamColor.Blue) {
-            writeTeamInfo(buffer, data.team[0]);
-            writeTeamInfo(buffer, data.team[1]);
+        // In version 7, team data was sorted by team color
+        if (state.team[0].teamColor == TeamColor.Blue) {
+            writeTeamInfo(buffer, state.team[0]);
+            writeTeamInfo(buffer, state.team[1]);
         } else {
-            writeTeamInfo(buffer, data.team[1]);
-            writeTeamInfo(buffer, data.team[0]);
+            writeTeamInfo(buffer, state.team[1]);
+            writeTeamInfo(buffer, state.team[0]);
         }
 
         return buffer.array();
@@ -79,7 +83,7 @@ public class GameStateProtocol7 extends GameStateProtocol
 
     @Nullable
     @Override
-    public GameStateSnapshot fromBytes(ByteBuffer buffer)
+    public GameStateSnapshot fromBytes(@NotNull ByteBuffer buffer)
     {
         throw new AssertionError("Not implemented as no use for parsing version 7 messages is known of.");
     }

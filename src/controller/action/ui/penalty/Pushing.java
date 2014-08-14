@@ -2,7 +2,7 @@ package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 import data.PlayMode;
 import data.Penalty;
 import data.PlayerInfo;
@@ -22,7 +22,7 @@ public class Pushing extends PenaltyAction
 
         if (state.playMode == PlayMode.Playing) {
             state.pushes[side]++;
-            for (int pushes : Game.settings.pushesToEjection) {
+            for (int pushes : game.settings().pushesToEjection) {
                 if (state.pushes[side] == pushes) {
                     state.ejected[side][number] = true;
                 }

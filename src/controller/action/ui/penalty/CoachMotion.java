@@ -2,7 +2,7 @@ package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 import data.Penalty;
 import data.PlayerInfo;
 
@@ -20,6 +20,6 @@ public class CoachMotion extends PenaltyAction
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
-        return Game.settings.isCoachAvailable;
+        return game.settings().isCoachAvailable;
     }
 }

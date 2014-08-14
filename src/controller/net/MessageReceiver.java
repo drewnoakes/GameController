@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import common.Log;
+import common.annotations.NotNull;
 import controller.net.protocol.ReceivingProtocol;
+import data.League;
 
 /**
  * Asynchronously receives messages via UDP broadcast.
@@ -23,6 +25,7 @@ import controller.net.protocol.ReceivingProtocol;
  */
 public class MessageReceiver<T>
 {
+    private final League league;
     private final MessageHandler<T> handler;
     /** The used socket to receive UDP packets. */
     private final DatagramSocket datagramSocket;
@@ -34,13 +37,15 @@ public class MessageReceiver<T>
     /**
      * Creates a new MessageReceiver.
      *
+     * @param league
      * @param udpPort the port number to listen on.
      * @param timeoutMillis the number of milliseconds to wait for before timing out and trying again
      * @param handler an object to invoke when a message is successfully received
      * @throws SocketException the an error occurs while creating the socket
      */
-    public MessageReceiver(int udpPort, int timeoutMillis, MessageHandler<T> handler) throws SocketException
+    public MessageReceiver(@NotNull League league, int udpPort, int timeoutMillis, @NotNull MessageHandler<T> handler) throws SocketException
     {
+        this.league = league;
         this.handler = handler;
 
         datagramSocket = new DatagramSocket(null);

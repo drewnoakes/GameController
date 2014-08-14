@@ -3,6 +3,7 @@ package controller.action.ui.period;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
+import controller.GameState;
 import data.*;
 
 /**
@@ -34,7 +35,7 @@ public class FirstHalf extends Action
     
     /**
      * Switches sides for the teams, both for first to second and also second to first half if needed.
-     * 
+     *
      * @param state the current game state to work on.
      */
     public static void changeSide(GameState state)
@@ -47,13 +48,13 @@ public class FirstHalf extends Action
         state.ejected[1] = ejected;
 
         // if necessary, swap team colors
-        if (state.period != Period.PenaltyShootout && state.colorChangeAuto) {
+        if (state.period != Period.PenaltyShootout && state.options().colorChangeAuto) {
             TeamColor color = state.team[0].teamColor;
             state.team[0].teamColor = state.team[1].teamColor;
             state.team[1].teamColor = color;
         }
 
-        if (Game.settings.timeOutPerHalf && (state.period != Period.PenaltyShootout)) {
+        if (state.settings().timeOutPerHalf && (state.period != Period.PenaltyShootout)) {
             state.timeOutTaken = new boolean[] {false, false};
         } else {
             boolean timeOutTaken = state.timeOutTaken[0];

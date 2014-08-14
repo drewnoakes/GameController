@@ -8,12 +8,11 @@ import controller.Game;
 import controller.action.RobotAction;
 import controller.action.ui.penalty.*;
 import controller.action.ui.penalty.PenaltyAction;
-import data.GameState;
-import data.GameState.PenaltyQueueData;
+import controller.GameState;
+import controller.GameState.PenaltyQueueData;
+import data.League;
 import data.Penalty;
 import data.PlayerInfo;
-import leagues.HL;
-import leagues.SPL;
 
 /**
  * This action means that a robot button has been pressed.
@@ -22,6 +21,7 @@ import leagues.SPL;
  */
 public class RobotButton extends Action
 {
+    private final League league;
     /** On which side (0:left, 1:right) */
     private final int side;
     /** The players`s number, beginning with 0! */
@@ -31,8 +31,9 @@ public class RobotButton extends Action
      * @param side on which side (0:left, 1:right)
      * @param number the players`s number, beginning with 0!
      */
-    public RobotButton(int side, int number)
+    public RobotButton(League league, int side, int number)
     {
+        this.league = league;
         this.side = side;
         this.number = number;
     }
@@ -44,7 +45,7 @@ public class RobotButton extends Action
         if (player.penalty == Penalty.Substitute && !isCoach()) {
             ArrayList<PenaltyQueueData> playerInfoList = state.penaltyQueueForSubPlayers.get(side);
             if (playerInfoList.isEmpty()) {
-                if (Game.settings instanceof HL) {
+                if (game.league().isHLFamily()) {
                     player.penalty = Penalty.None;
                 } else {
                     player.penalty = Penalty.SplRequestForPickup;
@@ -81,8 +82,8 @@ public class RobotButton extends Action
 
         return (!(lastUIAction instanceof PenaltyAction)
                    && penalty != Penalty.None
-                   && (state.getRemainingPenaltyTime(side, number) == 0 || Game.settings instanceof HL)
-                   && (penalty != Penalty.Substitute || state.getNumberOfRobotsInPlay(side) < Game.settings.robotsPlaying)
+                   && (state.getRemainingPenaltyTime(side, number) == 0 || game.league().isHLFamily())
+                   && (penalty != Penalty.Substitute || state.getNumberOfRobotsInPlay(side) < game.settings().robotsPlaying)
                    && !isCoach())
                || (lastUIAction instanceof PickUpHL
                    && penalty != Penalty.Service
@@ -91,12 +92,12 @@ public class RobotButton extends Action
                    && penalty != Penalty.Service
                    && penalty != Penalty.Substitute)
                || (lastUIAction instanceof PickUpSPL
-                   && Game.settings instanceof SPL
+                   && game.league().isSPLFamily()
                    && penalty != Penalty.SplRequestForPickup
                    && penalty != Penalty.Substitute)
                || (lastUIAction instanceof Substitute
                    && penalty != Penalty.Substitute
-                   && (!isCoach() && (!(Game.settings instanceof SPL) || number != 0)))
+                   && (!isCoach() && (!game.league().isSPLFamily() || number != 0)))
                || (lastUIAction instanceof CoachMotion
                    && isCoach()
                    && state.team[side].coach.penalty != Penalty.SplCoachMotion)
@@ -110,6 +111,6 @@ public class RobotButton extends Action
     
     public boolean isCoach()
     {
-        return Game.settings.isCoachAvailable && number == Game.settings.teamSize;
+        return league.settings().isCoachAvailable && number == league.settings().teamSize;
     }
 }

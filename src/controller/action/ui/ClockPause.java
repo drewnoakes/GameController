@@ -4,7 +4,7 @@ import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
 import controller.action.ActionBoard;
-import data.GameState;
+import controller.GameState;
 
 /**
  * This action means that the clock is to be paused.

@@ -3,7 +3,7 @@ package controller.action.ui.playmode;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 import data.PlayMode;
 
 /**
@@ -19,7 +19,7 @@ public class Play extends Action
         if (state.playMode == PlayMode.Playing) {
             return;
         }
-        if (!state.playoff && state.timeBeforeCurrentPlayMode != 0) {
+        if (!state.options().playOff && state.timeBeforeCurrentPlayMode != 0) {
             state.addTimeInCurrentPlayMode();
         }
         state.whenCurrentPlayModeBegan = state.getTime();

@@ -3,7 +3,7 @@ package controller.action.ui.playmode;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 import data.PlayMode;
 
 /**
@@ -27,7 +27,7 @@ public class Initial extends Action
      */
     public void forceExecute(@NotNull GameState state)
     {
-        if (Game.settings.returnRobotsInGameStoppages) {
+        if (state.settings().returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
         state.whenCurrentPlayModeBegan = state.getTime();

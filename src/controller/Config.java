@@ -33,8 +33,15 @@ public class Config
     /** Relative directory of where logs are stored */
     public final static String LOG_DIRECTORY = "logs";
 
+    public static final String CONFIG_PATH = "config/";
+
     /** Root path for icon images. */
-    public static final String ICONS_PATH = "config/icons/";
+    public static final String ICONS_PATH = CONFIG_PATH + "icons/";
+
+    public static final String TEAM_CONFIG_FILE_NAME = "teams.cfg";
+
+    public static final String[] IMAGE_EXTENSIONS = new String[] {"png", "gif", "jpg", "jpeg"};
+
 
     private Config() {}
 }

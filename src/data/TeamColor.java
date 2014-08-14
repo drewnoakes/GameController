@@ -1,8 +1,5 @@
 package data;
 
-import controller.Game;
-import leagues.SPL;
-
 import java.awt.*;
 
 /**
@@ -37,9 +34,9 @@ public enum TeamColor
         return value;
     }
 
-    public Color getColor()
+    public Color getColor(League league)
     {
-        return (Game.settings instanceof SPL ? splColors : hlColors)[value];
+        return (league.isSPLFamily() ? splColors : hlColors)[value];
     }
 
     public static TeamColor fromValue(byte value)

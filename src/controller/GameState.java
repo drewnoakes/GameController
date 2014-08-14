@@ -1,11 +1,13 @@
-package data;
+package controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import common.Log;
-import controller.Game;
+import common.annotations.NotNull;
 import controller.action.ActionBoard;
+import data.*;
+import leagues.LeagueSettings;
 
 /**
  * This class extends the GameState that is send to the robots. It
@@ -20,6 +22,9 @@ import controller.action.ActionBoard;
  */
 public class GameState extends GameStateSnapshot implements Cloneable
 {
+    transient Game game;
+    transient StartOptions options;
+
     /** How much time summed up before the current play mode? (ms)*/
     public long timeBeforeCurrentPlayMode;
     
@@ -30,10 +35,10 @@ public class GameState extends GameStateSnapshot implements Cloneable
     public long whenDropIn;
     
     /** When was each player penalized last (ms, 0 = never)? */
-    public final long[][] whenPenalized = Game.settings.isCoachAvailable ? new long[2][Game.settings.teamSize+1] : new long[2][Game.settings.teamSize];
+    public final long[][] whenPenalized;
 
     /** Which players were already ejected? */
-    public final boolean[][] ejected = Game.settings.isCoachAvailable ? new boolean[2][Game.settings.teamSize+1] : new boolean[2][Game.settings.teamSize];
+    public final boolean[][] ejected;
     
     /** Pushing counters for each team, 0:left side, 1:right side. */
     public final int[] pushes = {0, 0};
@@ -50,11 +55,11 @@ public class GameState extends GameStateSnapshot implements Cloneable
     /** If true, left side has the kickoff. */
     public boolean leftSideKickoff = true;
     
-    /** If true, the game auto-pauses the game for full 10minutes playing. */
-    public boolean playoff;
+//    /** If true, the game auto-pauses the game for full 10minutes playing. */
+//    public boolean playoff;
     
-    /** If true, the colors change automatically. */
-    public boolean colorChangeAuto;
+//    /** If true, the colors change automatically. */
+//    public boolean colorChangeAuto;
     
     /** If true, the testmode has been activated. */
     public boolean testmode = false;
@@ -86,24 +91,46 @@ public class GameState extends GameStateSnapshot implements Cloneable
     /** Keep the coach messages. */
     public final ArrayList<SPLCoachMessage> splCoachMessageQueue = new ArrayList<SPLCoachMessage>();
 
-    /**
-     * Creates a new AdvancedData.
-     */
-    public GameState()
+    public GameState(@NotNull Game game)
     {
-        if (Game.settings.startWithPenalty) {
+        super(game);
+
+        this.game = game;
+        this.options = game.options();
+
+        if (game.settings().startWithPenalty) {
             period = Period.PenaltyShootout;
         }
         for (int i=0; i<2; i++) {
             for (int j=0; j < team[i].player.length; j++) {
-                if (j >= Game.settings.robotsPlaying) {
+                if (j >= game.settings().robotsPlaying) {
                     team[i].player[j].penalty = Penalty.Substitute;
                 }
             }
             penaltyQueueForSubPlayers.add(new ArrayList<PenaltyQueueData>());
         }
+        whenPenalized = game.settings().isCoachAvailable ? new long[2][game.settings().teamSize+1] : new long[2][game.settings().teamSize];
+        ejected = game.settings().isCoachAvailable ? new boolean[2][game.settings().teamSize+1] : new boolean[2][game.settings().teamSize];
     }
-    
+
+    @NotNull
+    public StartOptions options()
+    {
+        return options;
+    }
+
+    @NotNull
+    public League league()
+    {
+        return options.league;
+    }
+
+    @NotNull
+    public LeagueSettings settings()
+    {
+        return options.league.settings();
+    }
+
     /**
      * Returns the current time. Can be stopped in test mode.
      * @return The current time in ms. May become incompatible to
@@ -176,19 +203,25 @@ public class GameState extends GameStateSnapshot implements Cloneable
      */
     public int getRemainingGameTime()
     {
-        int regularNumberOfPenaltyShots = playoff ? Game.settings.numberOfPenaltyShotsLong : Game.settings.numberOfPenaltyShotsShort;
-        int duration = period == Period.Timeout ? secsRemaining :
-                period == Period.Normal ? Game.settings.halfTime
-                : period == Period.Overtime ? Game.settings.overtimeTime
-                : Math.max(team[0].penaltyShot, team[1].penaltyShot) > regularNumberOfPenaltyShots
-                ? Game.settings.penaltyShotTimeSuddenDeath
-                : Game.settings.penaltyShotTime;
+        int regularNumberOfPenaltyShots = game.options().playOff
+                ? game.settings().numberOfPenaltyShotsLong
+                : game.settings().numberOfPenaltyShotsShort;
+
+        int duration = period == Period.Timeout
+                ? secsRemaining
+                : period == Period.Normal
+                    ? game.settings().halfTime
+                    : period == Period.Overtime
+                        ? game.settings().overtimeTime
+                        : Math.max(team[0].penaltyShot, team[1].penaltyShot) > regularNumberOfPenaltyShots
+                            ? game.settings().penaltyShotTimeSuddenDeath
+                            : game.settings().penaltyShotTime;
         int timePlayed = playMode == PlayMode.Initial// during timeouts
                 || (playMode == PlayMode.Ready || playMode == PlayMode.Set)
-                && (playoff && Game.settings.playOffTimeStop || timeBeforeCurrentPlayMode == 0)
+                && (game.options().playOff && game.settings().playOffTimeStop || timeBeforeCurrentPlayMode == 0)
                 || playMode == PlayMode.Finished
-        ? (int) ((timeBeforeCurrentPlayMode + manRemainingGameTimeOffset + (manPlay ? System.currentTimeMillis() - manWhenClockChanged : 0)) / 1000)
-                : getSecondsSince(whenCurrentPlayModeBegan - timeBeforeCurrentPlayMode - manRemainingGameTimeOffset);
+            ? (int) ((timeBeforeCurrentPlayMode + manRemainingGameTimeOffset + (manPlay ? System.currentTimeMillis() - manWhenClockChanged : 0)) / 1000)
+            : getSecondsSince(whenCurrentPlayModeBegan - timeBeforeCurrentPlayMode - manRemainingGameTimeOffset);
 
         return duration - timePlayed;
     }
@@ -202,11 +235,11 @@ public class GameState extends GameStateSnapshot implements Cloneable
         if (period == Period.Normal
                 && (playMode == PlayMode.Initial && !firstHalf && !timeOutActive[0] && !timeOutActive[1]
                 || playMode == PlayMode.Finished && firstHalf)) {
-            return getRemainingSeconds(whenCurrentPlayModeBegan, Game.settings.pauseTime);
-        } else if (Game.settings.pausePenaltyShootOutTime != 0 && playoff && team[0].score == team[1].score
+            return getRemainingSeconds(whenCurrentPlayModeBegan, game.settings().pauseTime);
+        } else if (game.settings().pausePenaltyShootOutTime != 0 && game.options().playOff && team[0].score == team[1].score
                 && (playMode == PlayMode.Initial && period == Period.PenaltyShootout && !timeOutActive[0] && !timeOutActive[1]
                 || playMode == PlayMode.Finished && !firstHalf)) {
-            return getRemainingSeconds(whenCurrentPlayModeBegan, Game.settings.pausePenaltyShootOutTime);
+            return getRemainingSeconds(whenCurrentPlayModeBegan, game.settings().pausePenaltyShootOutTime);
         } else {
             return null;
         }
@@ -232,7 +265,7 @@ public class GameState extends GameStateSnapshot implements Cloneable
     {
         for (int i = 0; i < team.length; ++i) {
             pushes[i] = 0;
-            for (int j = 0; j < Game.settings.teamSize; j++) {
+            for (int j = 0; j < game.settings().teamSize; j++) {
                 if (!ActionBoard.robotButton[i][j].isCoach() && team[i].player[j].penalty != Penalty.Substitute) {
                     team[i].player[j].penalty = Penalty.None;
                     ejected[i][j] = false;
@@ -256,8 +289,8 @@ public class GameState extends GameStateSnapshot implements Cloneable
         Penalty penalty = team[side].player[number].penalty;
         assert penalty == Penalty.Manual || penalty == Penalty.Substitute || penalty.getDurationSeconds() != -1;
         return penalty == Penalty.Manual || penalty == Penalty.Substitute ? 0
-                : playMode == PlayMode.Ready && Game.settings.returnRobotsInGameStoppages && whenPenalized[side][number] >= whenCurrentPlayModeBegan
-                ? Game.settings.readyTime - getSecondsSince(whenCurrentPlayModeBegan)
+                : playMode == PlayMode.Ready && game.settings().returnRobotsInGameStoppages && whenPenalized[side][number] >= whenCurrentPlayModeBegan
+                ? game.settings().readyTime - getSecondsSince(whenCurrentPlayModeBegan)
                 : Math.max(0, getRemainingSeconds(whenPenalized[side][number], penalty.getDurationSeconds()));
     }
     
@@ -287,18 +320,18 @@ public class GameState extends GameStateSnapshot implements Cloneable
      */
     public Integer getSecondaryTime(int timeKickOffBlockedOvertime)
     {
-        int timeKickOffBlocked = getRemainingSeconds(whenCurrentPlayModeBegan, Game.settings.kickoffTime);
+        int timeKickOffBlocked = getRemainingSeconds(whenCurrentPlayModeBegan, game.settings().kickoffTime);
         if (kickOffTeam == null) {
             timeKickOffBlocked = 0;
         }
         if (playMode == PlayMode.Initial && (timeOutActive[0] || timeOutActive[1])) {
-            return getRemainingSeconds(whenCurrentPlayModeBegan, Game.settings.timeOutTime);
+            return getRemainingSeconds(whenCurrentPlayModeBegan, game.settings().timeOutTime);
         }
         else if (playMode == PlayMode.Initial && refereeTimeout) {
-            return getRemainingSeconds(whenCurrentPlayModeBegan, Game.settings.refereeTimeout);
+            return getRemainingSeconds(whenCurrentPlayModeBegan, game.settings().refereeTimeout);
         }
         else if (playMode == PlayMode.Ready) {
-            return getRemainingSeconds(whenCurrentPlayModeBegan, Game.settings.readyTime);
+            return getRemainingSeconds(whenCurrentPlayModeBegan, game.settings().readyTime);
         } else if (playMode == PlayMode.Playing && period != Period.PenaltyShootout
                 && timeKickOffBlocked >= -timeKickOffBlockedOvertime) {
             if (timeKickOffBlocked > 0) {

@@ -5,8 +5,6 @@ import controller.Game;
 import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
 import data.TeamColor;
-import leagues.HL;
-import leagues.SPL;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
@@ -86,7 +84,7 @@ public class KeyboardListener implements KeyEventDispatcher
             case KeyEvent.VK_R: action = ActionBoard.out[game.getGameState().team[0].teamColor == TeamColor.Red ? 0 : 1]; break;
 
             default:
-                if (Game.settings instanceof SPL) {
+                if (game.league().isSPLFamily()) {
                     switch (key) {
                         case KeyEvent.VK_P: action = ActionBoard.pushing; break;
                         case KeyEvent.VK_L: action = ActionBoard.leaving; break;
@@ -100,7 +98,7 @@ public class KeyboardListener implements KeyEventDispatcher
                         case KeyEvent.VK_T: action = ActionBoard.teammatePushing; break;
                         case KeyEvent.VK_S: action = ActionBoard.substitute; break;
                     }
-                } else if (Game.settings instanceof HL) {
+                } else if (game.league().isHLFamily()) {
                     switch (key) {
                         case KeyEvent.VK_P: action = ActionBoard.pushing; break;
                         case KeyEvent.VK_D: action = ActionBoard.defense; break;

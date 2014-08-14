@@ -3,6 +3,7 @@ package controller.action.ui;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
+import controller.GameState;
 import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
 import data.*;

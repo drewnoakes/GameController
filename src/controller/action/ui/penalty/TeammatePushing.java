@@ -2,7 +2,7 @@ package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 import data.PlayMode;
 import data.PlayerInfo;
 
@@ -17,7 +17,7 @@ public class TeammatePushing extends PenaltyAction
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
-        return Game.settings.dropInPlayerMode
+        return game.settings().dropInPlayerMode
                 && (state.playMode == PlayMode.Ready || state.playMode == PlayMode.Playing)
                 || state.testmode;
     }

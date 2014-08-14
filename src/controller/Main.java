@@ -12,7 +12,6 @@ import controller.ui.GUI;
 import controller.ui.KeyboardListener;
 import controller.ui.StartInput;
 import data.*;
-import leagues.LeagueSettings;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -64,21 +63,22 @@ public class Main
 
         final Game game = new Game(options);
 
-        final RobotWatcher robotWatcher = new RobotWatcher();
+        final RobotWatcher robotWatcher = new RobotWatcher(options.league);
         final GameStateSender gameStateSender;
         final MessageReceiver robotMessageReceiver;
         MessageReceiver splReceiver = null;
 
         try {
             gameStateSender = new GameStateSender(game, options.broadcastAddress);
-            gameStateSender.addProtocol(new GameStateProtocol9());
-            if (Game.settings.supportGameStateVersion8)
-                gameStateSender.addProtocol(new GameStateProtocol8());
-            if (Game.settings.supportGameStateVersion7)
-                gameStateSender.addProtocol(new GameStateProtocol7());
+            gameStateSender.addProtocol(new GameStateProtocol9(game.league()));
+            if (game.settings().supportGameStateVersion8)
+                gameStateSender.addProtocol(new GameStateProtocol8(game.league()));
+            if (game.settings().supportGameStateVersion7)
+                gameStateSender.addProtocol(new GameStateProtocol7(game.league()));
             gameStateSender.start();
 
             robotMessageReceiver = new MessageReceiver<RobotMessage>(
+                    game.options().league,
                     Config.ROBOT_STATUS_PORT,
                     500,
                     new MessageHandler<RobotMessage>()
@@ -90,8 +90,9 @@ public class Main
             robotMessageReceiver.addProtocol(new RobotStatusProtocol2());
             robotMessageReceiver.start();
 
-            if (Game.settings.isCoachAvailable) {
+            if (game.options().league.isSPLFamily() && game.settings().isCoachAvailable) {
                 splReceiver = new MessageReceiver<SPLCoachMessage>(
+                        game.options().league,
                         Config.SPL_COACH_MESSAGE_PORT,
                         500,
                         new MessageHandler<SPLCoachMessage>()
@@ -117,12 +118,12 @@ public class Main
 
         Log.initialise();
 
-        Log.toFile("League = " + Game.settings.leagueName);
+        Log.toFile("League = " + options.league.getName());
         Log.toFile("Play-off = " + options.playOff);
         Log.toFile("Auto color change = " + options.colorChangeAuto);
         Log.toFile("Using broadcast address " + options.broadcastAddress);
 
-        ActionBoard.init();
+        ActionBoard.initalise(options.league);
 
         GUI gui = new GUI(game, options.fullScreenMode, robotWatcher);
 
@@ -189,9 +190,9 @@ public class Main
         options.fullScreenMode = true;
         options.initialKickOffTeam = null;
         options.playOff = null;
-        options.league = LeagueSettings.ALL[0];
+        options.league = League.getAllLeagues()[0];
 
-        for (int i=0; i<args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             boolean hasAnotherArg = args.length > i + 1;
             boolean hasAnotherTwoArgs = args.length > i + 2;
             // Dispatch based on argument string.
@@ -202,10 +203,9 @@ public class Main
                     continue;
                 }
             } else if (args[i].equals("-l") || args[i].equals("--league")) {
-                if (hasAnotherArg)
-                {
-                    options.league = LeagueSettings.getRulesForLeague(args[++i]);
-                    if (options.league == null)
+                if (hasAnotherArg) {
+                    options.league = League.findByDirectoryName(args[++i]);
+                    if (options.league != null)
                         continue;
                 }
             } else if (args[i].equals("-t") || args[i].equals("--teams")) {
@@ -260,12 +260,18 @@ public class Main
                 + "\n  (--knockout | --playoff) <val>  set whether knockout/playoff game (yes/no)"
                 + "\n";
 
-        String leagues = "";
-        for (LeagueSettings league : LeagueSettings.ALL) {
-            leagues += (leagues.equals("") ? "" : " | ") + league.leagueDirectory;
+        StringBuilder leagues = new StringBuilder();
+        League[] allLeagues = League.getAllLeagues();
+        if (allLeagues.length > 1) {
+            leagues.append('(');
         }
-        if (leagues.contains("|")) {
-            leagues = "(" + leagues + ")";
+        for (League league : allLeagues) {
+            if (leagues.length() != 1)
+                leagues.append(" | ");
+            leagues.append(league.getDirectoryName());
+        }
+        if (allLeagues.length > 1) {
+            leagues.append(')');
         }
         System.out.printf(HELP_TEMPLATE,
                 DEFAULT_BROADCAST,

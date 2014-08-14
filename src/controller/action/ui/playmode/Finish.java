@@ -3,7 +3,7 @@ package controller.action.ui.playmode;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 import data.PlayMode;
 
 /**
@@ -19,7 +19,7 @@ public class Finish extends Action
         if (state.playMode == PlayMode.Finished) {
             return;
         }
-        if (Game.settings.returnRobotsInGameStoppages) {
+        if (game.settings().returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
         state.addTimeInCurrentPlayMode();

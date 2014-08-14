@@ -1,7 +1,6 @@
 package controller;
 
 import common.annotations.NotNull;
-import data.GameState;
 
 public class TimelineEntry
 {

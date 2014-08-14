@@ -3,7 +3,7 @@ package controller.action.ui;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 import data.Period;
 import data.PlayMode;
 
@@ -32,7 +32,7 @@ public class KickOff extends Action
             return;
         }
         state.kickOffTeam = state.team[side].teamColor;
-        if (Game.settings.kickoffChoice
+        if (game.settings().kickoffChoice
                 && state.period == Period.Normal
                 && state.firstHalf
                 && state.playMode == PlayMode.Initial) {
@@ -45,7 +45,7 @@ public class KickOff extends Action
     public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return state.kickOffTeam == state.team[side].teamColor
-                || (Game.settings.kickoffChoice
+                || (game.settings().kickoffChoice
                     && state.period == Period.Normal
                     && state.firstHalf
                     && state.playMode == PlayMode.Initial)

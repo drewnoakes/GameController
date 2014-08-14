@@ -4,7 +4,7 @@ import common.Log;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 
 /**
  * Toggles test mode on/off.

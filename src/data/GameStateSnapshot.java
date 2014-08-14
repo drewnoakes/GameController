@@ -34,7 +34,7 @@ public class GameStateSnapshot implements Serializable
     /** The number of seconds that have passed since the last drop in. Will be -1 before first drop in. */
     public short dropInTime = -1;
     /** An estimate of the number of seconds remaining in the current half. */
-    public short secsRemaining = (short) Game.settings.halfTime;
+    public short secsRemaining;
     /**
      * Play-mode-specific sub-time in seconds.
      *
@@ -47,13 +47,14 @@ public class GameStateSnapshot implements Serializable
     /**
      * Creates a new, blank GameState.
      */
-    public GameStateSnapshot()
+    public GameStateSnapshot(Game game)
     {
         for (int i=0; i<team.length; i++) {
             team[i] = new TeamInfo();
         }
         team[0].teamColor = TeamColor.Blue;
         team[1].teamColor = TeamColor.Red;
+        secsRemaining = (short) game.settings().halfTime;
     }
     
     @Override

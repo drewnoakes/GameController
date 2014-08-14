@@ -21,11 +21,11 @@ import javax.swing.JFrame;
 
 import common.Interval;
 import common.Log;
-import controller.Game;
+import common.annotations.NotNull;
+import controller.Config;
 import data.GameStateSnapshot;
 import data.Period;
 import data.PlayMode;
-import data.Teams;
 
 /**
  * The window of the Game Controller Visualizer.
@@ -59,7 +59,6 @@ public class GUI extends JFrame
     private static final double STANDARD_FONT_S_SIZE = 0.05;
     private static final String TEST_FONT = "Lucida Console";
     private static final double TEST_FONT_SIZE = 0.01;
-    private static final String CONFIG_PATH = "config/";
     private static final String BACKGROUND = "background";
     private static final String WAITING_FOR_PACKET = "waiting for data packet...";
 
@@ -67,6 +66,7 @@ public class GUI extends JFrame
     private static final GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 
     private final BufferStrategy bufferStrategy;
+    private final VisualiserOptions options;
     /** If testmode is on to just display whole GameState. */
     private boolean testmode = false;
     /** The last state received to show. */
@@ -85,10 +85,12 @@ public class GUI extends JFrame
     /**
      * Constructs all elements of the UI and shows it on screen.
      */
-    GUI()
+    GUI(@NotNull VisualiserOptions options)
     {
         super(WINDOW_TITLE, devices[IS_OSX && !IS_APPLE_JAVA ? 0 : devices.length - 1].getDefaultConfiguration());
-        
+
+        this.options = options;
+
         setUndecorated(true);
         if (IS_APPLE_JAVA && devices.length != 1) {
             setSize(devices[devices.length-1].getDefaultConfiguration().getBounds().getSize());
@@ -96,9 +98,10 @@ public class GUI extends JFrame
             devices[IS_OSX && !IS_APPLE_JAVA ? 0 : devices.length-1].setFullScreenWindow(this);
         }
 
-        for (String format : new String [] {".png", ".jpeg", ".jpg"}) {
+        for (String ext : Config.IMAGE_EXTENSIONS) {
             try {
-                background = ImageIO.read(new File(CONFIG_PATH+ Game.settings.leagueDirectory+"/"+BACKGROUND+format));
+                String path = Config.CONFIG_PATH + options.getLeague().getDirectoryName() + "/" + BACKGROUND + ext;
+                background = ImageIO.read(new File(path));
             } catch (IOException e) {
             }
         }
@@ -272,26 +275,30 @@ public class GUI extends JFrame
         int x = getSizeToWidth(0.01);
         int y = getSizeToHeight(0.35);
         int size = getSizeToWidth(0.28);
-        BufferedImage[] icons = new BufferedImage[] {
-            Teams.getIcon(state.team[0].teamNumber),
-            Teams.getIcon(state.team[1].teamNumber)};
-        ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        for (int i=0; i<2; i++) {
-            g.setColor(state.team[i].teamColor.getColor());
+
+        BufferedImage[] logos = new BufferedImage[] {
+            options.getLeague().getTeam(state.team[0].teamNumber).getLogoImage(),
+            options.getLeague().getTeam(state.team[1].teamNumber).getLogoImage()
+        };
+
+        ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+        for (int i = 0; i < 2; i++) {
+            g.setColor(state.team[i].teamColor.getColor(options.getLeague()));
             float scaleFactorX = 1f;
             float scaleFactorY = 1f;
-            if (icons[i].getWidth() * 1.2f > icons[i].getHeight()) {
-                scaleFactorY = icons[i].getHeight()/(float)icons[i].getWidth();
+            if (logos[i].getWidth() * 1.2f > logos[i].getHeight()) {
+                scaleFactorY = logos[i].getHeight() / (float)logos[i].getWidth();
             } else {
-                scaleFactorX = icons[i].getWidth()/(float)icons[i].getHeight();
+                scaleFactorX = logos[i].getWidth() / (float)logos[i].getHeight();
             }
-            int offsetX = (int)((size - size*scaleFactorX)/2);
-            int offsetY = (int)((size - size*scaleFactorY)/2);
-            g.drawImage(icons[i],
-                    (i==1 ? x : getWidth()-x-size) + offsetX,
-                    y+offsetY,
-                    (int)(scaleFactorX*size),
-                    (int)(scaleFactorY*size), null);
+            int offsetX = (int)((size - size * scaleFactorX) / 2);
+            int offsetY = (int)((size - size * scaleFactorY) / 2);
+            g.drawImage(logos[i],
+                    (i == 1 ? x : getWidth() - x - size) + offsetX,
+                    y + offsetY,
+                    (int)(scaleFactorX * size),
+                    (int)(scaleFactorY * size), null);
         }
     }
     
@@ -310,7 +317,7 @@ public class GUI extends JFrame
         g.setColor(Color.BLACK);
         drawCenteredString(g, ":", getWidth()/2-size, yDiv, 2*size);
         for (int i=0; i<2; i++) {
-            g.setColor(state.team[i].teamColor.getColor());
+            g.setColor(state.team[i].teamColor.getColor(options.getLeague()));
             drawCenteredString(
                     g,
                     state.team[i].score+"",
@@ -419,7 +426,7 @@ public class GUI extends JFrame
         int y = getSizeToHeight(0.86);
         int size = getSizeToWidth(0.02);
         for (int i=0; i<2; i++) {
-            g.setColor(state.team[i].teamColor.getColor());
+            g.setColor(state.team[i].teamColor.getColor(options.getLeague()));
             for (int j=0; j< state.team[i].penaltyShot; j++) {
                 if ((state.team[i].singleShots & (1<<j)) != 0) {
                     g.fillOval(i==1 ? x+j*2*size : getWidth()-x-(5-j)*2*size-size, y, size, size);
@@ -512,7 +519,7 @@ public class GUI extends JFrame
             }
 
             //Draw the coach label and coach message box
-            g2.setColor(state.team[i].teamColor.getColor());
+            g2.setColor(state.team[i].teamColor.getColor(options.getLeague()));
             if (i == 1) {
                 g2.drawString(row1, getSizeToWidth(0.01), getSizeToHeight(0.92));
                 g2.drawString(row2, getSizeToWidth(0.01), getSizeToHeight(0.98));

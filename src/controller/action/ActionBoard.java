@@ -1,22 +1,12 @@
 package controller.action;
 
-import controller.Game;
 import controller.action.clock.ClockTick;
 import controller.action.net.Manual;
 import controller.action.ui.*;
 import controller.action.ui.penalty.*;
-import controller.action.ui.period.RefereeTimeout;
-import controller.action.ui.period.TimeOut;
-import controller.action.ui.period.FirstHalf;
-import controller.action.ui.period.FirstHalfOvertime;
-import controller.action.ui.period.PenaltyShoot;
-import controller.action.ui.period.SecondHalf;
-import controller.action.ui.period.SecondHalfOvertime;
-import controller.action.ui.playmode.Finish;
-import controller.action.ui.playmode.Initial;
-import controller.action.ui.playmode.Play;
-import controller.action.ui.playmode.Ready;
-import controller.action.ui.playmode.Set;
+import controller.action.ui.period.*;
+import controller.action.ui.playmode.*;
+import data.League;
 
 /**
  * This class actually holds static every instance of an action to get these
@@ -90,7 +80,7 @@ public class ActionBoard
      * This must be called before using actions from this class. It creates
      * all the actions instances.
      */
-    public static void init()
+    public static void initalise(League league)
     {
         clock = new ClockTick();
         
@@ -103,7 +93,7 @@ public class ActionBoard
         cancelUndo = new CancelUndo();
 
         // We construct team arrays during initialisation as the league may change between runs
-        int robotCount = Game.settings.teamSize + (Game.settings.isCoachAvailable ? 1 : 0);
+        int robotCount = league.settings().teamSize + (league.settings().isCoachAvailable ? 1 : 0);
 
         robotButton = new RobotButton[2][robotCount];
 
@@ -112,7 +102,7 @@ public class ActionBoard
             goalInc[i] = new Goal(i, 1);
             kickOff[i] = new KickOff(i);
             for (int j=0; j< robotButton[i].length; j++) {
-                robotButton[i][j] = new RobotButton(i, j);
+                robotButton[i][j] = new RobotButton(league, i, j);
             }
             timeOut[i] = new TimeOut(i);
             stuck[i] = new GlobalStuck(i);

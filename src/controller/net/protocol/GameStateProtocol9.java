@@ -2,7 +2,6 @@ package controller.net.protocol;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.Game;
 import data.*;
 
 import java.nio.ByteBuffer;
@@ -33,9 +32,12 @@ public class GameStateProtocol9 extends GameStateProtocol
      */
     private final int gameControllerId;
 
-    public GameStateProtocol9()
+    private final League league;
+
+    public GameStateProtocol9(@NotNull League league)
     {
         super((byte) 9);
+        this.league = league;
 
         gameControllerId = new Random().nextInt();
     }
@@ -74,23 +76,23 @@ public class GameStateProtocol9 extends GameStateProtocol
 
     @NotNull
     @Override
-    public byte[] toBytes(GameStateSnapshot data)
+    public byte[] toBytes(@NotNull GameStateSnapshot state)
     {
         ByteBuffer buffer = writeHeader();
 
         buffer.put(getVersionNumber());
         buffer.put(nextPacketNumber);
-        buffer.put((byte)Game.settings.teamSize);
-        buffer.put(data.playMode.getValue());
-        buffer.put(data.firstHalf ? (byte)1 : 0);
-        buffer.put(data.kickOffTeam == null ? 2 : data.kickOffTeam.getValue());
-        buffer.put(data.period.getValue());
-        buffer.put(data.dropInTeam == null ? 2 : data.dropInTeam.getValue());
-        buffer.putShort(data.dropInTime);
-        buffer.putShort(data.secsRemaining);
-        buffer.putShort(data.secondaryTime);
+        buffer.put((byte)league.settings().teamSize);
+        buffer.put(state.playMode.getValue());
+        buffer.put(state.firstHalf ? (byte)1 : 0);
+        buffer.put(state.kickOffTeam == null ? 2 : state.kickOffTeam.getValue());
+        buffer.put(state.period.getValue());
+        buffer.put(state.dropInTeam == null ? 2 : state.dropInTeam.getValue());
+        buffer.putShort(state.dropInTime);
+        buffer.putShort(state.secsRemaining);
+        buffer.putShort(state.secondaryTime);
 
-        for (TeamInfo team : data.team) {
+        for (TeamInfo team : state.team) {
             writeTeamInfo(buffer, team);
         }
 
@@ -101,12 +103,12 @@ public class GameStateProtocol9 extends GameStateProtocol
 
     @Nullable
     @Override
-    public GameStateSnapshot fromBytes(ByteBuffer buffer)
+    public GameStateSnapshot fromBytes(@NotNull ByteBuffer buffer)
     {
         if (!verifyHeader(buffer))
             return null;
 
-        GameStateSnapshot data = new GameStateSnapshot();
+        GameStateSnapshot data = new GameStateSnapshot(null);
 
         buffer.get(); // packet number (ignored when decoding)
         buffer.get(); // players per team (ignored when decoding)
@@ -127,10 +129,10 @@ public class GameStateProtocol9 extends GameStateProtocol
             t.penaltyShot = buffer.get();
             t.singleShots = buffer.getShort();
             buffer.get(t.coachMessage);
-            t.coach.penalty = Penalty.fromValue(buffer.get());
+            t.coach.penalty = Penalty.fromValue(league, buffer.get());
             t.coach.secsTillUnpenalised = buffer.get();
             for (PlayerInfo p : t.player) {
-                p.penalty = Penalty.fromValue(buffer.get());
+                p.penalty = Penalty.fromValue(league, buffer.get());
                 p.secsTillUnpenalised = buffer.get();
             }
         }
@@ -140,7 +142,7 @@ public class GameStateProtocol9 extends GameStateProtocol
         return data;
     }
 
-    private static void writeTeamInfo(ByteBuffer buffer, TeamInfo teamInfo)
+    private static void writeTeamInfo(@NotNull ByteBuffer buffer, @NotNull TeamInfo teamInfo)
     {
         buffer.put(teamInfo.teamNumber);
         buffer.put(teamInfo.teamColor.getValue());
@@ -156,7 +158,7 @@ public class GameStateProtocol9 extends GameStateProtocol
         }
     }
 
-    private static void writePlayerInfo(ByteBuffer buffer, PlayerInfo playerInfo)
+    private static void writePlayerInfo(@NotNull ByteBuffer buffer, @NotNull PlayerInfo playerInfo)
     {
         buffer.put(playerInfo.penalty.getValue());
         buffer.put(playerInfo.secsTillUnpenalised);

@@ -1,7 +1,7 @@
 package analyzer;
 
 import common.Log;
-import leagues.LeagueSettings;
+import data.League;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,7 +36,7 @@ public class LogInfo
     /* The version information found in the log. */
     public String version;
     /* The league this log´s game was played in. */
-    public LeagueSettings league;
+    public League league;
     /* If the teams have kept there team colors during the game. */
     public boolean keepColors = false;
     /* The teams`s names. */
@@ -140,7 +140,7 @@ public class LogInfo
     {
         return GUI.HTML
                 + (isRealVersion() ? version : GUI.HTML_RED + version + GUI.HTML_END) + GUI.HTML_LF
-                + (league != null ? league.leagueName : GUI.HTML_RED + "(unknown)" + GUI.HTML_END) + GUI.HTML_LF
+                + (league != null ? league.getName() : GUI.HTML_RED + "(unknown)" + GUI.HTML_END) + GUI.HTML_LF
                 + (isRealTeam(true) ? team[0] : GUI.HTML_RED + team[0] + GUI.HTML_END)
                 + " vs "
                 + (isRealTeam(false) ? team[1] : GUI.HTML_RED + team[1] + GUI.HTML_END) + GUI.HTML_LF

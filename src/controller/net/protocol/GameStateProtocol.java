@@ -38,23 +38,23 @@ public abstract class GameStateProtocol implements ReceivingProtocol<GameStateSn
     /**
      * Attempts to parse the provided byte array as a message of this protocol version.
      *
-     * @param buffer the bytes to parse
-     * @return the {@link data.GameStateSnapshot} if successfully parsed, otherwise null
+     * @param buffer the bytes to parse.
+     * @return the {@link data.GameStateSnapshot} if successfully parsed, otherwise <code>null</code>.
      */
     @Nullable
-    public abstract GameStateSnapshot fromBytes(ByteBuffer buffer);
+    public abstract GameStateSnapshot fromBytes(@NotNull ByteBuffer buffer);
 
     /**
      * Formats an instance of {@link data.GameStateSnapshot} for network transmission.
      *
-     * @param data The source of data for the message
-     * @return the byte array to be sent via the network
+     * @param state The source of data for the message.
+     * @return the byte array to be sent via the network.
      */
     @NotNull
-    public abstract byte[] toBytes(GameStateSnapshot data);
+    public abstract byte[] toBytes(@NotNull GameStateSnapshot state);
 
     /**
-     * Increments the next packet number for the next message.
+     * Increments the packet number, ready for the next message.
      *
      * Should only be incremented after a successful transmission, so
      * clients track receive errors and not send errors.

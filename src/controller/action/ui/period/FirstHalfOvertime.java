@@ -3,6 +3,7 @@ package controller.action.ui.period;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
+import controller.GameState;
 import data.*;
 
 /**
@@ -18,7 +19,7 @@ public class FirstHalfOvertime extends Action
         if (!state.firstHalf || state.period == Period.PenaltyShootout) {
             state.firstHalf = true;
             state.period = Period.Overtime;
-            if (state.colorChangeAuto) {
+            if (game.options().colorChangeAuto) {
                 state.team[0].teamColor = TeamColor.Blue;
                 state.team[1].teamColor = TeamColor.Red;
             }
@@ -33,8 +34,8 @@ public class FirstHalfOvertime extends Action
     public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
         return (state.firstHalf && state.period == Period.Overtime)
-                || (Game.settings.overtime
-                    && state.playoff
+                || (game.settings().overtime
+                    && game.options().playOff
                     && state.period == Period.Normal
                     && state.playMode == PlayMode.Finished
                     && !state.firstHalf

@@ -3,6 +3,7 @@ package controller.net;
 import controller.Game;
 import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
+import data.League;
 import data.RobotMessage;
 import data.Penalty;
 
@@ -16,22 +17,27 @@ import data.Penalty;
 public class RobotWatcher
 {
     /** The number of robots on each team, including any coach. */
-    private final int robotCount = Game.settings.teamSize + (Game.settings.isCoachAvailable ? 1 : 0);
+    private final int robotCount;
 
     /** A timestamp when the last reply from each robot was received. */
-    private final long[][] robotLastHeardTime = new long[2][robotCount];
+    private final long[][] robotLastHeardTime;
 
     /** Last status received from each robot. */
-    private final RobotStatus[][] robotLastStatus = new RobotStatus[2][robotCount];
+    private final RobotStatus[][] robotLastStatus;
 
     /** The calculated information about the online-status. */
-    private final RobotOnlineStatus[][] status = new RobotOnlineStatus[2][robotCount];
+    private final RobotOnlineStatus[][] status;
 
     private final static int MILLIS_UNTIL_ROBOT_IS_OFFLINE = 4*1000;
     private final static int MILLIS_UNTIL_ROBOT_HAS_HIGH_LATENCY = 2*1000;
 
-    public RobotWatcher()
+    public RobotWatcher(League league)
     {
+        robotCount = league.settings().teamSize + (league.settings().isCoachAvailable ? 1 : 0);
+        robotLastStatus = new RobotStatus[2][robotCount];
+        status = new RobotOnlineStatus[2][robotCount];
+        robotLastHeardTime = new long[2][robotCount];
+
         // Initialise array structures
         for (int i  = 0; i < 2; i++) {
             for (int j = 0; j < robotCount; j++) {
@@ -55,7 +61,7 @@ public class RobotWatcher
             return;
 
         int number = robotMessage.getPlayerNumber();
-        if (number <= 0 || number > Game.settings.teamSize)
+        if (number <= 0 || number > game.settings().teamSize)
             return;
 
         int i = number - 1;
@@ -80,7 +86,7 @@ public class RobotWatcher
     {
         int team = game.getGameState().getTeamIndex(teamNumber);
         if (team != -1)
-            robotLastHeardTime[team][Game.settings.teamSize] = System.currentTimeMillis();
+            robotLastHeardTime[team][game.settings().teamSize] = System.currentTimeMillis();
     }
 
     /**

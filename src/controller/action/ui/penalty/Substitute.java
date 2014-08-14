@@ -2,7 +2,7 @@ package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 import data.Penalty;
 import data.PlayerInfo;
 
@@ -28,6 +28,6 @@ public class Substitute extends PenaltyAction
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
-        return Game.settings.teamSize > Game.settings.robotsPlaying;
+        return game.settings().teamSize > game.settings().robotsPlaying;
     }
 }

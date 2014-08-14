@@ -8,8 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import common.Log;
+import data.League;
 import data.TeamColor;
-import leagues.LeagueSettings;
 
 /**
  * This class contains all methods meant to parse logs.
@@ -111,12 +111,7 @@ public class Parser
             if (i == 1) {
                 log.version = action;
             } else if (action.startsWith("League = ")) {
-                String league = action.substring(9);
-                for (int j=0; j< LeagueSettings.ALL.length; j++) {
-                    if (LeagueSettings.ALL[j].leagueName.equals(league)) {
-                        log.league = LeagueSettings.ALL[j];
-                    }
-                }
+                log.league = League.findByName(action.substring(9));
             } else if (action.startsWith("Auto color change = false")) {
                 log.keepColors = true;
             } else if (action.startsWith("Undo")) {

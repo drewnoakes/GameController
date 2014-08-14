@@ -6,14 +6,14 @@ import common.annotations.NotNull;
 import controller.Config;
 import controller.net.protocol.GameStateProtocol;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class is used to send the current {@link data.GameState} to all robots every 500 ms.
+ * This class is used to send the current {@link controller.GameState} to all robots every 500 ms.
  * The packet will be sent via UDP broadcast on port {@link Config#GAME_STATE_PORT}.
  *
  * @author Marcel Steinbeck

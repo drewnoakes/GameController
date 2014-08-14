@@ -1,7 +1,7 @@
 package controller;
 
+import data.League;
 import data.TeamColor;
-import leagues.LeagueSettings;
 
 /**
  * Models options that apply through the entire game and must be specified before the game commences.
@@ -33,8 +33,7 @@ public class StartOptions
      */
     public Boolean playOff;
 
-    /** The set of rules to be used in this game. */
-    public LeagueSettings league;
+    public League league;
 
     /** The UDP broadcast IP address. */
     public String broadcastAddress;

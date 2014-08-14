@@ -7,7 +7,7 @@ package leagues;
  */
 public class HLTeen extends HL
 {
-    HLTeen()
+    public HLTeen()
     {
 //        /** The league´s name this rules are for. */
 //        leagueName = "HL Teen";

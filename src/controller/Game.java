@@ -5,8 +5,8 @@ import common.Log;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import controller.action.ActionTrigger;
-import data.GameState;
-import data.Teams;
+import data.League;
+import data.Team;
 import leagues.LeagueSettings;
 
 import java.io.*;
@@ -19,9 +19,6 @@ import java.util.Stack;
  */
 public class Game
 {
-    /** The rules that apply to the current game. */
-    public static LeagueSettings settings = LeagueSettings.ALL[0];
-
     /**
      * The stack of game states on the timeline.
      * <p>
@@ -38,6 +35,8 @@ public class Game
      * keeping the game's copy of the state private.
      */
     public final Event<GameState> gameStateChanged;
+
+    private final StartOptions options;
 
     /** The golden record of the game's current state. */
     private GameState gameState;
@@ -57,18 +56,40 @@ public class Game
     /** Create a new Game with the specified starting options. */
     public Game(@NotNull StartOptions options)
     {
-        gameState = new GameState();
+        this.options = options;
+
+        gameState = new GameState(this);
+
+        // TODO is it really blue/red here? more like left/right (in the UI sense)
         gameState.team[0].teamNumber = options.teamNumberBlue;
         gameState.team[1].teamNumber = options.teamNumberRed;
-        gameState.colorChangeAuto = options.colorChangeAuto;
-        gameState.playoff = options.playOff;
         gameState.kickOffTeam = options.initialKickOffTeam;
 
         gameStateClone = cloneGameState(gameState);
 
-        timeline.push(new TimelineEntry(this.gameState, Teams.getNames(false)[this.gameState.team[0].teamNumber] + " vs " + Teams.getNames(false)[this.gameState.team[1].teamNumber]));
+        Team team0 = options.league.getTeam(options.teamNumberBlue);
+        Team team1 = options.league.getTeam(options.teamNumberRed);
+        timeline.push(new TimelineEntry(this.gameState, team0.getName() + " vs " + team1.getName()));
 
         gameStateChanged = new Event<GameState>();
+    }
+
+    @NotNull
+    public StartOptions options()
+    {
+        return options;
+    }
+
+    @NotNull
+    public League league()
+    {
+        return options.league;
+    }
+
+    @NotNull
+    public LeagueSettings settings()
+    {
+        return options.league.settings();
     }
 
     /**
@@ -225,13 +246,17 @@ public class Game
      * @param gameState the object to clone
      * @return A deep copy of this object.
      */
-    private static GameState cloneGameState(GameState gameState)
+    private GameState cloneGameState(GameState gameState)
     {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             new ObjectOutputStream(out).writeObject(gameState);
             ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-            return (GameState)new ObjectInputStream(in).readObject();
+            GameState clone = (GameState)new ObjectInputStream(in).readObject();
+            // Populate transient fields
+            clone.game = this;
+            clone.options = options;
+            return clone;
         } catch (ClassNotFoundException e) {
             Log.error(e.getClass().getName() + ": " + e.getMessage());
         } catch (IOException e) {

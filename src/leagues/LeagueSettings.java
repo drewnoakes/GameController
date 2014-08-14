@@ -1,55 +1,15 @@
 package leagues;
 
-import common.annotations.Nullable;
-import data.League;
-
 /**
  * This class holds attributes defining rules.
  *
  * @author Michel Bartsch
+ * @author Drew Noakes https://drewnoakes.com
  */
 public abstract class LeagueSettings
 {   
-    /** Note all league´s rules here to have them available. */
-    public static final LeagueSettings[] ALL = {
-        new SPL(),
-        new SPLDropIn(),
-        new HLKid(),
-        new HLTeen(),
-        new HLAdult()
-    };
+    protected LeagueSettings() {}
 
-    /**
-     * Attempts to find the {@link LeagueSettings} for the specified league.
-     *
-     * @param leagueDirectory the league directory name
-     * @return an instance of {@link LeagueSettings} if found, otherwise <code>null</code>.
-     */
-    @Nullable
-    public static LeagueSettings getRulesForLeague(String leagueDirectory)
-    {
-        for (LeagueSettings settings : ALL)
-            if (settings.league().equals(leagueDirectory))
-                return settings;
-        return null;
-    }
-
-    private final League league;
-
-    protected LeagueSettings(League league)
-    {
-        this.league = league;
-    }
-
-    public League league()
-    {
-        return league;
-    }
-
-    //    /** The league´s name this rules are for. */
-//    public String leagueName;
-//    /** The league´s directory name with its teams and icons. */
-//    public String leagueDirectory;
     /** How many robots are in a team. */
     public int teamSize;
     /** How many robots of each team may play at one time. */

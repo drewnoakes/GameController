@@ -2,7 +2,6 @@ package controller.net.protocol;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.Game;
 import data.*;
 
 import java.nio.ByteBuffer;
@@ -14,9 +13,12 @@ import java.nio.ByteBuffer;
  */
 public class GameStateProtocol8 extends GameStateProtocol
 {
-    public GameStateProtocol8()
+    private final League league;
+
+    public GameStateProtocol8(@NotNull League league)
     {
         super((byte) 8);
+        this.league = league;
     }
 
     @Override
@@ -52,24 +54,24 @@ public class GameStateProtocol8 extends GameStateProtocol
 
     @NotNull
     @Override
-    public byte[] toBytes(GameStateSnapshot data)
+    public byte[] toBytes(@NotNull GameStateSnapshot state)
     {
         ByteBuffer buffer = writeHeader();
 
         buffer.put(getVersionNumber());
         buffer.put(nextPacketNumber);
-        buffer.put((byte)Game.settings.teamSize);
-        buffer.put(data.playMode.getValue());
-        buffer.put(data.firstHalf ? (byte)1 : 0);
-        buffer.put(data.kickOffTeam == null ? 2 : data.kickOffTeam.getValue());
-        buffer.put(data.period.getValue());
+        buffer.put((byte)league.settings().teamSize);
+        buffer.put(state.playMode.getValue());
+        buffer.put(state.firstHalf ? (byte)1 : 0);
+        buffer.put(state.kickOffTeam == null ? 2 : state.kickOffTeam.getValue());
+        buffer.put(state.period.getValue());
         // V8 sends '0' (blue) when no drop in has occurred. This is addressed in V9.
-        buffer.put(data.dropInTeam == null ? 0 : data.dropInTeam.getValue());
-        buffer.putShort(data.dropInTime);
-        buffer.putShort(data.secsRemaining);
-        buffer.putShort(data.secondaryTime);
+        buffer.put(state.dropInTeam == null ? 0 : state.dropInTeam.getValue());
+        buffer.putShort(state.dropInTime);
+        buffer.putShort(state.secsRemaining);
+        buffer.putShort(state.secondaryTime);
 
-        for (TeamInfo team : data.team) {
+        for (TeamInfo team : state.team) {
             writeTeamInfo(buffer, team);
         }
 
@@ -78,12 +80,12 @@ public class GameStateProtocol8 extends GameStateProtocol
 
     @Nullable
     @Override
-    public GameStateSnapshot fromBytes(ByteBuffer buffer)
+    public GameStateSnapshot fromBytes(@NotNull ByteBuffer buffer)
     {
         if (!verifyHeader(buffer))
             return null;
 
-        GameStateSnapshot data = new GameStateSnapshot();
+        GameStateSnapshot data = new GameStateSnapshot(null);
 
         buffer.get(); // packet number (ignored when decoding)
         buffer.get(); // players per team (ignored when decoding)
@@ -103,10 +105,10 @@ public class GameStateProtocol8 extends GameStateProtocol
             t.penaltyShot = buffer.get();
             t.singleShots = buffer.getShort();
             buffer.get(t.coachMessage);
-            t.coach.penalty = Penalty.fromValue(buffer.get());
+            t.coach.penalty = Penalty.fromValue(league, buffer.get());
             t.coach.secsTillUnpenalised = buffer.get();
             for (PlayerInfo p : t.player) {
-                p.penalty = Penalty.fromValue(buffer.get());
+                p.penalty = Penalty.fromValue(league, buffer.get());
                 p.secsTillUnpenalised = buffer.get();
             }
         }
@@ -125,7 +127,7 @@ public class GameStateProtocol8 extends GameStateProtocol
 
         writePlayerInfo(buffer, teamInfo.coach);
 
-        for (int i=0; i< TeamInfo.NUM_PLAYERS_IN_GAME_STATE_MESSAGE; i++) {
+        for (int i = 0; i < TeamInfo.NUM_PLAYERS_IN_GAME_STATE_MESSAGE; i++) {
             writePlayerInfo(buffer, teamInfo.player[i]);
         }
     }

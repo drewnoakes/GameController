@@ -1,7 +1,6 @@
 package controller;
 
 import common.annotations.NotNull;
-import data.GameState;
 
 /**
  * Action classes mutate the game state in some way.

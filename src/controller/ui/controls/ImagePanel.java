@@ -1,5 +1,7 @@
 package controller.ui.controls;
 
+import common.annotations.Nullable;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -20,6 +22,7 @@ public class ImagePanel extends JPanel
 
     private final Mode mode;
     /** The image that is shown in the background. */
+    @Nullable
     private Image image;
 
     /**
@@ -27,10 +30,15 @@ public class ImagePanel extends JPanel
      *
      * @param image     The Image to be shown in the background.
      */
-    public ImagePanel(Mode mode, Image image)
+    public ImagePanel(Mode mode, @Nullable Image image)
     {
         this.mode = mode;
         this.image = image;
+    }
+
+    public ImagePanel(Mode mode)
+    {
+        this.mode = mode;
     }
 
     /**
@@ -38,7 +46,7 @@ public class ImagePanel extends JPanel
      *
      * @param image the new background image to use
      */
-    public void setImage(Image image)
+    public void setImage(@Nullable Image image)
     {
         this.image = image;
     }
@@ -55,6 +63,10 @@ public class ImagePanel extends JPanel
             g.setColor(Color.WHITE);
             g.fillRect(0, 0, getWidth(), getHeight());
         }
+
+        if (image == null)
+            return;
+
         if (mode == Mode.Stretch) {
             g.drawImage(
                     image,

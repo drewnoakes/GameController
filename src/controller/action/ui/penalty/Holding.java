@@ -2,7 +2,7 @@ package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 import data.Penalty;
 import data.PlayerInfo;
 

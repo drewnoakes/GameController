@@ -7,7 +7,7 @@ package leagues;
  */
 public class SPL extends LeagueSettings
 {
-    SPL()
+    public SPL()
     {
 //        /** The league´s name this rules are for. */
 //        leagueName = "SPL";

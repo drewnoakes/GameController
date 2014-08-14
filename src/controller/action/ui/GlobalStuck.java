@@ -5,7 +5,7 @@ import controller.Action;
 import controller.Game;
 import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
-import data.GameState;
+import controller.GameState;
 import data.PlayMode;
 
 /**
@@ -33,7 +33,7 @@ public class GlobalStuck extends Action
 
         game.apply(ActionBoard.ready, ActionTrigger.User);
 
-        if (state.getRemainingSeconds(state.whenCurrentPlayModeBegan, Game.settings.kickoffTime + Game.settings.minDurationBeforeStuck) > 0) {
+        if (state.getRemainingSeconds(state.whenCurrentPlayModeBegan, game.settings().kickoffTime + game.settings().minDurationBeforeStuck) > 0) {
             game.pushState("Kickoff Goal " + state.team[side].teamColor);
         } else {
             game.pushState("Global Game Stuck, Kickoff " + state.kickOffTeam);

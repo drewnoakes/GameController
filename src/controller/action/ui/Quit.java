@@ -3,7 +3,7 @@ package controller.action.ui;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 
 /**
  * Causes the current game to end.

@@ -1,8 +1,5 @@
 package data;
 
-import controller.Game;
-import leagues.SPL;
-
 /**
  * Enum of penalty states.
  *
@@ -61,9 +58,9 @@ public enum Penalty
     }
 
     /** Decode a numeric value from a network message. */
-    public static Penalty fromValue(byte value)
+    public static Penalty fromValue(League league, byte value)
     {
-        if (Game.settings instanceof SPL) {
+        if (league.isSPLFamily()) {
             switch (value) {
                 case 0: return None;
                 case 1: return SplBallHolding;
@@ -81,6 +78,7 @@ public enum Penalty
                     throw new AssertionError("Invalid Penalty enum value: " + value);
             }
         } else {
+            assert(league.isHLFamily());
             switch (value) {
                 case 0: return None;
                 case 1: return HLBallManipulation;

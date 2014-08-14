@@ -7,7 +7,7 @@ package leagues;
  */
 public class SPLDropIn extends SPL
 {
-    SPLDropIn()
+    public SPLDropIn()
     {
 //        /** The league´s name these rules are for. */
 //        leagueName = "SPL Drop-in";

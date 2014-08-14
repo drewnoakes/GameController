@@ -4,7 +4,7 @@ import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
 import controller.action.ui.period.FirstHalf;
-import data.GameState;
+import controller.GameState;
 import data.Period;
 import data.PlayMode;
 import data.TeamColor;
@@ -22,10 +22,10 @@ public class Set extends Action
         if (state.playMode == PlayMode.Set) {
             return;
         }
-        if (Game.settings.returnRobotsInGameStoppages) {
+        if (game.settings().returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
-        if (!state.playoff && state.timeBeforeCurrentPlayMode != 0) {
+        if (!state.options().playOff && state.timeBeforeCurrentPlayMode != 0) {
             state.addTimeInCurrentPlayMode();
         }
         state.whenCurrentPlayModeBegan = state.getTime();
@@ -51,7 +51,7 @@ public class Set extends Action
         return state.playMode == PlayMode.Ready
             || state.playMode == PlayMode.Set
             || (state.period == Period.PenaltyShootout
-              && (state.playMode != PlayMode.Playing || Game.settings.penaltyShotRetries)
+              && (state.playMode != PlayMode.Playing || game.settings().penaltyShotRetries)
               && !state.timeOutActive[0]
               && !state.timeOutActive[1]
               && !state.refereeTimeout)

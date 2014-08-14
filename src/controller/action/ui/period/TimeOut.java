@@ -3,6 +3,7 @@ package controller.action.ui.period;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
+import controller.GameState;
 import controller.action.ActionBoard;
 import data.*;
 
@@ -34,7 +35,7 @@ public class TimeOut extends Action
             state.timeOutActive[side] = true;
             state.timeOutTaken[side] = true;
             if (state.previousPeriod != Period.PenaltyShootout) {
-                if (Game.settings.giveOpponentKickOffOnTimeOut)
+                if (game.settings().giveOpponentKickOffOnTimeOut)
                     state.kickOffTeam = state.team[side].teamColor.other();
             } else if (state.playMode == PlayMode.Set) {
                 state.team[state.kickOffTeam == state.team[0].teamColor ? 0 : 1].penaltyShot--;

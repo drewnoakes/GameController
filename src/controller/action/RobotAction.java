@@ -2,7 +2,7 @@ package controller.action;
 
 import common.annotations.NotNull;
 import controller.Game;
-import data.GameState;
+import controller.GameState;
 import data.PlayerInfo;
 
 /**
