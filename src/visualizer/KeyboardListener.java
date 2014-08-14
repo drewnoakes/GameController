@@ -1,78 +1,85 @@
 package visualizer;
 
+import common.annotations.NotNull;
+
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 
-
 /**
- * This class listens to the keyboard.
+ * Binds keyboard events to visualiser actions.
  *
  * @author Michel Bartsch
  */
 public class KeyboardListener implements KeyEventDispatcher
 {
-    /** The instance of the visualizer´s gui. */
-    private final VisualizerUI ui;
-    /** The key that is actually pressed, 0 if no key is pressed. */
-    private int pressing = 0;
-    
     /**
-     * Creates a new KeyboardListener and sets himself to listening.
+     * The instance of the visualizer´s gui.
      */
-    public KeyboardListener(VisualizerUI ui)
+    private final VisualizerUI ui;
+    /**
+     * The key that is currently depressed, or 0.
+     */
+    private int pressing = 0;
+
+    /**
+     * Initialise a new KeyboardListener.
+     */
+    public KeyboardListener(@NotNull VisualizerUI ui)
     {
         this.ui = ui;
+
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
     }
-    
+
     /**
-     * This is called every time a key is pressed or released.
-     * 
-     * @param e     The key that has been pressed or released.
-     * 
-     * @return If false, the key will be consumed.
+     * Process key events, such as key presses and releases.
+     *
+     * @param e The key that has been pressed or released.
+     * @return <code>true</code> if the key was processed, otherwise <code>false</code>
      */
     @Override
-    public boolean dispatchKeyEvent(KeyEvent e) {
+    public boolean dispatchKeyEvent(KeyEvent e)
+    {
         if (e.getID() == KeyEvent.KEY_RELEASED) {
             pressing = 0;
         } else if (e.getID() == KeyEvent.KEY_PRESSED) {
             int key = e.getKeyCode();
-        
-            if ((key == 0) || (key == pressing)) {
+
+            if (key == 0 || key == pressing) {
                 return false;
             }
+
+            // This is a new key press -- process it
             pressing = key;
-            return pressed(key);
+            return onKeyPress(e);
         }
-        
+
         return false;
     }
-    
+
     /**
-     * This is called once every time a key is pressed. It is called once and
-     * not as long as the key is pressed.
-     * You can easily set the keys for each action here. The actions are
-     * to be performed via the actionPerformed method as they are in the
-     * GUI.
-     * 
-     * @param key  The key that has just been pressed.
-     * 
-     * @return If false, the key was used and should be consumed.
+     * Handle a key press event.
+     *
+     * @param e the key event
+     * @return <code>true</code> if the key was processed, otherwise <code>false</code>
      */
-    private boolean pressed(int key)
+    private boolean onKeyPress(KeyEvent e)
     {
-        switch (key) {
-                case KeyEvent.VK_F10:
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_F10:
+                Main.exit();
+                break;
+            case KeyEvent.VK_F11:
+                ui.toggleTestmode();
+                break;
+            case KeyEvent.VK_Q:
+                if (e.isControlDown())
                     Main.exit();
-                    break;
-                case KeyEvent.VK_F11:
-                    ui.toggleTestmode();
-                    break;
-                default:
-                    return false;
-            }
+                break;
+            default:
+                return false;
+        }
         return true;
     }
 }

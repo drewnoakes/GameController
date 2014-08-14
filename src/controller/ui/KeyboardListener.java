@@ -48,7 +48,7 @@ public class KeyboardListener implements KeyEventDispatcher
                 return false;
             }
             pressing = key;
-            return onKeyPress(key);
+            return onKeyPress(key, e);
         }
         
         return false;
@@ -68,15 +68,17 @@ public class KeyboardListener implements KeyEventDispatcher
      * GUI.
      * 
      * @param key the pressed key.
-     * 
+     *
+     * @param e
      * @return true if the keystroke was handled, otherwise false.
      */
-    private boolean onKeyPress(int key)
+    private boolean onKeyPress(int key, KeyEvent e)
     {
         Action action = null;
         
         switch (key) {
             case KeyEvent.VK_ESCAPE: action = ActionBoard.quit; break;
+            case KeyEvent.VK_Q: if (e.isControlDown()) action = ActionBoard.quit; break;
             case KeyEvent.VK_DELETE: action = ActionBoard.testmode; break;
             case KeyEvent.VK_BACK_SPACE: action = ActionBoard.undo[1]; break;
 
