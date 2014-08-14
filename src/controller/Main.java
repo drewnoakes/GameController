@@ -8,9 +8,9 @@ import controller.action.ActionTrigger;
 import controller.action.net.SPLCoachMessageReceived;
 import controller.net.*;
 import controller.net.protocol.*;
-import controller.ui.GUI;
+import controller.ui.ControllerUI;
 import controller.ui.KeyboardListener;
-import controller.ui.StartInput;
+import controller.ui.StartUI;
 import data.*;
 
 import java.io.IOException;
@@ -59,7 +59,7 @@ public class Main
         StartOptions options = parseCommandLineArguments(args);
 
         // Allow the user to specify the starting parameters for the game
-        StartInput.showDialog(options);
+        StartUI.showDialog(options);
 
         final Game game = new Game(options);
 
@@ -125,7 +125,7 @@ public class Main
 
         ActionBoard.initalise(options.league);
 
-        GUI gui = new GUI(game, options.fullScreenMode, robotWatcher);
+        ControllerUI ui = new ControllerUI(game, options.fullScreenMode, robotWatcher);
 
         KeyboardListener keyboardListener = new KeyboardListener(game);
 
@@ -145,7 +145,7 @@ public class Main
         Log.toFile("Stopping game");
 
         keyboardListener.close();
-        gui.close();
+        ui.close();
 
         try {
             gameStateSender.stop();

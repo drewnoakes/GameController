@@ -7,6 +7,7 @@ import javax.swing.*;
 
 import common.EventHandler;
 import common.TotalScaleLayout;
+import common.annotations.NotNull;
 import controller.Action;
 import controller.Config;
 import controller.Game;
@@ -19,14 +20,13 @@ import controller.ui.controls.Button;
 import data.*;
 
 /**
- * This is the main Game Controller GUI.
- *
- * In this class you will find the whole graphical output and the bindings
- * of buttons to their actions, nothing less and nothing more.
+ * The interface used during the play of a game. Allows control over the play mode, period, penalties and score.
+ * Supports undo.
  *
  * @author Michel Bartsch
+ * @author Drew Noakes https://drewnoakes.com
  */
-public class GUI
+public class ControllerUI
 {
     private static final boolean IS_OSX = System.getProperty("os.name").contains("OS X");
 
@@ -42,6 +42,7 @@ public class GUI
     private static final int TIME_SUB_FONT_SIZE = 40;
     private static final int TIMEOUT_FONT_SIZE = 14;
     private static final int PLAY_MODE_FONT_SIZE = 12;
+
     private static final String WINDOW_TITLE = "RoboCup Game Controller";
     private static final String[][] BACKGROUND_SIDE = {{"robot_left_blue.png",
                                                         "robot_left_red.png"},
@@ -171,7 +172,7 @@ public class GUI
      * @param fullscreen whether the window should fill the screen.
      * @param robotWatcher the robot watcher which track the online status of bots.
      */
-    public GUI(Game game, boolean fullscreen, RobotWatcher robotWatcher)
+    public ControllerUI(@NotNull Game game, boolean fullscreen, @NotNull RobotWatcher robotWatcher)
     {
         this.game = game;
         this.robotWatcher = robotWatcher;
@@ -181,7 +182,7 @@ public class GUI
             @Override
             public void handle(GameState state)
             {
-                GUI.this.update(state);
+                ControllerUI.this.update(state);
             }
         });
 
@@ -209,7 +210,7 @@ public class GUI
         {
             @Override
             public void windowClosing(WindowEvent e) {
-                GUI.this.game.requestShutdown();
+                ControllerUI.this.game.requestShutdown();
             }
         });
         
@@ -611,7 +612,7 @@ public class GUI
      * 
      * @param state the game state to use when populating the UI.
      */
-    private void update(GameState state)
+    private void update(@NotNull GameState state)
     {
         updateClock(state);
         updateHalf(state);

@@ -44,7 +44,7 @@ import data.PlayMode;
  *
  * @author Michel Bartsch
  */
-public class GUI extends JFrame
+public class VisualizerUI extends JFrame
 {
     // Some constants defining this GUI`s appearance as their names say.
     // Feel free to change them and see what happens.
@@ -66,7 +66,7 @@ public class GUI extends JFrame
     private static final GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 
     private final BufferStrategy bufferStrategy;
-    private final VisualiserOptions options;
+    private final VisualizerOptions options;
     /** If testmode is on to just display whole GameState. */
     private boolean testmode = false;
     /** The last state received to show. */
@@ -85,7 +85,7 @@ public class GUI extends JFrame
     /**
      * Constructs all elements of the UI and shows it on screen.
      */
-    GUI(@NotNull VisualiserOptions options)
+    VisualizerUI(@NotNull VisualizerOptions options)
     {
         super(WINDOW_TITLE, devices[IS_OSX && !IS_APPLE_JAVA ? 0 : devices.length - 1].getDefaultConfiguration());
 

@@ -8,11 +8,11 @@ import data.League;
  *
  * @author Drew Noakes https://drewnoakes.com
  */
-public class VisualiserOptions
+public class VisualizerOptions
 {
     private final League league;
 
-    public VisualiserOptions(@NotNull League league)
+    public VisualizerOptions(@NotNull League league)
     {
         this.league = league;
     }

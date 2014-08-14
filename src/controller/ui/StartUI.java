@@ -24,7 +24,7 @@ import javax.swing.*;
  * @author Michel Bartsch
  * @author Drew Noakes https://drewnoakes.com
  */
-public class StartInput
+public class StartUI
 {
     // Layout constants
     private static final String WINDOW_TITLE = "RoboCup Game Controller";
@@ -73,7 +73,7 @@ public class StartInput
      */
     public static void showDialog(@NotNull StartOptions options)
     {
-        StartInput input = new StartInput(options);
+        StartUI input = new StartUI(options);
         try {
             // Block until the UI is done with
             input.latch.await();
@@ -83,7 +83,7 @@ public class StartInput
         input.close();
     }
 
-    private StartInput(@NotNull final StartOptions options)
+    private StartUI(@NotNull final StartOptions options)
     {
         this.options = options;
 
@@ -222,7 +222,7 @@ public class StartInput
                          @Override
                          public void run()
                          {
-                             setLeague((League)StartInput.this.leagueCombo.getSelectedItem());
+                             setLeague((League)StartUI.this.leagueCombo.getSelectedItem());
                          }
                      });
                  }

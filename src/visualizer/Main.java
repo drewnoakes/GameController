@@ -30,10 +30,10 @@ public class Main
      */
     public static void main(String[] args)
     {
-        final VisualiserOptions options = processCommandLineArguments(args);
-        final GUI gui = new GUI(options);
+        final VisualizerOptions options = processCommandLineArguments(args);
+        final VisualizerUI ui = new VisualizerUI(options);
 
-        new KeyboardListener(gui);
+        new KeyboardListener(ui);
 
         try {
             gameStateListener = new MessageReceiver<GameStateSnapshot>(
@@ -43,7 +43,7 @@ public class Main
                     new MessageHandler<GameStateSnapshot>()
                     {
                         @Override
-                        public void handle(GameStateSnapshot state) { gui.update(state); }
+                        public void handle(GameStateSnapshot state) { ui.update(state); }
                     });
             gameStateListener.addProtocol(new GameStateProtocol9(options.getLeague()));
             gameStateListener.addProtocol(new GameStateProtocol8(options.getLeague()));
@@ -68,7 +68,7 @@ public class Main
         System.exit(0);
     }
 
-    private static VisualiserOptions processCommandLineArguments(String[] args)
+    private static VisualizerOptions processCommandLineArguments(String[] args)
     {
         if (args.length > 0 && (args[0].equals("-h") || args[0].equals("--help")) ) {
             printUsage();
@@ -85,7 +85,7 @@ public class Main
             }
         }
         
-        return new VisualiserOptions(league);
+        return new VisualizerOptions(league);
     }
 
     private static void printUsage()

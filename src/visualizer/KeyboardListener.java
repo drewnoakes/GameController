@@ -13,16 +13,16 @@ import java.awt.event.KeyEvent;
 public class KeyboardListener implements KeyEventDispatcher
 {
     /** The instance of the visualizer´s gui. */
-    private final GUI gui;
+    private final VisualizerUI ui;
     /** The key that is actually pressed, 0 if no key is pressed. */
     private int pressing = 0;
     
     /**
      * Creates a new KeyboardListener and sets himself to listening.
      */
-    public KeyboardListener(GUI gui)
+    public KeyboardListener(VisualizerUI ui)
     {
-        this.gui = gui;
+        this.ui = ui;
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(this);
     }
     
@@ -68,7 +68,7 @@ public class KeyboardListener implements KeyEventDispatcher
                     Main.exit();
                     break;
                 case KeyEvent.VK_F11:
-                    gui.toggleTestmode();
+                    ui.toggleTestmode();
                     break;
                 default:
                     return false;
