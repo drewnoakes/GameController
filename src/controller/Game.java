@@ -49,6 +49,7 @@ public class Game
 
     /** The last {@link Action} that was executed with trigger {@link ActionTrigger#User}. */
     private Action lastUserAction;
+    private boolean skipStoringLastUserAction;
 
     /** When set to true, the game will stop and the game controller window close. */
     private boolean shutdownRequested = false;
@@ -110,10 +111,14 @@ public class Game
         if (!action.canExecute(this, gameState))
             return;
 
+        assert(!skipStoringLastUserAction);
+
         action.execute(this, gameState);
 
-        if (trigger == ActionTrigger.User)
+        if (trigger == ActionTrigger.User && !skipStoringLastUserAction)
             lastUserAction = action;
+
+        skipStoringLastUserAction = false;
 
         gameStateClone = cloneGameState(gameState);
         gameStateChanged.fire(gameStateClone);
@@ -160,6 +165,7 @@ public class Game
      */
     public void clearLastUserAction()
     {
+        skipStoringLastUserAction = true;
         lastUserAction = null;
     }
 

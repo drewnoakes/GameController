@@ -42,6 +42,7 @@ public class Undo extends Action
     {
         if (game.getLastUserAction() == this) {
             game.undo(count);
+            game.clearLastUserAction();
             isPreview = false;
         } else {
             isPreview = true;
