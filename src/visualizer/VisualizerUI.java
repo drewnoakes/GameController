@@ -44,7 +44,7 @@ import data.PlayMode;
  *
  * @author Michel Bartsch
  */
-public class VisualizerUI extends JFrame
+public class VisualizerUI
 {
     // Some constants defining this GUI`s appearance as their names say.
     // Feel free to change them and see what happens.
@@ -73,6 +73,8 @@ public class VisualizerUI extends JFrame
     private GameStateSnapshot state = null;
     /** The background. */
     private BufferedImage background;
+
+    private final JFrame frame;
     
     // The fonts used
 
@@ -87,15 +89,15 @@ public class VisualizerUI extends JFrame
      */
     VisualizerUI(@NotNull VisualizerOptions options)
     {
-        super(WINDOW_TITLE, devices[IS_OSX && !IS_APPLE_JAVA ? 0 : devices.length - 1].getDefaultConfiguration());
-
         this.options = options;
 
-        setUndecorated(true);
+        frame = new JFrame(WINDOW_TITLE, devices[IS_OSX && !IS_APPLE_JAVA ? 0 : devices.length - 1].getDefaultConfiguration());
+
+        frame.setUndecorated(true);
         if (IS_APPLE_JAVA && devices.length != 1) {
-            setSize(devices[devices.length-1].getDefaultConfiguration().getBounds().getSize());
+            frame.setSize(devices[devices.length-1].getDefaultConfiguration().getBounds().getSize());
         } else {
-            devices[IS_OSX && !IS_APPLE_JAVA ? 0 : devices.length-1].setFullScreenWindow(this);
+            devices[IS_OSX && !IS_APPLE_JAVA ? 0 : devices.length-1].setFullScreenWindow(frame);
         }
 
         for (String ext : Config.IMAGE_EXTENSIONS) {
@@ -108,7 +110,7 @@ public class VisualizerUI extends JFrame
         if (background == null) {
             Log.error("Unable to load background image");
         }
-        float scaleFactor = (float)getWidth()/background.getWidth();
+        float scaleFactor = (float)frame.getWidth()/background.getWidth();
         Image tmp = (new ImageIcon(background).getImage()).getScaledInstance(
                 (int)(background.getWidth()*scaleFactor),
                 (int)(background.getHeight()*scaleFactor),
@@ -116,13 +118,13 @@ public class VisualizerUI extends JFrame
         background = new BufferedImage((int) (background.getWidth() * scaleFactor), (int) (background.getWidth() * scaleFactor), BufferedImage.TYPE_INT_ARGB);
         background.getGraphics().drawImage(tmp, 0, 0, null);
         
-        testFont = new Font(TEST_FONT, Font.PLAIN, (int)(TEST_FONT_SIZE*getWidth()));
-        standardFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STANDARD_FONT_SIZE*getWidth()));
-        standardSmallFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STANDARD_FONT_S_SIZE*getWidth()));
-        scoreFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STANDARD_FONT_XXL_SIZE*getWidth()));
-        coachMessageFont = new Font(Font.DIALOG, Font.PLAIN, (int)(0.037*getWidth()));
-        
-        addWindowListener(new WindowAdapter()
+        testFont = new Font(TEST_FONT, Font.PLAIN, (int)(TEST_FONT_SIZE*frame.getWidth()));
+        standardFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STANDARD_FONT_SIZE*frame.getWidth()));
+        standardSmallFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STANDARD_FONT_S_SIZE*frame.getWidth()));
+        scoreFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STANDARD_FONT_XXL_SIZE*frame.getWidth()));
+        coachMessageFont = new Font(Font.DIALOG, Font.PLAIN, (int)(0.037*frame.getWidth()));
+
+        frame.addWindowListener(new WindowAdapter()
         {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -131,12 +133,12 @@ public class VisualizerUI extends JFrame
         });
         
         if (IS_OSX) {
-            setVisible(false); // without this, keyboard input is missing on OS X
+            frame.setVisible(false); // without this, keyboard input is missing on OS X
         }
-        
-        setVisible(true);
-        createBufferStrategy(2);
-        bufferStrategy = getBufferStrategy();
+
+        frame.setVisible(true);
+        frame.createBufferStrategy(2);
+        bufferStrategy = frame.getBufferStrategy();
 
         // Start a thread that periodically updates the UI with the latest state
         // TODO do this directly in response to new state arriving rather than via polling
@@ -196,7 +198,7 @@ public class VisualizerUI extends JFrame
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, getWidth(), getHeight());
+        g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
         g.drawImage(background, 0, 0, null);
         
         if (state == null) {
@@ -224,7 +226,7 @@ public class VisualizerUI extends JFrame
     {
         g.setColor(Color.BLACK);
         g.setFont(testFont);
-        g.drawString(WAITING_FOR_PACKET, (int)(0.2*getWidth()), (int)(0.3*getHeight()));
+        g.drawString(WAITING_FOR_PACKET, (int)(0.2*frame.getWidth()), (int)(0.3*frame.getHeight()));
     }
     
     /**
@@ -295,7 +297,7 @@ public class VisualizerUI extends JFrame
             int offsetX = (int)((size - size * scaleFactorX) / 2);
             int offsetY = (int)((size - size * scaleFactorY) / 2);
             g.drawImage(logos[i],
-                    (i == 1 ? x : getWidth() - x - size) + offsetX,
+                    (i == 1 ? x : frame.getWidth() - x - size) + offsetX,
                     y + offsetY,
                     (int)(scaleFactorX * size),
                     (int)(scaleFactorY * size), null);
@@ -315,13 +317,13 @@ public class VisualizerUI extends JFrame
         int yDiv = getSizeToHeight(0.59);
         int size = getSizeToWidth(0.12);
         g.setColor(Color.BLACK);
-        drawCenteredString(g, ":", getWidth()/2-size, yDiv, 2*size);
+        drawCenteredString(g, ":", frame.getWidth()/2-size, yDiv, 2*size);
         for (int i=0; i<2; i++) {
             g.setColor(state.team[i].teamColor.getColor(options.getLeague()));
             drawCenteredString(
                     g,
                     state.team[i].score+"",
-                    i==1 ? x : getWidth()-x-size,
+                    i==1 ? x : frame.getWidth()-x-size,
                     y,
                     size);
         }
@@ -429,9 +431,9 @@ public class VisualizerUI extends JFrame
             g.setColor(state.team[i].teamColor.getColor(options.getLeague()));
             for (int j=0; j< state.team[i].penaltyShot; j++) {
                 if ((state.team[i].singleShots & (1<<j)) != 0) {
-                    g.fillOval(i==1 ? x+j*2*size : getWidth()-x-(5-j)*2*size-size, y, size, size);
+                    g.fillOval(i==1 ? x+j*2*size : frame.getWidth()-x-(5-j)*2*size-size, y, size, size);
                 } else {
-                    g.drawOval(i==1 ? x+j*2*size : getWidth()-x-(5-j)*2*size-size, y, size, size);
+                    g.drawOval(i==1 ? x+j*2*size : frame.getWidth()-x-(5-j)*2*size-size, y, size, size);
                 }
             }
         }
@@ -446,7 +448,7 @@ public class VisualizerUI extends JFrame
      */
     private int getSizeToWidth(double size)
     {
-        return (int)(size*getWidth());
+        return (int)(size*frame.getWidth());
     }
     
     /**
@@ -458,7 +460,7 @@ public class VisualizerUI extends JFrame
      */
     private int getSizeToHeight(double size)
     {
-        return (int)(size*getHeight());
+        return (int)(size*frame.getHeight());
     }
     
     /**
