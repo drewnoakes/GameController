@@ -255,7 +255,7 @@ public class Main
                 + "\n  (-b | --broadcast) <address>    set broadcast ip address (default is %s)"
                 + "\n  (-t | --teams) <blue> <red>     set team numbers"
                 + "\n  (-k | --kickoff) <colour>       set kickoff team colour ('blue' or 'red')"
-                + "\n  (-l | --league) %s%sselect league (default is spl)"
+                + "\n  (-l | --league) %s%sselect league (default is %s)"
                 + "\n  (-w | --window)                 set window mode (default is fullscreen)"
                 + "\n  (--knockout | --playoff) <val>  set whether knockout/playoff game (yes/no)"
                 + "\n";
@@ -278,6 +278,7 @@ public class Main
                 leagues,
                 leagues.length() < 17
                     ? "                ".substring(leagues.length())
-                    : "\n                                  ");
+                    : "\n                                  ",
+                allLeagues[0].getDirectoryName());
     }
 }
