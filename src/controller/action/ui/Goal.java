@@ -41,7 +41,7 @@ public class Goal extends Action
         if (set == 1) {
             if (state.period != Period.PenaltyShootout) {
                 state.nextKickOffColor = state.team[side].teamColor.other();
-                game.apply(ActionBoard.ready, ActionTrigger.User);
+                ActionBoard.ready.forceExecute(game, state);
                 game.pushState("Goal for " + state.team[side].teamColor);
             } else {
                 state.team[side].singleShots += 1 << state.team[side].penaltyShot - 1;
