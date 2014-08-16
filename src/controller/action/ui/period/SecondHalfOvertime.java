@@ -19,12 +19,8 @@ public class SecondHalfOvertime extends Action
         if (state.firstHalf || state.period == Period.PenaltyShootout) {
             state.firstHalf = false;
             state.period = Period.Overtime;
-            if (game.options().colorChangeAuto) {
-                state.team[0].teamColor = TeamColor.Blue;
-                state.team[1].teamColor = TeamColor.Red;
-            }
-            FirstHalf.changeSide(state);
-            state.kickOffTeam = (state.leftSideKickoff ? state.team[0].teamColor : state.team[1].teamColor);
+            FirstHalf.changeSide(game, state);
+            state.nextKickOffColor = (state.leftSideKickoff ? state.team[0].teamColor : state.team[1].teamColor);
             state.playMode = PlayMode.Initial;
             game.pushState("2nd Half Extra Time");
         }

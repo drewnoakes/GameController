@@ -38,17 +38,19 @@ public class ClockTick extends Action
     /**
      * Gets whether the clock should be running given the current GameState.
      *
+     *
+     * @param game
      * @param state the game state to consider
      * @return true if the clock should be running, otherwise false
      */
-    public boolean isClockRunning(@NotNull GameState state)
+    public boolean isClockRunning(Game game, @NotNull GameState state)
     {
         boolean halfNotStarted = state.timeBeforeCurrentPlayMode == 0 && state.playMode != PlayMode.Playing;
         return
           !(state.playMode == PlayMode.Initial
              || state.playMode == PlayMode.Finished
              || ((state.playMode == PlayMode.Ready || state.playMode == PlayMode.Set)
-                 && ((state.options().playOff && state.settings().playOffTimeStop) || halfNotStarted))
+                 && ((game.isPlayOff() && game.settings().playOffTimeStop) || halfNotStarted))
              || state.manPause)
          || state.manPlay;
     }

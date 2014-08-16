@@ -25,7 +25,7 @@ public class Set extends Action
         if (game.settings().returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
-        if (!state.options().playOff && state.timeBeforeCurrentPlayMode != 0) {
+        if (!game.isPlayOff() && state.timeBeforeCurrentPlayMode != 0) {
             state.addTimeInCurrentPlayMode();
         }
         state.whenCurrentPlayModeBegan = state.getTime();
@@ -33,12 +33,12 @@ public class Set extends Action
         if (state.period == Period.PenaltyShootout) {
             state.timeBeforeCurrentPlayMode = 0;
             if (state.playMode != PlayMode.Initial) {
-                state.kickOffTeam = state.kickOffTeam == TeamColor.Blue ? TeamColor.Red : TeamColor.Blue;
-                FirstHalf.changeSide(state);
+                state.nextKickOffColor = state.nextKickOffColor == TeamColor.Blue ? TeamColor.Red : TeamColor.Blue;
+                FirstHalf.changeSide(game, state);
             }
 
             if (state.playMode != PlayMode.Playing) {
-                state.team[state.team[0].teamColor == state.kickOffTeam ? 0 : 1].penaltyShot++;
+                state.team[state.team[0].teamColor == state.nextKickOffColor ? 0 : 1].penaltyShot++;
             }
         }
         state.playMode = PlayMode.Set;

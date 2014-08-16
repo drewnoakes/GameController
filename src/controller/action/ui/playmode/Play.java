@@ -19,7 +19,7 @@ public class Play extends Action
         if (state.playMode == PlayMode.Playing) {
             return;
         }
-        if (!state.options().playOff && state.timeBeforeCurrentPlayMode != 0) {
+        if (!game.isPlayOff() && state.timeBeforeCurrentPlayMode != 0) {
             state.addTimeInCurrentPlayMode();
         }
         state.whenCurrentPlayModeBegan = state.getTime();

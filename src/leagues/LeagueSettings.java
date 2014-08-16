@@ -15,7 +15,7 @@ public abstract class LeagueSettings
     /** How many robots of each team may play at one time. */
     public int robotsPlaying;
     /** If the colors change automatically. */
-    public boolean colorChangeAuto;
+    public boolean changeColoursEachPeriod;
     /** If the clock may stop in certain play modes (Ready, Set) in a play-off game. */
     public boolean playOffTimeStop;
     /** Time in seconds one half is long. */

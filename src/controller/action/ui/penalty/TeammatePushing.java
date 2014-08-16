@@ -4,12 +4,12 @@ import common.annotations.NotNull;
 import controller.Game;
 import controller.GameState;
 import data.PlayMode;
-import data.PlayerInfo;
+import data.PlayerState;
 
 public class TeammatePushing extends PenaltyAction
 {
     @Override
-    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerInfo player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerState player, int side, int number)
     {
         game.pushState("Teammate Pushing  " + state.team[side].teamColor + " " + (number + 1));
     }

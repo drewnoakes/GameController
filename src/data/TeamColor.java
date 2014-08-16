@@ -1,6 +1,8 @@
 package data;
 
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 /**
  * Enum of team colours.
@@ -10,7 +12,10 @@ import java.awt.*;
 public enum TeamColor
 {
     Blue((byte)0),
+
     Red((byte)1);
+
+    /////////////////////////////////////////////////////////////////////////
 
     private static final Color[] splColors = { Color.BLUE, Color.RED };
 
@@ -21,6 +26,22 @@ public enum TeamColor
         new Color(0.75f, 0.0f, 0.7f)
     };
 
+    private static Collection<TeamColor> both;
+
+    static
+    {
+        List<TeamColor> both = new ArrayList<TeamColor>();
+        both.add(Blue);
+        both.add(Red);
+        TeamColor.both = Collections.unmodifiableCollection(both);
+    }
+
+    public static Collection<TeamColor> both()
+    {
+        return both;
+    }
+
+    /////////////////////////////////////////////////////////////////////////
 
     private final byte value;
 

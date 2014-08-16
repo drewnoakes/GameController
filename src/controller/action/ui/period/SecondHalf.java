@@ -19,14 +19,10 @@ public class SecondHalf extends Action
         if (state.firstHalf || state.period == Period.PenaltyShootout) {
             state.firstHalf = false;
             state.period = Period.Normal;
-            if (game.options().colorChangeAuto) {
-                state.team[0].teamColor = TeamColor.Blue;
-                state.team[1].teamColor = TeamColor.Red;
-            }
-            FirstHalf.changeSide(state);
-            state.kickOffTeam = (state.leftSideKickoff ? state.team[0].teamColor : state.team[1].teamColor);
+            FirstHalf.changeSide(game, state);
+            state.nextKickOffColor = (state.leftSideKickoff ? state.team[0].teamColor : state.team[1].teamColor);
             state.playMode = PlayMode.Initial;
-            // Don't set data.whenCurrentPlayModeBegan, because it's used to count the pause
+            // Don't set state.whenCurrentPlayModeBegan, because it's used to count the pause
             game.pushState("2nd Half");
         }
     }

@@ -20,13 +20,13 @@ public class Ready extends Action
         if (state.playMode == PlayMode.Ready) {
             return;
         }
-        forceExecute(state);
+        forceExecute(game, state);
         game.pushState("Ready");
     }
 
-    public void forceExecute(GameState state)
+    public void forceExecute(Game game, GameState state)
     {
-        if (state.settings().returnRobotsInGameStoppages) {
+        if (game.settings().returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
         if (state.playMode == PlayMode.Playing) {

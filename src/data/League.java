@@ -141,6 +141,11 @@ public enum League
         return null;
     }
 
+    public boolean hasTeamNumber(int teamNumber)
+    {
+        return getTeam(teamNumber) != null;
+    }
+
     public boolean isSPLFamily()
     {
         return this == SPL || this == SPLDropIn;

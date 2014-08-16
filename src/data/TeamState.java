@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author Michel Bartsch
  * @author Drew Noakes https://drewnoakes.com
  */
-public class TeamInfo implements Serializable
+public class TeamState implements Serializable
 {
     /**
      * The number of player entries in a game state message.
@@ -20,8 +20,10 @@ public class TeamInfo implements Serializable
      */
     public static final byte NUM_PLAYERS_IN_GAME_STATE_MESSAGE = 11;
 
+    // TODO can we remove duplicated state (team num / color) here?
+
     /** This team's uniquely identifying number. */
-    public byte teamNumber;
+    public int teamNumber;
     /** This team's uniform colour. */
     public TeamColor teamColor;
     /** The team's current score. */
@@ -33,14 +35,17 @@ public class TeamInfo implements Serializable
     /** The last coach message (only used in SPL). */
     public byte[] coachMessage = new byte[SPLCoachMessage.SPL_COACH_MESSAGE_SIZE];
     /** Data about the team's coach (only used in SPL). */
-    public final PlayerInfo coach = new PlayerInfo();
+    public final PlayerState coach = new PlayerState();
     /** Data about the players in this team. */
-    public final PlayerInfo[] player = new PlayerInfo[NUM_PLAYERS_IN_GAME_STATE_MESSAGE];
+    public final PlayerState[] player = new PlayerState[NUM_PLAYERS_IN_GAME_STATE_MESSAGE];
 
-    public TeamInfo()
+    public TeamState(int teamNumber, TeamColor teamColor)
     {
+        this.teamNumber = teamNumber;
+        this.teamColor = teamColor;
+
         for (int i=0; i<player.length; i++) {
-            player[i] = new PlayerInfo();
+            player[i] = new PlayerState();
         }
     }
 

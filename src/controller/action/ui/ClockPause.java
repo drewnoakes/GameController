@@ -16,7 +16,7 @@ public class ClockPause extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull GameState state)
     {
-        if (ActionBoard.clock.isClockRunning(state)) {
+        if (ActionBoard.clock.isClockRunning(game, state)) {
             if (state.manPlay) {
                 state.manRemainingGameTimeOffset += state.getTime() - state.manWhenClockChanged;
                 state.manPlay = false;

@@ -11,10 +11,11 @@ import java.io.Serializable;
  * @author Michel Bartsch
  * @author Drew Noakes https://drewnoakes.com
  */
-public class PlayerInfo implements Serializable
+public class PlayerState implements Serializable
 {
     /** The penalty applied to this player. May be {@link Penalty#None}. */
     public Penalty penalty = Penalty.None;
+
     /** Estimate of remaining penalty time for player. */
     public byte secsTillUnpenalised;
 

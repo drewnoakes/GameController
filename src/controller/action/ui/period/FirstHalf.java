@@ -19,8 +19,8 @@ public class FirstHalf extends Action
         if (!state.firstHalf || state.period == Period.PenaltyShootout) {
             state.firstHalf = true;
             state.period = Period.Normal;
-            changeSide(state);
-            state.kickOffTeam = (state.leftSideKickoff ? state.team[0].teamColor : state.team[1].teamColor);
+            changeSide(game, state);
+            state.nextKickOffColor = (state.leftSideKickoff ? state.team[0].teamColor : state.team[1].teamColor);
             state.playMode = PlayMode.Initial;
             // Don't set data.whenCurrentPlayModeBegan, because it's used to count the pause
             game.pushState("1st Half");
@@ -36,11 +36,12 @@ public class FirstHalf extends Action
     /**
      * Switches sides for the teams, both for first to second and also second to first half if needed.
      *
+     * @param game the game being played.
      * @param state the current game state to work on.
      */
-    public static void changeSide(GameState state)
+    public static void changeSide(Game game, GameState state)
     {
-        TeamInfo team = state.team[0];
+        TeamState team = state.team[0];
         state.team[0] = state.team[1];
         state.team[1] = team;
         boolean[] ejected = state.ejected[0];
@@ -48,13 +49,13 @@ public class FirstHalf extends Action
         state.ejected[1] = ejected;
 
         // if necessary, swap team colors
-        if (state.period != Period.PenaltyShootout && state.options().colorChangeAuto) {
+        if (state.period != Period.PenaltyShootout && game.changeColoursEachPeriod()) {
             TeamColor color = state.team[0].teamColor;
             state.team[0].teamColor = state.team[1].teamColor;
             state.team[1].teamColor = color;
         }
 
-        if (state.settings().timeOutPerHalf && (state.period != Period.PenaltyShootout)) {
+        if (game.settings().timeOutPerHalf && (state.period != Period.PenaltyShootout)) {
             state.timeOutTaken = new boolean[] {false, false};
         } else {
             boolean timeOutTaken = state.timeOutTaken[0];

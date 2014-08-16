@@ -28,7 +28,7 @@ public class Out extends Action
     public void execute(@NotNull Game game, @NotNull GameState state)
     {
         state.whenDropIn = state.getTime();
-        state.dropInTeam = state.team[side].teamColor;
+        state.lastDropInColor = state.team[side].teamColor;
         game.pushState("Out by " + state.team[side].teamColor);
     }
     

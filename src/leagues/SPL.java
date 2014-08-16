@@ -18,7 +18,7 @@ public class SPL extends LeagueSettings
         /** How many robots of each team may play at one time. */
         robotsPlaying = 5;
         /** If the colors change automatically. */
-        colorChangeAuto = false;
+        changeColoursEachPeriod = false;
         /** If the clock may stop in certain play modes (Ready, Set) in a play-off game. */
         playOffTimeStop = true;
         /** Time in seconds one half is long. */

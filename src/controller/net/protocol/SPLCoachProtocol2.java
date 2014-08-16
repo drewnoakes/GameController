@@ -1,7 +1,11 @@
 package controller.net.protocol;
 
+import common.annotations.NotNull;
 import common.annotations.Nullable;
+import data.Pair;
 import data.SPLCoachMessage;
+import data.Team;
+import data.TeamColor;
 
 import java.nio.ByteBuffer;
 
@@ -12,15 +16,14 @@ import java.nio.ByteBuffer;
  */
 public class SPLCoachProtocol2 extends SPLCoachProtocol
 {
-    private final byte teamNumberBlue;
-    private final byte teamNumberRed;
+    @NotNull
+    private final Pair<Team> teams;
 
-    public SPLCoachProtocol2(byte teamNumberBlue, byte teamNumberRed)
+    public SPLCoachProtocol2(@NotNull Pair<Team> teams)
     {
         super((byte)2);
 
-        this.teamNumberBlue = teamNumberBlue;
-        this.teamNumberRed = teamNumberRed;
+        this.teams = teams;
     }
 
     @Override
@@ -35,13 +38,13 @@ public class SPLCoachProtocol2 extends SPLCoachProtocol
 
     @Nullable
     @Override
-    public SPLCoachMessage fromBytes(ByteBuffer buffer)
+    public SPLCoachMessage fromBytes(@NotNull ByteBuffer buffer)
     {
         if (!verifyHeader(buffer))
             return null;
 
         byte team = buffer.get();
-        if (team != teamNumberBlue && team != teamNumberRed)
+        if (team != teams.get(TeamColor.Blue).getNumber() && team != teams.get(TeamColor.Red).getNumber())
             return null;
 
         byte[] message = new byte[SPLCoachMessage.SPL_COACH_MESSAGE_SIZE];

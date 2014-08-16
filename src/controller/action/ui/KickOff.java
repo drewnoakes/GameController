@@ -28,10 +28,10 @@ public class KickOff extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull GameState state)
     {
-        if (state.kickOffTeam == state.team[side].teamColor) {
+        if (state.nextKickOffColor == state.team[side].teamColor) {
             return;
         }
-        state.kickOffTeam = state.team[side].teamColor;
+        state.nextKickOffColor = state.team[side].teamColor;
         if (game.settings().kickoffChoice
                 && state.period == Period.Normal
                 && state.firstHalf
@@ -44,7 +44,7 @@ public class KickOff extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull GameState state)
     {
-        return state.kickOffTeam == state.team[side].teamColor
+        return state.nextKickOffColor == state.team[side].teamColor
                 || (game.settings().kickoffChoice
                     && state.period == Period.Normal
                     && state.firstHalf

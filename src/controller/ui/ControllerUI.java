@@ -105,8 +105,10 @@ public class ControllerUI
     private static final String CANCEL = "Cancel";
     private static final String COACH = "Coach";
     private static final String BACKGROUND_BOTTOM = "timeline_ground.png";
+
     private static final Color COLOR_HIGHLIGHT = Color.YELLOW;
-    private static final Color COLOR_STANDARD = (new JButton()).getBackground();
+    private static final Color COLOR_STANDARD = new JButton().getBackground();
+
     private static final int UNPEN_HIGHLIGHT_SECONDS = 10;
     private static final int TIMEOUT_HIGHLIGHT_SECONDS = 10;
     private static final int FINISH_HIGHLIGHT_SECONDS = 10;
@@ -226,7 +228,7 @@ public class ControllerUI
         backgroundSide = new ImageIcon[2][2];
         for (int i=0; i<BACKGROUND_SIDE.length; i++) {
             for (int j=0; j<BACKGROUND_SIDE[i].length; j++) {
-                backgroundSide[i][j] = new ImageIcon(Config.ICONS_PATH + game.options().league.getDirectoryName() + "/" + BACKGROUND_SIDE[i][j]);
+                backgroundSide[i][j] = new ImageIcon(Config.ICONS_PATH + game.league().getDirectoryName() + "/" + BACKGROUND_SIDE[i][j]);
             }
         }
         
@@ -664,7 +666,7 @@ public class ControllerUI
         }
         
         ImageIcon tmp;
-        if (ActionBoard.clock.isClockRunning(state)) {
+        if (ActionBoard.clock.isClockRunning(game, state)) {
             tmp = clockImgPause;
         } else {
             tmp = clockImgPlay;
@@ -747,11 +749,11 @@ public class ControllerUI
     
     private void updateKickoff(GameState state)
     {
-        if (state.kickOffTeam == null) {
+        if (state.nextKickOffColor == null) {
             // drop ball
             kickOffRadioButtons[2].setSelected(true);
         } else {
-            kickOffRadioButtons[state.team[0].teamColor == state.kickOffTeam ? 0 : 1].setSelected(true);
+            kickOffRadioButtons[state.team[0].teamColor == state.nextKickOffColor ? 0 : 1].setSelected(true);
         }
         for (int i=0; i<2; i++) {
             kickOffRadioButtons[i].setEnabled(ActionBoard.kickOff[i].canExecute(game, state));
@@ -882,7 +884,7 @@ public class ControllerUI
             if (state.playMode == PlayMode.Playing
                     && state.getRemainingSeconds(state.whenCurrentPlayModeBegan, game.settings().kickoffTime + game.settings().minDurationBeforeStuck) > 0)
             {
-                if (state.kickOffTeam == state.team[i].teamColor)
+                if (state.nextKickOffColor == state.team[i].teamColor)
                 {
                     gameStuckButtons[i].setEnabled(true);
                     gameStuckButtons[i].setText("<font color=#000000>" + KICKOFF_GOAL);

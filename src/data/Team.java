@@ -6,14 +6,12 @@ import common.annotations.Nullable;
 import controller.Config;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 /**
- * Immutable data about a team, such as its name, number and logo.
+ * Immutable data about a team, such as its name, number, logo and league.
  *
  * @author Drew Noakes https://drewnoakes.com
  */
@@ -71,5 +69,11 @@ public class Team
         logoLoaded = true;
 
         return logo;
+    }
+
+    @Override
+    public String toString()
+    {
+        return name + " (" + league + " team " + number + ")";
     }
 }

@@ -10,7 +10,7 @@ public abstract class HL extends LeagueSettings
     HL()
     {
         /** If the colors change automatically. */
-        colorChangeAuto = false;
+        changeColoursEachPeriod = false;
         /** If the clock may stop in certain play modes (Ready, Set) in a play-off game. */
         playOffTimeStop = false;
         /** Time in seconds one half is long. */

@@ -4,12 +4,12 @@ import common.annotations.NotNull;
 import controller.Game;
 import controller.GameState;
 import data.Penalty;
-import data.PlayerInfo;
+import data.PlayerState;
 
 public class CoachMotion extends PenaltyAction
 {
     @Override
-    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerInfo player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerState player, int side, int number)
     {
         state.whenPenalized[side][number] = state.getTime();
         state.team[side].coach.penalty = Penalty.SplCoachMotion;

@@ -40,7 +40,7 @@ public class Goal extends Action
 
         if (set == 1) {
             if (state.period != Period.PenaltyShootout) {
-                state.kickOffTeam = state.team[side].teamColor.other();
+                state.nextKickOffColor = state.team[side].teamColor.other();
                 game.apply(ActionBoard.ready, ActionTrigger.User);
                 game.pushState("Goal for " + state.team[side].teamColor);
             } else {
@@ -58,7 +58,7 @@ public class Goal extends Action
     {
         return (set == 1
               && state.playMode == PlayMode.Playing
-              && (state.period != Period.PenaltyShootout || state.kickOffTeam == state.team[side].teamColor))
+              && (state.period != Period.PenaltyShootout || state.nextKickOffColor == state.team[side].teamColor))
             || state.testmode;
     }
 }

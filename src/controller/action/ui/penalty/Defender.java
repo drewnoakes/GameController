@@ -4,7 +4,7 @@ import common.annotations.NotNull;
 import controller.Game;
 import controller.GameState;
 import data.Penalty;
-import data.PlayerInfo;
+import data.PlayerState;
 
 /**
  * This action means that the illegal defender penalty has been selected.
@@ -14,7 +14,7 @@ import data.PlayerInfo;
 public class Defender extends PenaltyAction
 {
     @Override
-    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerInfo player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerState player, int side, int number)
     {
         player.penalty = Penalty.SplIllegalDefender;
         state.whenPenalized[side][number] = state.getTime();

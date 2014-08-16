@@ -35,7 +35,7 @@ public class GameStateProtocol8 extends GameStateProtocol
                 1 + // penaltyShot
                 2 + // singleShots
                 SPLCoachMessage.SPL_COACH_MESSAGE_SIZE + // coach's message
-                (TeamInfo.NUM_PLAYERS_IN_GAME_STATE_MESSAGE + 1) * playerSize; // +1 for the coach
+                (TeamState.NUM_PLAYERS_IN_GAME_STATE_MESSAGE + 1) * playerSize; // +1 for the coach
 
         return  4 + // header
                 1 + // version
@@ -43,9 +43,9 @@ public class GameStateProtocol8 extends GameStateProtocol
                 1 + // numPlayers
                 1 + // playMode
                 1 + // firstHalf
-                1 + // kickOffTeam
+                1 + // nextKickOffColor
                 1 + // period
-                1 + // dropInTeam
+                1 + // lastDropInColor
                 2 + // dropInTime
                 2 + // secsRemaining
                 2 + // secondaryTime
@@ -63,15 +63,15 @@ public class GameStateProtocol8 extends GameStateProtocol
         buffer.put((byte)league.settings().teamSize);
         buffer.put(state.playMode.getValue());
         buffer.put(state.firstHalf ? (byte)1 : 0);
-        buffer.put(state.kickOffTeam == null ? 2 : state.kickOffTeam.getValue());
+        buffer.put(state.nextKickOffColor == null ? 2 : state.nextKickOffColor.getValue());
         buffer.put(state.period.getValue());
         // V8 sends '0' (blue) when no drop in has occurred. This is addressed in V9.
-        buffer.put(state.dropInTeam == null ? 0 : state.dropInTeam.getValue());
+        buffer.put(state.lastDropInColor == null ? 0 : state.lastDropInColor.getValue());
         buffer.putShort(state.dropInTime);
         buffer.putShort(state.secsRemaining);
         buffer.putShort(state.secondaryTime);
 
-        for (TeamInfo team : state.team) {
+        for (TeamState team : state.team) {
             writeTeamInfo(buffer, team);
         }
 
@@ -91,14 +91,14 @@ public class GameStateProtocol8 extends GameStateProtocol
         buffer.get(); // players per team (ignored when decoding)
         data.playMode = PlayMode.fromValue(buffer.get());
         data.firstHalf = buffer.get() != 0;
-        data.kickOffTeam = TeamColor.fromValue(buffer.get());
+        data.nextKickOffColor = TeamColor.fromValue(buffer.get());
         data.period = Period.fromValue(buffer.get());
-        data.dropInTeam = TeamColor.fromValue(buffer.get());
+        data.lastDropInColor = TeamColor.fromValue(buffer.get());
         data.dropInTime = buffer.getShort();
         data.secsRemaining = buffer.getShort();
         data.secondaryTime = buffer.getShort();
 
-        for (TeamInfo t : data.team) {
+        for (TeamState t : data.team) {
             t.teamNumber = buffer.get();
             t.teamColor = TeamColor.fromValue(buffer.get());
             t.score = buffer.get();
@@ -107,7 +107,7 @@ public class GameStateProtocol8 extends GameStateProtocol
             buffer.get(t.coachMessage);
             t.coach.penalty = Penalty.fromValue(league, buffer.get());
             t.coach.secsTillUnpenalised = buffer.get();
-            for (PlayerInfo p : t.player) {
+            for (PlayerState p : t.player) {
                 p.penalty = Penalty.fromValue(league, buffer.get());
                 p.secsTillUnpenalised = buffer.get();
             }
@@ -116,25 +116,25 @@ public class GameStateProtocol8 extends GameStateProtocol
         return data;
     }
 
-    private static void writeTeamInfo(ByteBuffer buffer, TeamInfo teamInfo)
+    private static void writeTeamInfo(ByteBuffer buffer, TeamState teamState)
     {
-        buffer.put(teamInfo.teamNumber);
-        buffer.put(teamInfo.teamColor.getValue());
-        buffer.put(teamInfo.score);
-        buffer.put(teamInfo.penaltyShot);
-        buffer.putShort(teamInfo.singleShots);
-        buffer.put(teamInfo.coachMessage);
+        buffer.put((byte)teamState.teamNumber);
+        buffer.put(teamState.teamColor.getValue());
+        buffer.put(teamState.score);
+        buffer.put(teamState.penaltyShot);
+        buffer.putShort(teamState.singleShots);
+        buffer.put(teamState.coachMessage);
 
-        writePlayerInfo(buffer, teamInfo.coach);
+        writePlayerInfo(buffer, teamState.coach);
 
-        for (int i = 0; i < TeamInfo.NUM_PLAYERS_IN_GAME_STATE_MESSAGE; i++) {
-            writePlayerInfo(buffer, teamInfo.player[i]);
+        for (int i = 0; i < TeamState.NUM_PLAYERS_IN_GAME_STATE_MESSAGE; i++) {
+            writePlayerInfo(buffer, teamState.player[i]);
         }
     }
 
-    private static void writePlayerInfo(ByteBuffer buffer, PlayerInfo playerInfo)
+    private static void writePlayerInfo(ByteBuffer buffer, PlayerState playerState)
     {
-        buffer.put(playerInfo.penalty.getValue());
-        buffer.put(playerInfo.secsTillUnpenalised);
+        buffer.put(playerState.penalty.getValue());
+        buffer.put(playerState.secsTillUnpenalised);
     }
 }

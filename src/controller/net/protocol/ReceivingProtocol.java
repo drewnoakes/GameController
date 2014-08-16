@@ -1,7 +1,6 @@
 package controller.net.protocol;
 
 import common.annotations.Nullable;
-import data.League;
 
 import java.nio.ByteBuffer;
 

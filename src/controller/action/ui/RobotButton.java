@@ -12,7 +12,7 @@ import controller.GameState;
 import controller.GameState.PenaltyQueueData;
 import data.League;
 import data.Penalty;
-import data.PlayerInfo;
+import data.PlayerState;
 
 /**
  * This action means that a robot button has been pressed.
@@ -41,7 +41,7 @@ public class RobotButton extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull GameState state)
     {
-        PlayerInfo player = state.team[side].player[number];
+        PlayerState player = state.team[side].player[number];
         if (player.penalty == Penalty.Substitute && !isCoach()) {
             ArrayList<PenaltyQueueData> playerInfoList = state.penaltyQueueForSubPlayers.get(side);
             if (playerInfoList.isEmpty()) {

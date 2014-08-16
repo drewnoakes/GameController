@@ -9,19 +9,17 @@ import controller.action.net.SPLCoachMessageReceived;
 import controller.net.*;
 import controller.net.protocol.*;
 import controller.ui.ControllerUI;
+import controller.ui.GameOptionsUI;
 import controller.ui.KeyboardListener;
-import controller.ui.StartUI;
 import data.*;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
-
 import javax.swing.*;
-
 
 /**
  * Main class for the game controller application.
- *
+ * <p/>
  * Manages command line arguments and the lifetime of all sub-components.
  *
  * @author Michel Bartsch
@@ -36,6 +34,9 @@ public class Main
 
     private static final String DEFAULT_BROADCAST = "255.255.255.255";
 
+    @SuppressWarnings("FieldCanBeLocal")
+    private static ApplicationLock applicationLock;
+
     private Main() {}
 
     /**
@@ -47,29 +48,36 @@ public class Main
     {
         ensureSingleInstanceRunning();
 
+        // Process command line input
+        GameOptions options = parseCommandLineArguments(args);
+
         while (true) {
-            runGameController(args);
+            // Start a new log file for each game
+            Log.initialise();
+
+            // Show UI to configure the starting parameters
+            options = GameOptionsUI.configure(options);
+
+            runGame(new Game(options));
+
+            try {
+                Log.close();
+            } catch (IOException e) {
+                Log.error("Error while trying to close the log.");
+            }
         }
     }
 
     @SuppressWarnings("unchecked")
-    private static void runGameController(String[] args)
+    private static void runGame(final Game game)
     {
-        // Process command line input
-        StartOptions options = parseCommandLineArguments(args);
-
-        // Allow the user to specify the starting parameters for the game
-        StartUI.showDialog(options);
-
-        final Game game = new Game(options);
-
-        final RobotWatcher robotWatcher = new RobotWatcher(options.league);
+        final RobotWatcher robotWatcher = new RobotWatcher(game.league());
         final GameStateSender gameStateSender;
         final MessageReceiver robotMessageReceiver;
         MessageReceiver splReceiver = null;
 
         try {
-            gameStateSender = new GameStateSender(game, options.broadcastAddress);
+            gameStateSender = new GameStateSender(game, game.broadcastAddress());
             gameStateSender.addProtocol(new GameStateProtocol9(game.league()));
             if (game.settings().supportGameStateVersion8)
                 gameStateSender.addProtocol(new GameStateProtocol8(game.league()));
@@ -78,7 +86,7 @@ public class Main
             gameStateSender.start();
 
             robotMessageReceiver = new MessageReceiver<RobotMessage>(
-                    game.options().league,
+                    game.league(),
                     Config.ROBOT_STATUS_PORT,
                     500,
                     new MessageHandler<RobotMessage>()
@@ -90,9 +98,9 @@ public class Main
             robotMessageReceiver.addProtocol(new RobotStatusProtocol2());
             robotMessageReceiver.start();
 
-            if (game.options().league.isSPLFamily() && game.settings().isCoachAvailable) {
+            if (game.league().isSPLFamily() && game.settings().isCoachAvailable) {
                 splReceiver = new MessageReceiver<SPLCoachMessage>(
-                        game.options().league,
+                        game.league(),
                         Config.SPL_COACH_MESSAGE_PORT,
                         500,
                         new MessageHandler<SPLCoachMessage>()
@@ -104,7 +112,7 @@ public class Main
                                 game.apply(new SPLCoachMessageReceived(message), ActionTrigger.Network);
                             }
                         });
-                splReceiver.addProtocol(new SPLCoachProtocol2(options.teamNumberBlue, options.teamNumberRed));
+                splReceiver.addProtocol(new SPLCoachProtocol2(game.teams()));
                 splReceiver.start();
             }
         } catch (Exception e) {
@@ -116,16 +124,14 @@ public class Main
             return;
         }
 
-        Log.initialise();
+        Log.toFile("League = " + game.league().getName());
+        Log.toFile("Play-off = " + game.isPlayOff());
+        Log.toFile("Auto color change = " + game.changeColoursEachPeriod());
+        Log.toFile("Using broadcast address " + game.broadcastAddress());
 
-        Log.toFile("League = " + options.league.getName());
-        Log.toFile("Play-off = " + options.playOff);
-        Log.toFile("Auto color change = " + options.colorChangeAuto);
-        Log.toFile("Using broadcast address " + options.broadcastAddress);
+        ActionBoard.initalise(game.league());
 
-        ActionBoard.initalise(options.league);
-
-        ControllerUI ui = new ControllerUI(game, options.fullScreenMode, robotWatcher);
+        ControllerUI ui = new ControllerUI(game, game.isFullScreen(), robotWatcher);
 
         KeyboardListener keyboardListener = new KeyboardListener(game);
 
@@ -155,17 +161,11 @@ public class Main
         } catch (InterruptedException e) {
             Log.error("Waiting for threads to shutdown was interrupted.");
         }
-
-        try {
-            Log.close();
-        } catch (IOException e) {
-            Log.error("Error while trying to close the log.");
-        }
     }
 
     private static void ensureSingleInstanceRunning()
     {
-        final ApplicationLock applicationLock = new ApplicationLock("GameController");
+        applicationLock = new ApplicationLock("GameController");
         try {
             if (!applicationLock.acquire()) {
                 JOptionPane.showMessageDialog(null,
@@ -183,14 +183,15 @@ public class Main
         }
     }
 
-    private static StartOptions parseCommandLineArguments(String[] args)
+    private static GameOptions parseCommandLineArguments(String[] args)
     {
-        StartOptions options = new StartOptions();
-        options.broadcastAddress = DEFAULT_BROADCAST;
-        options.fullScreenMode = true;
-        options.initialKickOffTeam = null;
-        options.playOff = null;
-        options.league = League.getAllLeagues()[0];
+        String broadcastAddress = DEFAULT_BROADCAST;
+        boolean isFullScreen = true;
+        TeamColor initialKickOffColor = null;
+        Boolean isPlayOff = null;
+        League league = League.getAllLeagues()[0];
+        int teamNumberBlue = 0;
+        int teamNumberRed = 0;
 
         for (int i = 0; i < args.length; i++) {
             boolean hasAnotherArg = args.length > i + 1;
@@ -199,29 +200,31 @@ public class Main
             // This would be nicer if using Java 1.7 which supports switching on strings.
             if (args[i].equals("-b") || args[i].equals("--broadcast")) {
                 if (hasAnotherArg && IPV4_PATTERN.matcher(args[++i]).matches()) {
-                    options.broadcastAddress = args[i];
+                    broadcastAddress = args[i];
                     continue;
                 }
             } else if (args[i].equals("-l") || args[i].equals("--league")) {
                 if (hasAnotherArg) {
-                    options.league = League.findByDirectoryName(args[++i]);
-                    if (options.league != null)
+                    league = League.findByDirectoryName(args[++i]);
+                    if (league != null)
                         continue;
                 }
             } else if (args[i].equals("-t") || args[i].equals("--teams")) {
                 if (hasAnotherTwoArgs) {
-                    options.teamNumberBlue = Byte.parseByte(args[++i]);
-                    options.teamNumberRed = Byte.parseByte(args[++i]);
-                    continue;
+                    try {
+                        teamNumberBlue = Integer.parseInt(args[++i]);
+                        teamNumberRed = Integer.parseInt(args[++i]);
+                        continue;
+                    } catch (NumberFormatException e) {}
                 }
             } else if (args[i].equals("-k") || args[i].equals("--kickoff")) {
                 if (hasAnotherArg) {
                     String colour = args[++i];
                     if (colour.equals("blue")) {
-                        options.initialKickOffTeam = TeamColor.Blue;
+                        initialKickOffColor = TeamColor.Blue;
                         continue;
                     } else if (colour.equals("red")) {
-                        options.initialKickOffTeam = TeamColor.Red;
+                        initialKickOffColor = TeamColor.Red;
                         continue;
                     }
                 }
@@ -229,23 +232,37 @@ public class Main
                 if (hasAnotherArg) {
                     String val = args[++i];
                     if (val.equals("yes") || val.equals("true") || val.equals("1")) {
-                        options.playOff = true;
+                        isPlayOff = true;
                         continue;
                     } else if (val.equals("no") || val.equals("false") || val.equals("0")) {
-                        options.playOff = false;
+                        isPlayOff = false;
                         continue;
                     }
                 }
             } else if (args[i].equals("-w") || args[i].equals("--window")) {
-                options.fullScreenMode = false;
+                isFullScreen = false;
                 continue;
             }
 
             printUsage();
-            System.exit(0);
+            System.exit(1);
         }
 
-        return options;
+        if (!league.hasTeamNumber(teamNumberBlue) || !league.hasTeamNumber(teamNumberRed)) {
+            System.err.println("Invalid team number(s) for league");
+            System.exit(1);
+        }
+
+        Team teamBlue = league.getTeam(teamNumberBlue);
+        Team teamRed = league.getTeam(teamNumberRed);
+        UIOrientation orientation = new UIOrientation();
+        Pair<Team> teams = new Pair<Team>(orientation, teamBlue, teamRed);
+
+        boolean changeColoursEachPeriod = false; // TODO do we need an argument for this?
+
+        return new GameOptions(
+                broadcastAddress, isFullScreen, league, isPlayOff, orientation,
+                teams, initialKickOffColor, changeColoursEachPeriod);
     }
 
     private static void printUsage()

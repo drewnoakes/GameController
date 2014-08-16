@@ -38,7 +38,7 @@ public class PenaltyShoot extends Action
           || (!state.firstHalf
             && state.playMode == PlayMode.Finished
             && !(game.settings().overtime
-                && game.options().playOff
+                && game.isPlayOff()
                 && state.period == Period.Normal
                 && state.team[0].score == state.team[1].score
                 && state.team[0].score > 0))

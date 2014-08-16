@@ -23,14 +23,14 @@ public class GameStateSnapshot implements Serializable
     public PlayMode playMode = PlayMode.Initial;
     /** Whether the game is currently in the first half. Applies to both normal time and overtime. */
     public boolean firstHalf = true;
-    /** Which team has the next kick off. If null, then the next kick off will be a drop ball. */
+    /** Which team has the next kick off. If <code>null</code>, then the next kick off will be a drop ball. */
     @Nullable
-    public TeamColor kickOffTeam = TeamColor.Blue;
+    public TeamColor nextKickOffColor = TeamColor.Blue;
     /** The type of active game period (normal, overtime, penalties, timeout). */
     public Period period = Period.Normal;
-    /** Team that caused last drop in. If no drop in has occurred yet, will be null. */
+    /** Team that caused last drop in. If no drop in has occurred yet, will be <code>null</code>. */
     @Nullable
-    public TeamColor dropInTeam;
+    public TeamColor lastDropInColor;
     /** The number of seconds that have passed since the last drop in. Will be -1 before first drop in. */
     public short dropInTime = -1;
     /** An estimate of the number of seconds remaining in the current half. */
@@ -42,18 +42,15 @@ public class GameStateSnapshot implements Serializable
      * remaining during 'ready' play mode, and so forth.
      */
     public short secondaryTime = 0;
-    public final TeamInfo[] team = new TeamInfo[2];
+    public final TeamState[] team = new TeamState[2];
 
     /**
      * Creates a new, blank GameState.
      */
     public GameStateSnapshot(Game game)
     {
-        for (int i=0; i<team.length; i++) {
-            team[i] = new TeamInfo();
-        }
-        team[0].teamColor = TeamColor.Blue;
-        team[1].teamColor = TeamColor.Red;
+        team[0] = new TeamState(game.teams().get(TeamColor.Blue).getNumber(), TeamColor.Blue);
+        team[1] = new TeamState(game.teams().get(TeamColor.Red).getNumber(), TeamColor.Red);
         secsRemaining = (short) game.settings().halfTime;
     }
     
@@ -62,9 +59,9 @@ public class GameStateSnapshot implements Serializable
     {
         return "           playMode: " + playMode + '\n' +
                "          firstHalf: " + (firstHalf ? "true" : "false") + '\n' +
-               "        kickOffTeam: " + kickOffTeam + '\n' +
+               "   nextKickOffColor: " + nextKickOffColor + '\n' +
                "             period: " + period + '\n' +
-               "         dropInTeam: " + dropInTeam + '\n' +
+               "    lastDropInColor: " + lastDropInColor + '\n' +
                "         dropInTime: " + dropInTime + '\n' +
                "      secsRemaining: " + secsRemaining + '\n' +
                "      secondaryTime: " + secondaryTime + '\n';

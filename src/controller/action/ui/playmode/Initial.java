@@ -17,7 +17,7 @@ public class Initial extends Action
     public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (state.playMode != PlayMode.Initial) {
-            forceExecute(state);
+            forceExecute(game, state);
             game.pushState("Initial");
         }
     }
@@ -25,9 +25,9 @@ public class Initial extends Action
     /**
      * Performs this action, even if the current play mode is {@link PlayMode#Initial}.
      */
-    public void forceExecute(@NotNull GameState state)
+    public void forceExecute(Game game, @NotNull GameState state)
     {
-        if (state.settings().returnRobotsInGameStoppages) {
+        if (game.settings().returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
         state.whenCurrentPlayModeBegan = state.getTime();

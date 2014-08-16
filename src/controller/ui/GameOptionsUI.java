@@ -1,14 +1,12 @@
 package controller.ui;
 
 import common.annotations.NotNull;
+import controller.GameOptions;
 import controller.Config;
-import controller.StartOptions;
 import controller.ui.controls.ImagePanel;
 import controller.ui.controls.LeagueListCellRenderer;
 import controller.ui.controls.TeamListCellRenderer;
-import data.League;
-import data.Team;
-import data.TeamColor;
+import data.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,12 +17,12 @@ import java.util.concurrent.CountDownLatch;
 import javax.swing.*;
 
 /**
- * This is only to be on starting the program to get starting input.
+ * Allows specification of {@link GameOptions} to apply during a game.
  *
  * @author Michel Bartsch
  * @author Drew Noakes https://drewnoakes.com
  */
-public class StartUI
+public class GameOptionsUI
 {
     // Layout constants
     private static final String WINDOW_TITLE = "RoboCup Game Controller";
@@ -39,7 +37,6 @@ public class StartUI
     /** This is not what the name says ;) */
     private static final int FULLSCREEN_WIDTH = 160;
 
-    private static final String[] BACKGROUND_SIDE = {"robot_left_blue.png", "robot_right_red.png"};
     private static final String FULLTIME_LABEL_NO = "Preliminaries Game";
     private static final String FULLTIME_LABEL_YES = "Play-off Game";
     private static final String FULLTIME_LABEL_HL_NO = "Normal Game";
@@ -51,19 +48,20 @@ public class StartUI
     /** A countdown latch which fires when the UI has been closed and the game should start. */
     private final CountDownLatch latch = new CountDownLatch(1);
 
-    private final StartOptions options;
-
+    private final Pair<Team> teams;
+    private final UIOrientation orientation;
+    private final String broadcastAddress;
     private JFrame frame;
-    private JLabel[] teamLogoLabel = new JLabel[2];
-    private ImagePanel[] teamBackgroundPanel = new ImagePanel[2];
-    private JComboBox[] teamCombo = new JComboBox[2];
-    private JRadioButton kickOffBlue;
-    private JRadioButton kickOffRed;
+    private Pair<String> backgroundImages;
+    private Pair<JLabel> teamLogoLabels;
+    private Pair<ImagePanel> teamBackgroundPanels;
+    private Pair<JComboBox<Team>> teamCombos;
+    private Pair<JRadioButton> kickOffRadios;
     private JComboBox<League> leagueCombo;
     private JRadioButton nofulltime;
     private JRadioButton fulltime;
     private Checkbox fullscreen;
-    private Checkbox autoColorChange;
+    private Checkbox changeColoursEachPeriodCheckbox;
     private JButton startButton;
 
     /**
@@ -71,23 +69,48 @@ public class StartUI
      *
      * @param options the set of options to bind this UI to
      */
-    public static void showDialog(@NotNull StartOptions options)
+    public static GameOptions configure(@NotNull GameOptions options)
     {
-        StartUI input = new StartUI(options);
+        GameOptionsUI ui = new GameOptionsUI(options);
         try {
             // Block until the UI is done with
-            input.latch.await();
+            ui.latch.await();
         } catch (InterruptedException e) {
             System.exit(1);
         }
-        input.close();
+        ui.close();
+
+        return ui.createGameOptions();
     }
 
-    private StartUI(@NotNull final StartOptions options)
+    @NotNull
+    private GameOptions createGameOptions()
     {
-        this.options = options;
+        // The 'start' button was clicked
+        boolean isPlayOff = fulltime.isSelected() && fulltime.isVisible();
+        boolean isFullScreen = fullscreen.getState();
+        boolean changeColoursEachPeriod = changeColoursEachPeriodCheckbox.getState();
 
-        buildUI();
+        TeamColor initialKickOffColor = null;
+        for (TeamColor color : TeamColor.both()) {
+            if (kickOffRadios.get(color).isSelected())
+                initialKickOffColor = color;
+        }
+
+        assert(initialKickOffColor != null);
+
+        League league = (League)leagueCombo.getSelectedItem();
+
+        return new GameOptions(broadcastAddress, isFullScreen, league, isPlayOff, orientation, teams, initialKickOffColor, changeColoursEachPeriod);
+    }
+
+    private GameOptionsUI(@NotNull final GameOptions options)
+    {
+        orientation = options.orientation;
+        teams = options.teams;
+        broadcastAddress = options.broadcastAddress;
+
+        buildUI(options.initialKickOffColor, options.isFullScreen, options.changeColoursEachPeriod, options.isPlayOff);
 
         // Set the league to the one specified in starting
         // options, which in turn sets the selected teams
@@ -97,7 +120,7 @@ public class StartUI
     }
 
     @SuppressWarnings("unchecked")
-    private void buildUI()
+    private void buildUI(TeamColor initialKickOffColor, boolean isFullScreen, boolean changeColoursEachPeriod, Boolean isPlayOff)
     {
         frame = new JFrame(WINDOW_TITLE);
         frame.setIconImage(new ImageIcon(Config.ICONS_PATH + "window_icon.png").getImage());
@@ -110,22 +133,28 @@ public class StartUI
         int height = gd.getDisplayMode().getHeight();
         frame.setLocation((width-WINDOW_WIDTH)/2, (height-WINDOW_HEIGHT)/2);
 
+        // Per-team stuff
+
+        backgroundImages = new Pair<String>(orientation, "robot_left_blue.png", "robot_right_red.png");
+        teamLogoLabels = new Pair<JLabel>(orientation, new JLabel(), new JLabel());
+        teamBackgroundPanels = new Pair<ImagePanel>(orientation, new ImagePanel(ImagePanel.Mode.TopCentre), new ImagePanel(ImagePanel.Mode.TopCentre));
+        teamCombos = new Pair<JComboBox<Team>>(orientation, new JComboBox<Team>(), new JComboBox<Team>());
+
         // Create the team selection panels
-        List<Team> teams = options.league.teams();
-        for (int i = 0; i < 2; i++) {
-            final int side = i; // copy for closure
-            ImagePanel container = new ImagePanel(ImagePanel.Mode.TopCentre);
+        for (final UISide side : UISide.both()) {
+            ImagePanel container = teamBackgroundPanels.get(side);
             container.setPreferredSize(new Dimension(WINDOW_WIDTH / 2 - STANDARD_SPACE, TEAMS_HEIGHT));
             container.setOpaque(true);
             container.setLayout(new BorderLayout());
-            teamLogoLabel[side] = new JLabel();
-            teamLogoLabel[side].setHorizontalAlignment(SwingConstants.CENTER);
-            teamLogoLabel[side].setVerticalAlignment(SwingConstants.CENTER);
-            container.add(teamLogoLabel[side], BorderLayout.CENTER);
-            teamCombo[side] = new JComboBox(teams.toArray());
-            teamCombo[side].setRenderer(new TeamListCellRenderer());
-            container.add(teamCombo[side], BorderLayout.SOUTH);
-            teamCombo[side].addActionListener(new ActionListener()
+
+            JLabel teamLogoLabel = teamLogoLabels.get(side);
+            teamLogoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            teamLogoLabel.setVerticalAlignment(SwingConstants.CENTER);
+            container.add(teamLogoLabel, BorderLayout.CENTER);
+            final JComboBox<Team> teamCombo = teamCombos.get(side);
+            teamCombo.setRenderer(new TeamListCellRenderer());
+            container.add(teamCombo, BorderLayout.SOUTH);
+            teamCombo.addActionListener(new ActionListener()
             {
                 @Override
                 public void actionPerformed(ActionEvent e)
@@ -135,41 +164,36 @@ public class StartUI
                         @Override
                         public void run()
                         {
-                            setTeam(side, (Team)teamCombo[side].getSelectedItem());
+                            setTeam(side, (Team)teamCombo.getSelectedItem());
                         }
                     });
                 }
             });
             frame.add(container);
-
-            teamBackgroundPanel[side] = container;
         }
 
         // Create kick off selection controls
         JPanel optionsKickOff = new JPanel();
-        kickOffBlue = new JRadioButton();
-        kickOffBlue.setText("Kick off blue");
-        kickOffRed = new JRadioButton();
-        kickOffRed.setText("Kick off red");
-        kickOffBlue.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateStateButton();
-            }});
-        kickOffRed.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateStateButton();
-            }});
+        kickOffRadios = new Pair<JRadioButton>(orientation, new JRadioButton(), new JRadioButton());
+        kickOffRadios.get(TeamColor.Blue).setText("Kick off blue");
+        kickOffRadios.get(TeamColor.Red).setText("Kick off red");
         ButtonGroup kickOffGroup = new ButtonGroup();
-        kickOffGroup.add(kickOffBlue);
-        kickOffGroup.add(kickOffRed);
-        optionsKickOff.add(kickOffBlue);
-        optionsKickOff.add(kickOffRed);
-        if (options.initialKickOffTeam == TeamColor.Blue)
-            kickOffBlue.setSelected(true);
-        else if (options.initialKickOffTeam == TeamColor.Red)
-            kickOffRed.setSelected(true);
+        for (UISide side : UISide.both()) {
+            JRadioButton radio = kickOffRadios.get(side);
+            radio.addActionListener(new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    updateStateButton();
+                }
+            });
+            kickOffGroup.add(radio);
+            optionsKickOff.add(radio);
+            if (orientation.getSide(initialKickOffColor) == side)
+                radio.setSelected(true);
+        }
+
         optionsKickOff.setPreferredSize(new Dimension(WINDOW_WIDTH-2*STANDARD_SPACE, OPTIONS_HEIGHT));
         optionsKickOff.setLayout(new FlowLayout(FlowLayout.CENTER));
         frame.add(optionsKickOff);
@@ -189,13 +213,13 @@ public class StartUI
 
         fullscreen = new Checkbox(FULLSCREEN_LABEL);
         fullscreen.setPreferredSize(new Dimension(FULLSCREEN_WIDTH, OPTIONS_HEIGHT));
-        fullscreen.setState(options.fullScreenMode);
+        fullscreen.setState(isFullScreen);
         fullscreenPanel.add(fullscreen);
 
-        autoColorChange = new Checkbox(COLOR_CHANGE_LABEL);
-        autoColorChange.setPreferredSize(new Dimension(FULLSCREEN_WIDTH, OPTIONS_HEIGHT));
-        autoColorChange.setState(options.colorChangeAuto);
-        autoColorChangePanel.add(autoColorChange);
+        changeColoursEachPeriodCheckbox = new Checkbox(COLOR_CHANGE_LABEL);
+        changeColoursEachPeriodCheckbox.setPreferredSize(new Dimension(FULLSCREEN_WIDTH, OPTIONS_HEIGHT));
+        changeColoursEachPeriodCheckbox.setState(changeColoursEachPeriod);
+        autoColorChangePanel.add(changeColoursEachPeriodCheckbox);
 
         // Create the right-hand control panel, containing 'league' combo and 'normal vs knockout/playoff' radios
         JPanel optionsRight = new JPanel();
@@ -204,12 +228,8 @@ public class StartUI
         Dimension optionsDim = new Dimension(WINDOW_WIDTH/3-2*STANDARD_SPACE, OPTIONS_HEIGHT);
         leagueCombo = new JComboBox<League>();
         leagueCombo.setRenderer(new LeagueListCellRenderer());
-        for (League l : League.getAllLeagues())
-        {
+        for (League l : League.getAllLeagues()) {
             leagueCombo.addItem(l);
-            if (l == options.league) {
-                leagueCombo.setSelectedItem(l);
-            }
         }
         leagueCombo.setPreferredSize(optionsDim);
         leagueCombo.addActionListener(new ActionListener()
@@ -222,12 +242,13 @@ public class StartUI
                          @Override
                          public void run()
                          {
-                             setLeague((League)StartUI.this.leagueCombo.getSelectedItem());
+                             setLeague((League)GameOptionsUI.this.leagueCombo.getSelectedItem());
                          }
                      });
                  }
              });
         optionsRight.add(leagueCombo);
+
         nofulltime = new JRadioButton();
         nofulltime.setPreferredSize(optionsDim);
         fulltime = new JRadioButton();
@@ -241,14 +262,16 @@ public class StartUI
             @Override
                 public void actionPerformed(ActionEvent e) {
                     updateStateButton();
-                }});
+                }
+            });
         fulltime.addActionListener(new ActionListener() {
             @Override
                 public void actionPerformed(ActionEvent e) {
                     updateStateButton();
-                }});
-        if (options.playOff != null) {
-            if (options.playOff)
+                }
+            });
+        if (isPlayOff != null) {
+            if (isPlayOff)
                 fulltime.setSelected(true);
             else
                 nofulltime.setSelected(true);
@@ -264,16 +287,6 @@ public class StartUI
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                // The 'start' button was clicked
-                options.playOff = fulltime.isSelected() && fulltime.isVisible();
-                options.fullScreenMode = fullscreen.getState();
-                options.colorChangeAuto = autoColorChange.getState();
-                if (kickOffBlue.isSelected())
-                    options.initialKickOffTeam = TeamColor.Blue;
-                else if (kickOffRed.isSelected())
-                    options.initialKickOffTeam = TeamColor.Red;
-                else
-                    throw new AssertionError("Start button should not be enabled if no kick off team selected.");
                 latch.countDown();
             }
         });
@@ -286,73 +299,68 @@ public class StartUI
     @SuppressWarnings("unchecked")
     private void setLeague(@NotNull League league)
     {
-        options.league = league;
+        leagueCombo.setSelectedItem(league);
 
         // Show/hide checkboxes
         if (league == League.SPLDropIn) {
             nofulltime.setVisible(false);
             fulltime.setVisible(false);
-            autoColorChange.setVisible(false);
+            changeColoursEachPeriodCheckbox.setVisible(false);
         } else if (league == League.SPL) {
             nofulltime.setVisible(true);
             fulltime.setVisible(true);
-            autoColorChange.setVisible(false);
+            changeColoursEachPeriodCheckbox.setVisible(false);
             nofulltime.setText(FULLTIME_LABEL_NO);
             fulltime.setText(FULLTIME_LABEL_YES);
         } else {
             nofulltime.setVisible(true);
             fulltime.setVisible(true);
-            autoColorChange.setVisible(true);
+            changeColoursEachPeriodCheckbox.setVisible(true);
             nofulltime.setText(FULLTIME_LABEL_HL_NO);
             fulltime.setText(FULLTIME_LABEL_HL_YES);
-            autoColorChange.setState(options.colorChangeAuto);
         }
 
-        for (int side = 0; side < 2; side++) {
+        for (UISide side : UISide.both()) {
             // Update background image
-            String backgroundImagePath = Config.ICONS_PATH + league.getDirectoryName() + "/" + BACKGROUND_SIDE[side];
-            teamBackgroundPanel[side].setImage(new ImageIcon(backgroundImagePath).getImage());
+            String backgroundImagePath = Config.ICONS_PATH + league.getDirectoryName() + "/" + backgroundImages.get(side);
+            teamBackgroundPanels.get(side).setImage(new ImageIcon(backgroundImagePath).getImage());
 
             // Determine the team number, or use zero if unspecified at this point
-            int teamNumber = this.options.teamNumberByIndex(side);
+            int teamNumber = this.teams.get(side).getNumber();
             if (teamNumber == -1)
                 teamNumber = 0;
 
             // Suspend change notification on combo during population
-            assert(teamCombo[side].getActionListeners().length == 1);
-            ActionListener actionListener = teamCombo[side].getActionListeners()[0];
-            teamCombo[side].removeActionListener(actionListener);
+            assert(teamCombos.get(side).getActionListeners().length == 1);
+            ActionListener actionListener = teamCombos.get(side).getActionListeners()[0];
+            teamCombos.get(side).removeActionListener(actionListener);
 
             // Populate team combo box
-            List<Team> teams1 = this.options.league.teams();
-            teamCombo[side].removeAllItems();
-            if (this.options.league.settings().dropInPlayerMode) {
+            List<Team> teams = league.teams();
+            teamCombos.get(side).removeAllItems();
+            if (league.settings().dropInPlayerMode) {
                 // In SPL drop in games, there are only two teams (red and blue), plus we add team 0 (invisibles).
-                assert(teams1.size() == 3);
-                teamCombo[side].addItem(teams1.get(0));
-                teamCombo[side].addItem(teams1.get(side == 0 ?  1 : 2));
+                assert(teams.size() == 3);
+                teamCombos.get(side).addItem(teams.get(0));
+                teamCombos.get(side).addItem(teams.get(side == UISide.Left ?  1 : 2));
                 // TODO support setting of drop-in team numbers from StartOptions (for now just set to zero)
-                this.options.setTeamNumberByIndex(side, (byte)0);
                 teamNumber = 0;
             } else {
-                boolean found = false;
-                for (int j = 0; j < teams1.size(); j++) {
-                    teamCombo[side].addItem(teams1.get(j));
-                    if (teams1.get(j).getNumber() == teamNumber) {
-                        teamCombo[side].setSelectedIndex(j);
-                        found = true;
-                    }
+                for (Team team : teams) {
+                    teamCombos.get(side).addItem(team);
                 }
-                if (!found) {
-                    this.options.setTeamNumberByIndex(side, (byte)0);
+                if (!league.hasTeamNumber(teamNumber)) {
+                    // Just set to the first team in the league
                     teamNumber = 0;
                 }
             }
 
             // Reinstate change notification
-            teamCombo[side].addActionListener(actionListener);
+            teamCombos.get(side).addActionListener(actionListener);
 
-            setTeam(side, this.options.league.getTeam(teamNumber));
+            final Team team = league.getTeam(teamNumber);
+            assert(team != null);
+            setTeam(side, team);
         }
 
         updateStateButton();
@@ -364,13 +372,12 @@ public class StartUI
      * @param side the side (0=left, 1=right)
      * @param team the team to assign to the specified side
      */ 
-    private void setTeam(int side, @NotNull Team team)
+    private void setTeam(UISide side, @NotNull Team team)
     {
         // Update the start options
-        if (side == 0)
-            options.teamNumberBlue = (byte)team.getNumber();
-        else
-            options.teamNumberRed = (byte)team.getNumber();
+        teams.set(side, team);
+
+        teamCombos.get(side).setSelectedItem(team);
 
         // Update the team image
         BufferedImage logoImage = team.getLogoImage();
@@ -398,15 +405,15 @@ public class StartUI
                         (int)(logoImage.getHeight(null) * scaleFactor),
                         Image.SCALE_SMOOTH);
 
-                teamLogoLabel[side].setIcon(new ImageIcon(scaledImage));
+                teamLogoLabels.get(side).setIcon(new ImageIcon(scaledImage));
             } else {
-                teamLogoLabel[side].setIcon(new ImageIcon(logoImage));
+                teamLogoLabels.get(side).setIcon(new ImageIcon(logoImage));
             }
         } else {
             // Team doesn't have a logo
-            teamLogoLabel[side].setIcon(null);
+            teamLogoLabels.get(side).setIcon(null);
         }
-        teamLogoLabel[side].repaint();
+        teamLogoLabels.get(side).repaint();
 
         // Update whether the start button is enabled
         updateStateButton();
@@ -417,9 +424,15 @@ public class StartUI
      */
     private void updateStateButton()
     {
-        boolean isEnabled = options.teamNumberBlue != options.teamNumberRed;
+        // Must select different teams
+        boolean isEnabled = teams.get(UISide.Left) != teams.get(UISide.Right);
+
+        // Must select a full-time option, if available
         isEnabled &= fulltime.isSelected() || nofulltime.isSelected() || !fulltime.isVisible();
-        isEnabled &= kickOffBlue.isSelected() || kickOffRed.isSelected();
+
+        // Must select a kick off team
+        isEnabled &= kickOffRadios.get(UISide.Left).isSelected() || kickOffRadios.get(UISide.Right).isSelected();
+
         startButton.setEnabled(isEnabled);
     }
 

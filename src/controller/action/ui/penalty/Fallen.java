@@ -5,7 +5,7 @@ import controller.Game;
 import controller.GameState;
 import data.PlayMode;
 import data.Penalty;
-import data.PlayerInfo;
+import data.PlayerState;
 
 /**
  * This action means that the fallen robot penalty has been selected.
@@ -15,7 +15,7 @@ import data.PlayerInfo;
 public class Fallen extends PenaltyAction
 {
     @Override
-    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerInfo player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerState player, int side, int number)
     {
         player.penalty = Penalty.SplObstruction;
         state.whenPenalized[side][number] = state.getTime();

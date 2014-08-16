@@ -5,8 +5,7 @@ import common.Log;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import controller.action.ActionTrigger;
-import data.League;
-import data.Team;
+import data.*;
 import leagues.LeagueSettings;
 
 import java.io.*;
@@ -36,7 +35,13 @@ public class Game
      */
     public final Event<GameState> gameStateChanged;
 
-    private final StartOptions options;
+    private final League league;
+    private final Pair<Team> teams;
+    private final UIOrientation uiOrientation;
+    private final boolean isPlayOff;
+    private final boolean isFullScreen;
+    private final boolean changeColoursEachPeriod;
+    private final String broadcastAddress;
 
     /** The golden record of the game's current state. */
     private GameState gameState;
@@ -54,43 +59,72 @@ public class Game
     /** When set to true, the game will stop and the game controller window close. */
     private boolean shutdownRequested = false;
 
-    /** Create a new Game with the specified starting options. */
-    public Game(@NotNull StartOptions options)
+    /** Create a new Game with the specified options. */
+    public Game(GameOptions options)
     {
-        this.options = options;
+        assert(options.isPlayOff != null);
+
+        this.league = options.league;
+        this.teams = options.teams; // TODO clone mutable bits of this object for single use during game
+        this.uiOrientation = options.orientation; // TODO clone mutable bits of this object for single use during game
+        this.isPlayOff = options.isPlayOff;
+        this.isFullScreen = options.isFullScreen;
+        this.changeColoursEachPeriod = options.changeColoursEachPeriod;
+        this.broadcastAddress = options.broadcastAddress;
+
+        gameStateChanged = new Event<GameState>();
 
         gameState = new GameState(this);
-
-        // TODO is it really blue/red here? more like left/right (in the UI sense)
-        gameState.team[0].teamNumber = options.teamNumberBlue;
-        gameState.team[1].teamNumber = options.teamNumberRed;
-        gameState.kickOffTeam = options.initialKickOffTeam;
+        gameState.nextKickOffColor = options.initialKickOffColor;
 
         gameStateClone = cloneGameState(gameState);
 
-        Team team0 = options.league.getTeam(options.teamNumberBlue);
-        Team team1 = options.league.getTeam(options.teamNumberRed);
-        timeline.push(new TimelineEntry(this.gameState, team0.getName() + " vs " + team1.getName()));
-
-        gameStateChanged = new Event<GameState>();
-    }
-
-    @NotNull
-    public StartOptions options()
-    {
-        return options;
+        pushState(teams.get(UISide.Left).getName() + " vs " + teams.get(UISide.Right).getName());
     }
 
     @NotNull
     public League league()
     {
-        return options.league;
+        return league;
     }
 
     @NotNull
     public LeagueSettings settings()
     {
-        return options.league.settings();
+        return league.settings();
+    }
+
+    public boolean isPlayOff()
+    {
+        return isPlayOff;
+    }
+
+    @NotNull
+    public Pair<Team> teams()
+    {
+        return teams;
+    }
+
+    @NotNull
+    public UIOrientation uiOrientation()
+    {
+        return uiOrientation;
+    }
+
+    public boolean isFullScreen()
+    {
+        return isFullScreen;
+    }
+
+    public boolean changeColoursEachPeriod()
+    {
+        return changeColoursEachPeriod;
+    }
+
+    @NotNull
+    public String broadcastAddress()
+    {
+        return broadcastAddress;
     }
 
     /**
@@ -261,7 +295,6 @@ public class Game
             GameState clone = (GameState)new ObjectInputStream(in).readObject();
             // Populate transient fields
             clone.game = this;
-            clone.options = options;
             return clone;
         } catch (ClassNotFoundException e) {
             Log.error(e.getClass().getName() + ": " + e.getMessage());

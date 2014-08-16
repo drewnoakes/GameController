@@ -18,8 +18,8 @@ public class DropBall extends Action
     public void execute(@NotNull Game game, @NotNull GameState state)
     {
         // Set to null, indicating no team has kick off
-        state.kickOffTeam = null;
-        ActionBoard.ready.forceExecute(state);
+        state.nextKickOffColor = null;
+        ActionBoard.ready.forceExecute(game, state);
         game.pushState("Dropped Ball");
     }
     
