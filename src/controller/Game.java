@@ -41,6 +41,7 @@ public class Game
     private final boolean isPlayOff;
     private final boolean isFullScreen;
     private final boolean changeColoursEachPeriod;
+    private final TeamColor initialKickOffColor;
     private final String broadcastAddress;
 
     /** The golden record of the game's current state. */
@@ -70,6 +71,7 @@ public class Game
         this.isPlayOff = options.isPlayOff;
         this.isFullScreen = options.isFullScreen;
         this.changeColoursEachPeriod = options.changeColoursEachPeriod;
+        this.initialKickOffColor = options.initialKickOffColor;
         this.broadcastAddress = options.broadcastAddress;
 
         gameStateChanged = new Event<GameState>();
@@ -119,6 +121,12 @@ public class Game
     public boolean changeColoursEachPeriod()
     {
         return changeColoursEachPeriod;
+    }
+
+    /** The colour of the team given the first kickoff of the game. */
+    public TeamColor initialKickOffColor()
+    {
+        return initialKickOffColor;
     }
 
     @NotNull

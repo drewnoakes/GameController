@@ -19,9 +19,9 @@ public class FirstHalf extends Action
         if (!state.firstHalf || state.period == Period.PenaltyShootout) {
             state.firstHalf = true;
             state.period = Period.Normal;
-            changeSide(game, state);
-            state.nextKickOffColor = (state.leftSideKickoff ? state.team[0].teamColor : state.team[1].teamColor);
+            state.nextKickOffColor = game.initialKickOffColor();
             state.playMode = PlayMode.Initial;
+            changeSide(game, state);
             // Don't set data.whenCurrentPlayModeBegan, because it's used to count the pause
             game.pushState("1st Half");
         }
@@ -44,6 +44,7 @@ public class FirstHalf extends Action
         TeamState team = state.team[0];
         state.team[0] = state.team[1];
         state.team[1] = team;
+
         boolean[] ejected = state.ejected[0];
         state.ejected[0] = state.ejected[1];
         state.ejected[1] = ejected;
@@ -55,7 +56,7 @@ public class FirstHalf extends Action
             state.team[1].teamColor = color;
         }
 
-        if (game.settings().timeOutPerHalf && (state.period != Period.PenaltyShootout)) {
+        if (game.settings().timeOutPerHalf && state.period != Period.PenaltyShootout) {
             state.timeOutTaken = new boolean[] {false, false};
         } else {
             boolean timeOutTaken = state.timeOutTaken[0];

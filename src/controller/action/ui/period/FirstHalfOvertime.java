@@ -19,9 +19,9 @@ public class FirstHalfOvertime extends Action
         if (!state.firstHalf || state.period == Period.PenaltyShootout) {
             state.firstHalf = true;
             state.period = Period.Overtime;
-            FirstHalf.changeSide(game, state);
-            state.nextKickOffColor = (state.leftSideKickoff ? state.team[0].teamColor : state.team[1].teamColor);
+            state.nextKickOffColor = game.initialKickOffColor();
             state.playMode = PlayMode.Initial;
+            FirstHalf.changeSide(game, state);
             game.pushState("1st Half Extra Time");
         }
     }

@@ -19,9 +19,9 @@ public class SecondHalf extends Action
         if (state.firstHalf || state.period == Period.PenaltyShootout) {
             state.firstHalf = false;
             state.period = Period.Normal;
-            FirstHalf.changeSide(game, state);
-            state.nextKickOffColor = (state.leftSideKickoff ? state.team[0].teamColor : state.team[1].teamColor);
+            state.nextKickOffColor = game.initialKickOffColor().other();
             state.playMode = PlayMode.Initial;
+            FirstHalf.changeSide(game, state);
             // Don't set state.whenCurrentPlayModeBegan, because it's used to count the pause
             game.pushState("2nd Half");
         }
