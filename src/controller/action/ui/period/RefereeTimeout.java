@@ -23,7 +23,7 @@ public class RefereeTimeout extends Action
             }
             if (state.previousPeriod == Period.PenaltyShootout
                     && (state.playMode == PlayMode.Set || state.playMode == PlayMode.Playing)) {
-                state.team[state.nextKickOffColor == state.team[0].teamColor ? 0 : 1].penaltyShot--;
+                state.teams[state.nextKickOffColor == state.teams[0].teamColor ? 0 : 1].penaltyShot--;
             }
             game.apply(ActionBoard.initial, ActionTrigger.User);
             game.pushState("Referee Timeout");

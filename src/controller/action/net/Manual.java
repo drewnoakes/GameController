@@ -38,17 +38,17 @@ public class Manual extends Action
     public void execute(@NotNull Game game, @NotNull GameState state)
     {
         if (!unpen) {
-            state.team[side].player[number].penalty = Penalty.Manual;
+            state.teams[side].player[number].penalty = Penalty.Manual;
             state.whenPenalized[side][number] = state.getTime();
 
             if (state.playMode != PlayMode.Initial && state.playMode != PlayMode.Finished) {
-                game.pushState("Manually Penalised " + state.team[side].teamColor + " " + (number + 1));
+                game.pushState("Manually Penalised " + state.teams[side].teamColor + " " + (number + 1));
             }
         } else {
-            state.team[side].player[number].penalty = Penalty.None;
+            state.teams[side].player[number].penalty = Penalty.None;
 
             if (state.playMode != PlayMode.Initial && state.playMode != PlayMode.Finished) {
-                game.pushState("Manually Unpenalised " + state.team[side].teamColor + " " + (number + 1));
+                game.pushState("Manually Unpenalised " + state.teams[side].teamColor + " " + (number + 1));
             }
         }
     }

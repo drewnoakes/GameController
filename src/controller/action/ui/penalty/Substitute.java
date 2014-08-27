@@ -22,7 +22,7 @@ public class Substitute extends PenaltyAction
 
         player.penalty = Penalty.Substitute;
         state.whenPenalized[side][number] = state.getTime();
-        game.pushState("Leaving Player " + state.team[side].teamColor + " " + (number + 1));
+        game.pushState("Leaving Player " + state.teams[side].teamColor + " " + (number + 1));
     }
     
     @Override

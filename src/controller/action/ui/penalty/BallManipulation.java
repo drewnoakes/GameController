@@ -21,6 +21,6 @@ public class BallManipulation extends PenaltyAction
     {
         player.penalty = Penalty.HLBallManipulation;
         state.whenPenalized[side][number] = state.getTime();
-        game.pushState("Ball Manipulation " + state.team[side].teamColor + " " + (number + 1));
+        game.pushState("Ball Manipulation " + state.teams[side].teamColor + " " + (number + 1));
     }
 }

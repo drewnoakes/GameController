@@ -12,9 +12,9 @@ public class CoachMotion extends PenaltyAction
     public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerState player, int side, int number)
     {
         state.whenPenalized[side][number] = state.getTime();
-        state.team[side].coach.penalty = Penalty.SplCoachMotion;
+        state.teams[side].coach.penalty = Penalty.SplCoachMotion;
         state.ejected[side][number] = true;
-        game.pushState("Coach Motion " + state.team[side].teamColor + " " + (number + 1));
+        game.pushState("Coach Motion " + state.teams[side].teamColor + " " + (number + 1));
     }
     
     @Override

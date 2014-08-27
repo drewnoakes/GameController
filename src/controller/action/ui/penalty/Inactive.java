@@ -19,7 +19,7 @@ public class Inactive extends PenaltyAction
     {
         player.penalty = Penalty.SplInactivePlayer;
         state.whenPenalized[side][number] = state.getTime();
-        game.pushState("Inactive Player " + state.team[side].teamColor + " " + (number + 1));
+        game.pushState("Inactive Player " + state.teams[side].teamColor + " " + (number + 1));
     }
     
     @Override

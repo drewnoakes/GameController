@@ -21,6 +21,6 @@ public class PickUpSPL extends PenaltyAction
         }
 
         player.penalty = Penalty.SplRequestForPickup;
-        game.pushState("Request for PickUp " + state.team[side].teamColor + " " + (number + 1));
+        game.pushState("Request for PickUp " + state.teams[side].teamColor + " " + (number + 1));
     }
 }

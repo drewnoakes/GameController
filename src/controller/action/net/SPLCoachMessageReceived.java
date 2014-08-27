@@ -22,7 +22,7 @@ public class SPLCoachMessageReceived extends Action
         int team = state.getTeamIndex(this.message.teamNumber);
         assert(team != -1);
         if ((System.currentTimeMillis() - state.timestampCoachMessage[team]) >= SPLCoachMessage.SPL_COACH_MESSAGE_RECEIVE_INTERVAL
-                && state.team[team].coach.penalty != Penalty.SplCoachMotion) {
+                && state.teams[team].coach.penalty != Penalty.SplCoachMotion) {
             state.timestampCoachMessage[team] = System.currentTimeMillis();
             state.splCoachMessageQueue.add(this.message);
         }

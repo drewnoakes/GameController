@@ -38,7 +38,7 @@ public class Set extends Action
             }
 
             if (state.playMode != PlayMode.Playing) {
-                state.team[state.team[0].teamColor == state.nextKickOffColor ? 0 : 1].penaltyShot++;
+                state.teams[state.teams[0].teamColor == state.nextKickOffColor ? 0 : 1].penaltyShot++;
             }
         }
         state.playMode = PlayMode.Set;

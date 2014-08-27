@@ -92,7 +92,7 @@ public class GameStateProtocol9 extends GameStateProtocol
         buffer.putShort(state.secsRemaining);
         buffer.putShort(state.secondaryTime);
 
-        for (TeamState team : state.team) {
+        for (TeamState team : state.teams) {
             writeTeamInfo(buffer, team);
         }
 
@@ -122,7 +122,7 @@ public class GameStateProtocol9 extends GameStateProtocol
         data.secsRemaining = buffer.getShort();
         data.secondaryTime = buffer.getShort();
 
-        for (TeamState t : data.team) {
+        for (TeamState t : data.teams) {
             t.teamNumber = buffer.get();
             t.teamColor = TeamColor.fromValue(buffer.get());
             t.score = buffer.get();

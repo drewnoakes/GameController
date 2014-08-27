@@ -18,6 +18,6 @@ public class Hands extends PenaltyAction
     {
         player.penalty = Penalty.SplPlayingWithHands;
         state.whenPenalized[side][number] = state.getTime();
-        game.pushState("Playing with Hands " + state.team[side].teamColor + " " + (number + 1));
+        game.pushState("Playing with Hands " + state.teams[side].teamColor + " " + (number + 1));
     }
 }

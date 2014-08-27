@@ -95,9 +95,9 @@ public class GameState extends GameStateSnapshot implements Cloneable
         }
 
         for (int i=0; i<2; i++) {
-            for (int j=0; j < team[i].player.length; j++) {
+            for (int j=0; j < teams[i].player.length; j++) {
                 if (j >= game.settings().robotsPlaying) {
-                    team[i].player[j].penalty = Penalty.Substitute;
+                    teams[i].player[j].penalty = Penalty.Substitute;
                 }
             }
             penaltyQueueForSubPlayers.add(new ArrayList<PenaltyQueueData>());
@@ -154,9 +154,9 @@ public class GameState extends GameStateSnapshot implements Cloneable
         } else {
             secondaryTime = (short)(int)subT;
         }
-        for (int side = 0; side < team.length; ++side) {
-            for (int number = 0; number < team[side].player.length; ++number) {
-                PlayerState player = team[side].player[number];
+        for (int side = 0; side < teams.length; ++side) {
+            for (int number = 0; number < teams[side].player.length; ++number) {
+                PlayerState player = teams[side].player[number];
                 player.secsTillUnpenalised = player.penalty == Penalty.None
                         ? 0
                         : (byte) getRemainingPenaltyTime(side, number);
@@ -190,7 +190,7 @@ public class GameState extends GameStateSnapshot implements Cloneable
                     ? game.settings().halfTime
                     : period == Period.Overtime
                         ? game.settings().overtimeTime
-                        : Math.max(team[0].penaltyShot, team[1].penaltyShot) > regularNumberOfPenaltyShots
+                        : Math.max(teams[0].penaltyShot, teams[1].penaltyShot) > regularNumberOfPenaltyShots
                             ? game.settings().penaltyShotTimeSuddenDeath
                             : game.settings().penaltyShotTime;
         int timePlayed = playMode == PlayMode.Initial// during timeouts
@@ -213,7 +213,7 @@ public class GameState extends GameStateSnapshot implements Cloneable
                 && (playMode == PlayMode.Initial && !firstHalf && !timeOutActive[0] && !timeOutActive[1]
                 || playMode == PlayMode.Finished && firstHalf)) {
             return getRemainingSeconds(whenCurrentPlayModeBegan, game.settings().pauseTime);
-        } else if (game.settings().pausePenaltyShootOutTime != 0 && game.isPlayOff() && team[0].score == team[1].score
+        } else if (game.settings().pausePenaltyShootOutTime != 0 && game.isPlayOff() && teams[0].score == teams[1].score
                 && (playMode == PlayMode.Initial && period == Period.PenaltyShootout && !timeOutActive[0] && !timeOutActive[1]
                 || playMode == PlayMode.Finished && !firstHalf)) {
             return getRemainingSeconds(whenCurrentPlayModeBegan, game.settings().pausePenaltyShootOutTime);
@@ -240,11 +240,11 @@ public class GameState extends GameStateSnapshot implements Cloneable
      */
     public void resetPenalties()
     {
-        for (int i = 0; i < team.length; ++i) {
+        for (int i = 0; i < teams.length; ++i) {
             pushes[i] = 0;
             for (int j = 0; j < game.settings().teamSize; j++) {
-                if (!ActionBoard.robotButton[i][j].isCoach() && team[i].player[j].penalty != Penalty.Substitute) {
-                    team[i].player[j].penalty = Penalty.None;
+                if (!ActionBoard.robotButton[i][j].isCoach() && teams[i].player[j].penalty != Penalty.Substitute) {
+                    teams[i].player[j].penalty = Penalty.None;
                     ejected[i][j] = false;
                 }
             }
@@ -263,7 +263,7 @@ public class GameState extends GameStateSnapshot implements Cloneable
      */
     public int getRemainingPenaltyTime(int side, int number)
     {
-        Penalty penalty = team[side].player[number].penalty;
+        Penalty penalty = teams[side].player[number].penalty;
         assert penalty == Penalty.Manual || penalty == Penalty.Substitute || penalty.getDurationSeconds() != -1;
         return penalty == Penalty.Manual || penalty == Penalty.Substitute ? 0
                 : playMode == PlayMode.Ready && game.settings().returnRobotsInGameStoppages && whenPenalized[side][number] >= whenCurrentPlayModeBegan
@@ -279,8 +279,8 @@ public class GameState extends GameStateSnapshot implements Cloneable
     public int getNumberOfRobotsInPlay(int side)
     {
         int count = 0;
-        for (int i=0; i<team[side].player.length; i++) {
-            if (team[side].player[i].penalty != Penalty.Substitute) {
+        for (int i=0; i< teams[side].player.length; i++) {
+            if (teams[side].player[i].penalty != Penalty.Substitute) {
                 count++;
             }
         }
@@ -344,8 +344,8 @@ public class GameState extends GameStateSnapshot implements Cloneable
                         message[k++] = 0;
                     }
 
-                    team[j].coachMessage = message;
-                    Log.toFile("Coach Message Team " + team[j].teamColor + " " + new String(message));
+                    teams[j].coachMessage = message;
+                    Log.toFile("Coach Message Team " + teams[j].teamColor + " " + new String(message));
                     splCoachMessageQueue.remove(i);
                     break;
                 }

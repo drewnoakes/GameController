@@ -74,10 +74,10 @@ public class RobotWatcher
         robotLastStatus[team][i] = robotMessage.getStatus();
 
         if (robotMessage.getStatus() == RobotStatus.ManuallyPenalised) {
-            if (game.getGameState().team[team].player[i].penalty == Penalty.None)
+            if (game.getGameState().teams[team].player[i].penalty == Penalty.None)
                 game.apply(ActionBoard.manualPen[team][i], ActionTrigger.Network);
         } else if (robotMessage.getStatus() == RobotStatus.ManuallyUnpenalised) {
-            if (game.getGameState().team[team].player[i].penalty != Penalty.None)
+            if (game.getGameState().teams[team].player[i].penalty != Penalty.None)
                 game.apply(ActionBoard.manualUnpen[team][i], ActionTrigger.Network);
         }
     }

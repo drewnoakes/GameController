@@ -18,6 +18,6 @@ public class Defender extends PenaltyAction
     {
         player.penalty = Penalty.SplIllegalDefender;
         state.whenPenalized[side][number] = state.getTime();
-        game.pushState("Illegal Defender " + state.team[side].teamColor + " " + (number + 1));
+        game.pushState("Illegal Defender " + state.teams[side].teamColor + " " + (number + 1));
     }
 }

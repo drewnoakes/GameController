@@ -17,6 +17,6 @@ public class Defense extends PenaltyAction
     {
         player.penalty = Penalty.HLIllegalDefense;
         state.whenPenalized[side][number] = state.getTime();
-        game.pushState("Illegal Defense " + state.team[side].teamColor + " " + (number + 1));
+        game.pushState("Illegal Defense " + state.teams[side].teamColor + " " + (number + 1));
     }
 }

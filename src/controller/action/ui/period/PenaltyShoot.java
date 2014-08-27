@@ -40,8 +40,8 @@ public class PenaltyShoot extends Action
             && !(game.settings().overtime
                 && game.isPlayOff()
                 && state.period == Period.Normal
-                && state.team[0].score == state.team[1].score
-                && state.team[0].score > 0))
+                && state.teams[0].score == state.teams[1].score
+                && state.teams[0].score > 0))
           || state.testmode;
     }
 }

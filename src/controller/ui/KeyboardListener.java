@@ -82,8 +82,8 @@ public class KeyboardListener implements KeyEventDispatcher
             case KeyEvent.VK_DELETE: action = ActionBoard.testmode; break;
             case KeyEvent.VK_BACK_SPACE: action = ActionBoard.undo[1]; break;
 
-            case KeyEvent.VK_B: action = ActionBoard.out[game.getGameState().team[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
-            case KeyEvent.VK_R: action = ActionBoard.out[game.getGameState().team[0].teamColor == TeamColor.Red ? 0 : 1]; break;
+            case KeyEvent.VK_B: action = ActionBoard.out[game.getGameState().teams[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
+            case KeyEvent.VK_R: action = ActionBoard.out[game.getGameState().teams[0].teamColor == TeamColor.Red ? 0 : 1]; break;
 
             default:
                 if (game.league().isSPLFamily()) {

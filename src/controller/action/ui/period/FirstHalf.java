@@ -41,9 +41,9 @@ public class FirstHalf extends Action
      */
     public static void changeSide(Game game, GameState state)
     {
-        TeamState team = state.team[0];
-        state.team[0] = state.team[1];
-        state.team[1] = team;
+        TeamState team = state.teams[0];
+        state.teams[0] = state.teams[1];
+        state.teams[1] = team;
 
         boolean[] ejected = state.ejected[0];
         state.ejected[0] = state.ejected[1];
@@ -51,9 +51,9 @@ public class FirstHalf extends Action
 
         // if necessary, swap team colors
         if (state.period != Period.PenaltyShootout && game.changeColoursEachPeriod()) {
-            TeamColor color = state.team[0].teamColor;
-            state.team[0].teamColor = state.team[1].teamColor;
-            state.team[1].teamColor = color;
+            TeamColor color = state.teams[0].teamColor;
+            state.teams[0].teamColor = state.teams[1].teamColor;
+            state.teams[1].teamColor = color;
         }
 
         if (game.settings().timeOutPerHalf && state.period != Period.PenaltyShootout) {

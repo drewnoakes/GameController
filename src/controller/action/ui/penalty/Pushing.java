@@ -29,7 +29,7 @@ public class Pushing extends PenaltyAction
             }
         }
 
-        game.pushState("Player Pushing " + state.team[side].teamColor + " " + (number + 1));
+        game.pushState("Player Pushing " + state.teams[side].teamColor + " " + (number + 1));
     }
     
     @Override

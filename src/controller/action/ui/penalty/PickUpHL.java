@@ -20,6 +20,6 @@ public class PickUpHL extends PenaltyAction
         }
 
         player.penalty = Penalty.HLPickupOrIncapable;
-        game.pushState("Request for PickUp / Incapable Player " + state.team[side].teamColor + " " + (number + 1));
+        game.pushState("Request for PickUp / Incapable Player " + state.teams[side].teamColor + " " + (number + 1));
     }
 }

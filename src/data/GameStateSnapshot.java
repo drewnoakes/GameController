@@ -42,15 +42,15 @@ public class GameStateSnapshot implements Serializable
      * remaining during 'ready' play mode, and so forth.
      */
     public short secondaryTime = 0;
-    public final TeamState[] team = new TeamState[2];
+    public final TeamState[] teams = new TeamState[2];
 
     /**
      * Creates a new, blank GameState.
      */
     public GameStateSnapshot(Game game)
     {
-        team[0] = new TeamState(game.teams().get(TeamColor.Blue).getNumber(), TeamColor.Blue);
-        team[1] = new TeamState(game.teams().get(TeamColor.Red).getNumber(), TeamColor.Red);
+        teams[0] = new TeamState(game.teams().get(TeamColor.Blue).getNumber(), TeamColor.Blue);
+        teams[1] = new TeamState(game.teams().get(TeamColor.Red).getNumber(), TeamColor.Red);
         secsRemaining = (short) game.settings().halfTime;
     }
     
@@ -70,9 +70,9 @@ public class GameStateSnapshot implements Serializable
     /** Gets the index of the specified team number, or -1 if the team number is unknown. */
     public int getTeamIndex(byte teamNumber)
     {
-        return teamNumber == team[0].teamNumber
+        return teamNumber == teams[0].teamNumber
                 ? 0
-                : teamNumber == team[1].teamNumber
+                : teamNumber == teams[1].teamNumber
                     ? 1
                     : -1;
     }

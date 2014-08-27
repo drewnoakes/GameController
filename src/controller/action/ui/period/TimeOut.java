@@ -36,12 +36,12 @@ public class TimeOut extends Action
             state.timeOutTaken[side] = true;
             if (state.previousPeriod != Period.PenaltyShootout) {
                 if (game.settings().giveOpponentKickOffOnTimeOut)
-                    state.nextKickOffColor = state.team[side].teamColor.other();
+                    state.nextKickOffColor = state.teams[side].teamColor.other();
             } else if (state.playMode == PlayMode.Set) {
-                state.team[state.nextKickOffColor == state.team[0].teamColor ? 0 : 1].penaltyShot--;
+                state.teams[state.nextKickOffColor == state.teams[0].teamColor ? 0 : 1].penaltyShot--;
             }
             ActionBoard.initial.forceExecute(game, state);
-            game.pushState("Timeout " + state.team[side].teamColor);
+            game.pushState("Timeout " + state.teams[side].teamColor);
         } else {
             // Completing
             state.period = state.previousPeriod;
@@ -49,7 +49,7 @@ public class TimeOut extends Action
             state.timeOutActive[side] = false;
             if (state.period != Period.PenaltyShootout) {
                 ActionBoard.ready.forceExecute(game, state);
-                game.pushState("End of Timeout " + state.team[side].teamColor);
+                game.pushState("End of Timeout " + state.teams[side].teamColor);
             }
         }
     }

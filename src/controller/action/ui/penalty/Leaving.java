@@ -19,7 +19,7 @@ public class Leaving extends PenaltyAction
     {
         player.penalty = Penalty.SplLeavingTheField;
         state.whenPenalized[side][number] = state.getTime();
-        game.pushState("Leaving the Field " + state.team[side].teamColor + " " + (number + 1));
+        game.pushState("Leaving the Field " + state.teams[side].teamColor + " " + (number + 1));
     }
     
     @Override

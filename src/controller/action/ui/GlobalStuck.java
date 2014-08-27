@@ -29,12 +29,12 @@ public class GlobalStuck extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull GameState state)
     {
-        state.nextKickOffColor = state.team[side == 0 ? 1 : 0].teamColor;
+        state.nextKickOffColor = state.teams[side == 0 ? 1 : 0].teamColor;
 
         game.apply(ActionBoard.ready, ActionTrigger.User);
 
         if (state.getRemainingSeconds(state.whenCurrentPlayModeBegan, game.settings().kickoffTime + game.settings().minDurationBeforeStuck) > 0) {
-            game.pushState("Kickoff Goal " + state.team[side].teamColor);
+            game.pushState("Kickoff Goal " + state.teams[side].teamColor);
         } else {
             game.pushState("Global Game Stuck, Kickoff " + state.nextKickOffColor);
         }

@@ -251,9 +251,9 @@ public class ControllerUI
         ButtonGroup kickOffGroup = new ButtonGroup();
         pushLabels = new JLabel[2];
         for (int i=0; i<2; i++) {
-            nameLabels[i] = new JLabel(game.league().getTeam(game.getGameState().team[i].teamNumber).getName());
+            nameLabels[i] = new JLabel(game.league().getTeam(game.getGameState().teams[i].teamNumber).getName());
             nameLabels[i].setHorizontalAlignment(JLabel.CENTER);
-            nameLabels[i].setForeground(game.getGameState().team[i].teamColor.getColor(game.league()));
+            nameLabels[i].setForeground(game.getGameState().teams[i].teamColor.getColor(game.league()));
             goalIncButton[i] = new Button("+");
             goalDecButton[i] = new Button("-");
             kickOffRadioButtons[i] = new JRadioButton(KICKOFF);
@@ -682,7 +682,7 @@ public class ControllerUI
     private void updateHalf(GameState state)
     {
         for (int i=0; i<2; i++) {
-            nameLabels[i].setText(game.league().getTeam(state.team[i].teamNumber).getName());
+            nameLabels[i].setText(game.league().getTeam(state.teams[i].teamNumber).getName());
         }
         firstHalfPeriodButton.setEnabled(ActionBoard.firstHalf.canExecute(game, state));
         secondHalfPeriodButton.setEnabled(ActionBoard.secondHalf.canExecute(game, state));
@@ -707,8 +707,8 @@ public class ControllerUI
     private void updateTeamColors(GameState state)
     {
         for (int i=0; i<2; i++) {
-            nameLabels[i].setForeground(state.team[i].teamColor.getColor(game.league()));
-            sidePanel[i].setImage(backgroundSide[i][state.team[i].teamColor.getValue()].getImage());
+            nameLabels[i].setForeground(state.teams[i].teamColor.getColor(game.league()));
+            sidePanel[i].setImage(backgroundSide[i][state.teams[i].teamColor.getValue()].getImage());
         }
     }
     
@@ -741,7 +741,7 @@ public class ControllerUI
     private void updateGoal(GameState state)
     {
         for (int i=0; i<2; i++) {
-            goalCountLabels[i].setText("" + state.team[i].score);
+            goalCountLabels[i].setText("" + state.teams[i].score);
             goalIncButton[i].setEnabled(ActionBoard.goalInc[i].canExecute(game, state));
             goalDecButton[i].setVisible(ActionBoard.goalDec[i].canExecute(game, state));
         }
@@ -753,7 +753,7 @@ public class ControllerUI
             // drop ball
             kickOffRadioButtons[2].setSelected(true);
         } else {
-            kickOffRadioButtons[state.team[0].teamColor == state.nextKickOffColor ? 0 : 1].setSelected(true);
+            kickOffRadioButtons[state.teams[0].teamColor == state.nextKickOffColor ? 0 : 1].setSelected(true);
         }
         for (int i=0; i<2; i++) {
             kickOffRadioButtons[i].setEnabled(ActionBoard.kickOff[i].canExecute(game, state));
@@ -777,7 +777,7 @@ public class ControllerUI
                 }
             } else {
                 pushLabels[i].setText((i == 0 && (state.playMode == PlayMode.Set
-                        || state.playMode == PlayMode.Playing) ? SHOT : SHOTS) + ": " + state.team[i].penaltyShot);
+                        || state.playMode == PlayMode.Playing) ? SHOT : SHOTS) + ": " + state.teams[i].penaltyShot);
             }
         }
     }
@@ -789,37 +789,37 @@ public class ControllerUI
         for (int i=0; i< robotButtons.length; i++) {
             for (int j=0; j< robotButtons[i].length; j++) {
                 if (ActionBoard.robotButton[i][j].isCoach()) {
-                   if (state.team[i].coach.penalty == Penalty.SplCoachMotion) {
+                   if (state.teams[i].coach.penalty == Penalty.SplCoachMotion) {
                       robotButtons[i][j].setEnabled(false);
                       robotLabel[i][j].setText(EJECTED);
                   } else {
-                      robotLabel[i][j].setText(state.team[i].teamColor+" "+COACH);
+                      robotLabel[i][j].setText(state.teams[i].teamColor+" "+COACH);
                   }
                 }
                 else {
-                    if (state.team[i].player[j].penalty != Penalty.None) {
+                    if (state.teams[i].player[j].penalty != Penalty.None) {
                         if (!state.ejected[i][j]) {
                             int seconds = state.getRemainingPenaltyTime(i, j);
                             boolean pickup = ((game.league().isSPLFamily() &&
-                                        state.team[i].player[j].penalty == Penalty.SplRequestForPickup)
+                                        state.teams[i].player[j].penalty == Penalty.SplRequestForPickup)
                                    || (game.league().isHLFamily() &&
-                                       ( state.team[i].player[j].penalty == Penalty.HLPickupOrIncapable
-                                      || state.team[i].player[j].penalty == Penalty.Service))
+                                       ( state.teams[i].player[j].penalty == Penalty.HLPickupOrIncapable
+                                      || state.teams[i].player[j].penalty == Penalty.Service))
                                     );
                             if (seconds == 0) {
                                 if (pickup) {
-                                    robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1)+" ("+PEN_PICKUP+")");
+                                    robotLabel[i][j].setText(state.teams[i].teamColor+" "+(j+1)+" ("+PEN_PICKUP+")");
                                     highlight(robotButtons[i][j], true);
-                                } else if (state.team[i].player[j].penalty == Penalty.Substitute) {
-                                    robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1)+" ("+PEN_SUBSTITUTE_SHORT+")");
+                                } else if (state.teams[i].player[j].penalty == Penalty.Substitute) {
+                                    robotLabel[i][j].setText(state.teams[i].teamColor+" "+(j+1)+" ("+PEN_SUBSTITUTE_SHORT+")");
                                     highlight(robotButtons[i][j], false);
                                 } else if (!(game.league().isSPLFamily()) ||
-                                        !(state.team[i].player[j].penalty == Penalty.SplCoachMotion)) {
-                                    robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1)+": "+formatTime(seconds));
+                                        !(state.teams[i].player[j].penalty == Penalty.SplCoachMotion)) {
+                                    robotLabel[i][j].setText(state.teams[i].teamColor+" "+(j+1)+": "+formatTime(seconds));
                                     highlight(robotButtons[i][j], seconds <= UNPEN_HIGHLIGHT_SECONDS && robotButtons[i][j].getBackground() != COLOR_HIGHLIGHT);
                                 }
                             }  else {
-                                robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1)+": "+formatTime(seconds)+(pickup ? " (P)" : ""));
+                                robotLabel[i][j].setText(state.teams[i].teamColor+" "+(j+1)+": "+formatTime(seconds)+(pickup ? " (P)" : ""));
                                 highlight(robotButtons[i][j], seconds <= UNPEN_HIGHLIGHT_SECONDS && robotButtons[i][j].getBackground() != COLOR_HIGHLIGHT);
                             }
                             int penTime = (seconds + state.getSecondsSince(state.whenPenalized[i][j]));
@@ -833,7 +833,7 @@ public class ControllerUI
                             highlight(robotButtons[i][j], false);
                         }
                     } else {
-                        robotLabel[i][j].setText(state.team[i].teamColor+" "+(j+1));
+                        robotLabel[i][j].setText(state.teams[i].teamColor+" "+(j+1));
                         robotProgressBars[i][j].setVisible(false);
                         highlight(robotButtons[i][j], false);
                     }
@@ -884,7 +884,7 @@ public class ControllerUI
             if (state.playMode == PlayMode.Playing
                     && state.getRemainingSeconds(state.whenCurrentPlayModeBegan, game.settings().kickoffTime + game.settings().minDurationBeforeStuck) > 0)
             {
-                if (state.nextKickOffColor == state.team[i].teamColor)
+                if (state.nextKickOffColor == state.teams[i].teamColor)
                 {
                     gameStuckButtons[i].setEnabled(true);
                     gameStuckButtons[i].setText("<font color=#000000>" + KICKOFF_GOAL);

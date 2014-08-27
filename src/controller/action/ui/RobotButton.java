@@ -41,7 +41,7 @@ public class RobotButton extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull GameState state)
     {
-        PlayerState player = state.team[side].player[number];
+        PlayerState player = state.teams[side].player[number];
         if (player.penalty == Penalty.Substitute && !isCoach()) {
             ArrayList<PenaltyQueueData> playerInfoList = state.penaltyQueueForSubPlayers.get(side);
             if (playerInfoList.isEmpty()) {
@@ -57,14 +57,14 @@ public class RobotButton extends Action
                 state.whenPenalized[side][number] = playerInfo.whenPenalized;
                 playerInfoList.remove(0);
             }
-            game.pushState("Entering Player " + state.team[side].teamColor + " " + (number + 1));
+            game.pushState("Entering Player " + state.teams[side].teamColor + " " + (number + 1));
         } else if (game.getLastUserAction() instanceof RobotAction) {
             RobotAction robotAction = (RobotAction)game.getLastUserAction();
             robotAction.executeForRobot(game, state, player, side, number);
         } else if (player.penalty != Penalty.None) {
             // Clear the robot's existing penalty
             player.penalty = Penalty.None;
-            game.pushState("Unpenalised " + state.team[side].teamColor + " " + (number + 1));
+            game.pushState("Unpenalised " + state.teams[side].teamColor + " " + (number + 1));
         }
     }
     
@@ -78,7 +78,7 @@ public class RobotButton extends Action
             return false;
 
         Action lastUIAction = game.getLastUserAction();
-        Penalty penalty = state.team[side].player[number].penalty;
+        Penalty penalty = state.teams[side].player[number].penalty;
 
         return (!(lastUIAction instanceof PenaltyAction)
                    && penalty != Penalty.None
@@ -100,7 +100,7 @@ public class RobotButton extends Action
                    && (!isCoach() && (!game.league().isSPLFamily() || number != 0)))
                || (lastUIAction instanceof CoachMotion
                    && isCoach()
-                   && state.team[side].coach.penalty != Penalty.SplCoachMotion)
+                   && state.teams[side].coach.penalty != Penalty.SplCoachMotion)
                || (penalty == Penalty.None
                    && (lastUIAction instanceof PenaltyAction)
                    && !(lastUIAction instanceof CoachMotion)

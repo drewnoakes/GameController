@@ -36,20 +36,20 @@ public class Goal extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull GameState state)
     {
-        state.team[side].score += set;
+        state.teams[side].score += set;
 
         if (set == 1) {
             if (state.period != Period.PenaltyShootout) {
-                state.nextKickOffColor = state.team[side].teamColor.other();
+                state.nextKickOffColor = state.teams[side].teamColor.other();
                 ActionBoard.ready.forceExecute(game, state);
-                game.pushState("Goal for " + state.team[side].teamColor);
+                game.pushState("Goal for " + state.teams[side].teamColor);
             } else {
-                state.team[side].singleShots += 1 << state.team[side].penaltyShot - 1;
+                state.teams[side].singleShots += 1 << state.teams[side].penaltyShot - 1;
                 game.apply(ActionBoard.finish, ActionTrigger.User);
-                game.pushState("Goal for " + state.team[side].teamColor);
+                game.pushState("Goal for " + state.teams[side].teamColor);
             }
         } else {
-            game.pushState("Goal decrease for " + state.team[side].teamColor);
+            game.pushState("Goal decrease for " + state.teams[side].teamColor);
         }
     }
     
@@ -58,7 +58,7 @@ public class Goal extends Action
     {
         return (set == 1
               && state.playMode == PlayMode.Playing
-              && (state.period != Period.PenaltyShootout || state.nextKickOffColor == state.team[side].teamColor))
+              && (state.period != Period.PenaltyShootout || state.nextKickOffColor == state.teams[side].teamColor))
             || state.testmode;
     }
 }

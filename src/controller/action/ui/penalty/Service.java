@@ -18,10 +18,10 @@ public class Service extends PenaltyAction
         if (player.penalty == Penalty.None) {
             state.whenPenalized[side][number] = state.getTime();
             player.penalty = Penalty.Service;
-            game.pushState("Request for Service " + state.team[side].teamColor + " " + (number + 1));
+            game.pushState("Request for Service " + state.teams[side].teamColor + " " + (number + 1));
         } else {
             player.penalty = Penalty.Service;
-            game.pushState("Additional Request for Service " + state.team[side].teamColor + " " + (number + 1));
+            game.pushState("Additional Request for Service " + state.teams[side].teamColor + " " + (number + 1));
         }
     }
 }

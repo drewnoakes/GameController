@@ -246,7 +246,7 @@ public class VisualizerUI
             y += testFont.getSize() * 1.2;
         }
         for (int j=0; j<2; j++) {
-            out = state.team[j].toString().split("\n");
+            out = state.teams[j].toString().split("\n");
             for (String o : out) {
                 g.drawString(o, x, y);
                 y += testFont.getSize() * 1.2;
@@ -256,8 +256,8 @@ public class VisualizerUI
         x = getSizeToWidth(0.35);
         for (int i=0; i<2; i++) {
             y = getSizeToHeight(0.2);
-            for (int j=0; j< state.team[i].player.length; j++) {
-                out = state.team[i].player[j].toString().split("\n");
+            for (int j=0; j< state.teams[i].player.length; j++) {
+                out = state.teams[i].player[j].toString().split("\n");
                 for (String o : out) {
                     g.drawString(o, x, y);
                     y += testFont.getSize() * 1.2;
@@ -279,14 +279,14 @@ public class VisualizerUI
         int size = getSizeToWidth(0.28);
 
         BufferedImage[] logos = new BufferedImage[] {
-            options.getLeague().getTeam(state.team[0].teamNumber).getLogoImage(),
-            options.getLeague().getTeam(state.team[1].teamNumber).getLogoImage()
+            options.getLeague().getTeam(state.teams[0].teamNumber).getLogoImage(),
+            options.getLeague().getTeam(state.teams[1].teamNumber).getLogoImage()
         };
 
         ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
         for (int i = 0; i < 2; i++) {
-            g.setColor(state.team[i].teamColor.getColor(options.getLeague()));
+            g.setColor(state.teams[i].teamColor.getColor(options.getLeague()));
             float scaleFactorX = 1f;
             float scaleFactorY = 1f;
             if (logos[i].getWidth() * 1.2f > logos[i].getHeight()) {
@@ -319,10 +319,10 @@ public class VisualizerUI
         g.setColor(Color.BLACK);
         drawCenteredString(g, ":", frame.getWidth()/2-size, yDiv, 2*size);
         for (int i=0; i<2; i++) {
-            g.setColor(state.team[i].teamColor.getColor(options.getLeague()));
+            g.setColor(state.teams[i].teamColor.getColor(options.getLeague()));
             drawCenteredString(
                     g,
-                    state.team[i].score+"",
+                    state.teams[i].score+"",
                     i==1 ? x : frame.getWidth()-x-size,
                     y,
                     size);
@@ -428,9 +428,9 @@ public class VisualizerUI
         int y = getSizeToHeight(0.86);
         int size = getSizeToWidth(0.02);
         for (int i=0; i<2; i++) {
-            g.setColor(state.team[i].teamColor.getColor(options.getLeague()));
-            for (int j=0; j< state.team[i].penaltyShot; j++) {
-                if ((state.team[i].singleShots & (1<<j)) != 0) {
+            g.setColor(state.teams[i].teamColor.getColor(options.getLeague()));
+            for (int j=0; j< state.teams[i].penaltyShot; j++) {
+                if ((state.teams[i].singleShots & (1<<j)) != 0) {
                     g.fillOval(i==1 ? x+j*2*size : frame.getWidth()-x-(5-j)*2*size-size, y, size, size);
                 } else {
                     g.drawOval(i==1 ? x+j*2*size : frame.getWidth()-x-(5-j)*2*size-size, y, size, size);
@@ -485,9 +485,9 @@ public class VisualizerUI
         for (int i = 0; i < 2; i++) {
             String coachMessage;
             try {
-                coachMessage = new String(state.team[i].coachMessage, "UTF-8");
+                coachMessage = new String(state.teams[i].coachMessage, "UTF-8");
             } catch (UnsupportedEncodingException e) {
-                coachMessage = new String(state.team[i].coachMessage);
+                coachMessage = new String(state.teams[i].coachMessage);
             }
             int p = coachMessage.indexOf(0);
             if (p != -1) {
@@ -521,7 +521,7 @@ public class VisualizerUI
             }
 
             //Draw the coach label and coach message box
-            g2.setColor(state.team[i].teamColor.getColor(options.getLeague()));
+            g2.setColor(state.teams[i].teamColor.getColor(options.getLeague()));
             if (i == 1) {
                 g2.drawString(row1, getSizeToWidth(0.01), getSizeToHeight(0.92));
                 g2.drawString(row2, getSizeToWidth(0.01), getSizeToHeight(0.98));

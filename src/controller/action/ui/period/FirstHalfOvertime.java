@@ -35,8 +35,8 @@ public class FirstHalfOvertime extends Action
                     && state.period == Period.Normal
                     && state.playMode == PlayMode.Finished
                     && !state.firstHalf
-                    && state.team[0].score == state.team[1].score
-                    && state.team[0].score > 0)
+                    && state.teams[0].score == state.teams[1].score
+                    && state.teams[0].score > 0)
                 || state.testmode;
     }
 }

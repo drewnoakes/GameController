@@ -19,7 +19,7 @@ public class Fallen extends PenaltyAction
     {
         player.penalty = Penalty.SplObstruction;
         state.whenPenalized[side][number] = state.getTime();
-        game.pushState("Fallen Robot " + state.team[side].teamColor + " " + (number + 1));
+        game.pushState("Fallen Robot " + state.teams[side].teamColor + " " + (number + 1));
     }
     
     @Override

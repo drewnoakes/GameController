@@ -17,6 +17,6 @@ public class Attack extends PenaltyAction
     {
         player.penalty = Penalty.HLIllegalAttack;
         state.whenPenalized[side][number] = state.getTime();
-        game.pushState("Illegal Attack " + state.team[side].teamColor + " " + (number + 1));
+        game.pushState("Illegal Attack " + state.teams[side].teamColor + " " + (number + 1));
     }
 }

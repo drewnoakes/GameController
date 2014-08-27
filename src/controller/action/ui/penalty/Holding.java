@@ -18,6 +18,6 @@ public class Holding extends PenaltyAction
     {
         player.penalty = Penalty.SplBallHolding;
         state.whenPenalized[side][number] = state.getTime();
-        game.pushState("Ball Holding " + state.team[side].teamColor + " " + (number + 1));
+        game.pushState("Ball Holding " + state.teams[side].teamColor + " " + (number + 1));
     }
 }

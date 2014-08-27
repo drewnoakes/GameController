@@ -70,12 +70,12 @@ public class GameStateProtocol7 extends GameStateProtocol
         buffer.putInt(state.secsRemaining);
 
         // In version 7, team data was sorted by team color
-        if (state.team[0].teamColor == TeamColor.Blue) {
-            writeTeamInfo(buffer, state.team[0]);
-            writeTeamInfo(buffer, state.team[1]);
+        if (state.teams[0].teamColor == TeamColor.Blue) {
+            writeTeamInfo(buffer, state.teams[0]);
+            writeTeamInfo(buffer, state.teams[1]);
         } else {
-            writeTeamInfo(buffer, state.team[1]);
-            writeTeamInfo(buffer, state.team[0]);
+            writeTeamInfo(buffer, state.teams[1]);
+            writeTeamInfo(buffer, state.teams[0]);
         }
 
         return buffer.array();
