@@ -25,7 +25,6 @@ import data.League;
  */
 public class MessageReceiver<T>
 {
-    private final League league;
     private final MessageHandler<T> handler;
     /** The used socket to receive UDP packets. */
     private final DatagramSocket datagramSocket;
@@ -37,15 +36,13 @@ public class MessageReceiver<T>
     /**
      * Creates a new MessageReceiver.
      *
-     * @param league
      * @param udpPort the port number to listen on.
      * @param timeoutMillis the number of milliseconds to wait for before timing out and trying again
      * @param handler an object to invoke when a message is successfully received
      * @throws SocketException the an error occurs while creating the socket
      */
-    public MessageReceiver(@NotNull League league, int udpPort, int timeoutMillis, @NotNull MessageHandler<T> handler) throws SocketException
+    public MessageReceiver(int udpPort, int timeoutMillis, @NotNull MessageHandler<T> handler) throws SocketException
     {
-        this.league = league;
         this.handler = handler;
 
         datagramSocket = new DatagramSocket(null);

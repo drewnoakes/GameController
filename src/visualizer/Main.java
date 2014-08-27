@@ -37,7 +37,6 @@ public class Main
 
         try {
             gameStateListener = new MessageReceiver<GameStateSnapshot>(
-                    options.getLeague(),
                     Config.GAME_STATE_PORT,
                     500,
                     new MessageHandler<GameStateSnapshot>()

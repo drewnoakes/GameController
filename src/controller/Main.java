@@ -86,7 +86,6 @@ public class Main
             gameStateSender.start();
 
             robotMessageReceiver = new MessageReceiver<RobotMessage>(
-                    game.league(),
                     Config.ROBOT_STATUS_PORT,
                     500,
                     new MessageHandler<RobotMessage>()
@@ -100,7 +99,6 @@ public class Main
 
             if (game.league().isSPLFamily() && game.settings().isCoachAvailable) {
                 splReceiver = new MessageReceiver<SPLCoachMessage>(
-                        game.league(),
                         Config.SPL_COACH_MESSAGE_PORT,
                         500,
                         new MessageHandler<SPLCoachMessage>()
