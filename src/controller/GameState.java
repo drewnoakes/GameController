@@ -7,7 +7,6 @@ import common.Log;
 import common.annotations.NotNull;
 import controller.action.ActionBoard;
 import data.*;
-import leagues.LeagueSettings;
 
 /**
  * This class extends the GameState that is send to the robots. It
