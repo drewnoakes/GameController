@@ -27,7 +27,7 @@ The default target is `jar`.
 	
 ## 2. Executing the Jar
 
-Double-click GameController.jar or run 
+Double-click `GameController.jar` or run from the command line.
 
 Usage: `java -jar GameController.jar {options}`
 
@@ -42,29 +42,38 @@ Usage: `java -jar GameController.jar {options}`
 
 
 ## 3. Usage
+
 ### Start Dialog
 
-Select your league. The default can be specified as a command line parameter (see above).
+Select the appropriate league.
 
 Pick the two teams that are playing. They have to be different teams. If you are 
-practicing alone, use the "Invisibles" as second team.
+practicing alone, use the "Invisibles" as the second team. Note the colours of
+each team when selecting them.
 
-SPL: You also have to select whether you play a game in the preliminaries, a play-off
-game, or a drop-in player game. In the preliminaries and in drop-player games the clock
-will continue to run during game stoppages and there will be no penalty shootout in case
-of a draw. In drop-in player games, there are no coaches, teams cannot call a timeout,
-and there are no substitutes.
-
-HL: You also have to select whether you play a normal game or a knock-out game. A
-knock-out game will continue after a draw with two halves of extra time (if goals were
-scored before) and then a penalty shoot-out if necessary.
+Assign the initial kickoff to the correct team.
 
 You can select whether the GameController should run in fullscreen mode or in windowed
 mode. Note that the fullscreen mode does not work correctly on some Linux desktops,
 because although they report to Java that they would support this feature, they do not.
 
-HL: You can also select whether teams exchange their colors in the halftime.
+Note that all these settings may be specified via command line arguments (see above).
 
+#### SPL only
+
+You also have to select whether you play a game in the preliminaries, a play-off
+game, or a drop-in player game. In the preliminaries and in drop-player games the clock
+will continue to run during game stoppages and there will be no penalty shootout in case
+of a draw. In drop-in player games there are no coaches, teams cannot call a timeout,
+and there are no substitutes.
+
+#### HL only
+
+You also have to select whether you play a normal game or a knock-out game. A
+knock-out game will continue after a draw with two halves of extra time (if goals were
+scored before) and then a penalty shoot-out if necessary.
+
+You can also select whether teams exchange their colors at halftime.
 
 ### Main Screen
 
@@ -98,7 +107,9 @@ When pressing the big "+" (goal), "Timeout", "Kickoff Goal", or "Global Game Stu
 other team gets the next kick-off. "Kickoff Goal" and "Global Game Stuck" share the same
 button.
 
-SPL: When the referee decides that too much game time has been lost, use the thin "+" next
+#### SPL only
+
+When the referee decides that too much game time has been lost, use the thin "+" next
 to the clock to increase the game time in one-minute steps. This is only available during
 stoppages of play.
 
@@ -259,15 +270,20 @@ from the version used in 2013 in several ways:
   play in more than one league (eg. HL kid-size and teen-size). This can also be
   used by game visualisers.
 
-- Coach data omitted from HL game state messages, reducing message size from 159
-  bytes to 75 (under half the original size).
-
 - When no drop in has yet occurred, 'dropInTeam' has value 2 instead of 0.
 
 - `STATE2_*` (SecondaryGameState, with Normal, Overtime, Timeout, Penalties) has been
   renamed to `PERIOD_*`.
 
 - `STATE_*` (with Initial, Ready, Set, Playing, Finished) has been renamed to `PLAY_MODE_*`.
+
+#### HL only
+
+- In the HL, the team having next kickoff may call a timeout without giving the
+  timeout to their opponent.
+
+- Coach data omitted from HL game state messages, reducing message size from 159
+  bytes to 75 (under half the original size).
 
 ## 8. Known Issues
 
