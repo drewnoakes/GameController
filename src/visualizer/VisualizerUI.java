@@ -101,10 +101,14 @@ public class VisualizerUI
         }
 
         for (String ext : Config.IMAGE_EXTENSIONS) {
+            String path = null;
             try {
-                String path = Config.CONFIG_PATH + options.getLeague().getDirectoryName() + "/" + BACKGROUND + "." + ext;
-                background = ImageIO.read(new File(path));
+                path = Config.CONFIG_PATH + options.getLeague().getDirectoryName() + "/" + BACKGROUND + "." + ext;
+                File file = new File(path);
+                if (file.exists())
+                    background = ImageIO.read(file);
             } catch (IOException e) {
+                Log.error("Error decoding image file: " + path);
             }
         }
         if (background == null) {
