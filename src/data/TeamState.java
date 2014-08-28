@@ -39,9 +39,8 @@ public class TeamState implements Serializable
     /** Data about the players in this team. */
     public final PlayerState[] player = new PlayerState[NUM_PLAYERS_IN_GAME_STATE_MESSAGE];
 
-    public TeamState(int teamNumber, TeamColor teamColor)
+    public TeamState(TeamColor teamColor)
     {
-        this.teamNumber = teamNumber;
         this.teamColor = teamColor;
 
         for (int i=0; i<player.length; i++) {

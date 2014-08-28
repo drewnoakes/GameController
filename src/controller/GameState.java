@@ -85,7 +85,10 @@ public class GameState extends GameStateSnapshot implements Cloneable
 
     public GameState(@NotNull Game game)
     {
-        super(game);
+        super(game.settings());
+
+        this.teams[0].teamNumber = game.teams().get(TeamColor.Blue).getNumber();
+        this.teams[1].teamNumber = game.teams().get(TeamColor.Red).getNumber();
 
         this.game = game;
 

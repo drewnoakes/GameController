@@ -85,7 +85,7 @@ public class GameStateProtocol8 extends GameStateProtocol
         if (!verifyHeader(buffer))
             return null;
 
-        GameStateSnapshot data = new GameStateSnapshot(null);
+        GameStateSnapshot data = new GameStateSnapshot(this.league.settings());
 
         buffer.get(); // packet number (ignored when decoding)
         buffer.get(); // players per team (ignored when decoding)

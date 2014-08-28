@@ -2,7 +2,7 @@ package data;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.Game;
+import leagues.LeagueSettings;
 
 import java.io.Serializable;
 
@@ -47,11 +47,11 @@ public class GameStateSnapshot implements Serializable
     /**
      * Creates a new, blank GameState.
      */
-    public GameStateSnapshot(Game game)
+    public GameStateSnapshot(LeagueSettings leagueSettings)
     {
-        teams[0] = new TeamState(game.teams().get(TeamColor.Blue).getNumber(), TeamColor.Blue);
-        teams[1] = new TeamState(game.teams().get(TeamColor.Red).getNumber(), TeamColor.Red);
-        secsRemaining = (short) game.settings().halfTime;
+        teams[0] = new TeamState(TeamColor.Blue);
+        teams[1] = new TeamState(TeamColor.Red);
+        secsRemaining = (short) leagueSettings.halfTime;
     }
     
     @Override
