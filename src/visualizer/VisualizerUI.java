@@ -102,7 +102,7 @@ public class VisualizerUI
 
         for (String ext : Config.IMAGE_EXTENSIONS) {
             try {
-                String path = Config.CONFIG_PATH + options.getLeague().getDirectoryName() + "/" + BACKGROUND + ext;
+                String path = Config.CONFIG_PATH + options.getLeague().getDirectoryName() + "/" + BACKGROUND + "." + ext;
                 background = ImageIO.read(new File(path));
             } catch (IOException e) {
             }
