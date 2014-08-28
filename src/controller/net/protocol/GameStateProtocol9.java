@@ -63,6 +63,7 @@ public class GameStateProtocol9 extends GameStateProtocol
         return  4 + // header
                 1 + // version
                 1 + // packet number
+                4 + // game controller ID
                 1 + // league identifier
                 1 + // numPlayers
                 1 + // playMode
@@ -73,8 +74,7 @@ public class GameStateProtocol9 extends GameStateProtocol
                 2 + // dropInTime
                 2 + // secsRemaining
                 2 + // secondaryTime
-                2 * teamSize +
-                4;  // game controller ID
+                2 * teamSize;
     }
 
     @NotNull
@@ -85,6 +85,7 @@ public class GameStateProtocol9 extends GameStateProtocol
 
         buffer.put(getVersionNumber());
         buffer.put(nextPacketNumber);
+        buffer.putInt(gameControllerId);
         buffer.put(league.number());
         buffer.put((byte)league.settings().teamSize);
         buffer.put(state.playMode.getValue());
@@ -100,8 +101,6 @@ public class GameStateProtocol9 extends GameStateProtocol
             writeTeamInfo(buffer, team);
         }
 
-        buffer.putInt(gameControllerId);
-
         return buffer.array();
     }
 
@@ -115,6 +114,8 @@ public class GameStateProtocol9 extends GameStateProtocol
         GameStateSnapshot data = new GameStateSnapshot(this.league.settings());
 
         buffer.get(); // packet number (ignored when decoding)
+
+        data.gameControllerId = buffer.getInt();
 
         // Ensure the message applies to the current league
         // TODO don't return null, and decode the message according to the advertised league
@@ -147,8 +148,6 @@ public class GameStateProtocol9 extends GameStateProtocol
                 p.secsTillUnpenalised = buffer.get();
             }
         }
-
-        data.gameControllerId = buffer.getInt();
 
         return data;
     }
