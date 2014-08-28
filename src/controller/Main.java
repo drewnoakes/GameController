@@ -14,6 +14,7 @@ import controller.ui.KeyboardListener;
 import data.*;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Random;
 import java.util.regex.Pattern;
 import javax.swing.*;
@@ -194,7 +195,7 @@ public class Main
         boolean isFullScreen = true;
         TeamColor initialKickOffColor = null;
         Boolean isPlayOff = null;
-        League league = League.getAllLeagues()[0];
+        League league = League.getAllLeagues().iterator().next();
         int teamNumberBlue = 0;
         int teamNumberRed = 0;
 
@@ -282,25 +283,22 @@ public class Main
                 + "\n  (--knockout | --playoff) <val>  set whether knockout/playoff game (yes/no)"
                 + "\n";
 
-        StringBuilder leagues = new StringBuilder();
-        League[] allLeagues = League.getAllLeagues();
-        if (allLeagues.length > 1) {
-            leagues.append('(');
-        }
+        Collection<League> allLeagues = League.getAllLeagues();
+        assert(allLeagues.size() != 0);
+
+        StringBuilder leagues = new StringBuilder("(");
         for (League league : allLeagues) {
             if (leagues.length() != 1)
                 leagues.append(" | ");
             leagues.append(league.getDirectoryName());
         }
-        if (allLeagues.length > 1) {
-            leagues.append(')');
-        }
+        leagues.append(')');
         System.out.printf(HELP_TEMPLATE,
                 DEFAULT_BROADCAST,
                 leagues,
                 leagues.length() < 17
                     ? "                ".substring(leagues.length())
                     : "\n                                  ",
-                allLeagues[0].getDirectoryName());
+                allLeagues.iterator().next().getDirectoryName());
     }
 }

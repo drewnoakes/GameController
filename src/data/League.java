@@ -21,9 +21,16 @@ public enum League
 
     HLAdult((byte)0x13, "HL Adult", "hl_adult", new HLAdult());
 
-    public static League[] getAllLeagues()
+    private static Collection<League> allLeagues;
+
+    static
     {
-        return new League[] { SPL, SPLDropIn, HLKid, HLTeen, HLAdult };
+        allLeagues = Collections.unmodifiableCollection(Arrays.asList(SPL, SPLDropIn, HLKid, HLTeen, HLAdult));
+    }
+
+    public static Collection<League> getAllLeagues()
+    {
+        return allLeagues;
     }
 
     @Nullable
