@@ -15,6 +15,10 @@ import java.nio.ByteBuffer;
  *         against problems seen when multiple game controllers are running.
  *     </li>
  *     <li>
+ *         Adds a byte indicating the league being played in. Allows teams that play in
+ *         multiple leagues to behave accordingly (eg. both HL kid-size and teen-size).
+ *     </li>
+ *     <li>
  *         When no drop in has yet occurred, 'lastDropInColor' has value 2 instead of 0.
  *     </li>
  * </ul>
@@ -59,6 +63,7 @@ public class GameStateProtocol9 extends GameStateProtocol
         return  4 + // header
                 1 + // version
                 1 + // packet number
+                1 + // league identifier
                 1 + // numPlayers
                 1 + // playMode
                 1 + // firstHalf
@@ -80,6 +85,7 @@ public class GameStateProtocol9 extends GameStateProtocol
 
         buffer.put(getVersionNumber());
         buffer.put(nextPacketNumber);
+        buffer.put(league.number());
         buffer.put((byte)league.settings().teamSize);
         buffer.put(state.playMode.getValue());
         buffer.put(state.firstHalf ? (byte)1 : 0);
@@ -109,6 +115,13 @@ public class GameStateProtocol9 extends GameStateProtocol
         GameStateSnapshot data = new GameStateSnapshot(this.league.settings());
 
         buffer.get(); // packet number (ignored when decoding)
+
+        // Ensure the message applies to the current league
+        // TODO don't return null, and decode the message according to the advertised league
+        byte leagueNumber = buffer.get();
+        if (leagueNumber != this.league.number())
+            return null;
+
         buffer.get(); // players per team (ignored when decoding)
 
         data.playMode = PlayMode.fromValue(buffer.get());

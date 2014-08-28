@@ -255,6 +255,10 @@ from the version used in 2013 in several ways:
   run on the same network. This allows robots to detect the problem, and in most
   cases ignore the potentially sabotaging game controller.
 
+- Game state messages identify the league being played, supporting teams that
+  play in more than one league (eg. HL kid-size and teen-size). This can also be
+  used by game visualisers.
+
 - When no drop in has yet occurred, 'dropInTeam' has value 2 instead of 0.
 
 - `STATE2_*` (SecondaryGameState, with Normal, Overtime, Timeout, Penalties) has been
