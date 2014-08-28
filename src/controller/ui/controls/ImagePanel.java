@@ -1,14 +1,20 @@
 package controller.ui.controls;
 
+import common.annotations.NotNull;
 import common.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * This is a normal JPanel, but it has a background image.
+ * A subclass of {@link JPanel}, which allows setting an image in the background,
+ * and a custom background colour.
+ * <p>
+ * The color is only used when {@link #isOpaque()} returns <code>true</code>,
+ * the {@link Mode} is not {@link Mode#Stretch}, or no {@link Image} is specified.
  *
  * @author Michel Bartsch
+ * @author Drew Noakes https://drewnoakes.com
  */
 public class ImagePanel extends JPanel
 {
@@ -26,9 +32,9 @@ public class ImagePanel extends JPanel
     private Image image;
 
     /**
-     * Creates a new ImagePanel.
+     * Initialises an {@link ImagePanel}.
      *
-     * @param image     The Image to be shown in the background.
+     * @param image  the {@link Image} to be shown in the background.
      */
     public ImagePanel(Mode mode, @Nullable Image image)
     {
@@ -52,20 +58,17 @@ public class ImagePanel extends JPanel
     }
 
     /**
-     * Paints this Component, should be called automatically.
+     * Paints custom presentation for the surface of this component.
      *
-     * @param g     This components graphical content.
+     * @param g the {@link Graphics} context to paint with.
      */
     @Override
     public void paintComponent(Graphics g)
     {
-        if (super.isOpaque()) {
-            g.setColor(Color.WHITE);
-            g.fillRect(0, 0, getWidth(), getHeight());
-        }
-
-        if (image == null)
+        if (image == null) {
+            paintBackgroundColour(g);
             return;
+        }
 
         if (mode == Mode.Stretch) {
             g.drawImage(
@@ -74,10 +77,20 @@ public class ImagePanel extends JPanel
                     getWidth(), getHeight(),
                     null);
         } else if (mode == Mode.TopCentre) {
-            g.drawImage(image,
+            paintBackgroundColour(g);
+            g.drawImage(
+                    image,
                     (getWidth() - image.getWidth(null)) / 2, 0,
                     image.getWidth(null), image.getHeight(null),
                     null);
+        }
+    }
+
+    private void paintBackgroundColour(Graphics g)
+    {
+        if (super.isOpaque()) {
+            g.setColor(getBackground());
+            g.fillRect(0, 0, getWidth(), getHeight());
         }
     }
 }
