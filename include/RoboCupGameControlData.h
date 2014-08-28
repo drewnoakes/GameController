@@ -27,6 +27,12 @@
 #define PERIOD_OVERTIME             2
 #define PERIOD_TIMEOUT              3
 
+#define LEAGUE_SPL                  1
+#define LEAGUE_SPL_DROP_IN          2
+#define LEAGUE_HL_KID               17
+#define LEAGUE_HL_TEEN              18
+#define LEAGUE_HL_ADULT             19
+
 #define PENALTY_NONE                        0
 // SPL
 #define PENALTY_SPL_BALL_HOLDING            1
@@ -81,6 +87,8 @@ struct RoboCupGameControlData
   char header[4];               // Header to identify the structure
   uint8_t version;              // Version of the data structure
   uint8_t packetNumber;         // Number incremented with each packet sent (with wraparound)
+  uint32_t gameControllerId;    // A randomly chosen number that is consistent throughout the lifespan of a game
+  uint8_t leagueNumber;         // Identifies the league being played in (LEAGUE_SPL, LEAGUE_HL_KID, etc)
   uint8_t playersPerTeam;       // The maximum number of players on each team, including substitutes
   uint8_t playMode;             // The play mode of the game (PLAY_MODE_READY, PLAY_MODE_PLAYING, etc)
   uint8_t firstHalf;            // 1 = game in first half, 0 otherwise
@@ -91,7 +99,6 @@ struct RoboCupGameControlData
   uint16_t secsRemaining;       // An estimate of the number of seconds remaining in the half
   uint16_t secondaryTime;       // Number of seconds shown as secondary time (remaining ready, until free ball, etc)
   TeamInfo teams[2];
-  uint32_t gameControllerId;    // A randomly chosen number that is consistent throughout the lifespan of a game
 };
 
 // data structure header
