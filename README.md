@@ -259,6 +259,9 @@ from the version used in 2013 in several ways:
   play in more than one league (eg. HL kid-size and teen-size). This can also be
   used by game visualisers.
 
+- Coach data omitted from HL game state messages, reducing message size from 159
+  bytes to 75 (under half the original size).
+
 - When no drop in has yet occurred, 'dropInTeam' has value 2 instead of 0.
 
 - `STATE2_*` (SecondaryGameState, with Normal, Overtime, Timeout, Penalties) has been

@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
  *         Adds field 'game controller ID' to the message, which can be used to prevent
  *         against problems seen when multiple game controllers are running.
  *     </li>
+ *     <li>Omits SPL coach data from non-SPL games.</li>
  *     <li>
  *         Adds a byte indicating the league being played in. Allows teams that play in
  *         multiple leagues to behave accordingly (eg. both HL kid-size and teen-size).
@@ -47,9 +48,13 @@ public class GameStateProtocol9 extends GameStateProtocol
     @Override
     public int getMessageSize()
     {
+        final boolean hasCoach = this.league.isSPLFamily();
+
         final int playerSize =
                 1 + // penalty
                 1;  // secsToUnpenalize
+
+        final int playerCount = TeamState.NUM_PLAYERS_IN_GAME_STATE_MESSAGE + (hasCoach ? 1 : 0);
 
         final int teamSize =
                 1 + // teamNumber
@@ -57,8 +62,8 @@ public class GameStateProtocol9 extends GameStateProtocol
                 1 + // score
                 1 + // penaltyShot
                 2 + // singleShots
-                SPLCoachMessage.SPL_COACH_MESSAGE_SIZE + // coach's message
-                (TeamState.NUM_PLAYERS_IN_GAME_STATE_MESSAGE + 1) * playerSize; // +1 for the coach
+                (hasCoach ? SPLCoachMessage.SPL_COACH_MESSAGE_SIZE : 0) + // coach's message
+                playerCount * playerSize; // player data
 
         return  4 + // header
                 1 + // version
@@ -134,15 +139,21 @@ public class GameStateProtocol9 extends GameStateProtocol
         data.secsRemaining = buffer.getShort();
         data.secondaryTime = buffer.getShort();
 
+        final boolean hasCoach = this.league.isSPLFamily();
+
         for (TeamState t : data.teams) {
             t.teamNumber = buffer.get();
             t.teamColor = TeamColor.fromValue(buffer.get());
             t.score = buffer.get();
             t.penaltyShot = buffer.get();
             t.singleShots = buffer.getShort();
-            buffer.get(t.coachMessage);
-            t.coach.penalty = Penalty.fromValue(league, buffer.get());
-            t.coach.secsTillUnpenalised = buffer.get();
+
+            if (hasCoach) {
+                buffer.get(t.coachMessage);
+                t.coach.penalty = Penalty.fromValue(league, buffer.get());
+                t.coach.secsTillUnpenalised = buffer.get();
+            }
+
             for (PlayerState p : t.player) {
                 p.penalty = Penalty.fromValue(league, buffer.get());
                 p.secsTillUnpenalised = buffer.get();
@@ -152,18 +163,22 @@ public class GameStateProtocol9 extends GameStateProtocol
         return data;
     }
 
-    private static void writeTeamInfo(@NotNull ByteBuffer buffer, @NotNull TeamState teamState)
+    private void writeTeamInfo(@NotNull ByteBuffer buffer, @NotNull TeamState teamState)
     {
         buffer.put((byte)teamState.teamNumber);
         buffer.put(teamState.teamColor.getValue());
         buffer.put(teamState.score);
         buffer.put(teamState.penaltyShot);
         buffer.putShort(teamState.singleShots);
-        buffer.put(teamState.coachMessage);
 
-        writePlayerInfo(buffer, teamState.coach);
+        final boolean hasCoach = this.league.isSPLFamily();
 
-        for (int i=0; i< TeamState.NUM_PLAYERS_IN_GAME_STATE_MESSAGE; i++) {
+        if (hasCoach) {
+            buffer.put(teamState.coachMessage);
+            writePlayerInfo(buffer, teamState.coach);
+        }
+
+        for (int i = 0; i < TeamState.NUM_PLAYERS_IN_GAME_STATE_MESSAGE; i++) {
             writePlayerInfo(buffer, teamState.player[i]);
         }
     }
