@@ -11,15 +11,15 @@ import java.util.*;
 
 public enum League
 {
-    SPL("SPL", "spl", new SPL()),
+    SPL((byte)0x01, "SPL", "spl", new SPL()),
 
-    SPLDropIn("SPL Drop-in", "spl_dropin", new SPLDropIn()),
+    SPLDropIn((byte)0x02, "SPL Drop-in", "spl_dropin", new SPLDropIn()),
 
-    HLKid("HL Kid", "hl_kid", new HLKid()),
+    HLKid((byte)0x11, "HL Kid", "hl_kid", new HLKid()),
 
-    HLTeen("HL Teen", "hl_teen", new HLTeen()),
+    HLTeen((byte)0x12, "HL Teen", "hl_teen", new HLTeen()),
 
-    HLAdult("HL Adult", "hl_adult", new HLAdult());
+    HLAdult((byte)0x13, "HL Adult", "hl_adult", new HLAdult());
 
     public static League[] getAllLeagues()
     {
@@ -44,13 +44,24 @@ public enum League
         return null;
     }
 
+    @Nullable
+    public static League findByNumber(byte number)
+    {
+        for (League l : getAllLeagues())
+            if (l.number() == number)
+                return l;
+        return null;
+    }
+
+    private final byte number;
     private final String name;
     private final String directoryName;
     private final LeagueSettings settings;
     private List<Team> teams;
 
-    private League(@NotNull String name, @NotNull String directoryName, @NotNull LeagueSettings settings)
+    private League(byte number, @NotNull String name, @NotNull String directoryName, @NotNull LeagueSettings settings)
     {
+        this.number = number;
         this.name = name;
         this.directoryName = directoryName;
         this.settings = settings;
@@ -72,6 +83,8 @@ public enum League
     {
         return settings;
     }
+
+    public byte number() { return number; }
 
     public List<Team> teams()
     {
