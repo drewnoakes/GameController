@@ -36,6 +36,10 @@ public class Goal extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull GameState state)
     {
+        // Don't allow the score to be made negative
+        if (set < 0 && state.teams[side].score == 0)
+            return;
+
         state.teams[side].score += set;
 
         if (set == 1) {
