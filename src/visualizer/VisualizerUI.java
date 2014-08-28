@@ -108,7 +108,8 @@ public class VisualizerUI
             }
         }
         if (background == null) {
-            Log.error("Unable to load background image");
+            Log.error("Unable to load background image: " + Config.CONFIG_PATH + options.getLeague().getDirectoryName() + "/" + BACKGROUND + ".*");
+            System.exit(1);
         }
         float scaleFactor = (float)frame.getWidth()/background.getWidth();
         Image tmp = (new ImageIcon(background).getImage()).getScaledInstance(
