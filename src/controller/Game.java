@@ -9,6 +9,7 @@ import data.*;
 import leagues.LeagueSettings;
 
 import java.io.*;
+import java.util.Random;
 import java.util.Stack;
 
 /**
@@ -43,6 +44,7 @@ public class Game
     private final boolean changeColoursEachPeriod;
     private final TeamColor initialKickOffColor;
     private final String broadcastAddress;
+    private final int gameControllerId;
 
     /** The golden record of the game's current state. */
     private GameState gameState;
@@ -61,9 +63,11 @@ public class Game
     private boolean shutdownRequested = false;
 
     /** Create a new Game with the specified options. */
-    public Game(GameOptions options)
+    public Game(GameOptions options, int gameControllerId)
     {
         assert(options.isPlayOff != null);
+
+        this.gameControllerId = gameControllerId;
 
         this.league = options.league;
         this.teams = options.teams; // TODO clone mutable bits of this object for single use during game
@@ -311,5 +315,17 @@ public class Game
         }
         System.exit(1);
         return null;
+    }
+
+    /**
+     * Gets a randomly chosen number that 'uniquely' (1 in 2^32) identifies this game controller instance.
+     * <p>
+     * This number is included in network messages and can be used by
+     *
+     * @return
+     */
+    public int gameControllerId()
+    {
+        return gameControllerId;
     }
 }

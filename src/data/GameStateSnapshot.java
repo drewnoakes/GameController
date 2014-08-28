@@ -43,6 +43,7 @@ public class GameStateSnapshot implements Serializable
      */
     public short secondaryTime = 0;
     public final TeamState[] teams = new TeamState[2];
+    public int gameControllerId = 0;
 
     /**
      * Creates a new, blank GameState.

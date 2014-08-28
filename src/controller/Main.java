@@ -14,6 +14,7 @@ import controller.ui.KeyboardListener;
 import data.*;
 
 import java.io.IOException;
+import java.util.Random;
 import java.util.regex.Pattern;
 import javax.swing.*;
 
@@ -48,6 +49,8 @@ public class Main
     {
         ensureSingleInstanceRunning();
 
+        int gameControllerId = new Random().nextInt();
+
         // Process command line input
         GameOptions options = parseCommandLineArguments(args);
 
@@ -58,7 +61,7 @@ public class Main
             // Show UI to configure the starting parameters
             options = GameOptionsUI.configure(options);
 
-            runGame(new Game(options));
+            runGame(new Game(options, gameControllerId));
 
             try {
                 Log.close();
@@ -74,11 +77,12 @@ public class Main
         final RobotWatcher robotWatcher = new RobotWatcher(game.league());
         final GameStateSender gameStateSender;
         final MessageReceiver robotMessageReceiver;
+        final MultipleInstanceWatcher multipleInstanceWatcher;
         MessageReceiver splReceiver = null;
 
         try {
             gameStateSender = new GameStateSender(game, game.broadcastAddress());
-            gameStateSender.addProtocol(new GameStateProtocol9(game.league()));
+            gameStateSender.addProtocol(new GameStateProtocol9(game.league(), game.gameControllerId()));
             if (game.settings().supportGameStateVersion8)
                 gameStateSender.addProtocol(new GameStateProtocol8(game.league()));
             if (game.settings().supportGameStateVersion7)
@@ -96,6 +100,8 @@ public class Main
             robotMessageReceiver.addProtocol(new RobotStatusProtocol1());
             robotMessageReceiver.addProtocol(new RobotStatusProtocol2());
             robotMessageReceiver.start();
+
+            multipleInstanceWatcher = new MultipleInstanceWatcher(game.league(), game.gameControllerId());
 
             if (game.league().isSPLFamily() && game.settings().isCoachAvailable) {
                 splReceiver = new MessageReceiver<SPLCoachMessage>(
@@ -129,7 +135,7 @@ public class Main
 
         ActionBoard.initalise(game.league());
 
-        ControllerUI ui = new ControllerUI(game, game.isFullScreen(), robotWatcher);
+        ControllerUI ui = new ControllerUI(game, game.isFullScreen(), robotWatcher, multipleInstanceWatcher);
 
         KeyboardListener keyboardListener = new KeyboardListener(game);
 
@@ -154,6 +160,7 @@ public class Main
         try {
             gameStateSender.stop();
             robotMessageReceiver.stop();
+            multipleInstanceWatcher.stop();
             if (splReceiver != null)
                 splReceiver.stop();
         } catch (InterruptedException e) {

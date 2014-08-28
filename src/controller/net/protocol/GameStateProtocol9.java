@@ -5,7 +5,6 @@ import common.annotations.Nullable;
 import data.*;
 
 import java.nio.ByteBuffer;
-import java.util.Random;
 
 /**
  * Implements game state network protocol, version 9.
@@ -34,12 +33,11 @@ public class GameStateProtocol9 extends GameStateProtocol
 
     private final League league;
 
-    public GameStateProtocol9(@NotNull League league)
+    public GameStateProtocol9(@NotNull League league, int gameControllerId)
     {
         super((byte) 9);
         this.league = league;
-
-        gameControllerId = new Random().nextInt();
+        this.gameControllerId = gameControllerId;
     }
 
     @Override
@@ -137,7 +135,7 @@ public class GameStateProtocol9 extends GameStateProtocol
             }
         }
 
-        buffer.getInt(); // game controller ID (ignored when decoding)
+        data.gameControllerId = buffer.getInt();
 
         return data;
     }

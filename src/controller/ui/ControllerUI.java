@@ -13,6 +13,7 @@ import controller.Config;
 import controller.Game;
 import controller.GameState;
 import controller.action.ActionBoard;
+import controller.net.MultipleInstanceWatcher;
 import controller.net.RobotOnlineStatus;
 import controller.net.RobotWatcher;
 import controller.ui.controls.*;
@@ -130,6 +131,7 @@ public class ControllerUI
     // All the components of this GUI
     private final PaintableFrame frame;
 
+    private final ImagePanel midPanel;
     private final ImagePanel[] sidePanel;
     private final JLabel[] nameLabels;
     private final JButton[] goalDecButton;
@@ -165,7 +167,11 @@ public class ControllerUI
     private final JButton cancelUndoButton;
 
     private final RobotWatcher robotWatcher;
+    @NotNull
+    private final MultipleInstanceWatcher multipleInstanceWatcher;
     private final Game game;
+
+    private boolean lastIsOtherGameControllerActive = false;
 
     /**
      * Initialises and displays the GUI.
@@ -173,11 +179,13 @@ public class ControllerUI
      * @param game the game to bind the UI to.
      * @param fullscreen whether the window should fill the screen.
      * @param robotWatcher the robot watcher which track the online status of bots.
+     * @param multipleInstanceWatcher an object that detects additional game controllers running on the network.
      */
-    public ControllerUI(@NotNull Game game, boolean fullscreen, @NotNull RobotWatcher robotWatcher)
+    public ControllerUI(@NotNull Game game, boolean fullscreen, @NotNull RobotWatcher robotWatcher, @NotNull MultipleInstanceWatcher multipleInstanceWatcher)
     {
         this.game = game;
         this.robotWatcher = robotWatcher;
+        this.multipleInstanceWatcher = multipleInstanceWatcher;
 
         game.gameStateChanged.subscribe(new EventHandler<GameState>()
         {
@@ -238,7 +246,7 @@ public class ControllerUI
             sidePanel[i] = new ImagePanel(ImagePanel.Mode.Stretch, backgroundSide[i][i].getImage());
             sidePanel[i].setOpaque(true);
         }
-        JPanel midPanel = new ImagePanel(ImagePanel.Mode.Stretch, new ImageIcon(Config.ICONS_PATH + BACKGROUND_MID).getImage());
+        midPanel = new ImagePanel(ImagePanel.Mode.Stretch, new ImageIcon(Config.ICONS_PATH + BACKGROUND_MID).getImage());
         ImagePanel bottomPanel = new ImagePanel(ImagePanel.Mode.Stretch, new ImageIcon(Config.ICONS_PATH + BACKGROUND_BOTTOM).getImage());
         
         //--side--
@@ -637,6 +645,7 @@ public class ControllerUI
         }
 
         updateTimelineUndo();
+        updateOtherGameControllerSeen();
 
         frame.repaint();
     }
@@ -983,7 +992,38 @@ public class ControllerUI
         }
         cancelUndoButton.setVisible(isUndoingAnything);
     }
-    
+
+    private void updateOtherGameControllerSeen()
+    {
+        // TODO log this occurrence
+        // TODO determine and log the other instance's MAC address
+        // TODO do we care whether the other game controller is for the same teams/league?
+
+        if (multipleInstanceWatcher.isOtherGameControllerActive())
+        {
+            midPanel.setImage(null);
+            midPanel.setBackground(Color.RED);
+
+            if (!lastIsOtherGameControllerActive)
+            {
+                lastIsOtherGameControllerActive = true;
+
+                final String message = "WARNING! Another game controller is running on this network.\n\n" +
+                        "This can have catastrophic effects -- notify the referee immediately!\n\n" +
+                        "If you just started this instance and it's possible you are conflicting with " +
+                        "a competition match, exit this program immediately!";
+
+                JOptionPane.showMessageDialog(frame, message, "Another Game Controller Detected", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        else
+        {
+            lastIsOtherGameControllerActive = false;
+            midPanel.setImage(new ImageIcon(Config.ICONS_PATH + BACKGROUND_MID).getImage());
+            midPanel.setBackground(Color.WHITE);
+        }
+    }
+
     private void updateFonts()
     {
         double size = Math.min((frame.getWidth()/(double)WINDOW_WIDTH), (frame.getHeight()/(double)WINDOW_HEIGHT));
