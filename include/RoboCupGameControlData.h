@@ -1,7 +1,12 @@
 #ifndef ROBOCUPGAMECONTROLDATA_H
 #define ROBOCUPGAMECONTROLDATA_H
 
+// NOTE for Humanoid League, remove this define
+#define SPL_LEAGUE
+
+#ifdef SPL_LEAGUE
 #include "SPLCoachMessage.h"
+#endif
 
 #define GAMECONTROLLER_PORT            3838
 
@@ -34,6 +39,8 @@
 #define LEAGUE_HL_ADULT             19
 
 #define PENALTY_NONE                        0
+
+#ifdef SPL_LEAGUE
 // SPL
 #define PENALTY_SPL_BALL_HOLDING            1
 #define PENALTY_SPL_PLAYER_PUSHING          2
@@ -44,6 +51,7 @@
 #define PENALTY_SPL_PLAYING_WITH_HANDS      7
 #define PENALTY_SPL_REQUEST_FOR_PICKUP      8
 #define PENALTY_SPL_COACH_MOTION            9
+#else
 // HL Kid Size
 #define PENALTY_HL_KID_BALL_MANIPULATION    1
 #define PENALTY_HL_KID_PHYSICAL_CONTACT     2
@@ -60,6 +68,7 @@
 #define PENALTY_HL_TEEN_REQUEST_FOR_PICKUP  5
 #define PENALTY_HL_TEEN_REQUEST_FOR_SERVICE 6
 #define PENALTY_HL_TEEN_REQUEST_FOR_PICKUP_2_SERVICE 7
+#endif
 
 #define PENALTY_SUBSTITUTE                  14
 #define PENALTY_MANUAL                      15
@@ -77,8 +86,10 @@ struct TeamInfo
   uint8_t score;                // team's score
   uint8_t penaltyShot;          // penalty shot counter
   uint16_t singleShots;         // bits represent penalty shot success
+#ifdef SPL_LEAGUE
   uint8_t coachMessage[SPL_COACH_MESSAGE_SIZE]; // the coach's message to the team
   RobotInfo coach;
+#endif
   RobotInfo players[MAX_NUM_PLAYERS]; // the team's players
 };
 
