@@ -278,15 +278,10 @@ public class ControllerUI
         
         //  robots
         JPanel[] robotPanels = new JPanel[2];
-        if (game.settings().isCoachAvailable) {
-            robotButtons = new JButton[2][game.settings().teamSize+1];
-            robotLabel = new JLabel[2][game.settings().teamSize+1];
-            robotProgressBars = new JProgressBar[2][game.settings().teamSize+1];
-        } else {
-            robotButtons = new JButton[2][game.settings().teamSize];
-            robotLabel = new JLabel[2][game.settings().teamSize];
-            robotProgressBars = new JProgressBar[2][game.settings().teamSize];
-        }
+        final int teamSize = game.settings().teamSize + (game.settings().isCoachAvailable ? 1 : 0);
+        robotButtons = new JButton[2][teamSize];
+        robotLabel = new JLabel[2][teamSize];
+        robotProgressBars = new JProgressBar[2][teamSize];
         for (int i=0; i<2; i++) {
             robotPanels[i] = new JPanel();
             robotPanels[i].setLayout(new GridLayout(robotButtons[i].length, 1, 0, 10));
