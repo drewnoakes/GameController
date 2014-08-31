@@ -143,6 +143,7 @@ public class ControllerUI
     private final JButton[][] robotButtons;
     private final JLabel[][] robotLabel;
     private final JProgressBar[][] robotProgressBars;
+    private final JLabel[][] robotOnlineStatus;
     private final JToggleButton refereeTimeoutButton;
     private final JToggleButton[] timeOutButton;
     private JButton[] gameStuckButtons;
@@ -284,23 +285,34 @@ public class ControllerUI
         robotButtons = new JButton[2][teamSize];
         robotLabel = new JLabel[2][teamSize];
         robotProgressBars = new JProgressBar[2][teamSize];
+        robotOnlineStatus = new JLabel[2][teamSize];
         for (int i=0; i<2; i++) {
             robotPanels[i] = new JPanel();
             robotPanels[i].setLayout(new GridLayout(robotButtons[i].length, 1, 0, 10));
             robotPanels[i].setOpaque(false);
-            
-            for (int j=0; j< robotButtons[i].length; j++) {
-                robotButtons[i][j] = new Button();
-                robotLabel[i][j] = new JLabel();
-                robotLabel[i][j].setHorizontalAlignment(JLabel.CENTER);
-                robotProgressBars[i][j] = new JProgressBar();
-                robotProgressBars[i][j].setMaximum(1000);
-                robotProgressBars[i][j].setVisible(false);
-                TotalScaleLayout robotLayout = new TotalScaleLayout(robotButtons[i][j]);
-                robotButtons[i][j].setLayout(robotLayout);
-                robotLayout.add(.1, .1, .8, .5, robotLabel[i][j]);
-                robotLayout.add(.1, .7, .8, .2, robotProgressBars[i][j]);
-                robotPanels[i].add(robotButtons[i][j]);
+
+            for (int j = 0; j < robotButtons[i].length; j++) {
+                JLabel label = new JLabel();
+                label.setHorizontalAlignment(JLabel.CENTER);
+                label.setVerticalAlignment(JLabel.CENTER);
+                label.setVerticalTextPosition(JLabel.CENTER);
+                JProgressBar progressBar = new JProgressBar();
+                progressBar.setMaximum(1000);
+                progressBar.setVisible(false);
+                JLabel onlineStatusIcon = new JLabel(lanUnknown, i == 0 ? SwingConstants.LEFT : SwingConstants.RIGHT);
+                onlineStatusIcon.setVerticalAlignment(SwingConstants.CENTER);
+                Button button = new Button();
+                TotalScaleLayout robotLayout = new TotalScaleLayout(button);
+                button.setLayout(robotLayout);
+                robotLayout.add(.1, .2, .8, .5, label);
+                robotLayout.add(.2, .7, .6, .15, progressBar);
+                robotLayout.add(.05, 0, .9, 1, onlineStatusIcon);
+                robotPanels[i].add(button);
+
+                robotLabel[i][j] = label;
+                robotButtons[i][j] = button;
+                robotProgressBars[i][j] = progressBar;
+                robotOnlineStatus[i][j] = onlineStatusIcon;
             }
         }
         //  team
@@ -855,7 +867,7 @@ public class ControllerUI
 
                 // Set icon to indicate robot's online status
                 final RobotOnlineStatus status = onlineStatus[i][j];
-                robotLabel[i][j].setIcon(status == RobotOnlineStatus.ONLINE
+                robotOnlineStatus[i][j].setIcon(status == RobotOnlineStatus.ONLINE
                     ? lanOnline
                     : status == RobotOnlineStatus.HIGH_LATENCY
                         ? lanHighLatency
