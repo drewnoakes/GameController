@@ -78,6 +78,7 @@ public class GameStateSender
         for (GameStateProtocol version : protocols) {
             try {
                 byte[] bytes = version.toBytes(state);
+                assert(bytes.length == version.getMessageSize());
                 DatagramPacket packet = new DatagramPacket(bytes, bytes.length, group, Config.GAME_STATE_PORT);
                 datagramSocket.send(packet);
                 version.incrementPacketNumber();
