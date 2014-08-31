@@ -2,6 +2,7 @@ package controller.net.protocol;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
+import controller.GameState;
 import data.GameStateSnapshot;
 import data.League;
 import data.TeamColor;
@@ -54,7 +55,7 @@ public class GameStateProtocol7 extends GameStateProtocol
 
     @NotNull
     @Override
-    public byte[] toBytes(@NotNull GameStateSnapshot state)
+    public byte[] toBytes(@NotNull GameState state)
     {
         ByteBuffer buffer = writeHeader();
 
