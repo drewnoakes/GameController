@@ -40,8 +40,6 @@ public class GameOptionsUI
     private static final String FULLTIME_LABEL_YES = "Play-off Game";
     private static final String FULLTIME_LABEL_HL_NO = "Normal Game";
     private static final String FULLTIME_LABEL_HL_YES = "Knock-Out Game";
-    private static final String FULLSCREEN_LABEL = "Fullscreen";
-    private static final String COLOR_CHANGE_LABEL = "Auto color change";
     private static final String START_LABEL = "Start";
 
     /** A countdown latch which fires when the UI has been closed and the game should start. */
@@ -59,8 +57,8 @@ public class GameOptionsUI
     private JComboBox<League> leagueCombo;
     private JRadioButton nofulltime;
     private JRadioButton fulltime;
-    private Checkbox fullscreen;
-    private Checkbox changeColoursEachPeriodCheckbox;
+    private JCheckBox fullscreen;
+    private JCheckBox changeColoursEachPeriodCheckbox;
     private JButton startButton;
 
     /**
@@ -87,8 +85,8 @@ public class GameOptionsUI
     {
         // The 'start' button was clicked
         boolean isPlayOff = fulltime.isSelected() && fulltime.isVisible();
-        boolean isFullScreen = fullscreen.getState();
-        boolean changeColoursEachPeriod = changeColoursEachPeriodCheckbox.getState();
+        boolean isFullScreen = fullscreen.isSelected();
+        boolean changeColoursEachPeriod = changeColoursEachPeriodCheckbox.isSelected();
 
         TeamColor initialKickOffColor = null;
         for (TeamColor color : TeamColor.both()) {
@@ -210,15 +208,15 @@ public class GameOptionsUI
         autoColorChangePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         optionsLeft.add(autoColorChangePanel);
 
-        fullscreen = new Checkbox(FULLSCREEN_LABEL);
+        fullscreen = new JCheckBox("Fullscreen");
         fullscreen.setPreferredSize(new Dimension(LEFT_OPTIONS_WIDTH, OPTIONS_HEIGHT));
-        fullscreen.set
-        fullscreen.setState(isFullScreen);
+        fullscreen.setHorizontalAlignment(SwingConstants.LEFT);
+        fullscreen.setSelected(isFullScreen);
         fullscreenPanel.add(fullscreen);
 
-        changeColoursEachPeriodCheckbox = new Checkbox(COLOR_CHANGE_LABEL);
+        changeColoursEachPeriodCheckbox = new JCheckBox("Auto color change");
         changeColoursEachPeriodCheckbox.setPreferredSize(new Dimension(LEFT_OPTIONS_WIDTH, OPTIONS_HEIGHT));
-        changeColoursEachPeriodCheckbox.setState(changeColoursEachPeriod);
+        changeColoursEachPeriodCheckbox.setSelected(changeColoursEachPeriod);
         autoColorChangePanel.add(changeColoursEachPeriodCheckbox);
 
         // Create the right-hand control panel, containing 'league' combo and 'normal vs knockout/playoff' radios
