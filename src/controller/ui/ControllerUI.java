@@ -100,7 +100,6 @@ public class ControllerUI
     private static final String PEN_PICKUP_INCAPABLE = "Pickup/Incapable";
     private static final String PEN_SERVICE = "Service";
     private static final String PEN_SUBSTITUTE = "Substitute";
-    private static final String PEN_SUBSTITUTE_SHORT = "Sub";
     private static final String DROP_BALL = "Dropped Ball";
     private static final String TEAMMATE_PUSHING = "Teammate Pushing";
     private static final String CANCEL = "Cancel";
@@ -792,58 +791,69 @@ public class ControllerUI
 
         for (int i=0; i< robotButtons.length; i++) {
             for (int j=0; j< robotButtons[i].length; j++) {
+                final TeamColor teamColor = state.teams[i].teamColor;
+                final JLabel label = robotLabel[i][j];
+                final JButton button = robotButtons[i][j];
+
                 if (ActionBoard.robotButton[i][j].isCoach()) {
+                    // Coach
                    if (state.teams[i].coach.penalty == Penalty.SplCoachMotion) {
-                      robotButtons[i][j].setEnabled(false);
-                      robotLabel[i][j].setText(EJECTED);
+                      button.setEnabled(false);
+                      label.setText(EJECTED);
                   } else {
-                      robotLabel[i][j].setText(state.teams[i].teamColor+" "+COACH);
+                      label.setText(teamColor + " " + COACH);
                   }
-                }
-                else {
-                    if (state.teams[i].player[j].penalty != Penalty.None) {
+                } else {
+                    // Regular player
+                    final Penalty penalty = state.teams[i].player[j].penalty;
+                    final JProgressBar progressBar = robotProgressBars[i][j];
+                    final int unum = j + 1;
+
+                    if (penalty != Penalty.None) {
+                        // Penalised
                         if (!state.ejected[i][j]) {
                             int seconds = state.getRemainingPenaltyTime(i, j);
                             boolean pickup = ((game.league().isSPLFamily() &&
-                                        state.teams[i].player[j].penalty == Penalty.SplRequestForPickup)
+                                        penalty == Penalty.SplRequestForPickup)
                                    || (game.league().isHLFamily() &&
-                                       ( state.teams[i].player[j].penalty == Penalty.HLPickupOrIncapable
-                                      || state.teams[i].player[j].penalty == Penalty.Service))
+                                       ( penalty == Penalty.HLPickupOrIncapable
+                                      || penalty == Penalty.Service))
                                     );
                             if (seconds == 0) {
                                 if (pickup) {
-                                    robotLabel[i][j].setText(state.teams[i].teamColor+" "+(j+1)+" ("+PEN_PICKUP+")");
-                                    highlight(robotButtons[i][j], true);
-                                } else if (state.teams[i].player[j].penalty == Penalty.Substitute) {
-                                    robotLabel[i][j].setText(state.teams[i].teamColor+" "+(j+1)+" ("+PEN_SUBSTITUTE_SHORT+")");
-                                    highlight(robotButtons[i][j], false);
+                                    label.setText(teamColor + " " + unum + " (" + PEN_PICKUP + ")");
+                                    highlight(button, true);
+                                } else if (penalty == Penalty.Substitute) {
+                                    label.setText(teamColor + " " + unum + " (Sub)");
+                                    highlight(button, false);
                                 } else if (!(game.league().isSPLFamily()) ||
-                                        !(state.teams[i].player[j].penalty == Penalty.SplCoachMotion)) {
-                                    robotLabel[i][j].setText(state.teams[i].teamColor+" "+(j+1)+": "+formatTime(seconds));
-                                    highlight(robotButtons[i][j], seconds <= UNPEN_HIGHLIGHT_SECONDS && robotButtons[i][j].getBackground() != COLOR_HIGHLIGHT);
+                                        !(penalty == Penalty.SplCoachMotion)) {
+                                    label.setText(teamColor + " " + unum + ": " + formatTime(seconds));
+                                    highlight(button, seconds <= UNPEN_HIGHLIGHT_SECONDS && button.getBackground() != COLOR_HIGHLIGHT);
                                 }
                             }  else {
-                                robotLabel[i][j].setText(state.teams[i].teamColor+" "+(j+1)+": "+formatTime(seconds)+(pickup ? " (P)" : ""));
-                                highlight(robotButtons[i][j], seconds <= UNPEN_HIGHLIGHT_SECONDS && robotButtons[i][j].getBackground() != COLOR_HIGHLIGHT);
+                                label.setText(teamColor + " " + unum + ": " + formatTime(seconds) + (pickup ? " (P)" : ""));
+                                highlight(button, seconds <= UNPEN_HIGHLIGHT_SECONDS && button.getBackground() != COLOR_HIGHLIGHT);
                             }
                             int penTime = (seconds + state.getSecondsSince(state.whenPenalized[i][j]));
                             if (seconds != 0) {
-                                robotProgressBars[i][j].setValue(1000 * seconds / penTime);
+                                progressBar.setValue(1000 * seconds / penTime);
                             }
-                            robotProgressBars[i][j].setVisible(seconds != 0);
+                            progressBar.setVisible(seconds != 0);
                         } else {
-                            robotLabel[i][j].setText(EJECTED);
-                            robotProgressBars[i][j].setVisible(false);
-                            highlight(robotButtons[i][j], false);
+                            label.setText(EJECTED);
+                            progressBar.setVisible(false);
+                            highlight(button, false);
                         }
                     } else {
-                        robotLabel[i][j].setText(state.teams[i].teamColor+" "+(j+1));
-                        robotProgressBars[i][j].setVisible(false);
-                        highlight(robotButtons[i][j], false);
+                        // Not penalised
+                        label.setText(teamColor + " " + unum);
+                        progressBar.setVisible(false);
+                        highlight(button, false);
                     }
                 }    
                 
-                robotButtons[i][j].setEnabled(ActionBoard.robotButton[i][j].canExecute(game, state));
+                button.setEnabled(ActionBoard.robotButton[i][j].canExecute(game, state));
 
                 final RobotOnlineStatus status = onlineStatus[i][j];
                 label.setIcon(status == RobotOnlineStatus.ONLINE
