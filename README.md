@@ -270,6 +270,9 @@ from the version used in 2013 in several ways:
   play in more than one league (eg. HL kid-size and teen-size). This can also be
   used by game visualisers.
 
+- Game state messages include a value indicating whether the game is a
+  play-off (SPL) or knockout (HL) game.
+
 - When no drop in has yet occurred, 'dropInTeam' has value 2 instead of 0.
 
 - `STATE2_*` (SecondaryGameState, with Normal, Overtime, Timeout, Penalties) has been

@@ -15,6 +15,7 @@ import java.nio.ByteBuffer;
  *         Adds field 'game controller ID' to the message, which can be used to prevent
  *         against problems seen when multiple game controllers are running.
  *     </li>
+ *     <li>Adds a value indicating whether the game is a play-off (SPL) or knockout (HL) game.</li>
  *     <li>Omits SPL coach data from non-SPL games.</li>
  *     <li>
  *         Adds a byte indicating the league being played in. Allows teams that play in
@@ -68,15 +69,16 @@ public class GameStateProtocol9 extends GameStateProtocol
 
         return  4 + // header
                 1 + // version
+                1 + // league number
                 1 + // packet number
                 4 + // game controller ID
-                1 + // league identifier
                 1 + // numPlayers
                 1 + // playMode
                 1 + // firstHalf
                 1 + // nextKickOffColor
                 1 + // period
                 1 + // lastDropInColor
+                1 + // isKnockOutGame
                 2 + // dropInTime
                 2 + // secsRemaining
                 2 + // secondaryTime
@@ -90,15 +92,16 @@ public class GameStateProtocol9 extends GameStateProtocol
         ByteBuffer buffer = writeHeader();
 
         buffer.put(getVersionNumber());
-        buffer.put(nextPacketNumber);
-        buffer.putInt(gameControllerId);
         buffer.put(league.number());
+        buffer.put(nextPacketNumber);
         buffer.put((byte)league.settings().teamSize);
+        buffer.putInt(gameControllerId);
         buffer.put(state.playMode.getValue());
         buffer.put(state.firstHalf ? (byte)1 : 0);
         buffer.put(state.nextKickOffColor == null ? 2 : state.nextKickOffColor.getValue());
         buffer.put(state.period.getValue());
         buffer.put(state.lastDropInColor == null ? 2 : state.lastDropInColor.getValue());
+        buffer.put(state.isPlayOff() ? (byte)1 : (byte)0);
         buffer.putShort(state.dropInTime);
         buffer.putShort(state.secsRemaining);
         buffer.putShort(state.secondaryTime);
@@ -119,23 +122,25 @@ public class GameStateProtocol9 extends GameStateProtocol
 
         GameStateSnapshot data = new GameStateSnapshot(this.league.settings());
 
-        buffer.get(); // packet number (ignored when decoding)
-
-        data.gameControllerId = buffer.getInt();
-
         // Ensure the message applies to the current league
         // TODO don't return null, and decode the message according to the advertised league
         byte leagueNumber = buffer.get();
         if (leagueNumber != this.league.number())
             return null;
 
+        buffer.get(); // packet number (ignored when decoding)
         buffer.get(); // players per team (ignored when decoding)
+
+        data.gameControllerId = buffer.getInt();
 
         data.playMode = PlayMode.fromValue(buffer.get());
         data.firstHalf = buffer.get() != 0;
         data.nextKickOffColor = TeamColor.fromValue(buffer.get());
         data.period = Period.fromValue(buffer.get());
         data.lastDropInColor = TeamColor.fromValue(buffer.get());
+
+        buffer.get(); // is drop-in/knockout game
+
         data.dropInTime = buffer.getShort();
         data.secsRemaining = buffer.getShort();
         data.secondaryTime = buffer.getShort();

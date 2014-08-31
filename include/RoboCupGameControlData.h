@@ -95,15 +95,16 @@ struct RoboCupGameControlData
 {
   char header[4];               // Header to identify the structure
   uint8_t version;              // Version of the data structure
+  uint8_t leagueNumber;         // Identifies the league being played in (LEAGUE_SPL, LEAGUE_HL_KID, etc)
   uint8_t packetNumber;         // Number incremented with each packet sent (with wraparound)
   uint32_t gameControllerId;    // A randomly chosen number that is consistent throughout the lifespan of a game
-  uint8_t leagueNumber;         // Identifies the league being played in (LEAGUE_SPL, LEAGUE_HL_KID, etc)
   uint8_t playersPerTeam;       // The maximum number of players on each team, including substitutes
   uint8_t playMode;             // The play mode of the game (PLAY_MODE_READY, PLAY_MODE_PLAYING, etc)
   uint8_t firstHalf;            // '1' if game in first half, '0' otherwise
   uint8_t kickOffTeam;          // The next team to kick off (0=TEAM_BLUE, 1=TEAM_RED, 2=DROP_BALL)
   uint8_t period;               // Extra state information (PERIOD_NORMAL, PERIOD_PENALTYSHOOT, etc)
   uint8_t dropInTeam;           // Team that caused last drop in (0=TEAM_BLUE, 1=TEAM_RED, 2=NONE)
+  uint8_t isKnockOutGame;       // Whether the game is a knockout/playoff (1) or not (0)
   uint16_t dropInTime;          // Number of seconds passed since the last drop in (-1 before first drop in)
   uint16_t secsRemaining;       // An estimate of the number of seconds remaining in the half
   uint16_t secondaryTime;       // Number of seconds shown as secondary time (remaining ready, until free ball, etc)
