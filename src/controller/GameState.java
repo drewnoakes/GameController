@@ -373,4 +373,6 @@ public class GameState extends GameStateSnapshot implements Cloneable
     {
         penaltyQueueForSubPlayers.get(side).add(new PenaltyQueueData(whenPenalized, penalty));
     }
+
+    public boolean isPlayOff() { return game.isPlayOff(); }
 }
