@@ -34,8 +34,7 @@ public class GameOptionsUI
     private static final int OPTIONS_CONTAINER_HEIGHT = 80;
     private static final int OPTIONS_HEIGHT = 22;
     private static final int START_HEIGHT = 30;
-    /** This is not what the name says ;) */
-    private static final int FULLSCREEN_WIDTH = 160;
+    private static final int LEFT_OPTIONS_WIDTH = 160;
 
     private static final String FULLTIME_LABEL_NO = "Preliminaries Game";
     private static final String FULLTIME_LABEL_YES = "Play-off Game";
@@ -212,12 +211,13 @@ public class GameOptionsUI
         optionsLeft.add(autoColorChangePanel);
 
         fullscreen = new Checkbox(FULLSCREEN_LABEL);
-        fullscreen.setPreferredSize(new Dimension(FULLSCREEN_WIDTH, OPTIONS_HEIGHT));
+        fullscreen.setPreferredSize(new Dimension(LEFT_OPTIONS_WIDTH, OPTIONS_HEIGHT));
+        fullscreen.set
         fullscreen.setState(isFullScreen);
         fullscreenPanel.add(fullscreen);
 
         changeColoursEachPeriodCheckbox = new Checkbox(COLOR_CHANGE_LABEL);
-        changeColoursEachPeriodCheckbox.setPreferredSize(new Dimension(FULLSCREEN_WIDTH, OPTIONS_HEIGHT));
+        changeColoursEachPeriodCheckbox.setPreferredSize(new Dimension(LEFT_OPTIONS_WIDTH, OPTIONS_HEIGHT));
         changeColoursEachPeriodCheckbox.setState(changeColoursEachPeriod);
         autoColorChangePanel.add(changeColoursEachPeriodCheckbox);
 
