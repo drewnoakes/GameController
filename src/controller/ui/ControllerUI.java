@@ -790,69 +790,69 @@ public class ControllerUI
         RobotOnlineStatus[][] onlineStatus = robotWatcher.updateRobotOnlineStatus();
 
         for (int i = 0; i < robotButtons.length; i++) {
+            final TeamState team = state.teams[i];
             for (int j = 0; j < robotButtons[i].length; j++) {
-                final TeamColor teamColor = state.teams[i].teamColor;
-                final JLabel label = robotLabel[i][j];
                 final JButton button = robotButtons[i][j];
+
+                String text = team.teamColor + " " + (j + 1);
+                boolean isButtonEnabled = true;
+                boolean isButtonHighlight = false;
+                int progress = 0;
 
                 if (ActionBoard.robotButton[i][j].isCoach()) {
                     // Coach
-                    if (state.teams[i].coach.penalty == Penalty.SplCoachMotion) {
-                        button.setEnabled(false);
-                        label.setText(EJECTED);
+                    if (team.coach.penalty == Penalty.SplCoachMotion) {
+                        isButtonEnabled = false;
+                        text = EJECTED;
                     } else {
-                        label.setText(teamColor + " " + COACH);
+                        text = team.teamColor + " " + COACH;
                     }
                 } else {
                     // Regular player
-                    final Penalty penalty = state.teams[i].player[j].penalty;
-                    final JProgressBar progressBar = robotProgressBars[i][j];
-                    final int unum = j + 1;
+                    final Penalty penalty = team.player[j].penalty;
 
                     if (penalty != Penalty.None) {
                         // Penalised
                         if (!state.ejected[i][j]) {
+                            boolean pickup = game.league().isSPLFamily()
+                                ? penalty == Penalty.SplRequestForPickup
+                                : penalty == Penalty.HLPickupOrIncapable || penalty == Penalty.Service;
                             int seconds = state.getRemainingPenaltyTime(i, j);
-                            boolean pickup = ((game.league().isSPLFamily() && penalty == Penalty.SplRequestForPickup)
-                                    || (game.league().isHLFamily() &&
-                                    (penalty == Penalty.HLPickupOrIncapable || penalty == Penalty.Service)));
                             if (seconds == 0) {
                                 if (pickup) {
-                                    label.setText(teamColor + " " + unum + " (" + PEN_PICKUP + ")");
-                                    highlight(button, true);
+                                    text += " (Pick-Up)";
+                                    isButtonHighlight = true;
                                 } else if (penalty == Penalty.Substitute) {
-                                    label.setText(teamColor + " " + unum + " (Sub)");
-                                    highlight(button, false);
+                                    text += " (Sub)";
                                 } else if (!game.league().isSPLFamily() || penalty != Penalty.SplCoachMotion) {
-                                    label.setText(teamColor + " " + unum + ": " + formatTime(seconds));
-                                    highlight(button, seconds <= UNPEN_HIGHLIGHT_SECONDS && button.getBackground() != COLOR_HIGHLIGHT);
+                                    text += ": " + formatTime(seconds);
+                                    isButtonHighlight = seconds <= UNPEN_HIGHLIGHT_SECONDS && button.getBackground() != COLOR_HIGHLIGHT;
                                 }
                             } else {
-                                label.setText(teamColor + " " + unum + ": " + formatTime(seconds) + (pickup ? " (P)" : ""));
-                                highlight(button, seconds <= UNPEN_HIGHLIGHT_SECONDS && button.getBackground() != COLOR_HIGHLIGHT);
+                                text += ": " + formatTime(seconds) + (pickup ? " (P)" : "");
+                                isButtonHighlight = seconds <= UNPEN_HIGHLIGHT_SECONDS && button.getBackground() != COLOR_HIGHLIGHT;
                             }
                             int penTime = seconds + state.getSecondsSince(state.whenPenalized[i][j]);
                             if (seconds != 0) {
-                                progressBar.setValue(1000 * seconds / penTime);
+                                progress = 1000 * seconds / penTime;
                             }
-                            progressBar.setVisible(seconds != 0);
                         } else {
-                            label.setText(EJECTED);
-                            progressBar.setVisible(false);
-                            highlight(button, false);
+                            text = EJECTED;
                         }
-                    } else {
-                        // Not penalised
-                        label.setText(teamColor + " " + unum);
-                        progressBar.setVisible(false);
-                        highlight(button, false);
                     }
                 }
 
-                button.setEnabled(ActionBoard.robotButton[i][j].canExecute(game, state));
+                isButtonEnabled &= ActionBoard.robotButton[i][j].canExecute(game, state);
 
+                button.setEnabled(isButtonEnabled);
+                highlight(button, isButtonHighlight);
+                robotLabel[i][j].setText(text);
+                robotProgressBars[i][j].setVisible(progress != 0);
+                robotProgressBars[i][j].setValue(progress);
+
+                // Set icon to indicate robot's online status
                 final RobotOnlineStatus status = onlineStatus[i][j];
-                label.setIcon(status == RobotOnlineStatus.ONLINE
+                robotLabel[i][j].setIcon(status == RobotOnlineStatus.ONLINE
                     ? lanOnline
                     : status == RobotOnlineStatus.HIGH_LATENCY
                         ? lanHighLatency
