@@ -33,8 +33,10 @@ public class ControllerUI
 
     // Various UI constants
 
-    private static final int WINDOW_WIDTH = 1024;
-    private static final int WINDOW_HEIGHT = 768;
+    private static final int WINDOW_WIDTH_DEFAULT = 1024;
+    private static final int WINDOW_HEIGHT_DEFAULT = 768;
+    private static final int WINDOW_WIDTH_MINIMUM = 800;
+    private static final int WINDOW_HEIGHT_MINIMUM = 600;
     private static final int STANDARD_FONT_SIZE = 17;
     private static final int TITLE_FONT_SIZE = 24;
     private static final String STANDARD_FONT = "Helvetica";
@@ -198,7 +200,8 @@ public class ControllerUI
         frame = new PaintableFrame(WINDOW_TITLE);
         ImageIcon img = new ImageIcon("~/rc/kid-size/game-controller/resources/icon.svg");
         frame.setIconImage(img.getImage());
-        frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        frame.setSize(WINDOW_WIDTH_DEFAULT, WINDOW_HEIGHT_DEFAULT);
+        frame.setMinimumSize(new Dimension(WINDOW_WIDTH_MINIMUM, WINDOW_HEIGHT_MINIMUM));
         frame.setResizable(true);
         frame.setIconImage(new ImageIcon(Config.ICONS_PATH + "window_icon.png").getImage());
         frame.beforePaint.subscribe(new EventHandler<Graphics>()
@@ -213,7 +216,7 @@ public class ControllerUI
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         int width = gd.getDisplayMode().getWidth();
         int height = gd.getDisplayMode().getHeight();
-        frame.setLocation((width-WINDOW_WIDTH)/2, (height-WINDOW_HEIGHT)/2);
+        frame.setLocation((width - WINDOW_WIDTH_DEFAULT) / 2, (height - WINDOW_HEIGHT_DEFAULT) / 2);
 
         frame.addWindowListener(new WindowAdapter()
         {
@@ -1024,7 +1027,9 @@ public class ControllerUI
 
     private void updateFonts()
     {
-        double scale = Math.min((frame.getWidth()/(double)WINDOW_WIDTH), (frame.getHeight()/(double)WINDOW_HEIGHT));
+        double scale = Math.min(
+                frame.getWidth() / (double)WINDOW_WIDTH_DEFAULT,
+                frame.getHeight() / (double)WINDOW_HEIGHT_DEFAULT);
 
         // Only update fonts if the window scale has actually changed
         if (scale == lastScale) {
