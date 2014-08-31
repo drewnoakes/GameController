@@ -789,20 +789,20 @@ public class ControllerUI
     {
         RobotOnlineStatus[][] onlineStatus = robotWatcher.updateRobotOnlineStatus();
 
-        for (int i=0; i< robotButtons.length; i++) {
-            for (int j=0; j< robotButtons[i].length; j++) {
+        for (int i = 0; i < robotButtons.length; i++) {
+            for (int j = 0; j < robotButtons[i].length; j++) {
                 final TeamColor teamColor = state.teams[i].teamColor;
                 final JLabel label = robotLabel[i][j];
                 final JButton button = robotButtons[i][j];
 
                 if (ActionBoard.robotButton[i][j].isCoach()) {
                     // Coach
-                   if (state.teams[i].coach.penalty == Penalty.SplCoachMotion) {
-                      button.setEnabled(false);
-                      label.setText(EJECTED);
-                  } else {
-                      label.setText(teamColor + " " + COACH);
-                  }
+                    if (state.teams[i].coach.penalty == Penalty.SplCoachMotion) {
+                        button.setEnabled(false);
+                        label.setText(EJECTED);
+                    } else {
+                        label.setText(teamColor + " " + COACH);
+                    }
                 } else {
                     // Regular player
                     final Penalty penalty = state.teams[i].player[j].penalty;
@@ -813,12 +813,9 @@ public class ControllerUI
                         // Penalised
                         if (!state.ejected[i][j]) {
                             int seconds = state.getRemainingPenaltyTime(i, j);
-                            boolean pickup = ((game.league().isSPLFamily() &&
-                                        penalty == Penalty.SplRequestForPickup)
-                                   || (game.league().isHLFamily() &&
-                                       ( penalty == Penalty.HLPickupOrIncapable
-                                      || penalty == Penalty.Service))
-                                    );
+                            boolean pickup = ((game.league().isSPLFamily() && penalty == Penalty.SplRequestForPickup)
+                                    || (game.league().isHLFamily() &&
+                                    (penalty == Penalty.HLPickupOrIncapable || penalty == Penalty.Service)));
                             if (seconds == 0) {
                                 if (pickup) {
                                     label.setText(teamColor + " " + unum + " (" + PEN_PICKUP + ")");
@@ -826,16 +823,15 @@ public class ControllerUI
                                 } else if (penalty == Penalty.Substitute) {
                                     label.setText(teamColor + " " + unum + " (Sub)");
                                     highlight(button, false);
-                                } else if (!(game.league().isSPLFamily()) ||
-                                        !(penalty == Penalty.SplCoachMotion)) {
+                                } else if (!game.league().isSPLFamily() || penalty != Penalty.SplCoachMotion) {
                                     label.setText(teamColor + " " + unum + ": " + formatTime(seconds));
                                     highlight(button, seconds <= UNPEN_HIGHLIGHT_SECONDS && button.getBackground() != COLOR_HIGHLIGHT);
                                 }
-                            }  else {
+                            } else {
                                 label.setText(teamColor + " " + unum + ": " + formatTime(seconds) + (pickup ? " (P)" : ""));
                                 highlight(button, seconds <= UNPEN_HIGHLIGHT_SECONDS && button.getBackground() != COLOR_HIGHLIGHT);
                             }
-                            int penTime = (seconds + state.getSecondsSince(state.whenPenalized[i][j]));
+                            int penTime = seconds + state.getSecondsSince(state.whenPenalized[i][j]);
                             if (seconds != 0) {
                                 progressBar.setValue(1000 * seconds / penTime);
                             }
@@ -851,8 +847,8 @@ public class ControllerUI
                         progressBar.setVisible(false);
                         highlight(button, false);
                     }
-                }    
-                
+                }
+
                 button.setEnabled(ActionBoard.robotButton[i][j].canExecute(game, state));
 
                 final RobotOnlineStatus status = onlineStatus[i][j];
