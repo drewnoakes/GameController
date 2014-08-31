@@ -844,18 +844,15 @@ public class ControllerUI
                 }    
                 
                 robotButtons[i][j].setEnabled(ActionBoard.robotButton[i][j].canExecute(game, state));
-                
-                ImageIcon currentLanIcon;
-                if (onlineStatus[i][j] == RobotOnlineStatus.ONLINE) {
-                    currentLanIcon = lanOnline;
-                } else if (onlineStatus[i][j] == RobotOnlineStatus.HIGH_LATENCY) {
-                    currentLanIcon = lanHighLatency;
-                } else if (onlineStatus[i][j] == RobotOnlineStatus.OFFLINE) {
-                    currentLanIcon = lanOffline;
-                } else {
-                    currentLanIcon = lanUnknown;
-                }
-                robotLabel[i][j].setIcon(currentLanIcon);
+
+                final RobotOnlineStatus status = onlineStatus[i][j];
+                label.setIcon(status == RobotOnlineStatus.ONLINE
+                    ? lanOnline
+                    : status == RobotOnlineStatus.HIGH_LATENCY
+                        ? lanHighLatency
+                        : status == RobotOnlineStatus.OFFLINE
+                            ? lanOffline
+                            : lanUnknown);
             }
         }
     }
