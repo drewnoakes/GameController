@@ -36,7 +36,7 @@ import javax.swing.event.ListSelectionListener;
  * @author Michel Bartsch
  */
 @SuppressWarnings("unchecked")
-public class GUI extends JFrame implements ListSelectionListener
+public class GUI implements ListSelectionListener
 {
     /* Some attributes for the layout and appearance, feel free to change
      * them and look what happens. */
@@ -54,6 +54,7 @@ public class GUI extends JFrame implements ListSelectionListener
     public final static String HTML_END = "</font>";
     
     /* This gui´s components. */
+    private final JFrame frame;
     private final DefaultListModel list;
     private final JList listDisplay;
     private final ListSelectionModel selection;
@@ -67,15 +68,16 @@ public class GUI extends JFrame implements ListSelectionListener
      */
     public GUI()
     {
-        super(TITLE);
+        frame = new JFrame(TITLE);
+
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         int width = gd.getDisplayMode().getWidth();
         int height = gd.getDisplayMode().getHeight();
-        setLocation((width-WINDOW_WIDTH)/2, (height-WINDOW_HEIGHT)/2);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        TotalScaleLayout layout = new TotalScaleLayout(this);
-        setLayout(layout);
+        frame.setLocation((width-WINDOW_WIDTH)/2, (height-WINDOW_HEIGHT)/2);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        TotalScaleLayout layout = new TotalScaleLayout(frame);
+        frame.setLayout(layout);
         
         list = new DefaultListModel();
         listDisplay = new JList(list);
@@ -132,8 +134,8 @@ public class GUI extends JFrame implements ListSelectionListener
         
         updateList();
         selection.addListSelectionListener(this);
-        
-        setVisible(true);
+
+        frame.setVisible(true);
     }
     
     /**
@@ -175,7 +177,7 @@ public class GUI extends JFrame implements ListSelectionListener
     private void analyze()
     {
         JFileChooser fc = new JFileChooser();
-        if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+        if (fc.showSaveDialog(frame) != JFileChooser.APPROVE_OPTION) {
             return;
         }
         Main.stats = fc.getSelectedFile();
