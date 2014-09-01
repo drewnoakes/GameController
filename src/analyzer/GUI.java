@@ -36,7 +36,7 @@ import javax.swing.event.ListSelectionListener;
  * @author Michel Bartsch
  */
 @SuppressWarnings("unchecked")
-public class GUI implements ListSelectionListener
+public class GUI
 {
     /* Some attributes for the layout and appearance, feel free to change
      * them and look what happens. */
@@ -133,7 +133,20 @@ public class GUI implements ListSelectionListener
         layout.add(.735, .87, .235, .1, analyze);
         
         updateList();
-        selection.addListSelectionListener(this);
+
+        selection.addListSelectionListener(new ListSelectionListener()
+        {
+            @Override
+            public void valueChanged(ListSelectionEvent e)
+            {
+                int i = selection.getMinSelectionIndex();
+                if (i >= 0) {
+                    info.setText(Main.logs.get(i).getInfo());
+                } else {
+                    info.setText("");
+                }
+            }
+        });
 
         frame.setVisible(true);
     }
@@ -204,17 +217,6 @@ public class GUI implements ListSelectionListener
         JOptionPane.showMessageDialog(null, "Done");
     }
 
-    @Override
-    public void valueChanged(ListSelectionEvent e)
-    {
-        int i = selection.getMinSelectionIndex();
-        if (i >= 0) {
-            info.setText(Main.logs.get(i).getInfo());
-        } else {
-            info.setText("");
-        }
-    }
-    
     /**
      * Instances of this class represent a line in the list of logs with a
      * checkbox to select them.
