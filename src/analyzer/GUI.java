@@ -140,11 +140,7 @@ public class GUI
             public void valueChanged(ListSelectionEvent e)
             {
                 int i = selection.getMinSelectionIndex();
-                if (i >= 0) {
-                    info.setText(Main.logs.get(i).getInfo());
-                } else {
-                    info.setText("");
-                }
+                info.setText(i >= 0 ? Main.logs.get(i).getInfo() : "");
             }
         });
 
@@ -159,7 +155,7 @@ public class GUI
         selection.clearSelection();
         list.removeAllElements();
         for (LogInfo log : Main.logs) {
-            list.addElement(new CheckListItem(log+"", log.isRealLog()));
+            list.addElement(new CheckListItem(log.toString(), log.isRealLog()));
         }
     }
     
@@ -221,7 +217,7 @@ public class GUI
      * Instances of this class represent a line in the list of logs with a
      * checkbox to select them.
      */
-    class CheckListItem
+    private class CheckListItem
     {
         /* String shown to represent the log */
         public final String label;
@@ -253,11 +249,7 @@ public class GUI
             setEnabled(list.isEnabled());
             setSelected(((CheckListItem)value).selected);
             setFont(list.getFont());
-            if (!isSelected) {
-                setBackground(list.getBackground());
-            } else {
-                setBackground(LIST_HIGHLIGHT);
-            }
+            setBackground(isSelected ? LIST_HIGHLIGHT : list.getBackground());
             setForeground(list.getForeground());
             setText(((CheckListItem)value).label);
             return this;
