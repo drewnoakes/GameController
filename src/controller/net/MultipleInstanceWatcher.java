@@ -18,7 +18,7 @@ public class MultipleInstanceWatcher
     private final MessageReceiver<GameStateSnapshot> receiver;
     private long lastOtherGameSeenTime;
 
-    public MultipleInstanceWatcher(@NotNull League league, final int gameControllerId) throws SocketException
+    public MultipleInstanceWatcher(@NotNull League league, final int gameId) throws SocketException
     {
         lastOtherGameSeenTime = -1;
 
@@ -30,13 +30,13 @@ public class MultipleInstanceWatcher
                 @Override
                 public void handle(GameStateSnapshot message)
                 {
-                    if (message.gameControllerId != gameControllerId)
+                    if (message.gameId != gameId)
                     {
                         lastOtherGameSeenTime = System.currentTimeMillis();
                     }
                 }
             });
-        receiver.addProtocol(new GameStateProtocol9(league, gameControllerId));
+        receiver.addProtocol(new GameStateProtocol9(league, gameId));
         receiver.start();
     }
 

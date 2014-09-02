@@ -97,7 +97,7 @@ struct RoboCupGameControlData
   uint8_t version;              // Version of the data structure
   uint8_t leagueNumber;         // Identifies the league being played in (LEAGUE_SPL, LEAGUE_HL_KID, etc)
   uint8_t packetNumber;         // Number incremented with each packet sent (with wraparound)
-  uint32_t gameControllerId;    // A randomly chosen number that is consistent throughout the lifespan of a game
+  uint32_t gameId;              // A randomly chosen number that is consistent throughout the lifespan of a game
   uint8_t playersPerTeam;       // The maximum number of players on each team, including substitutes
   uint8_t playMode;             // The play mode of the game (PLAY_MODE_READY, PLAY_MODE_PLAYING, etc)
   uint8_t firstHalf;            // '1' if game in first half, '0' otherwise

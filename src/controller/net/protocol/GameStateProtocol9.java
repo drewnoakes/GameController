@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
  *
  * <ul>
  *     <li>
- *         Adds field 'game controller ID' to the message, which can be used to prevent
+ *         Adds field 'game ID' to the message, which can be used to prevent
  *         against problems seen when multiple game controllers are running.
  *     </li>
  *     <li>Adds a value indicating whether the game is a play-off (SPL) or knockout (HL) game.</li>
@@ -31,20 +31,20 @@ import java.nio.ByteBuffer;
 public class GameStateProtocol9 extends GameStateProtocol
 {
     /**
-     * A unique number for this game controller instance.
+     * A number that uniquely identifies the game.
      *
      * Can be used by robots to defend against problems seen when multiple game controllers
      * are running.
      */
-    private final int gameControllerId;
+    private final int gameId;
 
     private final League league;
 
-    public GameStateProtocol9(@NotNull League league, int gameControllerId)
+    public GameStateProtocol9(@NotNull League league, int gameId)
     {
         super((byte) 9);
         this.league = league;
-        this.gameControllerId = gameControllerId;
+        this.gameId = gameId;
     }
 
     @Override
@@ -71,7 +71,7 @@ public class GameStateProtocol9 extends GameStateProtocol
                 1 + // version
                 1 + // league number
                 1 + // packet number
-                4 + // game controller ID
+                4 + // game ID
                 1 + // numPlayers
                 1 + // playMode
                 1 + // firstHalf
@@ -95,7 +95,7 @@ public class GameStateProtocol9 extends GameStateProtocol
         buffer.put(league.number());
         buffer.put(nextPacketNumber);
         buffer.put((byte)league.settings().teamSize);
-        buffer.putInt(gameControllerId);
+        buffer.putInt(gameId);
         buffer.put(state.playMode.getValue());
         buffer.put(state.firstHalf ? (byte)1 : 0);
         buffer.put(state.nextKickOffColor == null ? 2 : state.nextKickOffColor.getValue());
@@ -131,7 +131,7 @@ public class GameStateProtocol9 extends GameStateProtocol
         buffer.get(); // packet number (ignored when decoding)
         buffer.get(); // players per team (ignored when decoding)
 
-        data.gameControllerId = buffer.getInt();
+        data.gameId = buffer.getInt();
 
         data.playMode = PlayMode.fromValue(buffer.get());
         data.firstHalf = buffer.get() != 0;

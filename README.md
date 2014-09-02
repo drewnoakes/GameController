@@ -261,10 +261,11 @@ from the version used in 2013 in several ways:
 
 - All start UI options may be specified from the command line.
 
-- Game state messages include a number that is unique to the game controller
-  instance, intended to prevent problems seen when multiple game controllers are
-  run on the same network. This allows robots to detect the problem, and in most
-  cases ignore the potentially sabotaging game controller.
+- Game state messages include a number that is unique to the current game,
+  intended to prevent problems seen when multiple game controllers are run
+  on the same network. This allows robots to detect the problem, and in most
+  cases ignore the potentially sabotaging game controller. The game controller
+  also notifies the operator if it detects another instance on the network.
 
 - Game state messages identify the league being played, supporting teams that
   play in more than one league (eg. HL kid-size and teen-size). This can also be

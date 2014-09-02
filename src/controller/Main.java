@@ -50,8 +50,6 @@ public class Main
     {
         ensureSingleInstanceRunning();
 
-        int gameControllerId = new Random().nextInt();
-
         // Process command line input
         GameOptions options = parseCommandLineArguments(args);
 
@@ -62,7 +60,7 @@ public class Main
             // Show UI to configure the starting parameters
             options = GameOptionsUI.configure(options);
 
-            runGame(new Game(options, gameControllerId));
+            runGame(new Game(options));
 
             try {
                 Log.close();
@@ -83,7 +81,7 @@ public class Main
 
         try {
             gameStateSender = new GameStateSender(game, game.broadcastAddress());
-            gameStateSender.addProtocol(new GameStateProtocol9(game.league(), game.gameControllerId()));
+            gameStateSender.addProtocol(new GameStateProtocol9(game.league(), game.gameId()));
             if (game.settings().supportGameStateVersion8)
                 gameStateSender.addProtocol(new GameStateProtocol8(game.league()));
             if (game.settings().supportGameStateVersion7)
@@ -102,7 +100,7 @@ public class Main
             robotMessageReceiver.addProtocol(new RobotStatusProtocol2());
             robotMessageReceiver.start();
 
-            multipleInstanceWatcher = new MultipleInstanceWatcher(game.league(), game.gameControllerId());
+            multipleInstanceWatcher = new MultipleInstanceWatcher(game.league(), game.gameId());
 
             if (game.league().isSPLFamily() && game.settings().isCoachAvailable) {
                 splReceiver = new MessageReceiver<SPLCoachMessage>(

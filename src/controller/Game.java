@@ -44,7 +44,7 @@ public class Game
     private final boolean changeColoursEachPeriod;
     private final TeamColor initialKickOffColor;
     private final String broadcastAddress;
-    private final int gameControllerId;
+    private final int gameId;
 
     /** The golden record of the game's current state. */
     private GameState gameState;
@@ -63,11 +63,11 @@ public class Game
     private boolean shutdownRequested = false;
 
     /** Create a new Game with the specified options. */
-    public Game(GameOptions options, int gameControllerId)
+    public Game(GameOptions options)
     {
         assert(options.isPlayOff != null);
 
-        this.gameControllerId = gameControllerId;
+        this.gameId = new Random().nextInt();
 
         this.league = options.league;
         this.teams = options.teams; // TODO clone mutable bits of this object for single use during game
@@ -296,7 +296,7 @@ public class Game
      * Generically clone this object. Everything referenced must be Serializable.
      *
      * @param gameState the object to clone
-     * @return A deep copy of this object.
+     * @return a deep copy of this object.
      */
     private GameState cloneGameState(GameState gameState)
     {
@@ -318,14 +318,15 @@ public class Game
     }
 
     /**
-     * Gets a randomly chosen number that 'uniquely' (1 in 2^32) identifies this game controller instance.
+     * Gets a randomly chosen number that 'uniquely' (1 in 2^32) identifies this game.
      * <p>
-     * This number is included in network messages and can be used by
+     * Can be used by robots to defend against problems seen when multiple game controllers
+     * are running.
      *
-     * @return
+     * @return the current game ID
      */
-    public int gameControllerId()
+    public int gameId()
     {
-        return gameControllerId;
+        return gameId;
     }
 }
