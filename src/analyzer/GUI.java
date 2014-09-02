@@ -37,8 +37,6 @@ import javax.swing.event.ListSelectionListener;
  */
 public class GUI
 {
-    /* Some attributes for the layout and appearance, feel free to change
-     * them and look what happens. */
     private final static String TITLE = "Log Analyzer";
     private final static int WINDOW_WIDTH = 700;
     private final static int WINDOW_HEIGHT = 600;
@@ -47,20 +45,16 @@ public class GUI
     private final static Color LIST_HIGHLIGHT = new Color(150, 150, 255);
     private final static String CLEAN = "Clean";
     private final static String ANALYZE = "Analyze";
+
     public final static String HTML = "<html>";
     public final static String HTML_LF = "<br>";
     public final static String HTML_RED = "<font color='red'>";
     public final static String HTML_END = "</font>";
     
-    /* This gui´s components. */
     private final JFrame frame;
     private final DefaultListModel<CheckListItem> list;
-    private final JList<CheckListItem> listDisplay;
     private final ListSelectionModel selection;
-    private final JScrollPane scrollArea;
     private final JLabel info;
-    private final JButton clean;
-    private final JButton analyze;
 
     /**
      * Creates a new GUI.
@@ -79,26 +73,26 @@ public class GUI
         frame.setLayout(layout);
         
         list = new DefaultListModel<CheckListItem>();
-        listDisplay = new JList<CheckListItem>(list);
+        JList<CheckListItem> listDisplay = new JList<CheckListItem>(list);
         listDisplay.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listDisplay.setCellRenderer(new CheckListRenderer());
         listDisplay.addMouseListener(new MouseAdapter()
-                {
-                    @Override
-                    public void mouseClicked(MouseEvent event)
-                    {
-                        if (event.getPoint().x > CHECKBOX_WIDTH) {
-                            return;
-                        }
-                        JList list = (JList) event.getSource();
-                        int index = list.locationToIndex(event.getPoint());
-                        CheckListItem item = (CheckListItem)list.getModel().getElementAt(index);
-                        item.selected = !item.selected;
-                        list.repaint(list.getCellBounds(index, index));
-                    }
-                });
+        {
+            @Override
+            public void mouseClicked(MouseEvent event)
+            {
+                if (event.getPoint().x > CHECKBOX_WIDTH) {
+                    return;
+                }
+                JList list = (JList)event.getSource();
+                int index = list.locationToIndex(event.getPoint());
+                CheckListItem item = (CheckListItem)list.getModel().getElementAt(index);
+                item.selected = !item.selected;
+                list.repaint(list.getCellBounds(index, index));
+            }
+        });
         selection = listDisplay.getSelectionModel();
-        scrollArea = new JScrollPane(listDisplay);
+        JScrollPane scrollArea = new JScrollPane(listDisplay);
         info = new JLabel();
         Border paddingBorder = BorderFactory.createEmptyBorder(STANDARD_SPACE/2, STANDARD_SPACE/2, STANDARD_SPACE/2, STANDARD_SPACE/2);
         Border border = BorderFactory.createLineBorder(Color.GRAY);
@@ -106,26 +100,24 @@ public class GUI
         info.setBackground(Color.WHITE);
         info.setOpaque(true);
         info.setVerticalAlignment(SwingConstants.TOP);
-        clean = new JButton(CLEAN);
+        JButton clean = new JButton(CLEAN);
         clean.addActionListener(new ActionListener()
-                {
-                    @Override
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        clean();
-                    }
-                }
-        );
-        analyze = new JButton(ANALYZE);
+                                {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e)
+                                    {
+                                        clean();
+                                    }
+                                });
+        JButton analyze = new JButton(ANALYZE);
         analyze.addActionListener(new ActionListener()
-                {
-                    @Override
-                    public void actionPerformed(ActionEvent e)
-                    {
-                        analyze();
-                    }
-                }
-        );
+                                  {
+                                      @Override
+                                      public void actionPerformed(ActionEvent e)
+                                      {
+                                          analyze();
+                                      }
+                                  });
         layout.add(.03, .03, .45, .94, scrollArea);
         layout.add(.52, .03, .45, .8, info);
         layout.add(.52, .87, .175, .1, clean);
