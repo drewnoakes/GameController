@@ -35,7 +35,6 @@ import javax.swing.event.ListSelectionListener;
  *
  * @author Michel Bartsch
  */
-@SuppressWarnings("unchecked")
 public class GUI
 {
     /* Some attributes for the layout and appearance, feel free to change
@@ -55,8 +54,8 @@ public class GUI
     
     /* This gui´s components. */
     private final JFrame frame;
-    private final DefaultListModel list;
-    private final JList listDisplay;
+    private final DefaultListModel<CheckListItem> list;
+    private final JList<CheckListItem> listDisplay;
     private final ListSelectionModel selection;
     private final JScrollPane scrollArea;
     private final JLabel info;
@@ -79,8 +78,8 @@ public class GUI
         TotalScaleLayout layout = new TotalScaleLayout(frame);
         frame.setLayout(layout);
         
-        list = new DefaultListModel();
-        listDisplay = new JList(list);
+        list = new DefaultListModel<CheckListItem>();
+        listDisplay = new JList<CheckListItem>(list);
         listDisplay.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listDisplay.setCellRenderer(new CheckListRenderer());
         listDisplay.addMouseListener(new MouseAdapter()
@@ -171,7 +170,7 @@ public class GUI
         }
         int i = 0;
         for (LogInfo log : Main.logs) {
-            if (!((CheckListItem)list.getElementAt(i++)).selected) {
+            if (!list.getElementAt(i++).selected) {
                 log.file.renameTo(new File(Main.PATH_DROPPED+"/"+log.file.getName()));
             }
         }
@@ -200,7 +199,7 @@ public class GUI
         }
         int i = 0;
         for (LogInfo log : Main.logs) {
-            if (((CheckListItem)list.getElementAt(i++)).selected) {
+            if (list.getElementAt(i++).selected) {
                 Parser.statistic(log);
             }
         }
@@ -241,17 +240,17 @@ public class GUI
     /**
      * This class is used to render a list item with checkbox.
      */
-    private class CheckListRenderer extends JCheckBox implements ListCellRenderer
+    private class CheckListRenderer extends JCheckBox implements ListCellRenderer<CheckListItem>
     {
         @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus)
+        public Component getListCellRendererComponent(JList list, CheckListItem value, int index, boolean isSelected, boolean hasFocus)
         {
             setEnabled(list.isEnabled());
-            setSelected(((CheckListItem)value).selected);
+            setSelected(value.selected);
             setFont(list.getFont());
             setBackground(isSelected ? LIST_HIGHLIGHT : list.getBackground());
             setForeground(list.getForeground());
-            setText(((CheckListItem)value).label);
+            setText(value.label);
             return this;
         }
     }
