@@ -36,8 +36,8 @@ public class GameOptionsUI
     private static final int START_HEIGHT = 30;
     private static final int LEFT_OPTIONS_WIDTH = 160;
 
-    private static final String FULLTIME_LABEL_NO = "Preliminaries Game";
-    private static final String FULLTIME_LABEL_YES = "Play-off Game";
+    private static final String FULLTIME_LABEL_SPL_NO = "Preliminaries Game";
+    private static final String FULLTIME_LABEL_SPL_YES = "Play-off Game";
     private static final String FULLTIME_LABEL_HL_NO = "Normal Game";
     private static final String FULLTIME_LABEL_HL_YES = "Knock-Out Game";
     private static final String START_LABEL = "Start";
@@ -308,8 +308,8 @@ public class GameOptionsUI
             nofulltime.setVisible(true);
             fulltime.setVisible(true);
             changeColoursEachPeriodCheckbox.setVisible(false);
-            nofulltime.setText(FULLTIME_LABEL_NO);
-            fulltime.setText(FULLTIME_LABEL_YES);
+            nofulltime.setText(FULLTIME_LABEL_SPL_NO);
+            fulltime.setText(FULLTIME_LABEL_SPL_YES);
         } else {
             nofulltime.setVisible(true);
             fulltime.setVisible(true);
