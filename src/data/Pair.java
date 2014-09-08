@@ -2,56 +2,107 @@ package data;
 
 import common.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-public class Pair<T>
+/**
+ * Holds two objects that map to the two teams playing a game.
+ * <p>
+ * Objects are assigned to the left/right side of the UI and may be
+ * looked up by {@link UISide} or by {@link TeamColor}.
+ * <p>
+ * The mapping between side and colour is held in a shared instance
+ * of {@link UIOrientation}.
+ *
+ * @param <T> the type of contained objects.
+ */
+public class Pair<T> implements ReadOnlyPair<T>
 {
-    private final Collection<T> both;
-    private final UIOrientation orientation;
+    @NotNull private final UIOrientation orientation;
 
-    private T left;
-    private T right;
+    @NotNull private T left;
+    @NotNull private T right;
 
     public Pair(@NotNull UIOrientation orientation, @NotNull T left, @NotNull T right)
     {
         this.orientation = orientation;
         this.left = left;
         this.right = right;
-
-        List<T> bothList = new ArrayList<T>();
-        bothList.add(left);
-        bothList.add(right);
-        both = Collections.unmodifiableCollection(bothList);
     }
 
+    @Override
+    @NotNull
     public T get(TeamColor color)
     {
         return get(orientation.getSide(color));
     }
 
+    @Override
+    @NotNull
     public T get(UISide side)
     {
         return side == UISide.Left ? left : right;
     }
 
-    public Collection<T> both()
-    {
-        return both;
-    }
-
-    public void set(TeamColor color, T value)
+    public void set(@NotNull TeamColor color, @NotNull T value)
     {
         set(orientation.getSide(color), value);
     }
 
-    public void set(UISide side, T value)
+    public void set(@NotNull UISide side, @NotNull T value)
     {
         if (side == UISide.Left)
             left = value;
         else
             right = value;
+    }
+
+    ////////////////////////////////// Iterator support
+
+    @Override
+    public Iterator<T> iterator()
+    {
+        return new PairIterator(this);
+    }
+
+    private class PairIterator implements Iterator<T>
+    {
+        @NotNull private final Pair<T> pair;
+        private int index;
+
+        private PairIterator(@NotNull Pair<T> pair)
+        {
+            this.pair = pair;
+            this.index = -1;
+        }
+
+        @Override
+        public boolean hasNext()
+        {
+            return index != 1;
+        }
+
+        @Override
+        public T next()
+        {
+            if (index == -1)
+            {
+                index++;
+                return pair.left;
+            }
+
+            if (index == 0)
+            {
+                index++;
+                return pair.right;
+            }
+
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public void remove()
+        {
+            throw new UnsupportedOperationException();
+        }
     }
 }

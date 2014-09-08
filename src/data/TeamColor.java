@@ -55,7 +55,7 @@ public enum TeamColor
         return value;
     }
 
-    public Color getColor(League league)
+    public Color getRgb(League league)
     {
         return (league.isSPLFamily() ? splColors : hlColors)[value];
     }

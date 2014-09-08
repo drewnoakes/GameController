@@ -1,10 +1,8 @@
 package controller.action.ui;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
+import controller.*;
 import controller.action.ActionBoard;
-import controller.GameState;
 import data.PlayMode;
 
 /**
@@ -15,17 +13,17 @@ import data.PlayMode;
 public class DropBall extends Action
 {    
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
         // Set to null, indicating no team has kick off
-        state.nextKickOffColor = null;
+        state.setNextKickOffColor(null);
         ActionBoard.ready.forceExecute(game, state);
         game.pushState("Dropped Ball");
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.playMode == PlayMode.Playing || state.testmode;
+        return state.getPlayMode() == PlayMode.Playing || state.isTestMode();
     }
 }

@@ -15,7 +15,6 @@ import data.*;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Random;
 import java.util.regex.Pattern;
 import javax.swing.*;
 
@@ -48,6 +47,8 @@ public class Main
      */
     public static void main(String[] args)
     {
+        Thread.currentThread().setName("Main Thread");
+
         ensureSingleInstanceRunning();
 
         // Process command line input

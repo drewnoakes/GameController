@@ -1,11 +1,10 @@
 package controller.action.ui;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.Period;
 import data.PlayMode;
+import data.UISide;
 
 /**
  * This action means that a team get kickoff.
@@ -14,41 +13,40 @@ import data.PlayMode;
  */
 public class KickOff extends Action
 {
-    /** On which side (0:left, 1:right) */
-    private final int side;
+    private final UISide side;
     
     /**
-     * @param side on which side (0:left, 1:right)
+     * @param side on which side
      */
-    public KickOff(int side)
+    public KickOff(UISide side)
     {
         this.side = side;
     }
 
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.nextKickOffColor == state.teams[side].teamColor) {
+        if (state.getNextKickOffColor() == state.getTeam(side).getTeamColor()) {
             return;
         }
-        state.nextKickOffColor = state.teams[side].teamColor;
+        state.setNextKickOffColor(state.getTeam(side).getTeamColor());
         if (game.settings().kickoffChoice
-                && state.period == Period.Normal
-                && state.firstHalf
-                && state.playMode == PlayMode.Initial) {
-            state.leftSideKickoff = side == 0;
+                && state.getPeriod() == Period.Normal
+                && state.isFirstHalf()
+                && state.getPlayMode() == PlayMode.Initial) {
+            state.setLeftSideKickoff(side == UISide.Left);
         }
-        game.pushState("Kickoff " + state.teams[side].teamColor);
+        game.pushState("Kickoff " + state.getTeam(side).getTeamColor());
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.nextKickOffColor == state.teams[side].teamColor
+        return state.getNextKickOffColor() == state.getTeam(side).getTeamColor()
                 || (game.settings().kickoffChoice
-                    && state.period == Period.Normal
-                    && state.firstHalf
-                    && state.playMode == PlayMode.Initial)
-                || state.testmode;
+                    && state.getPeriod() == Period.Normal
+                    && state.isFirstHalf()
+                    && state.getPlayMode() == PlayMode.Initial)
+                || state.isTestMode();
     }
 }

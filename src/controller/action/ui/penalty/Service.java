@@ -1,10 +1,9 @@
 package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.Penalty;
-import data.PlayerState;
+import data.UISide;
 
 /**
  *
@@ -13,15 +12,16 @@ import data.PlayerState;
 public class Service extends PenaltyAction
 {
     @Override
-    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerState player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team,
+                                @NotNull WriteablePlayerState player, @NotNull UISide side)
     {
-        if (player.penalty == Penalty.None) {
-            state.whenPenalized[side][number] = state.getTime();
-            player.penalty = Penalty.Service;
-            game.pushState("Request for Service " + state.teams[side].teamColor + " " + (number + 1));
+        if (player.getPenalty() == Penalty.None) {
+            player.setWhenPenalized(state.getTime());
+            player.setPenalty(Penalty.Service);
+            game.pushState("Request for Service " + team.getTeamColor() + " " + player.getUniformNumber());
         } else {
-            player.penalty = Penalty.Service;
-            game.pushState("Additional Request for Service " + state.teams[side].teamColor + " " + (number + 1));
+            player.setPenalty(Penalty.Service);
+            game.pushState("Additional Request for Service " + team.getTeamColor() + " " + player.getUniformNumber());
         }
     }
 }

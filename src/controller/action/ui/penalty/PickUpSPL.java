@@ -1,10 +1,9 @@
 package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.Penalty;
-import data.PlayerState;
+import data.UISide;
 
 /**
  * This action means that the request for pickup penalty has been selected.
@@ -14,13 +13,14 @@ import data.PlayerState;
 public class PickUpSPL extends PenaltyAction
 {
     @Override
-    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerState player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team,
+                                @NotNull WriteablePlayerState player, @NotNull UISide side)
     {
-        if (player.penalty == Penalty.None) {
-            state.whenPenalized[side][number] = state.getTime();
+        if (player.getPenalty() == Penalty.None) {
+            player.setWhenPenalized(state.getTime());
         }
 
-        player.penalty = Penalty.SplRequestForPickup;
-        game.pushState("Request for PickUp " + state.teams[side].teamColor + " " + (number + 1));
+        player.setPenalty(Penalty.SplRequestForPickup);
+        game.pushState("Request for PickUp " + team.getTeamColor() + " " + player.getUniformNumber());
     }
 }

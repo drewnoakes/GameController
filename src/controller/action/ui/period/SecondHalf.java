@@ -1,26 +1,24 @@
 package controller.action.ui.period;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.*;
 
 /**
- * This action means that the half is to be set to the second half.
+ * Moves the game into the second half of the normal game period.
  *
  * @author Michel Bartsch
  */
 public class SecondHalf extends Action
 {
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.firstHalf || state.period == Period.PenaltyShootout) {
-            state.firstHalf = false;
-            state.period = Period.Normal;
-            state.nextKickOffColor = game.initialKickOffColor().other();
-            state.playMode = PlayMode.Initial;
+        if (state.isFirstHalf() || state.getPeriod() == Period.PenaltyShootout) {
+            state.setFirstHalf(false);
+            state.setPeriod(Period.Normal);
+            state.setNextKickOffColor(game.initialKickOffColor().other());
+            state.setPlayMode(PlayMode.Initial);
             FirstHalf.changeSide(game, state);
             // Don't set state.whenCurrentPlayModeBegan, because it's used to count the pause
             game.pushState("2nd Half");
@@ -28,10 +26,10 @@ public class SecondHalf extends Action
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return (!state.firstHalf && state.period == Period.Normal)
-            || (state.period == Period.Normal && state.playMode == PlayMode.Finished)
-            || state.testmode;
+        return (!state.isFirstHalf() && state.getPeriod() == Period.Normal)
+            || (state.getPeriod() == Period.Normal && state.getPlayMode() == PlayMode.Finished)
+            || state.isTestMode();
     }
 }

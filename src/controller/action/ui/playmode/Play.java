@@ -1,9 +1,7 @@
 package controller.action.ui.playmode;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.PlayMode;
 
 /**
@@ -14,24 +12,24 @@ import data.PlayMode;
 public class Play extends Action
 {
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.playMode == PlayMode.Playing) {
+        if (state.getPlayMode() == PlayMode.Playing) {
             return;
         }
-        if (!game.isPlayOff() && state.timeBeforeCurrentPlayMode != 0) {
+        if (!game.isPlayOff() && state.getTimeBeforeCurrentPlayMode() != 0) {
             state.addTimeInCurrentPlayMode();
         }
-        state.whenCurrentPlayModeBegan = state.getTime();
-        state.playMode = PlayMode.Playing;
+        state.setWhenCurrentPlayModeBegan(state.getTime());
+        state.setPlayMode(PlayMode.Playing);
         game.pushState("Playing");
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.playMode == PlayMode.Set
-            || state.playMode == PlayMode.Playing
-            || state.testmode;
+        return state.getPlayMode() == PlayMode.Set
+            || state.getPlayMode() == PlayMode.Playing
+            || state.isTestMode();
     }
 }

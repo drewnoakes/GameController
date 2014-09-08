@@ -1,9 +1,7 @@
 package controller.action.ui.period;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.*;
 
 /**
@@ -14,13 +12,13 @@ import data.*;
 public class FirstHalf extends Action
 {
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (!state.firstHalf || state.period == Period.PenaltyShootout) {
-            state.firstHalf = true;
-            state.period = Period.Normal;
-            state.nextKickOffColor = game.initialKickOffColor();
-            state.playMode = PlayMode.Initial;
+        if (!state.isFirstHalf() || state.getPeriod() == Period.PenaltyShootout) {
+            state.setFirstHalf(true);
+            state.setPeriod(Period.Normal);
+            state.setNextKickOffColor(game.initialKickOffColor());
+            state.setPlayMode(PlayMode.Initial);
             changeSide(game, state);
             // Don't set data.whenCurrentPlayModeBegan, because it's used to count the pause
             game.pushState("1st Half");
@@ -28,9 +26,9 @@ public class FirstHalf extends Action
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return (state.firstHalf && state.period == Period.Normal) || state.testmode;
+        return (state.isFirstHalf() && state.getPeriod() == Period.Normal) || state.isTestMode();
     }
     
     /**
@@ -39,33 +37,29 @@ public class FirstHalf extends Action
      * @param game the game being played.
      * @param state the current game state to work on.
      */
-    public static void changeSide(Game game, GameState state)
+    public static void changeSide(Game game, WriteableGameState state)
     {
-        TeamState team = state.teams[0];
-        state.teams[0] = state.teams[1];
-        state.teams[1] = team;
+        // TODO add option to control this, as GC v1.2 seemed to always (?) negate the flip somewhere else
+        game.uiOrientation().flip();
 
-        boolean[] ejected = state.ejected[0];
-        state.ejected[0] = state.ejected[1];
-        state.ejected[1] = ejected;
+        // If necessary, swap team colors
+        if (state.getPeriod() != Period.PenaltyShootout && game.changeColoursEachPeriod()) {
 
-        // if necessary, swap team colors
-        if (state.period != Period.PenaltyShootout && game.changeColoursEachPeriod()) {
-            TeamColor color = state.teams[0].teamColor;
-            state.teams[0].teamColor = state.teams[1].teamColor;
-            state.teams[1].teamColor = color;
+            WriteableTeamState left = state.getTeam(UISide.Left);
+            WriteableTeamState right = state.getTeam(UISide.Right);
+
+            left.setTeamColor(left.getTeamColor().other());
+            right.setTeamColor(right.getTeamColor().other());
         }
 
-        if (game.settings().timeOutPerHalf && state.period != Period.PenaltyShootout) {
-            state.timeOutTaken = new boolean[] {false, false};
-        } else {
-            boolean timeOutTaken = state.timeOutTaken[0];
-            state.timeOutTaken[0] = state.timeOutTaken[1];
-            state.timeOutTaken[1] = timeOutTaken;
+        // If necessary, clear the timeout flags of both teams
+        if (game.settings().timeOutPerHalf && state.getPeriod() != Period.PenaltyShootout) {
+            state.getTeam(UISide.Left).setTimeOutTaken(false);
+            state.getTeam(UISide.Right).setTimeOutTaken(false);
         }
         
-        state.timeBeforeCurrentPlayMode = 0;
-        state.whenDropIn = 0;
+        state.setTimeBeforeCurrentPlayMode(0);
+        state.setWhenDropIn(0);
         state.resetPenalties();
     }
 }

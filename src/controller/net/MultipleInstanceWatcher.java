@@ -30,7 +30,7 @@ public class MultipleInstanceWatcher
                 @Override
                 public void handle(GameStateSnapshot message)
                 {
-                    if (message.gameId != gameId)
+                    if (message.getGameId() != gameId)
                     {
                         lastOtherGameSeenTime = System.currentTimeMillis();
                     }

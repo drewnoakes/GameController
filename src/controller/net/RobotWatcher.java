@@ -1,11 +1,14 @@
 package controller.net;
 
+import common.annotations.NotNull;
 import controller.Game;
+import controller.ReadOnlyTeamState;
 import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
 import data.League;
 import data.RobotMessage;
 import data.Penalty;
+import data.UISide;
 
 /**
  * Processes messages received from robots, triggering manual penalisation/unpenalisation and tracking who is online.
@@ -31,7 +34,7 @@ public class RobotWatcher
     private final static int MILLIS_UNTIL_ROBOT_IS_OFFLINE = 4*1000;
     private final static int MILLIS_UNTIL_ROBOT_HAS_HIGH_LATENCY = 2*1000;
 
-    public RobotWatcher(League league)
+    public RobotWatcher(@NotNull League league)
     {
         robotCount = league.settings().teamSize + (league.settings().isCoachAvailable ? 1 : 0);
         robotLastStatus = new RobotStatus[2][robotCount];
@@ -46,47 +49,63 @@ public class RobotWatcher
             }
         }
     }
+
+    private int getTeamIndex(Game game, int teamNumber)
+    {
+        if (game.teams().get(UISide.Left).getNumber() == teamNumber)
+            return 0;
+        if (game.teams().get(UISide.Right).getNumber() == teamNumber)
+            return 1;
+        return -1;
+    }
     
     /**
-     * Integrates messages received from robots, updating corresponding timestamps and firing
+     * Integrates messages received from robots, updating corresponding timestamps and triggering
      * actions required by manual penalising/unpenalising of the robot.
      *
      * @param game the active game
      * @param robotMessage a message received from a robot
      */
-    public synchronized void update(Game game, RobotMessage robotMessage)
+    public synchronized void update(@NotNull Game game, @NotNull RobotMessage robotMessage)
     {
-        int team = game.getGameState().getTeamIndex(robotMessage.getTeamNumber());
-        if (team == -1)
+        int teamIndex = getTeamIndex(game, robotMessage.getTeamNumber());
+
+        if (teamIndex == -1)
             return;
 
-        int number = robotMessage.getPlayerNumber();
+        int number = robotMessage.getUniformNumber();
+
         if (number <= 0 || number > game.settings().teamSize)
             return;
 
         int i = number - 1;
 
-        robotLastHeardTime[team][i] = System.currentTimeMillis();
+        robotLastHeardTime[teamIndex][i] = System.currentTimeMillis();
 
-        if (robotLastStatus[team][i] == robotMessage.getStatus())
+        if (robotLastStatus[teamIndex][i] == robotMessage.getStatus())
             return;
 
-        robotLastStatus[team][i] = robotMessage.getStatus();
+        robotLastStatus[teamIndex][i] = robotMessage.getStatus();
+
+        ReadOnlyTeamState team = game.getGameState().getTeam(robotMessage.getTeamNumber());
+
+        assert(team != null);
 
         if (robotMessage.getStatus() == RobotStatus.ManuallyPenalised) {
-            if (game.getGameState().teams[team].player[i].penalty == Penalty.None)
-                game.apply(ActionBoard.manualPen[team][i], ActionTrigger.Network);
+            if (team.getPlayer(number).getPenalty() == Penalty.None)
+                game.apply(ActionBoard.manualPen[teamIndex][i], ActionTrigger.Network);
         } else if (robotMessage.getStatus() == RobotStatus.ManuallyUnpenalised) {
-            if (game.getGameState().teams[team].player[i].penalty != Penalty.None)
-                game.apply(ActionBoard.manualUnpen[team][i], ActionTrigger.Network);
+            if (team.getPlayer(number).getPenalty() != Penalty.None)
+                game.apply(ActionBoard.manualUnpen[teamIndex][i], ActionTrigger.Network);
         }
     }
 
-    public synchronized void updateCoach(Game game, byte teamNumber)
+    public synchronized void updateCoach(@NotNull Game game, byte teamNumber)
     {
-        int team = game.getGameState().getTeamIndex(teamNumber);
-        if (team != -1)
-            robotLastHeardTime[team][game.settings().teamSize] = System.currentTimeMillis();
+        int teamIndex = getTeamIndex(game, teamNumber);
+
+        if (teamIndex != -1)
+            robotLastHeardTime[teamIndex][game.settings().teamSize] = System.currentTimeMillis();
     }
 
     /**
@@ -94,6 +113,7 @@ public class RobotWatcher
      * 
      * @return the updated online-status of each robot.
      */
+    @NotNull
     public synchronized RobotOnlineStatus[][] updateRobotOnlineStatus()
     {
         long currentTime = System.currentTimeMillis();

@@ -1,11 +1,9 @@
 package controller.action.clock;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
+import controller.*;
 import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
-import controller.GameState;
 import data.PlayMode;
 
 /**
@@ -16,17 +14,17 @@ import data.PlayMode;
 public class ClockTick extends Action
 {
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.playMode == PlayMode.Ready
-               && state.getSecondsSince(state.whenCurrentPlayModeBegan) >= game.settings().readyTime) {
+        if (state.getPlayMode() == PlayMode.Ready
+               && state.getSecondsSince(state.getWhenCurrentPlayModeBegan()) >= game.settings().readyTime) {
             game.apply(ActionBoard.set, ActionTrigger.Clock);
-        } else if (state.playMode == PlayMode.Finished) {
+        } else if (state.getPlayMode() == PlayMode.Finished) {
             Integer remainingPauseTime = state.getRemainingPauseTime();
             if (remainingPauseTime != null) {
-                if (state.firstHalf && remainingPauseTime <= game.settings().pauseTime / 2) {
+                if (state.isFirstHalf() && remainingPauseTime <= game.settings().pauseTime / 2) {
                     game.apply(ActionBoard.secondHalf, ActionTrigger.Clock);
-                } else if (!state.firstHalf && remainingPauseTime <= game.settings().pausePenaltyShootOutTime / 2) {
+                } else if (!state.isFirstHalf() && remainingPauseTime <= game.settings().pausePenaltyShootOutTime / 2) {
                     game.apply(ActionBoard.secondHalf, ActionTrigger.Clock);
                 }
             }
@@ -38,20 +36,19 @@ public class ClockTick extends Action
     /**
      * Gets whether the clock should be running given the current GameState.
      *
-     *
      * @param game
      * @param state the game state to consider
      * @return true if the clock should be running, otherwise false
      */
-    public boolean isClockRunning(Game game, @NotNull GameState state)
+    public boolean isClockRunning(Game game, @NotNull ReadOnlyGameState state)
     {
-        boolean halfNotStarted = state.timeBeforeCurrentPlayMode == 0 && state.playMode != PlayMode.Playing;
+        boolean halfNotStarted = state.getTimeBeforeCurrentPlayMode() == 0 && state.getPlayMode() != PlayMode.Playing;
         return
-          !(state.playMode == PlayMode.Initial
-             || state.playMode == PlayMode.Finished
-             || ((state.playMode == PlayMode.Ready || state.playMode == PlayMode.Set)
+          !(state.getPlayMode() == PlayMode.Initial
+             || state.getPlayMode() == PlayMode.Finished
+             || ((state.getPlayMode() == PlayMode.Ready || state.getPlayMode() == PlayMode.Set)
                  && ((game.isPlayOff() && game.settings().playOffTimeStop) || halfNotStarted))
-             || state.manPause)
-         || state.manPlay;
+             || state.isManPause())
+         || state.isManPlay();
     }
 }

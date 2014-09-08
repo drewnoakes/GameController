@@ -5,6 +5,8 @@ import controller.Game;
 import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
 import data.TeamColor;
+import data.UISide;
+
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
@@ -32,7 +34,7 @@ public class KeyboardListener implements KeyEventDispatcher
     /**
      * This is called every time a key is pressed or released.
      * 
-     * @param e     The key that has been pressed or released.
+     * @param e the key that has been pressed or released.
      * 
      * @return If false, the key will be consumed.
      */
@@ -44,11 +46,11 @@ public class KeyboardListener implements KeyEventDispatcher
         } else if (e.getID() == KeyEvent.KEY_PRESSED) {
             int key = e.getKeyCode();
         
-            if ((key == 0) || (key == pressing)) {
+            if (key == 0 || key == pressing) {
                 return false;
             }
             pressing = key;
-            return onKeyPress(key, e);
+            return onKeyPress(e);
         }
         
         return false;
@@ -62,32 +64,31 @@ public class KeyboardListener implements KeyEventDispatcher
     /**
      * This is called once every time a key is pressed. It is called once and
      * not as long as the key is pressed.
-     *
+     * <p>
      * You can easily set the keys for each action here. The actions are
      * to be performed via the actionPerformed method as they are in the
      * GUI.
      * 
-     * @param key the pressed key.
-     *
-     * @param e
-     * @return true if the keystroke was handled, otherwise false.
+     * @param e the key event object.
+     * @return <code>true</code> if the keystroke was handled, otherwise <code>false</code>.
      */
-    private boolean onKeyPress(int key, KeyEvent e)
+    private boolean onKeyPress(KeyEvent e)
     {
         Action action = null;
-        
-        switch (key) {
+
+        switch (e.getKeyCode()) {
             case KeyEvent.VK_ESCAPE: action = ActionBoard.quit; break;
             case KeyEvent.VK_Q: if (e.isControlDown()) action = ActionBoard.quit; break;
             case KeyEvent.VK_DELETE: action = ActionBoard.testmode; break;
             case KeyEvent.VK_BACK_SPACE: action = ActionBoard.undo[1]; break;
 
-            case KeyEvent.VK_B: action = ActionBoard.out[game.getGameState().teams[0].teamColor == TeamColor.Blue ? 0 : 1]; break;
-            case KeyEvent.VK_R: action = ActionBoard.out[game.getGameState().teams[0].teamColor == TeamColor.Red ? 0 : 1]; break;
+            case KeyEvent.VK_B: action = ActionBoard.out[game.getGameState().getTeam(UISide.Left).getTeamColor() == TeamColor.Blue ? 0 : 1]; break;
+            case KeyEvent.VK_R: action = ActionBoard.out[game.getGameState().getTeam(UISide.Right).getTeamColor() == TeamColor.Red ? 0 : 1]; break;
 
             default:
+            {
                 if (game.league().isSPLFamily()) {
-                    switch (key) {
+                    switch (e.getKeyCode()) {
                         case KeyEvent.VK_P: action = ActionBoard.pushing; break;
                         case KeyEvent.VK_L: action = ActionBoard.leaving; break;
                         case KeyEvent.VK_F: action = ActionBoard.fallen; break;
@@ -101,7 +102,7 @@ public class KeyboardListener implements KeyEventDispatcher
                         case KeyEvent.VK_S: action = ActionBoard.substitute; break;
                     }
                 } else if (game.league().isHLFamily()) {
-                    switch (key) {
+                    switch (e.getKeyCode()) {
                         case KeyEvent.VK_P: action = ActionBoard.pushing; break;
                         case KeyEvent.VK_D: action = ActionBoard.defense; break;
                         case KeyEvent.VK_M: action = ActionBoard.ballManipulation; break;
@@ -110,6 +111,7 @@ public class KeyboardListener implements KeyEventDispatcher
                         case KeyEvent.VK_S: action = ActionBoard.substitute; break;
                     }
                 }
+            }
         }
         
         if (action != null) {

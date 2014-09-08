@@ -2,7 +2,7 @@ package controller.net.protocol;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.GameState;
+import controller.ReadOnlyGameState;
 import data.GameStateSnapshot;
 
 import java.nio.ByteBuffer;
@@ -46,13 +46,13 @@ public abstract class GameStateProtocol implements ReceivingProtocol<GameStateSn
     public abstract GameStateSnapshot fromBytes(@NotNull ByteBuffer buffer);
 
     /**
-     * Formats an instance of {@link data.GameStateSnapshot} for network transmission.
+     * Formats an instance of {@link controller.ReadOnlyGameState} for network transmission.
      *
-     * @param state The source of data for the message.
+     * @param state the source of data for the message.
      * @return the byte array to be sent via the network.
      */
     @NotNull
-    public abstract byte[] toBytes(@NotNull GameState state);
+    public abstract byte[] toBytes(@NotNull ReadOnlyGameState state);
 
     /**
      * Increments the packet number, ready for the next message.

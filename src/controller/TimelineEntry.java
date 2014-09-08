@@ -2,6 +2,9 @@ package controller;
 
 import common.annotations.NotNull;
 
+/**
+ * @author Drew Noakes https://drewnoakes.com
+ */
 public class TimelineEntry
 {
     @NotNull

@@ -5,7 +5,7 @@ import common.annotations.NotNull;
 /**
  * Action classes mutate the game state in some way.
  * <p>
- * Subclasses override {@link Action#execute(Game, GameState)} in order to perform
+ * Subclasses override {@link Action#execute(Game, WriteableGameState)} in order to perform
  * whatever change to the game state they require.
  * <p>
  * To invoke an action, call {@link Game#apply(Action, controller.action.ActionTrigger)}.
@@ -20,24 +20,23 @@ import common.annotations.NotNull;
 public abstract class Action
 {
     /**
-     * Executes the action on the specified {@link GameState}.
+     * Executes the action on the specified {@link WriteableGameState}.
      *
      * @param game the game to operate on.
      * @param state the game state to operate on.
      */
-    protected abstract void execute(@NotNull Game game, @NotNull GameState state);
+    protected abstract void execute(@NotNull Game game, @NotNull WriteableGameState state);
 
     /**
      * Specifies if this action is legal at a specific state of the game.
      *
      * By default, actions are legal unless this method is overridden.
-     * 
      *
      * @param game the game to operate on.
      * @param state the current data to calculate the legality by.
      * @return <code>true</code> if the action may be performed, otherwise <code>false</code>.
      */
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
         return true;
     }

@@ -1,32 +1,32 @@
 package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.PlayMode;
 import data.Penalty;
-import data.PlayerState;
+import data.UISide;
 
 /**
- * This action means that the inactive player penalty has been selected.
+ * Applies the SPL inactive player penalty to a robot.
  *
  * @author Michel Bartsch
  */
 public class Inactive extends PenaltyAction
 {
     @Override
-    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerState player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team,
+                                @NotNull WriteablePlayerState player, @NotNull UISide side)
     {
-        player.penalty = Penalty.SplInactivePlayer;
-        state.whenPenalized[side][number] = state.getTime();
-        game.pushState("Inactive Player " + state.teams[side].teamColor + " " + (number + 1));
+        player.setPenalty(Penalty.SplInactivePlayer);
+        player.setWhenPenalized(state.getTime());
+        game.pushState("Inactive Player " + team.getTeamColor() + " " + player.getUniformNumber());
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.playMode == PlayMode.Ready
-            || state.playMode == PlayMode.Playing
-            || state.testmode;
+        return state.getPlayMode() == PlayMode.Ready
+            || state.getPlayMode() == PlayMode.Playing
+            || state.isTestMode();
     }
 }

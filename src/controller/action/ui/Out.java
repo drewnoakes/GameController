@@ -1,10 +1,9 @@
 package controller.action.ui;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.PlayMode;
+import data.UISide;
 
 /**
  * Updates the game state in response to the ball going out of play.
@@ -13,28 +12,28 @@ import data.PlayMode;
  */
 public class Out extends Action
 {
-    /** Out on which side (0:left, 1:right) */
-    private final int side;
+    /** Out on which side. */
+    private final UISide side;
 
     /**
-     * @param side out on which side (0:left, 1:right)
+     * @param side out on which side
      */
-    public Out(int side)
+    public Out(UISide side)
     {
         this.side = side;
     }
 
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        state.whenDropIn = state.getTime();
-        state.lastDropInColor = state.teams[side].teamColor;
-        game.pushState("Out by " + state.teams[side].teamColor);
+        state.setWhenDropIn(state.getTime());
+        state.setLastDropInColor(state.getTeam(side).getTeamColor());
+        game.pushState("Out by " + state.getTeam(side).getTeamColor());
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.playMode == PlayMode.Playing || state.testmode;
+        return state.getPlayMode() == PlayMode.Playing || state.isTestMode();
     }
 }

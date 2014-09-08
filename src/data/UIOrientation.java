@@ -29,7 +29,7 @@ public class UIOrientation
         return (color == TeamColor.Blue) != isFlipped ? UISide.Left : UISide.Right;
     }
 
-    public TeamColor getSide(UISide side)
+    public TeamColor getColor(UISide side)
     {
         return (side == UISide.Left) != isFlipped ? TeamColor.Blue : TeamColor.Red;
     }

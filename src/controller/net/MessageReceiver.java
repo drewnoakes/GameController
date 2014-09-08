@@ -13,7 +13,6 @@ import java.util.List;
 import common.Log;
 import common.annotations.NotNull;
 import controller.net.protocol.ReceivingProtocol;
-import data.League;
 
 /**
  * Asynchronously receives messages via UDP broadcast.

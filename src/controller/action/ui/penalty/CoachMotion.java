@@ -1,24 +1,24 @@
 package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.Penalty;
-import data.PlayerState;
+import data.UISide;
 
 public class CoachMotion extends PenaltyAction
 {
     @Override
-    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerState player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team,
+                                @NotNull WriteablePlayerState player, @NotNull UISide side)
     {
-        state.whenPenalized[side][number] = state.getTime();
-        state.teams[side].coach.penalty = Penalty.SplCoachMotion;
-        state.ejected[side][number] = true;
-        game.pushState("Coach Motion " + state.teams[side].teamColor + " " + (number + 1));
+        player.setPenalty(Penalty.SplCoachMotion);
+        player.setWhenPenalized(state.getTime());
+        player.setEjected(true);
+        game.pushState("Coach Motion " + team.getTeamColor() + " " + player.getUniformNumber());
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
         return game.settings().isCoachAvailable;
     }

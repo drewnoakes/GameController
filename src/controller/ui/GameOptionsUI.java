@@ -49,11 +49,11 @@ public class GameOptionsUI
     private final UIOrientation orientation;
     private final String broadcastAddress;
     private JFrame frame;
-    private Pair<String> backgroundImages;
-    private Pair<JLabel> teamLogoLabels;
-    private Pair<ImagePanel> teamBackgroundPanels;
-    private Pair<JComboBox<Team>> teamCombos;
-    private Pair<JRadioButton> kickOffRadios;
+    private ReadOnlyPair<String> backgroundImages;
+    private ReadOnlyPair<JLabel> teamLogoLabels;
+    private ReadOnlyPair<ImagePanel> teamBackgroundPanels;
+    private ReadOnlyPair<JComboBox<Team>> teamCombos;
+    private ReadOnlyPair<JRadioButton> kickOffRadios;
     private JComboBox<League> leagueCombo;
     private JRadioButton nofulltime;
     private JRadioButton fulltime;
@@ -367,8 +367,8 @@ public class GameOptionsUI
     /**
      * Assigns a team to a side of the UI.
      * 
-     * @param side the side (0=left, 1=right)
-     * @param team the team to assign to the specified side
+     * @param side the side of the UI.
+     * @param team the team to assign to the specified side.
      */ 
     private void setTeam(UISide side, @NotNull Team team)
     {

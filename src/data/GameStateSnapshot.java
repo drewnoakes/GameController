@@ -2,79 +2,139 @@ package data;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import leagues.LeagueSettings;
 
-import java.io.Serializable;
-
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Models the state of the game at a given moment.
- *
- * This class's representation is independent of any particular network protocol, though in
- * practice there are many similarities.
+ * Immutable model of the game state, as received from a Game Controller.
  *
  * @author Michel Bartsch
  * @author Drew Noakes https://drewnoakes.com
  */
-public class GameStateSnapshot implements Serializable
+public class GameStateSnapshot
 {
+    @NotNull private final PlayMode playMode;
+    private final boolean firstHalf;
+    @Nullable private final TeamColor nextKickOffColor;
+    @NotNull private final Period period;
+    @Nullable private final TeamColor lastDropInColor;
+    private final short dropInTime;
+    private final short secsRemaining;
+    private final short secondaryTime;
+    private final int gameId;
+    @NotNull public final TeamStateSnapshot team1;
+    @NotNull public final TeamStateSnapshot team2;
+
+    public GameStateSnapshot(@NotNull PlayMode playMode, boolean firstHalf, @Nullable TeamColor nextKickOffColor,
+                             @NotNull Period period, @Nullable TeamColor lastDropInColor, short dropInTime,
+                             short secsRemaining, @NotNull TeamStateSnapshot team1, @NotNull TeamStateSnapshot team2,
+                             short secondaryTime, int gameId)
+    {
+        this.playMode = playMode;
+        this.firstHalf = firstHalf;
+        this.nextKickOffColor = nextKickOffColor;
+        this.period = period;
+        this.lastDropInColor = lastDropInColor;
+        this.dropInTime = dropInTime;
+        this.secsRemaining = secsRemaining;
+        this.team1 = team1;
+        this.team2 = team2;
+        this.secondaryTime = secondaryTime;
+        this.gameId = gameId;
+    }
+
+    public Iterable<TeamStateSnapshot> getTeams()
+    {
+        List<TeamStateSnapshot> teams = new ArrayList<TeamStateSnapshot>();
+        teams.add(team1);
+        teams.add(team2);
+        return teams;
+    }
+
+    public TeamStateSnapshot getTeam(TeamColor color)
+    {
+        return team1.getTeamColor() == color ? team1 : team2;
+    }
+
+    /** Data about the first team in the message. */
+    @NotNull
+    public TeamStateSnapshot getTeam1()
+    {
+        return team1;
+    }
+
+    /** Data about the second team in the message. */
+    @NotNull
+    public TeamStateSnapshot getTeam2()
+    {
+        return team2;
+    }
+
     /** Play mode of the game. */
     @NotNull
-    public PlayMode playMode = PlayMode.Initial;
+    public PlayMode getPlayMode()
+    {
+        return playMode;
+    }
+
     /** Whether the game is currently in the first half. Applies to both normal time and overtime. */
-    public boolean firstHalf = true;
+    public boolean isFirstHalf()
+    {
+        return firstHalf;
+    }
+
     /** Which team has the next kick off. If <code>null</code>, then the next kick off will be a drop ball. */
     @Nullable
-    public TeamColor nextKickOffColor = TeamColor.Blue;
+    public TeamColor getNextKickOffColor()
+    {
+        return nextKickOffColor;
+    }
+
     /** The type of active game period (normal, overtime, penalties, timeout). */
-    public Period period = Period.Normal;
-    /** Team that caused last drop in. If no drop in has occurred yet, will be <code>null</code>. */
+    @NotNull
+    public Period getPeriod()
+    {
+        return period;
+    }
+
+    /** Color of the team that caused last drop in. If no drop in has occurred yet, will be <code>null</code>. */
     @Nullable
-    public TeamColor lastDropInColor;
+    public TeamColor getLastDropInColor()
+    {
+        return lastDropInColor;
+    }
+
     /** The number of seconds that have passed since the last drop in. Will be -1 before first drop in. */
-    public short dropInTime = -1;
+    public short getDropInTime()
+    {
+        return dropInTime;
+    }
+
     /** An estimate of the number of seconds remaining in the current half. */
-    public short secsRemaining;
+    public short getSecsRemaining()
+    {
+        return secsRemaining;
+    }
+
     /**
      * Play-mode-specific sub-time in seconds.
-     *
+     * <p>
      * For example, may reflect the ten second countdown during kickoff, or the number of seconds
      * remaining during 'ready' play mode, and so forth.
      */
-    public short secondaryTime = 0;
-    public final TeamState[] teams = new TeamState[2];
-    public int gameId = 0;
+    public short getSecondaryTime()
+    {
+        return secondaryTime;
+    }
 
     /**
-     * Creates a new, blank GameState.
+     * A number that uniquely identifies the current game instance.
+     * <p>
+     * May be used to prevent against problems seen when multiple game controllers are running on the same network.
      */
-    public GameStateSnapshot(LeagueSettings leagueSettings)
+    public int getGameId()
     {
-        teams[0] = new TeamState(TeamColor.Blue);
-        teams[1] = new TeamState(TeamColor.Red);
-        secsRemaining = (short) leagueSettings.halfTime;
-    }
-    
-    @Override
-    public String toString()
-    {
-        return "           playMode: " + playMode + '\n' +
-               "          firstHalf: " + (firstHalf ? "true" : "false") + '\n' +
-               "   nextKickOffColor: " + nextKickOffColor + '\n' +
-               "             period: " + period + '\n' +
-               "    lastDropInColor: " + lastDropInColor + '\n' +
-               "         dropInTime: " + dropInTime + '\n' +
-               "      secsRemaining: " + secsRemaining + '\n' +
-               "      secondaryTime: " + secondaryTime + '\n';
-    }
-
-    /** Gets the index of the specified team number, or -1 if the team number is unknown. */
-    public int getTeamIndex(byte teamNumber)
-    {
-        return teamNumber == teams[0].teamNumber
-                ? 0
-                : teamNumber == teams[1].teamNumber
-                    ? 1
-                    : -1;
+        return gameId;
     }
 }

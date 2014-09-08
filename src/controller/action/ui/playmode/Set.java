@@ -1,10 +1,8 @@
 package controller.action.ui.playmode;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
+import controller.*;
 import controller.action.ui.period.FirstHalf;
-import controller.GameState;
 import data.Period;
 import data.PlayMode;
 import data.TeamColor;
@@ -17,44 +15,52 @@ import data.TeamColor;
 public class Set extends Action
 {
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.playMode == PlayMode.Set) {
+        if (state.getPlayMode() == PlayMode.Set) {
             return;
         }
+
         if (game.settings().returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
-        if (!game.isPlayOff() && state.timeBeforeCurrentPlayMode != 0) {
+
+        if (!game.isPlayOff() && state.getTimeBeforeCurrentPlayMode() != 0) {
             state.addTimeInCurrentPlayMode();
         }
-        state.whenCurrentPlayModeBegan = state.getTime();
 
-        if (state.period == Period.PenaltyShootout) {
-            state.timeBeforeCurrentPlayMode = 0;
-            if (state.playMode != PlayMode.Initial) {
-                state.nextKickOffColor = state.nextKickOffColor == TeamColor.Blue ? TeamColor.Red : TeamColor.Blue;
+        state.setWhenCurrentPlayModeBegan(state.getTime());
+
+        if (state.getPeriod() == Period.PenaltyShootout) {
+            state.setTimeBeforeCurrentPlayMode(0);
+            if (state.getPlayMode() != PlayMode.Initial) {
+                TeamColor nextKickOffColor = state.getNextKickOffColor();
+                if (nextKickOffColor == null)
+                    nextKickOffColor = TeamColor.Blue;
+                state.setNextKickOffColor(nextKickOffColor.other());
                 FirstHalf.changeSide(game, state);
             }
 
-            if (state.playMode != PlayMode.Playing) {
-                state.teams[state.teams[0].teamColor == state.nextKickOffColor ? 0 : 1].penaltyShot++;
+            if (state.getPlayMode() != PlayMode.Playing) {
+                // Increment the kick-off team's penalty shot count
+                WriteableTeamState team = state.getTeam(state.getNextKickOffColor());
+                team.setPenaltyShotCount(team.getPenaltyShotCount() + 1);
             }
         }
-        state.playMode = PlayMode.Set;
+
+        state.setPlayMode(PlayMode.Set);
         game.pushState("Set");
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.playMode == PlayMode.Ready
-            || state.playMode == PlayMode.Set
-            || (state.period == Period.PenaltyShootout
-              && (state.playMode != PlayMode.Playing || game.settings().penaltyShotRetries)
-              && !state.timeOutActive[0]
-              && !state.timeOutActive[1]
-              && !state.refereeTimeout)
-            || state.testmode;
+        return state.getPlayMode() == PlayMode.Ready
+            || state.getPlayMode() == PlayMode.Set
+            || (state.getPeriod() == Period.PenaltyShootout
+              && (state.getPlayMode() != PlayMode.Playing || game.settings().penaltyShotRetries)
+              && !state.isTimeOutActive()
+              && !state.isRefereeTimeout())
+            || state.isTestMode();
     }
 }

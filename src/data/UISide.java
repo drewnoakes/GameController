@@ -33,4 +33,9 @@ public enum UISide
     {
         return both;
     }
+
+    public UISide other()
+    {
+        return this == Left ? Right : Left;
+    }
 }

@@ -1,9 +1,7 @@
 package controller.action.ui;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 
 /**
  * This action means that the clock is to be reset.
@@ -13,18 +11,18 @@ import controller.GameState;
 public class ClockReset extends Action
 {
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        state.timeBeforeCurrentPlayMode = 0;
-        state.whenCurrentPlayModeBegan = state.getTime();
-        state.manWhenClockChanged = state.whenCurrentPlayModeBegan;
-        state.manRemainingGameTimeOffset = 0;
+        state.setTimeBeforeCurrentPlayMode(0);
+        state.setWhenCurrentPlayModeBegan(state.getTime());
+        state.setManWhenClockChanged(state.getWhenCurrentPlayModeBegan());
+        state.setManRemainingGameTimeOffset(0);
         game.pushState("Time reset");
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.testmode;
+        return state.isTestMode();
     }
 }

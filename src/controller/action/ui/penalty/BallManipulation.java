@@ -5,10 +5,9 @@
 package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.Penalty;
-import data.PlayerState;
+import data.UISide;
 
 /**
  *
@@ -17,10 +16,11 @@ import data.PlayerState;
 public class BallManipulation extends PenaltyAction
 {
     @Override
-    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerState player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team,
+                                @NotNull WriteablePlayerState player, @NotNull UISide side)
     {
-        player.penalty = Penalty.HLBallManipulation;
-        state.whenPenalized[side][number] = state.getTime();
-        game.pushState("Ball Manipulation " + state.teams[side].teamColor + " " + (number + 1));
+        player.setPenalty(Penalty.HLBallManipulation);
+        player.setWhenPenalized(state.getTime());
+        game.pushState("Ball Manipulation " + team.getTeamColor() + " " + player.getUniformNumber());
     }
 }

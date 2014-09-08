@@ -1,6 +1,5 @@
 package controller.ui.controls;
 
-import common.annotations.NotNull;
 import common.annotations.Nullable;
 
 import javax.swing.*;

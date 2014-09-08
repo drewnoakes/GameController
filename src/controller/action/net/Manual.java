@@ -1,11 +1,10 @@
 package controller.action.net;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.PlayMode;
 import data.Penalty;
+import data.UISide;
 
 /**
  * This action means that a player has been penalised or unpenalised manually via a {@link data.RobotMessage}.
@@ -14,41 +13,43 @@ import data.Penalty;
  */
 public class Manual extends Action
 {
-    /** On which side (0:left, 1:right) */
-    private final int side;
-    /** The players`s number, beginning with 0! */
-    private final int number;
-    /** If true, this action means manual unpenalising, otherwise manual penalising.  */
-    private final boolean unpen;
+    private final UISide side;
+    private final int uniformNumber;
+    private final boolean isUnpenalisation;
     
     /**
-     * @param side      On which side (0:left, 1:right)
-     * @param number    The players`s number, beginning with 0!
-     * @param unpen     If true, this action means manual unpenalising,
-     *                  otherwise manual penalising.
+     * @param side on which side of the UI.
+     * @param uniformNumber the player's uniform number.
+     * @param isUnpenalisation if <code>true</code>, this action means manual unpenalising, otherwise manual penalising.
      */
-    public Manual(int side, int number, boolean unpen)
+    public Manual(@NotNull UISide side, int uniformNumber, boolean isUnpenalisation)
     {
+        if (uniformNumber < 1)
+            throw new IllegalArgumentException("Uniform number must be greater than zero.");
+
         this.side = side;
-        this.number = number;
-        this.unpen = unpen;
+        this.uniformNumber = uniformNumber;
+        this.isUnpenalisation = isUnpenalisation;
     }
 
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (!unpen) {
-            state.teams[side].player[number].penalty = Penalty.Manual;
-            state.whenPenalized[side][number] = state.getTime();
+        WriteableTeamState team = state.getTeam(side);
+        WriteablePlayerState player = team.getPlayer(uniformNumber);
 
-            if (state.playMode != PlayMode.Initial && state.playMode != PlayMode.Finished) {
-                game.pushState("Manually Penalised " + state.teams[side].teamColor + " " + (number + 1));
+        if (!isUnpenalisation) {
+            player.setPenalty(Penalty.Manual);
+            player.setWhenPenalized(state.getTime());
+
+            if (state.getPlayMode() != PlayMode.Initial && state.getPlayMode() != PlayMode.Finished) {
+                game.pushState("Manually Penalised " + team.getTeamColor() + " " + uniformNumber);
             }
         } else {
-            state.teams[side].player[number].penalty = Penalty.None;
+            player.setPenalty(Penalty.None);
 
-            if (state.playMode != PlayMode.Initial && state.playMode != PlayMode.Finished) {
-                game.pushState("Manually Unpenalised " + state.teams[side].teamColor + " " + (number + 1));
+            if (state.getPlayMode() != PlayMode.Initial && state.getPlayMode() != PlayMode.Finished) {
+                game.pushState("Manually Unpenalised " + team.getTeamColor() + " " + uniformNumber);
             }
         }
     }

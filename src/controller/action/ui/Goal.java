@@ -1,68 +1,68 @@
 package controller.action.ui;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
 import data.*;
 
 /**
- * This action means that a team has scored or its score is to be decreased.
+ * Adjusts a team's score. May be in response to a goal, or due to test mode.
  *
  * @author Michel Bartsch
  */
 public class Goal extends Action
 {
-    /** On which side (0:left, 1:right) */
-    private final int side;
-
-    /** This value will be added to the score. Normally will be one, but may vary if in test mode for example. */
-    private final int set;
+    private final UISide side;
+    private final int delta;
 
     /**
-     * @param side on which side (0:left, 1:right)
-     * @param set the amount to increment the score by
+     * @param side the side of the team to change score of
+     * @param delta the amount to modify the score by
      */
-    public Goal(int side, int set)
+    public Goal(UISide side, int delta)
     {
-        assert(set == 1 || set == -1);
+        assert(delta == 1 || delta == -1);
 
         this.side = side;
-        this.set = set;
+        this.delta = delta;
     }
 
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
+        WriteableTeamState team = state.getTeam(side);
+
+        int newScore = team.getScore() + delta;
+
         // Don't allow the score to be made negative
-        if (set < 0 && state.teams[side].score == 0)
+        if (newScore < 0)
             return;
 
-        state.teams[side].score += set;
+        // Update the score
+        team.setScore(newScore);
 
-        if (set == 1) {
-            if (state.period != Period.PenaltyShootout) {
-                state.nextKickOffColor = state.teams[side].teamColor.other();
+        if (delta == 1) {
+            if (state.getPeriod() != Period.PenaltyShootout) {
+                state.setNextKickOffColor(team.getTeamColor().other());
                 ActionBoard.ready.forceExecute(game, state);
-                game.pushState("Goal for " + state.teams[side].teamColor);
+                game.pushState("Goal for " + team.getTeamColor());
             } else {
-                state.teams[side].singleShots += 1 << state.teams[side].penaltyShot - 1;
+                team.addPenaltyGoal();
                 game.apply(ActionBoard.finish, ActionTrigger.User);
-                game.pushState("Goal for " + state.teams[side].teamColor);
+                game.pushState("Goal for " + team.getTeamColor());
             }
         } else {
-            game.pushState("Goal decrease for " + state.teams[side].teamColor);
+            game.pushState("Goal decrease for " + team.getTeamColor());
         }
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return (set == 1
-              && state.playMode == PlayMode.Playing
-              && (state.period != Period.PenaltyShootout || state.nextKickOffColor == state.teams[side].teamColor))
-            || state.testmode;
+        return (delta == 1
+              && state.getPlayMode() == PlayMode.Playing
+              && (state.getPeriod() != Period.PenaltyShootout || state.getNextKickOffColor() == state.getTeam(side).getTeamColor()))
+            || state.isTestMode();
     }
 }

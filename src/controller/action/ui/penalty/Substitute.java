@@ -1,10 +1,9 @@
 package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.Penalty;
-import data.PlayerState;
+import data.UISide;
 
 /**
  * This action means that the substitution player penalty has been selected.
@@ -14,19 +13,21 @@ import data.PlayerState;
 public class Substitute extends PenaltyAction
 {
     @Override
-    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerState player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team,
+                                @NotNull WriteablePlayerState player, @NotNull UISide side)
     {
-        if (player.penalty != Penalty.None) {
-            state.addToPenaltyQueue(side, state.whenPenalized[side][number], player.penalty);
+        // Queue any penalty the leaving player has to be picked up by the entering player
+        if (player.getPenalty() != Penalty.None) {
+            team.enqueuePenalty(player.getWhenPenalized(), player.getPenalty());
         }
 
-        player.penalty = Penalty.Substitute;
-        state.whenPenalized[side][number] = state.getTime();
-        game.pushState("Leaving Player " + state.teams[side].teamColor + " " + (number + 1));
+        player.setPenalty(Penalty.Substitute);
+        player.setWhenPenalized(state.getTime());
+        game.pushState("Leaving Player " + team.getTeamColor() + " " + player.getUniformNumber());
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
         return game.settings().teamSize > game.settings().robotsPlaying;
     }

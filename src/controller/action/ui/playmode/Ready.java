@@ -1,9 +1,7 @@
 package controller.action.ui.playmode;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.Period;
 import data.PlayMode;
 
@@ -15,37 +13,36 @@ import data.PlayMode;
 public class Ready extends Action
 {
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.playMode == PlayMode.Ready) {
+        if (state.getPlayMode() == PlayMode.Ready) {
             return;
         }
         forceExecute(game, state);
         game.pushState("Ready");
     }
 
-    public void forceExecute(Game game, GameState state)
+    public void forceExecute(Game game, WriteableGameState state)
     {
         if (game.settings().returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
-        if (state.playMode == PlayMode.Playing) {
+        if (state.getPlayMode() == PlayMode.Playing) {
             state.addTimeInCurrentPlayMode();
         }
-        state.whenCurrentPlayModeBegan = state.getTime();
-        state.playMode = PlayMode.Ready;
+        state.setWhenCurrentPlayModeBegan(state.getTime());
+        state.setPlayMode(PlayMode.Ready);
     }
 
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
         return
-            (state.playMode == PlayMode.Initial
-              && !state.timeOutActive[0]
-              && !state.timeOutActive[1]
-              && !state.refereeTimeout
-              && state.period != Period.PenaltyShootout)
-            || state.playMode == PlayMode.Ready
-            || state.testmode;
+            (state.getPlayMode() == PlayMode.Initial
+              && !state.isTimeOutActive()
+              && !state.isRefereeTimeout()
+              && state.getPeriod() != Period.PenaltyShootout)
+            || state.getPlayMode() == PlayMode.Ready
+            || state.isTestMode();
     }
 }

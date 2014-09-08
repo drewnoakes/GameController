@@ -4,9 +4,9 @@ import common.Interval;
 import common.Log;
 import common.annotations.NotNull;
 import controller.Config;
+import controller.ReadOnlyGameState;
 import controller.net.protocol.GameStateProtocol;
 import controller.Game;
-import controller.GameState;
 
 import java.net.*;
 import java.util.ArrayList;
@@ -71,9 +71,7 @@ public class GameStateSender
 
     private void sendState()
     {
-        GameState state = game.getGameState();
-
-        state.updateTimes();
+        ReadOnlyGameState state = game.getGameState();
 
         for (GameStateProtocol version : protocols) {
             try {

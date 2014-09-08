@@ -1,24 +1,24 @@
 package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.PlayMode;
-import data.PlayerState;
+import data.UISide;
 
 public class TeammatePushing extends PenaltyAction
 {
     @Override
-    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerState player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team,
+                                @NotNull WriteablePlayerState player, @NotNull UISide side)
     {
-        game.pushState("Teammate Pushing  " + state.teams[side].teamColor + " " + (number + 1));
+        game.pushState("Teammate Pushing " + team.getTeamColor() + " " + player.getUniformNumber());
     }
 
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
         return game.settings().dropInPlayerMode
-                && (state.playMode == PlayMode.Ready || state.playMode == PlayMode.Playing)
-                || state.testmode;
+                && (state.getPlayMode() == PlayMode.Ready || state.getPlayMode() == PlayMode.Playing)
+                || state.isTestMode();
     }
 }

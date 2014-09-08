@@ -1,47 +1,48 @@
 package controller.action.ui.period;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.PlayMode;
 import data.Period;
+import data.TeamColor;
 
 /**
- * This action means that a penalty shoot is to be starting.
+ * Moves the game into penalty shootouts.
  *
  * @author Michel Bartsch
  */
 public class PenaltyShoot extends Action
 {
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.period != Period.PenaltyShootout) {
-            state.period = Period.PenaltyShootout;
-            // Don't set data.whenCurrentPlayModeBegan, because it's used to count the pause
-            state.playMode = PlayMode.Initial;
-            state.timeBeforeCurrentPlayMode = 0;
+        if (state.getPeriod() != Period.PenaltyShootout) {
+            state.setPeriod(Period.PenaltyShootout);
+            // Don't set whenCurrentPlayModeBegan, because it's used to count the pause
+            state.setPlayMode(PlayMode.Initial);
+            state.setTimeBeforeCurrentPlayMode(0);
             state.resetPenalties();
+
             if (game.settings().timeOutPerHalf) {
-                state.timeOutTaken = new boolean[] {false, false};
+                state.getTeam(TeamColor.Blue).setTimeOutTaken(false);
+                state.getTeam(TeamColor.Red).setTimeOutTaken(false);
             }
             game.pushState("Penalty Shoot-out");
         }
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.period == Period.PenaltyShootout
-          || state.previousPeriod == Period.PenaltyShootout
-          || (!state.firstHalf
-            && state.playMode == PlayMode.Finished
+        return state.getPeriod() == Period.PenaltyShootout
+          || state.getPreviousPeriod() == Period.PenaltyShootout
+          || (!state.isFirstHalf()
+            && state.getPlayMode() == PlayMode.Finished
             && !(game.settings().overtime
                 && game.isPlayOff()
-                && state.period == Period.Normal
-                && state.teams[0].score == state.teams[1].score
-                && state.teams[0].score > 0))
-          || state.testmode;
+                && state.getPeriod() == Period.Normal
+                && state.getTeam(TeamColor.Blue).getScore() == state.getTeam(TeamColor.Red).getScore()
+                && state.getTeam(TeamColor.Blue).getScore() > 0))
+          || state.isTestMode();
     }
 }

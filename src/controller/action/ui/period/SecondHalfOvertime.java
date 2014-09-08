@@ -1,36 +1,35 @@
 package controller.action.ui.period;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.*;
 
 /**
- * This action means that the half is to be set to the second half of overtime.
+ * Moves the game into the second half of the overtime game period.
  *
  * @author Michel Bartsch
  */
 public class SecondHalfOvertime extends Action
 {
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.firstHalf || state.period == Period.PenaltyShootout) {
-            state.firstHalf = false;
-            state.period = Period.Overtime;
-            state.nextKickOffColor = game.initialKickOffColor().other();
-            state.playMode = PlayMode.Initial;
+        if (state.isFirstHalf() || state.getPeriod() == Period.PenaltyShootout) {
+            state.setFirstHalf(false);
+            state.setPeriod(Period.Overtime);
+            state.setNextKickOffColor(game.initialKickOffColor().other());
+            state.setPlayMode(PlayMode.Initial);
             FirstHalf.changeSide(game, state);
             game.pushState("2nd Half Extra Time");
         }
     }
 
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return (!state.firstHalf && state.period == Period.Overtime)
-            || (state.period == Period.Overtime && state.playMode == PlayMode.Finished)
-            || state.testmode;
+        // TODO what is this first clause for?
+        return (!state.isFirstHalf() && state.getPeriod() == Period.Overtime)
+            || (state.getPeriod() == Period.Overtime && state.getPlayMode() == PlayMode.Finished)
+            || state.isTestMode();
     }
 }

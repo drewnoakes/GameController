@@ -1,33 +1,33 @@
 package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.PlayMode;
 import data.Penalty;
-import data.PlayerState;
+import data.UISide;
 
 /**
- * This action means that the fallen robot penalty has been selected.
+ * Applies the SPL obstruction (fallen robot) penalty to a robot.
  *
  * @author Michel Bartsch
  */
 public class Fallen extends PenaltyAction
 {
     @Override
-    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerState player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team,
+                                @NotNull WriteablePlayerState player, @NotNull UISide side)
     {
-        player.penalty = Penalty.SplObstruction;
-        state.whenPenalized[side][number] = state.getTime();
-        game.pushState("Fallen Robot " + state.teams[side].teamColor + " " + (number + 1));
+        player.setPenalty(Penalty.SplObstruction);
+        player.setWhenPenalized(state.getTime());
+        game.pushState("Fallen Robot " + team.getTeamColor() + " " + player.getUniformNumber());
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.playMode == PlayMode.Ready
-            || state.playMode == PlayMode.Playing
-            || state.playMode == PlayMode.Set
-            || state.testmode;
+        return state.getPlayMode() == PlayMode.Ready
+            || state.getPlayMode() == PlayMode.Playing
+            || state.getPlayMode() == PlayMode.Set
+            || state.isTestMode();
     }
 }

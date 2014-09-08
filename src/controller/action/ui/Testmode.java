@@ -4,7 +4,7 @@ import common.Log;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
-import controller.GameState;
+import controller.WriteableGameState;
 
 /**
  * Toggles test mode on/off.
@@ -14,9 +14,9 @@ import controller.GameState;
 public class Testmode extends Action
 {
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        state.testmode = !state.testmode;
-        Log.toFile("Testmode = " + state.testmode);
+        state.setTestMode(!state.isTestMode());
+        Log.toFile("Testmode = " + state.isTestMode());
     }
 }

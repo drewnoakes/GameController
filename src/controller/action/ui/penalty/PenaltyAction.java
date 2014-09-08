@@ -1,10 +1,8 @@
 package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
+import controller.*;
 import controller.action.RobotAction;
-import controller.GameState;
 import data.PlayMode;
 
 /**
@@ -16,7 +14,7 @@ import data.PlayMode;
 public abstract class PenaltyAction extends Action implements RobotAction
 {
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
         // If the last user action was to select this penalty, we want to clear that selection
         if (game.getLastUserAction() == this) {
@@ -29,8 +27,8 @@ public abstract class PenaltyAction extends Action implements RobotAction
      * or when test mode is active.
      */
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.playMode == PlayMode.Playing || state.testmode;
+        return state.getPlayMode() == PlayMode.Playing || state.isTestMode();
     }
 }

@@ -8,10 +8,8 @@ import javax.swing.*;
 import common.EventHandler;
 import common.TotalScaleLayout;
 import common.annotations.NotNull;
+import controller.*;
 import controller.Action;
-import controller.Config;
-import controller.Game;
-import controller.GameState;
 import controller.action.ActionBoard;
 import controller.net.MultipleInstanceWatcher;
 import controller.net.RobotOnlineStatus;
@@ -189,10 +187,10 @@ public class ControllerUI
         this.robotWatcher = robotWatcher;
         this.multipleInstanceWatcher = multipleInstanceWatcher;
 
-        game.gameStateChanged.subscribe(new EventHandler<GameState>()
+        game.gameStateChanged.subscribe(new EventHandler<ReadOnlyGameState>()
         {
             @Override
-            public void handle(GameState state)
+            public void handle(ReadOnlyGameState state)
             {
                 ControllerUI.this.update(state);
             }
@@ -262,9 +260,11 @@ public class ControllerUI
         ButtonGroup kickOffGroup = new ButtonGroup();
         pushLabels = new JLabel[2];
         for (int i=0; i<2; i++) {
-            nameLabels[i] = new JLabel(game.league().getTeam(game.getGameState().teams[i].teamNumber).getName());
+            // TODO make nameLabels,goalIncButton,kickOffRadioButtons,goalCountLabels,pushLabels a ReadOnlyPair<> and enumerate sides
+            UISide side = i == 0 ? UISide.Left : UISide.Right;
+            nameLabels[i] = new JLabel(game.teams().get(side).getName());
             nameLabels[i].setHorizontalAlignment(JLabel.CENTER);
-            nameLabels[i].setForeground(game.getGameState().teams[i].teamColor.getColor(game.league()));
+            nameLabels[i].setForeground(game.getGameState().getTeam(side).getTeamColor().getRgb(game.league()));
             goalIncButton[i] = new Button("+");
             goalDecButton[i] = new Button("-");
             kickOffRadioButtons[i] = new JRadioButton(KICKOFF);
@@ -631,7 +631,7 @@ public class ControllerUI
      * 
      * @param state the game state to use when populating the UI.
      */
-    private void update(@NotNull GameState state)
+    private void update(@NotNull ReadOnlyGameState state)
     {
         updateClock(state);
         updateHalf(state);
@@ -665,12 +665,12 @@ public class ControllerUI
         frame.dispose();
     }
 
-    private void updateClock(GameState state)
+    private void updateClock(ReadOnlyGameState state)
     {
-        clockLabel.setText(formatTime(state.getRemainingGameTime()));
+        clockLabel.setText(formatTime(state.getSecsRemaining()));
         Integer secondaryTime = state.getSecondaryTime(KICKOFF_BLOCKED_HIGHLIGHT_SECONDS - 1);
         if (secondaryTime != null) {
-            if (state.playMode == PlayMode.Playing) {
+            if (state.getPlayMode() == PlayMode.Playing) {
                 secondaryTimeLabel.setText(formatTime(Math.max(0, secondaryTime)));
                 secondaryTimeLabel.setForeground(secondaryTime <= 0
                         && secondaryTimeLabel.getForeground() != COLOR_HIGHLIGHT ? COLOR_HIGHLIGHT : Color.BLACK);
@@ -697,10 +697,12 @@ public class ControllerUI
         }
     }
     
-    private void updateHalf(GameState state)
+    private void updateHalf(ReadOnlyGameState state)
     {
         for (int i=0; i<2; i++) {
-            nameLabels[i].setText(game.league().getTeam(state.teams[i].teamNumber).getName());
+            // TODO make nameLabels a ReadOnlyPair<> and enumerate sides
+            UISide side = i == 0 ? UISide.Left : UISide.Right;
+            nameLabels[i].setText(state.getTeam(side).getTeamName());
         }
         firstHalfPeriodButton.setEnabled(ActionBoard.firstHalf.canExecute(game, state));
         secondHalfPeriodButton.setEnabled(ActionBoard.secondHalf.canExecute(game, state));
@@ -709,28 +711,31 @@ public class ControllerUI
             secondHalfOvertimePeriodButton.setEnabled(ActionBoard.secondHalfOvertime.canExecute(game, state));
         }
         penaltyShootPeriodButton.setEnabled(ActionBoard.penaltyShoot.canExecute(game, state));
-        firstHalfPeriodButton.setSelected((state.period == Period.Normal)
-                && (state.firstHalf));
-        secondHalfPeriodButton.setSelected((state.period == Period.Normal)
-                && (!state.firstHalf));
+        firstHalfPeriodButton.setSelected((state.getPeriod() == Period.Normal)
+                && (state.isFirstHalf()));
+        secondHalfPeriodButton.setSelected((state.getPeriod() == Period.Normal)
+                && (!state.isFirstHalf()));
         if (game.settings().overtime) {
-           firstHalfOvertimePeriodButton.setSelected((state.period == Period.Overtime)
-                   && (state.firstHalf));
-           secondHalfOvertimePeriodButton.setSelected((state.period == Period.Overtime)
-                   && (!state.firstHalf));
+           firstHalfOvertimePeriodButton.setSelected((state.getPeriod() == Period.Overtime)
+                   && (state.isFirstHalf()));
+           secondHalfOvertimePeriodButton.setSelected((state.getPeriod() == Period.Overtime)
+                   && (!state.isFirstHalf()));
         }
-        penaltyShootPeriodButton.setSelected(state.period == Period.PenaltyShootout || state.previousPeriod == Period.PenaltyShootout);
+        penaltyShootPeriodButton.setSelected(state.getPeriod() == Period.PenaltyShootout || state.getPreviousPeriod() == Period.PenaltyShootout);
     }
     
-    private void updateTeamColors(GameState state)
+    private void updateTeamColors(ReadOnlyGameState state)
     {
         for (int i=0; i<2; i++) {
-            nameLabels[i].setForeground(state.teams[i].teamColor.getColor(game.league()));
-            sidePanel[i].setImage(backgroundSide[i][state.teams[i].teamColor.getValue()].getImage());
+            // TODO make nameLabels/sidePanel a ReadOnlyPair<> and enumerate sides
+            UISide side = i == 0 ? UISide.Left : UISide.Right;
+            ReadOnlyTeamState team = state.getTeam(side);
+            nameLabels[i].setForeground(team.getTeamColor().getRgb(game.league()));
+            sidePanel[i].setImage(backgroundSide[i][team.getTeamColor().getValue()].getImage());
         }
     }
     
-    private void updatePlayMode(GameState state)
+    private void updatePlayMode(ReadOnlyGameState state)
     {
         initialPlayModeButton.setEnabled(ActionBoard.initial.canExecute(game, state));
         readyPlayModeButton.setEnabled(ActionBoard.ready.canExecute(game, state));
@@ -738,45 +743,47 @@ public class ControllerUI
         playPlayModeButton.setEnabled(ActionBoard.play.canExecute(game, state));
         finishPlayModeButton.setEnabled(ActionBoard.finish.canExecute(game, state));
 
-        if (state.playMode == PlayMode.Initial) {
+        if (state.getPlayMode() == PlayMode.Initial) {
             initialPlayModeButton.setSelected(true);
-        } else if (state.playMode == PlayMode.Ready) {
+        } else if (state.getPlayMode() == PlayMode.Ready) {
             readyPlayModeButton.setSelected(true);
-        } else if (state.playMode == PlayMode.Set) {
+        } else if (state.getPlayMode() == PlayMode.Set) {
             setPlayModeButton.setSelected(true);
-        } else if (state.playMode == PlayMode.Playing) {
+        } else if (state.getPlayMode() == PlayMode.Playing) {
             playPlayModeButton.setSelected(true);
-        } else if (state.playMode == PlayMode.Finished) {
+        } else if (state.getPlayMode() == PlayMode.Finished) {
             finishPlayModeButton.setSelected(true);
         }
 
         highlight(finishPlayModeButton,
-                state.playMode != PlayMode.Finished
-                && state.getRemainingGameTime() <= FINISH_HIGHLIGHT_SECONDS
+                state.getPlayMode() != PlayMode.Finished
+                && state.getSecsRemaining() <= FINISH_HIGHLIGHT_SECONDS
                 && finishPlayModeButton.getBackground() != COLOR_HIGHLIGHT);
     }
     
-    private void updateGoal(GameState state)
+    private void updateGoal(ReadOnlyGameState state)
     {
         for (int i=0; i<2; i++) {
-            goalCountLabels[i].setText("" + state.teams[i].score);
+            // TODO make nameLabels a ReadOnlyPair<> and enumerate sides
+            UISide side = i == 0 ? UISide.Left : UISide.Right;
+            goalCountLabels[i].setText(Integer.toString(state.getTeam(side).getScore()));
             goalIncButton[i].setEnabled(ActionBoard.goalInc[i].canExecute(game, state));
             goalDecButton[i].setVisible(ActionBoard.goalDec[i].canExecute(game, state));
         }
     }
     
-    private void updateKickoff(GameState state)
+    private void updateKickoff(ReadOnlyGameState state)
     {
-        if (state.nextKickOffColor == null) {
+        if (state.getNextKickOffColor() == null) {
             // drop ball
             kickOffRadioButtons[2].setSelected(true);
         } else {
-            kickOffRadioButtons[state.teams[0].teamColor == state.nextKickOffColor ? 0 : 1].setSelected(true);
+            kickOffRadioButtons[state.getTeam(UISide.Left).getTeamColor() == state.getNextKickOffColor() ? 0 : 1].setSelected(true);
         }
         for (int i=0; i<2; i++) {
             kickOffRadioButtons[i].setEnabled(ActionBoard.kickOff[i].canExecute(game, state));
-            if (state.period != Period.PenaltyShootout
-                && state.previousPeriod != Period.PenaltyShootout) {
+            if (state.getPeriod() != Period.PenaltyShootout
+                && state.getPreviousPeriod() != Period.PenaltyShootout) {
                 kickOffRadioButtons[i].setText(KICKOFF);
             } else {
                 kickOffRadioButtons[i].setText(KICKOFF_PENALTY_SHOOTOUT);
@@ -784,55 +791,63 @@ public class ControllerUI
         }
     }
     
-    private void updatePushes(GameState state)
+    private void updatePushes(ReadOnlyGameState state)
     {
         for (int i=0; i<2; i++) {
-            if (state.period != Period.PenaltyShootout && state.previousPeriod != Period.PenaltyShootout) {
+            // TODO make nameLabels a ReadOnlyPair<> and enumerate sides
+            UISide side = i == 0 ? UISide.Left : UISide.Right;
+            ReadOnlyTeamState team = state.getTeam(side);
+            if (state.getPeriod() == Period.PenaltyShootout || state.getPreviousPeriod() == Period.PenaltyShootout) {
+                pushLabels[i].setText((i == 0 && (state.getPlayMode() == PlayMode.Set
+                        || state.getPlayMode() == PlayMode.Playing) ? SHOT : SHOTS) + ": " + team.getPenaltyShotCount());
+            } else {
                 if (game.settings().pushesToEjection == null || game.settings().pushesToEjection.length == 0) {
                     pushLabels[i].setText("");
                 } else {
-                    pushLabels[i].setText(PUSHES + ": " + state.pushes[i]);
+                    pushLabels[i].setText(PUSHES + ": " + team.getPushCount());
                 }
-            } else {
-                pushLabels[i].setText((i == 0 && (state.playMode == PlayMode.Set
-                        || state.playMode == PlayMode.Playing) ? SHOT : SHOTS) + ": " + state.teams[i].penaltyShot);
             }
         }
     }
     
-    private void updateRobots(GameState state)
+    private void updateRobots(ReadOnlyGameState state)
     {
         RobotOnlineStatus[][] onlineStatus = robotWatcher.updateRobotOnlineStatus();
 
         for (int i = 0; i < robotButtons.length; i++) {
-            final TeamState team = state.teams[i];
-            for (int j = 0; j < robotButtons[i].length; j++) {
-                final JButton button = robotButtons[i][j];
+            UISide side = i == 0 ? UISide.Left : UISide.Right;
+            ReadOnlyTeamState team = state.getTeam(side);
 
-                String text = team.teamColor + " " + (j + 1);
+            for (int j = 0; j < robotButtons[i].length; j++) {
+                boolean isCoach = j == game.settings().teamSize; // ActionBoard.robotButton[i][j].isCoach();
+
+                ReadOnlyPlayerState player = isCoach ? team.getCoach() : team.getPlayer(j + 1);
+                JButton button = robotButtons[i][j];
+
+                String text = team.getTeamColor() + " " + (j + 1);
                 boolean isButtonEnabled = true;
                 boolean isButtonHighlight = false;
                 int progress = 0;
 
-                if (ActionBoard.robotButton[i][j].isCoach()) {
+                if (isCoach) {
                     // Coach
-                    if (team.coach.penalty == Penalty.SplCoachMotion) {
+                    if (team.getCoach().getPenalty() == Penalty.SplCoachMotion) {
                         isButtonEnabled = false;
                         text = EJECTED;
                     } else {
-                        text = team.teamColor + " " + COACH;
+                        text = team.getTeamColor() + " " + COACH;
                     }
                 } else {
                     // Regular player
-                    final Penalty penalty = team.player[j].penalty;
+                    final Penalty penalty = player.getPenalty();
 
                     if (penalty != Penalty.None) {
                         // Penalised
-                        if (!state.ejected[i][j]) {
+                        if (!player.isEjected()) {
                             boolean pickup = game.league().isSPLFamily()
                                 ? penalty == Penalty.SplRequestForPickup
                                 : penalty == Penalty.HLPickupOrIncapable || penalty == Penalty.Service;
-                            int seconds = state.getRemainingPenaltyTime(i, j);
+                            int seconds = state.getRemainingPenaltyTime(player);
                             if (seconds == 0) {
                                 if (pickup) {
                                     text += " (Pick-Up)";
@@ -847,7 +862,7 @@ public class ControllerUI
                                 text += ": " + formatTime(seconds) + (pickup ? " (P)" : "");
                                 isButtonHighlight = seconds <= UNPEN_HIGHLIGHT_SECONDS && button.getBackground() != COLOR_HIGHLIGHT;
                             }
-                            int penTime = seconds + state.getSecondsSince(state.whenPenalized[i][j]);
+                            int penTime = seconds + state.getSecondsSince(player.getWhenPenalized());
                             if (seconds != 0) {
                                 progress = 1000 * seconds / penTime;
                             }
@@ -878,14 +893,17 @@ public class ControllerUI
         }
     }
     
-    private void updateTimeOut(GameState state)
+    private void updateTimeOut(ReadOnlyGameState state)
     {
         for (int i=0; i<2; i++) {
-            if (!state.timeOutActive[i]) {
+            // TODO make nameLabels a ReadOnlyPair<> and enumerate sides
+            UISide side = i == 0 ? UISide.Left : UISide.Right;
+            ReadOnlyTeamState team = state.getTeam(side);
+            if (!team.isTimeOutActive()) {
                 timeOutButton[i].setSelected(false);
                 highlight(timeOutButton[i], false);
             } else {
-                boolean shouldHighlight = (state.getRemainingSeconds(state.whenCurrentPlayModeBegan, game.settings().timeOutTime) < TIMEOUT_HIGHLIGHT_SECONDS)
+                boolean shouldHighlight = (state.getRemainingSeconds(state.getWhenCurrentPlayModeBegan(), game.settings().timeOutTime) < TIMEOUT_HIGHLIGHT_SECONDS)
                         && (timeOutButton[i].getBackground() != COLOR_HIGHLIGHT);
                 timeOutButton[i].setSelected(!IS_OSX || !shouldHighlight);
                 highlight(timeOutButton[i], shouldHighlight);
@@ -894,20 +912,20 @@ public class ControllerUI
         }
     }
     
-    private void updateRefereeTimeout(GameState state)
+    private void updateRefereeTimeout(ReadOnlyGameState state)
     {
-        refereeTimeoutButton.setSelected(state.refereeTimeout);
+        refereeTimeoutButton.setSelected(state.isRefereeTimeout());
         refereeTimeoutButton.setEnabled(ActionBoard.refereeTimeout.canExecute(game, state));
     }
     
-    private void updateGlobalStuck(GameState state)
+    private void updateGlobalStuck(ReadOnlyGameState state)
     {
         for (int i=0; i<2; i++) {
-            if (state.playMode == PlayMode.Playing
-                    && state.getRemainingSeconds(state.whenCurrentPlayModeBegan, game.settings().kickoffTime + game.settings().minDurationBeforeStuck) > 0)
-            {
-                if (state.nextKickOffColor == state.teams[i].teamColor)
-                {
+            // TODO make nameLabels a ReadOnlyPair<> and enumerate sides
+            UISide side = i == 0 ? UISide.Left : UISide.Right;
+            if (state.getPlayMode() == PlayMode.Playing
+                    && state.getRemainingSeconds(state.getWhenCurrentPlayModeBegan(), game.settings().kickoffTime + game.settings().minDurationBeforeStuck) > 0) {
+                if (state.getNextKickOffColor() == state.getTeam(side).getTeamColor()) {
                     gameStuckButtons[i].setEnabled(true);
                     gameStuckButtons[i].setText("<font color=#000000>" + KICKOFF_GOAL);
                 } else {
@@ -921,19 +939,19 @@ public class ControllerUI
         }
     }
     
-    private void updateDropBall(GameState state)
+    private void updateDropBall(ReadOnlyGameState state)
     {
         dropBallButton.setEnabled(ActionBoard.dropBall.canExecute(game, state));
     }
     
-    private void updateOut(GameState state)
+    private void updateOut(ReadOnlyGameState state)
     {
         for (int i=0; i<2; i++) {
             outButtons[i].setEnabled(ActionBoard.out[i].canExecute(game, state));
         }
     }
 
-    private void updatePenaltiesSPL(GameState state)
+    private void updatePenaltiesSPL(ReadOnlyGameState state)
     {
         penaltyButtons[0].setEnabled(ActionBoard.pushing.canExecute(game, state));
         penaltyButtons[1].setEnabled(ActionBoard.leaving.canExecute(game, state));
@@ -966,7 +984,7 @@ public class ControllerUI
         penaltyButtons[9].setSelected(highlightAction == ActionBoard.substitute);
     }
     
-    private void updatePenaltiesHL(GameState state)
+    private void updatePenaltiesHL(ReadOnlyGameState state)
     {
         penaltyButtons[0].setEnabled(ActionBoard.ballManipulation.canExecute(game, state));
         penaltyButtons[1].setEnabled(ActionBoard.pushing.canExecute(game, state));
@@ -989,17 +1007,17 @@ public class ControllerUI
     private void updateTimelineUndo()
     {
         Action highlightAction = game.getLastUserAction();
-        String[] undos = game.getLastTimelineTitles(ActionBoard.MAX_NUM_UNDOS_AT_ONCE);
+        String[] titles = game.getLastTimelineTitles(ActionBoard.MAX_NUM_UNDOS_AT_ONCE);
         boolean isUndoingAnything = false;
         for (int i = undoButtons.length - 1; i >= 0; i--) {
-            undoButtons[i].setVisible(!undos[i].equals(""));
-            undoButtons[i].setEnabled(!undos[i].contains(" vs "));
+            undoButtons[i].setVisible(!titles[i].equals(""));
+            undoButtons[i].setEnabled(!titles[i].contains(" vs "));
             if (highlightAction == ActionBoard.undo[i + 1] && ActionBoard.undo[i + 1].isPreview()) {
                 isUndoingAnything = true;
-                undoButtons[i].setText("<html><center>Undo '" + undos[i] + "'?");
+                undoButtons[i].setText("<html><center>Undo '" + titles[i] + "'?");
                 undoButtons[i].setSelected(true);
             } else {
-                undoButtons[i].setText("<html><center>" + undos[i]);
+                undoButtons[i].setText("<html><center>" + titles[i]);
                 undoButtons[i].setSelected(false);
             }
         }

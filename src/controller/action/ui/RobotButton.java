@@ -1,18 +1,13 @@
 package controller.action.ui;
 
-import java.util.ArrayList;
-
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
+import controller.*;
 import controller.action.RobotAction;
 import controller.action.ui.penalty.*;
 import controller.action.ui.penalty.PenaltyAction;
-import controller.GameState;
-import controller.GameState.PenaltyQueueData;
 import data.League;
 import data.Penalty;
-import data.PlayerState;
+import data.UISide;
 
 /**
  * This action means that a robot button has been pressed.
@@ -22,68 +17,70 @@ import data.PlayerState;
 public class RobotButton extends Action
 {
     private final League league;
-    /** On which side (0:left, 1:right) */
-    private final int side;
-    /** The players`s number, beginning with 0! */
-    private final int number;
+    private final UISide side;
+    private final int uniformNumber;
     
     /**
-     * @param side on which side (0:left, 1:right)
-     * @param number the players`s number, beginning with 0!
+     * @param side on which side
+     * @param uniformNumber the player's uniform number
      */
-    public RobotButton(League league, int side, int number)
+    public RobotButton(@NotNull League league, @NotNull UISide side, int uniformNumber)
     {
+        if (uniformNumber < 1)
+            throw new IllegalArgumentException("Uniform number must be greater than zero.");
+
         this.league = league;
         this.side = side;
-        this.number = number;
+        this.uniformNumber = uniformNumber;
     }
 
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        PlayerState player = state.teams[side].player[number];
-        if (player.penalty == Penalty.Substitute && !isCoach()) {
-            ArrayList<PenaltyQueueData> playerInfoList = state.penaltyQueueForSubPlayers.get(side);
-            if (playerInfoList.isEmpty()) {
-                if (game.league().isHLFamily()) {
-                    player.penalty = Penalty.None;
-                } else {
-                    player.penalty = Penalty.SplRequestForPickup;
-                }
-                state.whenPenalized[side][number] = state.getTime();
+        WriteableTeamState team = state.getTeam(side);
+        WriteablePlayerState player = team.getPlayer(uniformNumber);
+
+        if (player.getPenalty() == Penalty.Substitute && !isCoach()) {
+            TeamState.QueuedPenalty queuedPenalty = team.popQueuedPenalty();
+            if (queuedPenalty == null) {
+                player.setPenalty(game.league().isHLFamily() ? Penalty.None : Penalty.SplRequestForPickup);
+                player.setWhenPenalized(state.getTime());
             } else {
-                PenaltyQueueData playerInfo = playerInfoList.get(0);
-                player.penalty = playerInfo.penalty;
-                state.whenPenalized[side][number] = playerInfo.whenPenalized;
-                playerInfoList.remove(0);
+                player.setPenalty(queuedPenalty.getPenalty());
+                player.setWhenPenalized(queuedPenalty.getWhenPenalized());
             }
-            game.pushState("Entering Player " + state.teams[side].teamColor + " " + (number + 1));
+            game.pushState("Entering Player " + team.getTeamColor() + " " + uniformNumber);
         } else if (game.getLastUserAction() instanceof RobotAction) {
             RobotAction robotAction = (RobotAction)game.getLastUserAction();
-            robotAction.executeForRobot(game, state, player, side, number);
-        } else if (player.penalty != Penalty.None) {
+            robotAction.executeForRobot(game, state, team, player, side);
+        } else if (player.getPenalty() != Penalty.None) {
             // Clear the robot's existing penalty
-            player.penalty = Penalty.None;
-            game.pushState("Unpenalised " + state.teams[side].teamColor + " " + (number + 1));
+            player.setPenalty(Penalty.None);
+            game.pushState("Unpenalised " + team.getTeamColor() + " " + uniformNumber);
         }
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        if (state.testmode)
+        if (state.isTestMode())
             return true;
 
-        if (state.ejected[side][number])
+        ReadOnlyTeamState team = state.getTeam(side);
+
+        boolean isCoach = uniformNumber == game.settings().teamSize + 1;
+        ReadOnlyPlayerState player = isCoach ? team.getCoach() : team.getPlayer(uniformNumber);
+
+        if (player.isEjected())
             return false;
 
         Action lastUIAction = game.getLastUserAction();
-        Penalty penalty = state.teams[side].player[number].penalty;
+        Penalty penalty = player.getPenalty();
 
         return (!(lastUIAction instanceof PenaltyAction)
                    && penalty != Penalty.None
-                   && (state.getRemainingPenaltyTime(side, number) == 0 || game.league().isHLFamily())
-                   && (penalty != Penalty.Substitute || state.getNumberOfRobotsInPlay(side) < game.settings().robotsPlaying)
+                   && (state.getRemainingPenaltyTime(player) == 0 || game.league().isHLFamily())
+                   && (penalty != Penalty.Substitute || team.getNumberOfRobotsInPlay() < game.settings().robotsPlaying)
                    && !isCoach())
                || (lastUIAction instanceof PickUpHL
                    && penalty != Penalty.Service
@@ -97,10 +94,10 @@ public class RobotButton extends Action
                    && penalty != Penalty.Substitute)
                || (lastUIAction instanceof Substitute
                    && penalty != Penalty.Substitute
-                   && (!isCoach() && (!game.league().isSPLFamily() || number != 0)))
+                   && (!isCoach() && (!game.league().isSPLFamily() || uniformNumber != 0)))
                || (lastUIAction instanceof CoachMotion
                    && isCoach()
-                   && state.teams[side].coach.penalty != Penalty.SplCoachMotion)
+                   && team.getCoach().getPenalty() != Penalty.SplCoachMotion)
                || (penalty == Penalty.None
                    && (lastUIAction instanceof PenaltyAction)
                    && !(lastUIAction instanceof CoachMotion)
@@ -111,6 +108,6 @@ public class RobotButton extends Action
     
     public boolean isCoach()
     {
-        return league.settings().isCoachAvailable && number == league.settings().teamSize;
+        return league.settings().isCoachAvailable && uniformNumber == league.settings().teamSize;
     }
 }

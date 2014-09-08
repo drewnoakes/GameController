@@ -1,12 +1,11 @@
 package controller.action.ui;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
+import controller.*;
 import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
-import controller.GameState;
 import data.PlayMode;
+import data.UISide;
 
 /**
  * This action means that a global game stuck has occurred.
@@ -15,34 +14,36 @@ import data.PlayMode;
  */
 public class GlobalStuck extends Action
 {
-    /** On which side (0:left, 1:right) */
-    private final int side;
+    /** On which side. */
+    @NotNull private final UISide side;
 
     /**
-     * @param side on which side (0:left, 1:right)
+     * @param side on which side
      */
-    public GlobalStuck(int side)
+    public GlobalStuck(@NotNull UISide side)
     {
         this.side = side;
     }
 
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        state.nextKickOffColor = state.teams[side == 0 ? 1 : 0].teamColor;
+        WriteableTeamState team = state.getTeam(side);
+
+        state.setNextKickOffColor(team.getTeamColor().other());
 
         game.apply(ActionBoard.ready, ActionTrigger.User);
 
-        if (state.getRemainingSeconds(state.whenCurrentPlayModeBegan, game.settings().kickoffTime + game.settings().minDurationBeforeStuck) > 0) {
-            game.pushState("Kickoff Goal " + state.teams[side].teamColor);
+        if (state.getRemainingSeconds(state.getWhenCurrentPlayModeBegan(), game.settings().kickoffTime + game.settings().minDurationBeforeStuck) > 0) {
+            game.pushState("Kickoff Goal " + team.getTeamColor());
         } else {
-            game.pushState("Global Game Stuck, Kickoff " + state.nextKickOffColor);
+            game.pushState("Global Game Stuck, Kickoff " + state.getNextKickOffColor());
         }
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.playMode == PlayMode.Playing || state.testmode;
+        return state.getPlayMode() == PlayMode.Playing || state.isTestMode();
     }
 }

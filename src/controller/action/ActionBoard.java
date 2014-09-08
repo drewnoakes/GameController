@@ -7,6 +7,7 @@ import controller.action.ui.penalty.*;
 import controller.action.ui.period.*;
 import controller.action.ui.playmode.*;
 import data.League;
+import data.UISide;
 
 /**
  * This class actually holds static every instance of an action to get these
@@ -98,15 +99,16 @@ public class ActionBoard
         robotButton = new RobotButton[2][robotCount];
 
         for (int i=0; i<2; i++) {
-            goalDec[i] = new Goal(i, -1);
-            goalInc[i] = new Goal(i, 1);
-            kickOff[i] = new KickOff(i);
+            UISide side = i == 0 ? UISide.Left : UISide.Right;
+            goalDec[i] = new Goal(side, -1);
+            goalInc[i] = new Goal(side, 1);
+            kickOff[i] = new KickOff(side);
             for (int j=0; j< robotButton[i].length; j++) {
-                robotButton[i][j] = new RobotButton(league, i, j);
+                robotButton[i][j] = new RobotButton(league, side, j + 1);
             }
-            timeOut[i] = new TimeOut(i);
-            stuck[i] = new GlobalStuck(i);
-            out[i] = new Out(i);
+            timeOut[i] = new TimeOut(side);
+            stuck[i] = new GlobalStuck(side);
+            out[i] = new Out(side);
         }
         
         clockReset = new ClockReset();
@@ -146,9 +148,10 @@ public class ActionBoard
         manualPen = new Manual[2][robotCount];
         manualUnpen = new Manual[2][robotCount];
         for (int i=0; i<2; i++) {
+            UISide side = i == 0 ? UISide.Left : UISide.Right;
             for (int j=0; j<robotCount; j++) {
-                manualPen[i][j] = new Manual(i, j, false);
-                manualUnpen[i][j] = new Manual(i, j, true);
+                manualPen[i][j] = new Manual(side, j + 1, false);
+                manualUnpen[i][j] = new Manual(side, j + 1, true);
             }
         }
     }

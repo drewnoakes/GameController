@@ -1,37 +1,38 @@
 package controller.action.ui.period;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
+import controller.*;
 import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
-import controller.GameState;
 import data.PlayMode;
 import data.Period;
 
 public class RefereeTimeout extends Action
 {
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (!state.refereeTimeout) {
-            state.previousPeriod = state.period;
-            state.period = Period.Timeout;
-            state.refereeTimeout = true;
-            if (state.playMode == PlayMode.Playing) {
+        if (!state.isRefereeTimeout()) {
+            state.setPreviousPeriod(state.getPeriod());
+            state.setPeriod(Period.Timeout);
+            state.setRefereeTimeout(true);
+            if (state.getPlayMode() == PlayMode.Playing) {
                 state.addTimeInCurrentPlayMode();
             }
-            if (state.previousPeriod == Period.PenaltyShootout
-                    && (state.playMode == PlayMode.Set || state.playMode == PlayMode.Playing)) {
-                state.teams[state.nextKickOffColor == state.teams[0].teamColor ? 0 : 1].penaltyShot--;
+            if (state.getPreviousPeriod() == Period.PenaltyShootout
+                    && (state.getPlayMode() == PlayMode.Set || state.getPlayMode() == PlayMode.Playing)) {
+                // Decrease the kick-off team's penalty shot count
+                // TODO why do we do this? explain with a comment
+                WriteableTeamState kickOffTeam = state.getTeam(state.getNextKickOffColor());
+                kickOffTeam.setPenaltyShotCount(kickOffTeam.getPenaltyShotCount() - 1);
             }
             game.apply(ActionBoard.initial, ActionTrigger.User);
             game.pushState("Referee Timeout");
         } else {
-            state.period = state.previousPeriod;
-            state.previousPeriod = Period.Timeout;
-            state.refereeTimeout = false;
-            if (state.period != Period.PenaltyShootout) {
+            state.setPeriod(state.getPreviousPeriod());
+            state.setPreviousPeriod(Period.Timeout);
+            state.setRefereeTimeout(false);
+            if (state.getPeriod() != Period.PenaltyShootout) {
                 game.apply(ActionBoard.ready, ActionTrigger.User);
                 game.pushState("End of Referee Timeout");
             }
@@ -39,10 +40,8 @@ public class RefereeTimeout extends Action
     }
 
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.playMode != PlayMode.Finished
-                && !state.timeOutActive[0]
-                && !state.timeOutActive[1];
+        return state.getPlayMode() != PlayMode.Finished && !state.isTimeOutActive();
     }
 }

@@ -3,7 +3,7 @@ package controller.action.ui;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
-import controller.GameState;
+import controller.WriteableGameState;
 
 /**
  * Cancels an undo action in progress.
@@ -16,6 +16,6 @@ import controller.GameState;
 public class CancelUndo extends Action
 {
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {}
 }

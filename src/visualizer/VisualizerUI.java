@@ -23,9 +23,7 @@ import common.Interval;
 import common.Log;
 import common.annotations.NotNull;
 import controller.Config;
-import data.GameStateSnapshot;
-import data.Period;
-import data.PlayMode;
+import data.*;
 
 /**
  * The window of the Game Controller Visualizer.
@@ -211,7 +209,7 @@ public class VisualizerUI
         } else if (testmode) {
             drawTestmode(g);
         } else {
-            drawTeams(g);
+            drawTeamLogos(g);
             drawScores(g);
             drawTime(g);
             drawSecState(g);
@@ -225,7 +223,7 @@ public class VisualizerUI
     /**
      * This draws something to inform that there is no packet to draw.
      * 
-     * @param g  The graphics object to draw on.
+     * @param g the graphics object to draw on.
      */
     private void drawNoPacket(Graphics g)
     {
@@ -237,7 +235,7 @@ public class VisualizerUI
     /**
      * This draws everything in the packet in a simple way, just for testing.
      * 
-     * @param g  The graphics object to draw on.
+     * @param g the graphics object to draw on.
      */
     private void drawTestmode(Graphics g)
     {
@@ -245,25 +243,47 @@ public class VisualizerUI
         g.setFont(testFont);
         int x = getSizeToWidth(0.08);
         int y = getSizeToHeight(0.3);
-        String[] out = state.toString().split("\n");
+        String[] out = {
+            "           playMode: " + state.getPlayMode(),
+            "          firstHalf: " + (state.isFirstHalf() ? "true" : "false"),
+            "   nextKickOffColor: " + state.getNextKickOffColor(),
+            "             period: " + state.getPeriod(),
+            "    lastDropInColor: " + state.getLastDropInColor(),
+            "         dropInTime: " + state.getDropInTime(),
+            "      secsRemaining: " + state.getSecsRemaining(),
+            "      secondaryTime: " + state.getSecondaryTime()
+        };
         for (String o : out) {
             g.drawString(o, x, y);
             y += testFont.getSize() * 1.2;
         }
-        for (int j=0; j<2; j++) {
-            out = state.teams[j].toString().split("\n");
-            for (String o : out) {
+
+        for (TeamStateSnapshot team : state.getTeams()) {
+            String[] teamLines = {
+                "--------------------------------------",
+                "         teamNumber: " + team.getTeamNumber(),
+                "          teamColor: " + team.getTeamColor(),
+                "              score: " + team.getScore(),
+                "        penaltyShot: " + team.getPenaltyShotCount(),
+                "        singleShots: " + Integer.toBinaryString(team.getPenaltyShotFlags()),
+                "       coachMessage: " + (team.getCoachMessage() != null ? new String(team.getCoachMessage()) : null),
+                "        coachStatus: " + team.getCoach()
+            };
+            for (String o : teamLines) {
                 g.drawString(o, x, y);
                 y += testFont.getSize() * 1.2;
             }
         }
         
         x = getSizeToWidth(0.35);
-        for (int i=0; i<2; i++) {
+        for (TeamStateSnapshot team : state.getTeams()) {
             y = getSizeToHeight(0.2);
-            for (int j=0; j< state.teams[i].player.length; j++) {
-                out = state.teams[i].player[j].toString().split("\n");
-                for (String o : out) {
+            for (PlayerStateSnapshot player : team.getPlayers()) {
+                String[] playerLines = {
+                    "            penalty: " + player.penalty,
+                    "secsTillUnpenalised: " + player.secondsTillUnpenalised
+                };
+                for (String o : playerLines) {
                     g.drawString(o, x, y);
                     y += testFont.getSize() * 1.2;
                 }
@@ -273,25 +293,32 @@ public class VisualizerUI
     }
 
     /**
-     * This draws the teams´s icons.
+     * This draws the team logos.
      * 
-     * @param g  The graphics object to draw on.
+     * @param g the graphics object to draw on.
      */
-    private void drawTeams(Graphics g)
+    private void drawTeamLogos(Graphics g)
     {
         int x = getSizeToWidth(0.01);
         int y = getSizeToHeight(0.35);
         int size = getSizeToWidth(0.28);
 
+        Team team1 = options.getLeague().getTeam(state.getTeam1().getTeamNumber());
+        Team team2 = options.getLeague().getTeam(state.getTeam2().getTeamNumber());
+
+        if (team1 == null || team2 == null)
+            return;
+
         BufferedImage[] logos = new BufferedImage[] {
-            options.getLeague().getTeam(state.teams[0].teamNumber).getLogoImage(),
-            options.getLeague().getTeam(state.teams[1].teamNumber).getLogoImage()
+            team1.getLogoImage(),
+            team2.getLogoImage()
         };
 
         ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
         for (int i = 0; i < 2; i++) {
-            g.setColor(state.teams[i].teamColor.getColor(options.getLeague()));
+            TeamStateSnapshot team = i == 0 ? state.getTeam1() : state.getTeam2();
+            g.setColor(team.getTeamColor().getRgb(options.getLeague()));
             float scaleFactorX = 1f;
             float scaleFactorY = 1f;
             if (logos[i].getWidth() * 1.2f > logos[i].getHeight()) {
@@ -317,18 +344,21 @@ public class VisualizerUI
     private void drawScores(Graphics g)
     {
         g.setFont(scoreFont);
+
         int x = getSizeToWidth(0.34);
         int y = getSizeToHeight(0.61);
         int yDiv = getSizeToHeight(0.59);
         int size = getSizeToWidth(0.12);
+
         g.setColor(Color.BLACK);
-        drawCenteredString(g, ":", frame.getWidth()/2-size, yDiv, 2*size);
-        for (int i=0; i<2; i++) {
-            g.setColor(state.teams[i].teamColor.getColor(options.getLeague()));
+        drawCenteredString(g, ":", frame.getWidth() / 2 - size, yDiv, 2 * size);
+
+        for (UISide side : UISide.both()) {
+            g.setColor(getTeam(side).getTeamColor().getRgb(options.getLeague()));
             drawCenteredString(
                     g,
-                    state.teams[i].score+"",
-                    i==1 ? x : frame.getWidth()-x-size,
+                    Integer.toString(getTeam(side).getScore()),
+                    side == UISide.Left ? x : frame.getWidth() - x - size,
                     y,
                     size);
         }
@@ -343,10 +373,12 @@ public class VisualizerUI
     {
         g.setColor(Color.BLACK);
         g.setFont(standardFont);
+
         int x = getSizeToWidth(0.4);
         int y = getSizeToHeight(0.37);
         int size = getSizeToWidth(0.2);
-        drawCenteredString(g, formatTime(state.secsRemaining), x, y, size);
+
+        drawCenteredString(g, formatTime(state.getSecsRemaining()), x, y, size);
     }
     
     /**
@@ -362,25 +394,25 @@ public class VisualizerUI
         int y = getSizeToHeight(0.72);
         int size = getSizeToWidth(0.2);
         String state;
-        if (this.state.period == Period.Normal) {
-            if (this.state.firstHalf) {
-                if (this.state.playMode == PlayMode.Finished) {
+        if (this.state.getPeriod() == Period.Normal) {
+            if (this.state.isFirstHalf()) {
+                if (this.state.getPlayMode() == PlayMode.Finished) {
                     state = "Half Time";
                 } else {
                     state = "First Half";
                 }
             } else {
-                if (this.state.playMode == PlayMode.Initial) {
+                if (this.state.getPlayMode() == PlayMode.Initial) {
                     state = "Half Time";
                 } else {
                     state = "Second Half";
                 }
             }
-        } else if (this.state.period == Period.Overtime) {
+        } else if (this.state.getPeriod() == Period.Overtime) {
             state = "Overtime";
-        } else if (this.state.period == Period.PenaltyShootout) {
+        } else if (this.state.getPeriod() == Period.PenaltyShootout) {
             state = "Penalty Shootout";
-        } else if (this.state.period == Period.Timeout) {
+        } else if (this.state.getPeriod() == Period.Timeout) {
             state = "Time Out";
         } else {
             state = "";
@@ -400,7 +432,7 @@ public class VisualizerUI
         int x = getSizeToWidth(0.4);
         int y = getSizeToHeight(0.81);
         int size = getSizeToWidth(0.2);
-        drawCenteredString(g, state.playMode.toString(), x, y, size);
+        drawCenteredString(g, state.getPlayMode().toString(), x, y, size);
     }
     
     /**
@@ -410,7 +442,7 @@ public class VisualizerUI
      */
     private void drawSubTime(Graphics g)
     {
-        if (state.secondaryTime == 0) {
+        if (state.getSecondaryTime() == 0) {
             return;
         }
         g.setColor(Color.BLACK);
@@ -418,7 +450,7 @@ public class VisualizerUI
         int x = getSizeToWidth(0.4);
         int y = getSizeToHeight(0.9);
         int size = getSizeToWidth(0.2);
-        drawCenteredString(g, formatTime(state.secondaryTime), x, y, size);
+        drawCenteredString(g, formatTime(state.getSecondaryTime()), x, y, size);
     }
     
     /**
@@ -429,16 +461,20 @@ public class VisualizerUI
     private void drawPenaltyInfo(Graphics g)
     {
         g.setColor(Color.RED);
+
         int x = getSizeToWidth(0.05);
         int y = getSizeToHeight(0.86);
         int size = getSizeToWidth(0.02);
-        for (int i=0; i<2; i++) {
-            g.setColor(state.teams[i].teamColor.getColor(options.getLeague()));
-            for (int j=0; j< state.teams[i].penaltyShot; j++) {
-                if ((state.teams[i].singleShots & (1<<j)) != 0) {
-                    g.fillOval(i==1 ? x+j*2*size : frame.getWidth()-x-(5-j)*2*size-size, y, size, size);
+
+        for (int i = 0; i < 2; i++) {
+            TeamStateSnapshot team = i == 0 ? state.getTeam1() : state.getTeam2();
+            g.setColor(team.getTeamColor().getRgb(options.getLeague()));
+            for (int j = 0; j < team.getPenaltyShotCount(); j++) {
+                int circleX = i == 1 ? x + j * 2 * size : frame.getWidth() - x - (5 - j) * 2 * size - size;
+                if ((team.getPenaltyShotFlags() & (1 << j)) != 0) {
+                    g.fillOval(circleX, y, size, size);
                 } else {
-                    g.drawOval(i==1 ? x+j*2*size : frame.getWidth()-x-(5-j)*2*size-size, y, size, size);
+                    g.drawOval(circleX, y, size, size);
                 }
             }
         }
@@ -485,14 +521,19 @@ public class VisualizerUI
 
     private void drawCoachMessages(Graphics g)
     {
-        Graphics2D g2 = (Graphics2D) g; //need for setting the thickness of the line of the rectangles
+        Graphics2D g2 = (Graphics2D) g; // needed for setting the thickness of the line of the rectangles
 
         for (int i = 0; i < 2; i++) {
+            TeamStateSnapshot team = i == 0 ? state.getTeam1() : state.getTeam2();
+
+            if (team.getCoachMessage() == null)
+                continue;
+
             String coachMessage;
             try {
-                coachMessage = new String(state.teams[i].coachMessage, "UTF-8");
+                coachMessage = new String(team.getCoachMessage(), "UTF-8");
             } catch (UnsupportedEncodingException e) {
-                coachMessage = new String(state.teams[i].coachMessage);
+                coachMessage = new String(team.getCoachMessage());
             }
             int p = coachMessage.indexOf(0);
             if (p != -1) {
@@ -525,8 +566,8 @@ public class VisualizerUI
                 row2 = coachMessage.substring(split + 1).trim();
             }
 
-            //Draw the coach label and coach message box
-            g2.setColor(state.teams[i].teamColor.getColor(options.getLeague()));
+            // Draw the coach label and coach message box
+            g2.setColor(team.getTeamColor().getRgb(options.getLeague()));
             if (i == 1) {
                 g2.drawString(row1, getSizeToWidth(0.01), getSizeToHeight(0.92));
                 g2.drawString(row2, getSizeToWidth(0.01), getSizeToHeight(0.98));
@@ -549,5 +590,10 @@ public class VisualizerUI
         int displaySeconds = Math.abs(seconds) % 60;
         int displayMinutes = Math.abs(seconds) / 60;
         return (seconds < 0 ? "-" : "") + String.format("%02d:%02d", displayMinutes, displaySeconds);
+    }
+
+    private TeamStateSnapshot getTeam(UISide side)
+    {
+        return side == UISide.Left ? state.getTeam1() : state.getTeam2();
     }
 }

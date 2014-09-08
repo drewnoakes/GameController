@@ -3,7 +3,7 @@ package controller.action.ui;
 import common.annotations.NotNull;
 import controller.Action;
 import controller.Game;
-import controller.GameState;
+import controller.WriteableGameState;
 
 /**
  * Reverts the game state by one or more states from the timeline.
@@ -38,7 +38,7 @@ public class Undo extends Action
     }
 
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
         if (game.getLastUserAction() == this) {
             game.undo(count);

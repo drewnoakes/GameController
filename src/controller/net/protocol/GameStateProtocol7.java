@@ -2,11 +2,12 @@ package controller.net.protocol;
 
 import common.annotations.NotNull;
 import common.annotations.Nullable;
-import controller.GameState;
+import controller.ReadOnlyGameState;
+import controller.ReadOnlyPlayerState;
+import controller.ReadOnlyTeamState;
 import data.GameStateSnapshot;
 import data.League;
 import data.TeamColor;
-import data.TeamState;
 
 import java.nio.ByteBuffer;
 
@@ -17,6 +18,12 @@ import java.nio.ByteBuffer;
  */
 public class GameStateProtocol7 extends GameStateProtocol
 {
+    /**
+     * The number of player entries in a game state message.
+     * This may be more than the number of players allowed by the rules.
+     */
+    private static final byte NUM_PLAYERS_IN_GAME_STATE_MESSAGE = 11;
+
     private final League league;
 
     public GameStateProtocol7(@NotNull League league)
@@ -38,7 +45,7 @@ public class GameStateProtocol7 extends GameStateProtocol
                 1 + // teamColor
                 1 + // goal color
                 1 + // score
-                (TeamState.NUM_PLAYERS_IN_GAME_STATE_MESSAGE) * playerSize;
+                (NUM_PLAYERS_IN_GAME_STATE_MESSAGE) * playerSize;
 
         return  4 + // header
                 4 + // version
@@ -55,29 +62,24 @@ public class GameStateProtocol7 extends GameStateProtocol
 
     @NotNull
     @Override
-    public byte[] toBytes(@NotNull GameState state)
+    public byte[] toBytes(@NotNull ReadOnlyGameState state)
     {
         ByteBuffer buffer = writeHeader();
 
         buffer.putInt(getVersionNumber());
         buffer.put((byte)league.settings().teamSize);
-        buffer.put(state.playMode.getValue());
-        buffer.put(state.firstHalf ? (byte)1 : 0);
-        buffer.put(state.nextKickOffColor == null ? 2 : state.nextKickOffColor.getValue());
-        buffer.put(state.period.getValue());
+        buffer.put(state.getPlayMode().getValue());
+        buffer.put(state.isFirstHalf() ? (byte)1 : 0);
+        buffer.put(state.getNextKickOffColor() == null ? 2 : state.getNextKickOffColor().getValue());
+        buffer.put(state.getPeriod().getValue());
         // V7 sends '0' (blue) when no drop in has occurred. This is addressed in V9.
-        buffer.put(state.lastDropInColor == null ? 0 : state.lastDropInColor.getValue());
-        buffer.putShort(state.dropInTime);
-        buffer.putInt(state.secsRemaining);
+        buffer.put(state.getLastDropInColor() == null ? 0 : state.getLastDropInColor().getValue());
+        buffer.putShort((short)state.getDropInTime());
+        buffer.putInt(state.getSecsRemaining());
 
         // In version 7, team data was sorted by team color
-        if (state.teams[0].teamColor == TeamColor.Blue) {
-            writeTeamInfo(buffer, state.teams[0]);
-            writeTeamInfo(buffer, state.teams[1]);
-        } else {
-            writeTeamInfo(buffer, state.teams[1]);
-            writeTeamInfo(buffer, state.teams[0]);
-        }
+        writeTeamInfo(buffer, state.getTeam(TeamColor.Blue));
+        writeTeamInfo(buffer, state.getTeam(TeamColor.Red));
 
         return buffer.array();
     }
@@ -89,17 +91,25 @@ public class GameStateProtocol7 extends GameStateProtocol
         throw new AssertionError("Not implemented as no use for parsing version 7 messages is known of.");
     }
 
-    private static void writeTeamInfo(ByteBuffer buffer, TeamState teamState)
+    private static void writeTeamInfo(ByteBuffer buffer, ReadOnlyTeamState teamState)
     {
-        buffer.put((byte)teamState.teamNumber);
-        buffer.put(teamState.teamColor.getValue());
-        buffer.put((byte) 1); // goal color is always yellow
-        buffer.put(teamState.score);
+        buffer.put((byte)teamState.getTeamNumber());
+        buffer.put(teamState.getTeamColor().getValue());
+        // Goal color (always yellow). This carries over from a time when goals had different colours.
+        buffer.put((byte)1);
+        buffer.put((byte)teamState.getScore());
 
         // Write player data
-        for (int i=0; i < TeamState.NUM_PLAYERS_IN_GAME_STATE_MESSAGE; i++) {
-            buffer.putShort(teamState.player[i].penalty.getValue());
-            buffer.putShort(teamState.player[i].secsTillUnpenalised);
+        for (int uniformNumber = 1; uniformNumber <= NUM_PLAYERS_IN_GAME_STATE_MESSAGE; uniformNumber++) {
+            if (uniformNumber <= teamState.getPlayerCount()) {
+                ReadOnlyPlayerState player = teamState.getPlayer(uniformNumber);
+                buffer.putShort(player.getPenalty().getValue());
+                buffer.putShort((short)player.getRemainingPenaltyTime());
+            } else {
+                // Write blank data for unused players
+                buffer.putShort((short)0);
+                buffer.putShort((short)0);
+            }
         }
     }
 }

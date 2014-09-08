@@ -10,13 +10,13 @@ import controller.net.RobotStatus;
 public class RobotMessage
 {
     private final byte teamNumber;
-    private final byte playerNumber;
+    private final byte uniformNumber;
     private final RobotStatus status;
 
-    public RobotMessage(byte teamNumber, byte playerNumber, RobotStatus status)
+    public RobotMessage(byte teamNumber, byte uniformNumber, RobotStatus status)
     {
         this.teamNumber = teamNumber;
-        this.playerNumber = playerNumber;
+        this.uniformNumber = uniformNumber;
         this.status = status;
     }
 
@@ -27,9 +27,9 @@ public class RobotMessage
     }
 
     /** The robot's uniform number. */
-    public byte getPlayerNumber()
+    public byte getUniformNumber()
     {
-        return playerNumber;
+        return uniformNumber;
     }
 
     /** The robot's advertised status. */

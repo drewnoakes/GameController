@@ -1,9 +1,7 @@
 package controller.action.ui.playmode;
 
 import common.annotations.NotNull;
-import controller.Action;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.PlayMode;
 
 /**
@@ -14,9 +12,9 @@ import data.PlayMode;
 public class Initial extends Action
 {
     @Override
-    public void execute(@NotNull Game game, @NotNull GameState state)
+    public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.playMode != PlayMode.Initial) {
+        if (state.getPlayMode() != PlayMode.Initial) {
             forceExecute(game, state);
             game.pushState("Initial");
         }
@@ -25,18 +23,18 @@ public class Initial extends Action
     /**
      * Performs this action, even if the current play mode is {@link PlayMode#Initial}.
      */
-    public void forceExecute(Game game, @NotNull GameState state)
+    public void forceExecute(Game game, @NotNull WriteableGameState state)
     {
         if (game.settings().returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
-        state.whenCurrentPlayModeBegan = state.getTime();
-        state.playMode = PlayMode.Initial;
+        state.setWhenCurrentPlayModeBegan(state.getTime());
+        state.setPlayMode(PlayMode.Initial);
     }
 
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.playMode == PlayMode.Initial || state.testmode;
+        return state.getPlayMode() == PlayMode.Initial || state.isTestMode();
     }
 }

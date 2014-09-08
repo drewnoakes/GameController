@@ -8,7 +8,6 @@ import controller.action.ActionTrigger;
 import data.*;
 import leagues.LeagueSettings;
 
-import java.io.*;
 import java.util.Random;
 import java.util.Stack;
 
@@ -30,14 +29,13 @@ public class Game
 
     /**
      * Fires when the game state changed.
-     *
-     * The instance provided via this event is a clone, offering thread-safety and
-     * keeping the game's copy of the state private.
+     * <p>
+     * The instance provided via this event is readonly, offering thread-safety.
      */
-    public final Event<GameState> gameStateChanged;
+    public final Event<ReadOnlyGameState> gameStateChanged;
 
     private final League league;
-    private final Pair<Team> teams;
+    private final ReadOnlyPair<Team> teams;
     private final UIOrientation uiOrientation;
     private final boolean isPlayOff;
     private final boolean isFullScreen;
@@ -49,12 +47,6 @@ public class Game
     /** The golden record of the game's current state. */
     private GameState gameState;
 
-    /**
-     * When each action completes, this field is updated with a clone of the resulting state.
-     * It may be safely read by all threads, but attempts to modify it will be overwritten.
-     */
-    private GameState gameStateClone;
-
     /** The last {@link Action} that was executed with trigger {@link ActionTrigger#User}. */
     private Action lastUserAction;
     private boolean skipStoringLastUserAction;
@@ -63,27 +55,25 @@ public class Game
     private boolean shutdownRequested = false;
 
     /** Create a new Game with the specified options. */
-    public Game(GameOptions options)
+    public Game(@NotNull GameOptions options)
     {
         assert(options.isPlayOff != null);
 
         this.gameId = new Random().nextInt();
 
         this.league = options.league;
-        this.teams = options.teams; // TODO clone mutable bits of this object for single use during game
-        this.uiOrientation = options.orientation; // TODO clone mutable bits of this object for single use during game
+        this.teams = options.teams;
+        this.uiOrientation = options.orientation;
         this.isPlayOff = options.isPlayOff;
         this.isFullScreen = options.isFullScreen;
         this.changeColoursEachPeriod = options.changeColoursEachPeriod;
         this.initialKickOffColor = options.initialKickOffColor;
         this.broadcastAddress = options.broadcastAddress;
 
-        gameStateChanged = new Event<GameState>();
+        gameStateChanged = new Event<ReadOnlyGameState>();
 
         gameState = new GameState(this);
-        gameState.nextKickOffColor = options.initialKickOffColor;
-
-        gameStateClone = cloneGameState(gameState);
+        gameState.setNextKickOffColor(options.initialKickOffColor);
 
         pushState(teams.get(UISide.Left).getName() + " vs " + teams.get(UISide.Right).getName());
     }
@@ -106,7 +96,7 @@ public class Game
     }
 
     @NotNull
-    public Pair<Team> teams()
+    public ReadOnlyPair<Team> teams()
     {
         return teams;
     }
@@ -166,8 +156,7 @@ public class Game
 
         skipStoringLastUserAction = false;
 
-        gameStateClone = cloneGameState(gameState);
-        gameStateChanged.fire(gameStateClone);
+        gameStateChanged.fire(gameState);
     }
 
     /**
@@ -180,7 +169,7 @@ public class Game
      */
     public void pushState(@NotNull String title)
     {
-        timeline.add(new TimelineEntry(cloneGameState(gameState), title));
+        timeline.add(new TimelineEntry(gameState.clone(), title));
 
         Log.toFile(title);
     }
@@ -190,9 +179,9 @@ public class Game
      * lasting effect.
      */
     @NotNull
-    public GameState getGameState()
+    public ReadOnlyGameState getGameState()
     {
-        return gameStateClone;
+        return gameState;
     }
 
     /**
@@ -250,7 +239,7 @@ public class Game
         // Don't allow undoing the first state
         stateCount = Math.min(stateCount, timeline.size() - 1);
 
-        long latestTimestamp = timeline.peek().getState().whenCurrentPlayModeBegan;
+        long latestTimestamp = timeline.peek().getState().getWhenCurrentPlayModeBegan();
         long timeInCurrentState = timeline.peek().getState().getTime() - latestTimestamp;
 
         // Pop the specified number of states, and keep the oldest removed state
@@ -259,19 +248,18 @@ public class Game
             oldestRemoved = timeline.pop();
         }
         assert(oldestRemoved != null);
-        long earliestTimestamp = oldestRemoved.getState().whenCurrentPlayModeBegan;
+        long earliestTimestamp = oldestRemoved.getState().getWhenCurrentPlayModeBegan();
 
-        if (latestTimestamp != timeline.peek().getState().whenCurrentPlayModeBegan) {
+        if (latestTimestamp != timeline.peek().getState().getWhenCurrentPlayModeBegan()) {
             long timeOffset = latestTimestamp - earliestTimestamp + timeInCurrentState;
             for (TimelineEntry entry : timeline) {
-                entry.getState().whenCurrentPlayModeBegan += timeOffset;
+                entry.getState().setWhenCurrentPlayModeBegan(entry.getState().getWhenCurrentPlayModeBegan() + timeOffset);
             }
         }
 
         GameState state = timeline.peek().getState();
 
-        this.gameState = cloneGameState(state);
-        this.gameStateClone = cloneGameState(state);
+        this.gameState = state.clone();
 
         Log.toFile("Undo " + stateCount + " States to " + timeline.peek().getTitle());
     }
@@ -290,31 +278,6 @@ public class Game
     public boolean isShutdownRequested()
     {
         return shutdownRequested;
-    }
-
-    /**
-     * Generically clone this object. Everything referenced must be Serializable.
-     *
-     * @param gameState the object to clone
-     * @return a deep copy of this object.
-     */
-    private GameState cloneGameState(GameState gameState)
-    {
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            new ObjectOutputStream(out).writeObject(gameState);
-            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-            GameState clone = (GameState)new ObjectInputStream(in).readObject();
-            // Populate transient fields
-            clone.game = this;
-            return clone;
-        } catch (ClassNotFoundException e) {
-            Log.error(e.getClass().getName() + ": " + e.getMessage());
-        } catch (IOException e) {
-            Log.error(e.getClass().getName() + ": " + e.getMessage());
-        }
-        System.exit(1);
-        return null;
     }
 
     /**

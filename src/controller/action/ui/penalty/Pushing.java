@@ -1,11 +1,10 @@
 package controller.action.ui.penalty;
 
 import common.annotations.NotNull;
-import controller.Game;
-import controller.GameState;
+import controller.*;
 import data.PlayMode;
 import data.Penalty;
-import data.PlayerState;
+import data.UISide;
 
 /**
  * This action means that the player pushing penalty has been selected.
@@ -15,28 +14,28 @@ import data.PlayerState;
 public class Pushing extends PenaltyAction
 {
     @Override
-    public void executeForRobot(@NotNull Game game, @NotNull GameState state, @NotNull PlayerState player, int side, int number)
+    public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team, @NotNull WriteablePlayerState player, @NotNull UISide side)
     {
-        player.penalty = Penalty.SplPlayerPushing;
-        state.whenPenalized[side][number] = state.getTime();
+        player.setPenalty(Penalty.SplPlayerPushing);
+        player.setWhenPenalized(state.getTime());
 
-        if (state.playMode == PlayMode.Playing) {
-            state.pushes[side]++;
+        if (state.getPlayMode() == PlayMode.Playing) {
+            team.setPushCount(team.getPushCount() + 1);
             for (int pushes : game.settings().pushesToEjection) {
-                if (state.pushes[side] == pushes) {
-                    state.ejected[side][number] = true;
+                if (team.getPushCount() == pushes) {
+                    player.setEjected(true);
                 }
             }
         }
 
-        game.pushState("Player Pushing " + state.teams[side].teamColor + " " + (number + 1));
+        game.pushState("Player Pushing " + team.getTeamColor() + " " + player.getUniformNumber());
     }
     
     @Override
-    public boolean canExecute(@NotNull Game game, @NotNull GameState state)
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.playMode == PlayMode.Ready
-            || state.playMode == PlayMode.Playing
-            || state.testmode;
+        return state.getPlayMode() == PlayMode.Ready
+            || state.getPlayMode() == PlayMode.Playing
+            || state.isTestMode();
     }
 }
