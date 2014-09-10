@@ -315,22 +315,11 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
             if (message.getRemainingTimeToSend() == 0) {
                 WriteableTeamState team = getTeam(message.teamNumber);
                 if (team != null) {
-                    byte[] bytes = message.message;
-
-                    // All chars after the first zero are zeroed, too
-                    int k = 0;
-                    while (k < bytes.length && bytes[k] != 0) {
-                        k++;
-                    }
-                    while (k < bytes.length) {
-                        bytes[k++] = 0;
-                    }
-
                     // Set these bytes on the team state. They will be included in the periodically sent
                     // game state messages.
-                    team.setCoachMessage(bytes);
+                    team.setCoachMessage(message.bytes);
 
-                    Log.toFile("Coach Message Team " + team.getTeamColor() + " " + new String(bytes));
+                    Log.toFile("Coach Message Team " + team.getTeamColor() + " " + new String(message.bytes));
                     splCoachMessageQueue.remove(i);
                     break;
                 }

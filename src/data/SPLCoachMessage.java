@@ -24,14 +24,23 @@ public class SPLCoachMessage implements Serializable
     /** The coach's team's uniquely identifying team number for the tournament. */
     public final byte teamNumber;
     /** Contents of the coach's message. */
-    @NotNull public final byte[] message;
+    @NotNull public final byte[] bytes;
     /** The delay in millis that the message will be held back. */
     private final long sendTime;
 
-    public SPLCoachMessage(byte teamNumber, @NotNull byte[] message)
+    public SPLCoachMessage(byte teamNumber, @NotNull byte[] bytes)
     {
+        // All chars after the first zero are zeroed
+        int k = 0;
+        while (k < bytes.length && bytes[k] != 0) {
+            k++;
+        }
+        while (k < bytes.length) {
+            bytes[k++] = 0;
+        }
+
         this.teamNumber = teamNumber;
-        this.message = message;
+        this.bytes = bytes;
         this.sendTime = generateSendIntervalForSPLCoachMessage() + System.currentTimeMillis();
     }
 
