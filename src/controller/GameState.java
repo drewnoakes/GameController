@@ -52,7 +52,7 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     // TODO move this 'queue' into TeamState -- can it be modelled as a single (most recent) value?
 
     /** Holding area for SQL coach messages while they wait to be sent, according to timing rules. */
-    @NotNull public final ArrayList<SPLCoachMessage> splCoachMessageQueue;
+    @NotNull private final ArrayList<SPLCoachMessage> splCoachMessageQueue;
 
     /** Initialises a new GameState instance for a particular game. */
     public GameState(@NotNull Game game)
