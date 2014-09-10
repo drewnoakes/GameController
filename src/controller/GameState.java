@@ -23,8 +23,6 @@ import leagues.LeagueSettings;
 public class GameState implements WriteableGameState, ReadOnlyGameState
 {
     @NotNull private final Game game;
-    @NotNull public final ArrayList<SPLCoachMessage> splCoachMessageQueue;
-
     @NotNull private final ReadOnlyPair<TeamState> teams;
 
     // NOTE if a new field is added here, be sure to include it in the copy constructor
@@ -46,6 +44,8 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     @Nullable private TeamColor nextKickOffColor;
     @NotNull private Period period;
     @Nullable private TeamColor lastDropInColor;
+
+    @NotNull public final ArrayList<SPLCoachMessage> splCoachMessageQueue;
 
     public GameState(@NotNull Game game)
     {
@@ -478,7 +478,7 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     }
 
     @Override
-    public void setPreviousPeriod(Period previousPeriod)
+    public void setPreviousPeriod(@NotNull Period previousPeriod)
     {
         this.previousPeriod = previousPeriod;
     }

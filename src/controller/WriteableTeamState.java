@@ -15,24 +15,31 @@ public interface WriteableTeamState extends ReadOnlyTeamState
     @NotNull
     WriteablePlayerState getPlayer(int uniformNumber);
 
-    void setPushCount(int pushCount);
+    void setScore(int score);
+
+    ////////////////////////// TIMEOUTS
 
     void setTimeOutActive(boolean isTimeOutActive);
 
     void setTimeOutTaken(boolean taken);
 
-    void setScore(int score);
+    ////////////////////////// PENALTY SHOOTOUTS
 
     void setPenaltyShotCount(int penaltyShotCount);
 
     void addPenaltyGoal();
 
-    void setTimestampCoachMessage(long timestampCoachMessage);
+    ////////////////////////// PLAYER PENALTIES
+
+    void enqueuePenalty(long whenPenalized, Penalty penalty);
 
     @Nullable
     TeamState.QueuedPenalty popQueuedPenalty();
 
-    void enqueuePenalty(long whenPenalized, Penalty penalty);
+    ////////////////////////// SPL-SPECIFIC VALUES
 
-    void setCoachMessage(byte[] messageBytes);
+    void setTimestampCoachMessage(long timestampCoachMessage);
+
+    void setCoachMessage(@NotNull byte[] messageBytes);
+    void setPushCount(int pushCount);
 }

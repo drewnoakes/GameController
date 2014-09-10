@@ -13,7 +13,7 @@ public interface WriteableGameState extends ReadOnlyGameState
     @NotNull WriteableTeamState getTeam(@NotNull TeamColor teamColor);
     @NotNull WriteableTeamState getTeam(@NotNull UISide side);
 
-    /////
+    ////////////////////////// CLOCK & TIMING
 
     /**
      * Add the time passed in the current play mode to the time that already passed before.
@@ -25,30 +25,8 @@ public interface WriteableGameState extends ReadOnlyGameState
 
     void setWhenCurrentPlayModeBegan(long whenCurrentPlayModeBegan);
 
-    /** Resets the penalized-at-time of all players to 0. Does not unpenalize them. */
-    void resetPenaltyTimes();
-
-    /////
-
-    /**
-     * Resets all penalties.
-     */
-    void resetPenalties();
-
-    /**
-     * Dispatch the coach messages. Since coach messages are texts, the messages are zeroed
-     * after the first zero character, to avoid the transport of information the
-     * GameStateVisualizer would not show.
-     */
-    void updateCoachMessages();
 
     void setWhenDropIn(long whenDropIn);
-
-    void setRefereeTimeoutActive(boolean refereeTimeout);
-
-    void setLeftSideKickoff(boolean leftSideKickoff);
-
-    void setTestMode(boolean testmode);
 
     void setManPause(boolean manPause);
 
@@ -60,17 +38,48 @@ public interface WriteableGameState extends ReadOnlyGameState
 
     void setManRemainingGameTimeOffset(long manRemainingGameTimeOffset);
 
-    void setPreviousPeriod(Period previousPeriod);
+    ////////////////////////// PENALTIES
+
+    /**
+     * Resets all penalties.
+     */
+    void resetPenalties();
+
+    /** Resets the penalized-at-time of all players to 0. Does not unpenalize them. */
+    void resetPenaltyTimes();
+
+    ////////////////////////// PLAY MODE, PERIOD & HALF
 
     void setPlayMode(@NotNull PlayMode playMode);
 
+    void setPeriod(@NotNull Period period);
+
+    void setPreviousPeriod(Period previousPeriod);
+
     void setFirstHalf(boolean firstHalf);
+
+    ////////////////////////// KICK OFF AND DROP IN
 
     void setNextKickOffColor(@Nullable TeamColor nextKickOffColor);
 
-    void setPeriod(@NotNull Period period);
+    void setLeftSideKickoff(boolean leftSideKickoff);
 
     void setLastDropInColor(@Nullable TeamColor lastDropInColor);
+
+    ////////////////////////// MISCELLANEOUS
+
+    void setTestMode(boolean testmode);
+
+    ////////////////////////// SPL-SPECIFIC VALUES
+
+    void setRefereeTimeoutActive(boolean refereeTimeout);
+
+    /**
+     * Dispatch the coach messages. Since coach messages are texts, the messages are zeroed
+     * after the first zero character, to avoid the transport of information the
+     * GameStateVisualizer would not show.
+     */
+    void updateCoachMessages();
 
     void enqueueSplCoachMessage(@NotNull SPLCoachMessage message);
 }

@@ -1,5 +1,7 @@
 package data;
 
+import common.annotations.NotNull;
+
 import java.io.Serializable;
 
 /**
@@ -22,11 +24,11 @@ public class SPLCoachMessage implements Serializable
     /** The coach's team's uniquely identifying team number for the tournament. */
     public final byte teamNumber;
     /** Contents of the coach's message. */
-    public final byte[] message;
+    @NotNull public final byte[] message;
     /** The delay in millis that the message will be held back. */
     private final long sendTime;
 
-    public SPLCoachMessage(byte teamNumber, byte[] message)
+    public SPLCoachMessage(byte teamNumber, @NotNull byte[] message)
     {
         this.teamNumber = teamNumber;
         this.message = message;

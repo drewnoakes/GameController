@@ -9,8 +9,8 @@ public interface WriteablePlayerState extends ReadOnlyPlayerState
 {
     void setPenalty(Penalty penalty);
 
-    void setEjected(boolean isEjected);
-
     /** Sets the time when the player penalized last, in milliseconds. */
     void setWhenPenalized(long whenPenalized);
+
+    void setEjected(boolean isEjected);
 }

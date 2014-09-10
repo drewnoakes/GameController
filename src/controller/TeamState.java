@@ -264,7 +264,7 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
     }
 
     @Override
-    public void setCoachMessage(byte[] messageBytes)
+    public void setCoachMessage(@NotNull byte[] messageBytes)
     {
         this.coachMessage = messageBytes;
     }
