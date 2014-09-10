@@ -124,7 +124,7 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
         if (right.getTeamNumber() == teamNumber)
             return right;
 
-        throw null;
+        return null;
     }
 
     @NotNull
