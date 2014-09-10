@@ -162,9 +162,6 @@ public interface ReadOnlyGameState
     /** Gets whether a timeout is currently active for either team. */
     boolean isTimeOutActive();
 
-    /** If true, left side has the kickoff. */
-    boolean isLeftSideKickoff();
-
     /** Gets whether test mode is currently active. */
     boolean isTestMode();
 

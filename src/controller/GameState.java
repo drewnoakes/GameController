@@ -32,7 +32,6 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     private long whenCurrentPlayModeBegan;
     private long whenDropIn;
     private boolean isRefereeTimeoutActive;
-    private boolean leftSideKickoff;
     private boolean isTestMode;
     private boolean manPause;
     private boolean manPlay;
@@ -66,7 +65,6 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
         isFirstHalf = true;
         nextKickOffColor = TeamColor.Blue;
         isRefereeTimeoutActive = false;
-        leftSideKickoff = true;
         isTestMode = false;
         manPause = false;
         manPlay = false;
@@ -91,7 +89,6 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
         whenCurrentPlayModeBegan = source.whenCurrentPlayModeBegan;
         whenDropIn = source.whenDropIn;
         isRefereeTimeoutActive = source.isRefereeTimeoutActive;
-        leftSideKickoff = source.leftSideKickoff;
         isTestMode = source.isTestMode;
         manPause = source.manPause;
         manPlay = source.manPlay;
@@ -353,18 +350,6 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     public boolean areScoresLevel()
     {
         return teams.get(UISide.Left).getScore() == teams.get(UISide.Right).getScore();
-    }
-
-    @Override
-    public boolean isLeftSideKickoff()
-    {
-        return leftSideKickoff;
-    }
-
-    @Override
-    public void setLeftSideKickoff(boolean leftSideKickoff)
-    {
-        this.leftSideKickoff = leftSideKickoff;
     }
 
     @Override

@@ -26,17 +26,12 @@ public class KickOff extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.getNextKickOffColor() == state.getTeam(side).getTeamColor()) {
-            return;
+        ReadOnlyTeamState team = state.getTeam(side);
+
+        if (state.getNextKickOffColor() != team.getTeamColor()) {
+            state.setNextKickOffColor(team.getTeamColor());
+            game.pushState("Kickoff " + team.getTeamColor());
         }
-        state.setNextKickOffColor(state.getTeam(side).getTeamColor());
-        if (game.settings().kickoffChoice
-                && state.getPeriod() == Period.Normal
-                && state.isFirstHalf()
-                && state.getPlayMode() == PlayMode.Initial) {
-            state.setLeftSideKickoff(side == UISide.Left);
-        }
-        game.pushState("Kickoff " + state.getTeam(side).getTeamColor());
     }
     
     @Override

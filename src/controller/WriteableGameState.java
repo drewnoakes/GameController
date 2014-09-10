@@ -101,9 +101,6 @@ public interface WriteableGameState extends ReadOnlyGameState
     /** Sets the color of the team having the next kick off. may be <code>null</code>. */
     void setNextKickOffColor(@Nullable TeamColor nextKickOffColor);
 
-    /** Sets the UI side of the team having the next kick off. */
-    void setLeftSideKickoff(boolean leftSideKickoff);
-
     /** Stores the color of the last team to have a drop in. May be <code>null</code>. */
     void setLastDropInColor(@Nullable TeamColor lastDropInColor);
 
