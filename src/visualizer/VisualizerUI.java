@@ -210,14 +210,14 @@ public class VisualizerUI
         } else if (testmode) {
             drawTestmode(g);
         } else {
-            drawTeamLogos(g);
+            drawTeamLogos(g2);
             drawScores(g);
             drawTime(g);
             drawSecState(g);
             drawPlayMode(g);
             drawSubTime(g);
             drawPenaltyInfo(g);
-            drawCoachMessages(g);
+            drawCoachMessages(g2);
         }
     }
     
@@ -280,7 +280,7 @@ public class VisualizerUI
      * 
      * @param g the graphics object to draw on.
      */
-    private void drawTeamLogos(Graphics g)
+    private void drawTeamLogos(Graphics2D g)
     {
         int x = getSizeToWidth(0.01);
         int y = getSizeToHeight(0.35);
@@ -297,7 +297,7 @@ public class VisualizerUI
             team2.getLogoImage()
         };
 
-        ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
         for (int i = 0; i < 2; i++) {
             TeamStateSnapshot team = i == 0 ? state.getTeam1() : state.getTeam2();
@@ -502,10 +502,8 @@ public class VisualizerUI
         g.drawString(s, x+offset, y);
     }
 
-    private void drawCoachMessages(Graphics g)
+    private void drawCoachMessages(Graphics2D g)
     {
-        Graphics2D g2 = (Graphics2D) g; // needed for setting the thickness of the line of the rectangles
-
         for (int i = 0; i < 2; i++) {
             TeamStateSnapshot team = i == 0 ? state.getTeam1() : state.getTeam2();
 
@@ -523,14 +521,14 @@ public class VisualizerUI
                 coachMessage = coachMessage.substring(0, p);
             }
 
-            g2.setFont(standardSmallFont);
-            int maxWidth = (getSizeToWidth(0.99) - getSizeToWidth(0.01) - g2.getFontMetrics().stringWidth("00::00")) / 2;
+            g.setFont(standardSmallFont);
+            int maxWidth = (getSizeToWidth(0.99) - getSizeToWidth(0.01) - g.getFontMetrics().stringWidth("00::00")) / 2;
 
-            g2.setFont(coachMessageFont);
+            g.setFont(coachMessageFont);
             int split = -1;
             int j;
             for (j = 0; j < coachMessage.length() &&
-                  g2.getFontMetrics().stringWidth(coachMessage.substring(0, j + 1)) <= maxWidth; ++j) {
+                  g.getFontMetrics().stringWidth(coachMessage.substring(0, j + 1)) <= maxWidth; ++j) {
                 if (!Character.isLetter(coachMessage.charAt(j))
                         || j < coachMessage.length() - 1
                         && Character.isLowerCase(coachMessage.charAt(j))
@@ -550,13 +548,13 @@ public class VisualizerUI
             }
 
             // Draw the coach label and coach message box
-            g2.setColor(team.getTeamColor().getRgb(options.getLeague()));
+            g.setColor(team.getTeamColor().getRgb(options.getLeague()));
             if (i == 1) {
-                g2.drawString(row1, getSizeToWidth(0.01), getSizeToHeight(0.92));
-                g2.drawString(row2, getSizeToWidth(0.01), getSizeToHeight(0.98));
+                g.drawString(row1, getSizeToWidth(0.01), getSizeToHeight(0.92));
+                g.drawString(row2, getSizeToWidth(0.01), getSizeToHeight(0.98));
             } else {
-                g2.drawString(row1, getSizeToWidth(0.99) - g2.getFontMetrics().stringWidth(row1), getSizeToHeight(0.92));
-                g2.drawString(row2, getSizeToWidth(0.99) - g2.getFontMetrics().stringWidth(row2), getSizeToHeight(0.98));
+                g.drawString(row1, getSizeToWidth(0.99) - g.getFontMetrics().stringWidth(row1), getSizeToHeight(0.92));
+                g.drawString(row2, getSizeToWidth(0.99) - g.getFontMetrics().stringWidth(row2), getSizeToHeight(0.98));
             }
         }
     }
