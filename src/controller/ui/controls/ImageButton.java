@@ -10,9 +10,6 @@ import java.awt.*;
  */
 public class ImageButton extends JButton
 {
-    private static final long serialVersionUID = 1L;
-
-
     /** The image that is shown in the background. */
     private Image image;
 

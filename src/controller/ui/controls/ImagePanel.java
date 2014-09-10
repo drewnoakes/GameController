@@ -18,8 +18,6 @@ import java.awt.*;
  */
 public class ImagePanel extends JPanel
 {
-    private static final long serialVersionUID = 1L;
-
     public enum Mode
     {
         Stretch,
