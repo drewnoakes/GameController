@@ -30,7 +30,7 @@ public class Main
      */
     public static void main(String[] args)
     {
-        final VisualizerOptions options = processCommandLineArguments(args);
+        final VisualizerOptions options = parseCommandLineArguments(args);
         final VisualizerUI ui = new VisualizerUI(options);
 
         new KeyboardListener(ui);
@@ -67,7 +67,7 @@ public class Main
         System.exit(0);
     }
 
-    private static VisualizerOptions processCommandLineArguments(String[] args)
+    private static VisualizerOptions parseCommandLineArguments(String[] args)
     {
         if (args.length > 0 && (args[0].equals("-h") || args[0].equals("--help")) ) {
             printUsage();
