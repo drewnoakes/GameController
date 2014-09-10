@@ -566,5 +566,8 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     }
 
     @Override
-    public boolean isPlayOff() { return game.isPlayOff(); }
+    public boolean isPlayOff()
+    {
+        return game.isPlayOff();
+    }
 }
