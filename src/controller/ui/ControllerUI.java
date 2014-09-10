@@ -914,7 +914,7 @@ public class ControllerUI
     
     private void updateRefereeTimeout(ReadOnlyGameState state)
     {
-        refereeTimeoutButton.setSelected(state.isRefereeTimeout());
+        refereeTimeoutButton.setSelected(state.isRefereeTimeoutActive());
         refereeTimeoutButton.setEnabled(ActionBoard.refereeTimeout.canExecute(game, state));
     }
     

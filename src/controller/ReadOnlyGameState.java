@@ -160,5 +160,5 @@ public interface ReadOnlyGameState
     ////////////////////////// SPL-SPECIFIC VALUES
 
     /** If true, the referee set a timeout (SPL only). */
-    boolean isRefereeTimeout();
+    boolean isRefereeTimeoutActive();
 }

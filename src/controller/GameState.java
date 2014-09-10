@@ -32,9 +32,9 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     private long timeBeforeCurrentPlayMode;
     private long whenCurrentPlayModeBegan;
     private long whenDropIn;
-    private boolean refereeTimeout;
+    private boolean isRefereeTimeoutActive;
     private boolean leftSideKickoff;
-    private boolean testmode;
+    private boolean isTestMode;
     private boolean manPause;
     private boolean manPlay;
     private long manWhenClockChanged;
@@ -65,9 +65,9 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
         playMode = PlayMode.Initial;
         isFirstHalf = true;
         nextKickOffColor = TeamColor.Blue;
-        refereeTimeout = false;
+        isRefereeTimeoutActive = false;
         leftSideKickoff = true;
-        testmode = false;
+        isTestMode = false;
         manPause = false;
         manPlay = false;
         period = game.settings().startWithPenalty ? Period.PenaltyShootout : Period.Normal;
@@ -91,9 +91,9 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
         timeBeforeCurrentPlayMode = source.timeBeforeCurrentPlayMode;
         whenCurrentPlayModeBegan = source.whenCurrentPlayModeBegan;
         whenDropIn = source.whenDropIn;
-        refereeTimeout = source.refereeTimeout;
+        isRefereeTimeoutActive = source.isRefereeTimeoutActive;
         leftSideKickoff = source.leftSideKickoff;
-        testmode = source.testmode;
+        isTestMode = source.isTestMode;
         manPause = source.manPause;
         manPlay = source.manPlay;
         manWhenClockChanged = source.manWhenClockChanged;
@@ -273,7 +273,7 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
             return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.settings().timeOutTime);
         }
 
-        if (getPlayMode() == PlayMode.Initial && isRefereeTimeout()) {
+        if (getPlayMode() == PlayMode.Initial && isRefereeTimeoutActive()) {
             return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.settings().refereeTimeout);
         }
 
@@ -369,15 +369,15 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     }
 
     @Override
-    public boolean isRefereeTimeout()
+    public boolean isRefereeTimeoutActive()
     {
-        return refereeTimeout;
+        return isRefereeTimeoutActive;
     }
 
     @Override
-    public void setRefereeTimeout(boolean refereeTimeout)
+    public void setRefereeTimeoutActive(boolean isActive)
     {
-        this.refereeTimeout = refereeTimeout;
+        isRefereeTimeoutActive = isActive;
     }
 
     @Override
@@ -401,13 +401,13 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     @Override
     public boolean isTestMode()
     {
-        return testmode;
+        return isTestMode;
     }
 
     @Override
     public void setTestMode(boolean testmode)
     {
-        this.testmode = testmode;
+        this.isTestMode = testmode;
     }
 
     @Override

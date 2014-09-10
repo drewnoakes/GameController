@@ -40,7 +40,7 @@ public class Ready extends Action
         return
             (state.getPlayMode() == PlayMode.Initial
               && !state.isTimeOutActive()
-              && !state.isRefereeTimeout()
+              && !state.isRefereeTimeoutActive()
               && state.getPeriod() != Period.PenaltyShootout)
             || state.getPlayMode() == PlayMode.Ready
             || state.isTestMode();

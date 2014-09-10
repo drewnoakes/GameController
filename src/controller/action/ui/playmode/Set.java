@@ -60,7 +60,7 @@ public class Set extends Action
             || (state.getPeriod() == Period.PenaltyShootout
               && (state.getPlayMode() != PlayMode.Playing || game.settings().penaltyShotRetries)
               && !state.isTimeOutActive()
-              && !state.isRefereeTimeout())
+              && !state.isRefereeTimeoutActive())
             || state.isTestMode();
     }
 }

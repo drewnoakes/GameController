@@ -12,10 +12,10 @@ public class RefereeTimeout extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (!state.isRefereeTimeout()) {
+        if (!state.isRefereeTimeoutActive()) {
             state.setPreviousPeriod(state.getPeriod());
             state.setPeriod(Period.Timeout);
-            state.setRefereeTimeout(true);
+            state.setRefereeTimeoutActive(true);
             if (state.getPlayMode() == PlayMode.Playing) {
                 state.addTimeInCurrentPlayMode();
             }
@@ -31,7 +31,7 @@ public class RefereeTimeout extends Action
         } else {
             state.setPeriod(state.getPreviousPeriod());
             state.setPreviousPeriod(Period.Timeout);
-            state.setRefereeTimeout(false);
+            state.setRefereeTimeoutActive(false);
             if (state.getPeriod() != Period.PenaltyShootout) {
                 game.apply(ActionBoard.ready, ActionTrigger.User);
                 game.pushState("End of Referee Timeout");

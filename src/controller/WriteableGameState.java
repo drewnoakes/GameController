@@ -44,7 +44,7 @@ public interface WriteableGameState extends ReadOnlyGameState
 
     void setWhenDropIn(long whenDropIn);
 
-    void setRefereeTimeout(boolean refereeTimeout);
+    void setRefereeTimeoutActive(boolean refereeTimeout);
 
     void setLeftSideKickoff(boolean leftSideKickoff);
 
