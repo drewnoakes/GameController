@@ -1,8 +1,5 @@
 package controller;
 
-import java.util.ArrayList;
-
-import common.Log;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import data.*;
@@ -49,11 +46,6 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     @NotNull private Period period;
     @Nullable private TeamColor lastDropInColor;
 
-    // TODO move this 'queue' into TeamState -- can it be modelled as a single (most recent) value?
-
-    /** Holding area for SQL coach messages while they wait to be sent, according to timing rules. */
-    @NotNull private final ArrayList<SPLCoachMessage> splCoachMessageQueue;
-
     /** Initialises a new GameState instance for a particular game. */
     public GameState(@NotNull Game game)
     {
@@ -80,7 +72,6 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
         manPlay = false;
         period = game.settings().startWithPenalty ? Period.PenaltyShootout : Period.Normal;
         previousPeriod = Period.Normal;
-        splCoachMessageQueue = new ArrayList<SPLCoachMessage>();
     }
 
     /** Private copy constructor. */
@@ -88,7 +79,6 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     {
         // Note, we don't deep clone the game or coach message queues
         game = source.game;
-        splCoachMessageQueue = source.splCoachMessageQueue;
 
         // Deep clone the team states
         teams = new Pair<TeamState>(
@@ -302,31 +292,6 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     {
         Integer secondaryTime = getSecondaryTime(0);
         return secondaryTime == null ? 0 : secondaryTime;
-    }
-
-    @Override
-    public void updateCoachMessages()
-    {
-        // TODO move this logic into TeamState and make internal (hidden inside team.getCoachMessage)
-
-        int i = 0;
-        while (i < splCoachMessageQueue.size()) {
-            SPLCoachMessage message = splCoachMessageQueue.get(i);
-            if (message.getRemainingTimeToSend() == 0) {
-                WriteableTeamState team = getTeam(message.teamNumber);
-                if (team != null) {
-                    // Set these bytes on the team state. They will be included in the periodically sent
-                    // game state messages.
-                    team.setCoachMessage(message.bytes);
-
-                    Log.toFile("Coach Message Team " + team.getTeamColor() + " " + new String(message.bytes));
-                    splCoachMessageQueue.remove(i);
-                    break;
-                }
-            } else {
-                i++;
-            }
-        }
     }
 
     @Override
@@ -555,12 +520,6 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     public int getDropInTime()
     {
         return getWhenDropIn() == 0 ? -1 : getSecondsSince(getWhenDropIn());
-    }
-
-    @Override
-    public void enqueueSplCoachMessage(@NotNull SPLCoachMessage message)
-    {
-        splCoachMessageQueue.add(message);
     }
 
     @Override

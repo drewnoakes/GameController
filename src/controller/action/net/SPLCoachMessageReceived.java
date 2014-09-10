@@ -5,7 +5,6 @@ import controller.Action;
 import controller.Game;
 import controller.WriteableGameState;
 import controller.WriteableTeamState;
-import data.Penalty;
 import data.SPLCoachMessage;
 
 /**
@@ -36,17 +35,6 @@ public class SPLCoachMessageReceived extends Action
             return;
         }
 
-        if (team.getCoach().getPenalty() == Penalty.SplCoachMotion) {
-            // Ignore messages from a penalised coach
-            return;
-        }
-
-        long age = System.currentTimeMillis() - team.getTimestampCoachMessage();
-
-        if (age >= SPLCoachMessage.SPL_COACH_MESSAGE_RECEIVE_INTERVAL) {
-            // Enough time has passed
-            team.setTimestampCoachMessage(System.currentTimeMillis());
-            state.enqueueSplCoachMessage(this.message);
-        }
+        team.receiveSplCoachMessage(this.message);
     }
 }

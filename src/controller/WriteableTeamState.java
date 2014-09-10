@@ -3,6 +3,7 @@ package controller;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import data.Penalty;
+import data.SPLCoachMessage;
 import data.TeamColor;
 
 /**
@@ -81,11 +82,18 @@ public interface WriteableTeamState extends ReadOnlyTeamState
 
     ////////////////////////// SPL-SPECIFIC VALUES
 
-    /** Sets the time at which a coach message was last sent for this team (SPL only). */
-    void setTimestampCoachMessage(long timestampCoachMessage);
-
-    /** Sets the contents of a coach message (SPL only). */
-    void setCoachMessage(@NotNull byte[] messageBytes);
+    /**
+     * Handles an incoming coach message (SPL only).
+     * <p>
+     * If this message comes too quickly (within {@link SPLCoachMessage#SPL_COACH_MESSAGE_RECEIVE_INTERVAL}) then
+     * it will be ignored. Otherwise it will be stored for a randomly chosen period of time (between
+     * {@link data.SPLCoachMessage#SPL_COACH_MESSAGE_MIN_SEND_INTERVAL} and
+     * {@link data.SPLCoachMessage#SPL_COACH_MESSAGE_MAX_SEND_INTERVAL}) before becoming available via
+     * {@link ReadOnlyTeamState#getCoachMessage()}.
+     *
+     * @param message the received message.
+     */
+    void receiveSplCoachMessage(@NotNull SPLCoachMessage message);
 
     /** Sets the number of pushes called on this team (SPL only). */
     void setPushCount(int pushCount);

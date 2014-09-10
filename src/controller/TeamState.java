@@ -1,5 +1,6 @@
 package controller;
 
+import common.Log;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import data.*;
@@ -30,6 +31,7 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
     /** Data about the team's coach (only used in SPL). */
     @Nullable private final PlayerState coach;
     /** Keeps the penalties for the players if there are substituted. */
+    @NotNull
     private final Queue<QueuedPenalty> penaltyQueue;
 
     private int score;
@@ -39,10 +41,10 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
     private boolean isTimeOutActive;
     private boolean isTimeOutTaken;
 
-    // TODO introduce a CoachMessage class
     /** The last coach message (only used in SPL). */
     @Nullable private byte[] coachMessage;
-    private long timestampCoachMessage;
+    @Nullable private SPLCoachMessage pendingSplCoachMessage;
+    private long lastCoachMessageReceiveTimeMillis;
 
     /** Initialises a new instance of TeamState. */
     public TeamState(@NotNull Game game, @NotNull Team team, @NotNull TeamColor teamColor)
@@ -90,11 +92,12 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
         score = source.score;
         penaltyShotCount = source.penaltyShotCount;
         penaltyShotFlags = source.penaltyShotFlags;
-        coachMessage = source.coachMessage;
-        timestampCoachMessage = source.timestampCoachMessage;
         pushCount = source.pushCount;
         isTimeOutActive = source.isTimeOutActive;
         isTimeOutTaken = source.isTimeOutTaken;
+        coachMessage = source.coachMessage;
+        pendingSplCoachMessage = source.pendingSplCoachMessage;
+        lastCoachMessageReceiveTimeMillis = source.lastCoachMessageReceiveTimeMillis;
     }
 
     @Override
@@ -244,19 +247,6 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
 
     ////////////////////////// SPL COACH //////////////////////////
 
-    /** The timestamp of when coach message was received. */
-    @Override
-    public long getTimestampCoachMessage()
-    {
-        return timestampCoachMessage;
-    }
-
-    @Override
-    public void setTimestampCoachMessage(long timestampCoachMessage)
-    {
-        this.timestampCoachMessage = timestampCoachMessage;
-    }
-
     @Override
     @NotNull
     public PlayerState getCoach()
@@ -268,16 +258,35 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
     }
 
     @Override
-    @Nullable
-    public byte[] getCoachMessage()
+    public void receiveSplCoachMessage(@NotNull SPLCoachMessage message)
     {
-        return coachMessage;
+        if (getCoach().getPenalty() == Penalty.SplCoachMotion) {
+            // Ignore messages from a penalised coach
+            return;
+        }
+
+        // How long has it been since we last received a message from this team's coach?
+        long age = System.currentTimeMillis() - lastCoachMessageReceiveTimeMillis;
+
+        if (age >= SPLCoachMessage.SPL_COACH_MESSAGE_RECEIVE_INTERVAL) {
+            // Enough time has passed
+            lastCoachMessageReceiveTimeMillis = System.currentTimeMillis();
+            pendingSplCoachMessage = message;
+        }
     }
 
     @Override
-    public void setCoachMessage(@NotNull byte[] messageBytes)
+    @Nullable
+    public byte[] getCoachMessage()
     {
-        this.coachMessage = messageBytes;
+        // First, see whether another coach message has become ready to send
+        if (pendingSplCoachMessage != null && pendingSplCoachMessage.getRemainingTimeToSend() == 0) {
+            coachMessage = pendingSplCoachMessage.bytes;
+            pendingSplCoachMessage = null;
+            Log.toFile("Sending coach message (team " + teamColor + "): " + new String(coachMessage));
+        }
+
+        return coachMessage;
     }
 
     ////////////////////////// SPL PUSHING //////////////////////////

@@ -116,13 +116,4 @@ public interface WriteableGameState extends ReadOnlyGameState
 
     /** Sets whether a referee timeout is active or not. */
     void setRefereeTimeoutActive(boolean refereeTimeout);
-
-    /**
-     * Dispatch the coach messages. Since coach messages are texts, the messages are zeroed
-     * after the first zero character, to avoid the transport of information the
-     * GameStateVisualizer would not show.
-     */
-    void updateCoachMessages();
-
-    void enqueueSplCoachMessage(@NotNull SPLCoachMessage message);
 }

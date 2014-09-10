@@ -29,8 +29,6 @@ public class ClockTick extends Action
                 }
             }
         }
-
-        state.updateCoachMessages();
     }
 
     /**

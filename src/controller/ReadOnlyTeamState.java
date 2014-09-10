@@ -97,7 +97,4 @@ public interface ReadOnlyTeamState
     /** Gets the byte array payload of the last coach message (SPL only). */
     @Nullable
     byte[] getCoachMessage();
-
-    /** Gets the timestamp of the last coach message (SPL only). */
-    long getTimestampCoachMessage();
 }
