@@ -10,8 +10,8 @@ import data.*;
 public interface WriteableGameState extends ReadOnlyGameState
 {
     @Nullable WriteableTeamState getTeam(int teamNumber);
-    @NotNull WriteableTeamState getTeam(TeamColor teamColor);
-    @NotNull WriteableTeamState getTeam(UISide side);
+    @NotNull WriteableTeamState getTeam(@NotNull TeamColor teamColor);
+    @NotNull WriteableTeamState getTeam(@NotNull UISide side);
 
     /////
 
