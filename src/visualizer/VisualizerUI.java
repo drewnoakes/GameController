@@ -23,6 +23,7 @@ import common.Interval;
 import common.Log;
 import common.annotations.NotNull;
 import controller.Config;
+import controller.ui.StringPlotter;
 import data.*;
 
 /**
@@ -239,56 +240,38 @@ public class VisualizerUI
      */
     private void drawTestmode(Graphics g)
     {
-        g.setColor(Color.BLACK);
-        g.setFont(testFont);
-        int x = getSizeToWidth(0.08);
-        int y = getSizeToHeight(0.3);
-        String[] out = {
-            "           playMode: " + state.getPlayMode(),
-            "          firstHalf: " + (state.isFirstHalf() ? "true" : "false"),
-            "   nextKickOffColor: " + state.getNextKickOffColor(),
-            "             period: " + state.getPeriod(),
-            "    lastDropInColor: " + state.getLastDropInColor(),
-            "         dropInTime: " + state.getDropInTime(),
-            "      secsRemaining: " + state.getSecsRemaining(),
-            "      secondaryTime: " + state.getSecondaryTime()
-        };
-        for (String o : out) {
-            g.drawString(o, x, y);
-            y += testFont.getSize() * 1.2;
-        }
+        StringPlotter plotter = new StringPlotter(g, testFont, Color.BLACK, 1.2);
+        plotter.setX(getSizeToWidth(0.08));
+        plotter.setY(getSizeToHeight(0.3));
+
+        plotter.write("           playMode: " + state.getPlayMode());
+        plotter.write("          firstHalf: " + (state.isFirstHalf() ? "true" : "false"));
+        plotter.write("   nextKickOffColor: " + state.getNextKickOffColor());
+        plotter.write("             period: " + state.getPeriod());
+        plotter.write("    lastDropInColor: " + state.getLastDropInColor());
+        plotter.write("         dropInTime: " + state.getDropInTime());
+        plotter.write("      secsRemaining: " + state.getSecsRemaining());
+        plotter.write("      secondaryTime: " + state.getSecondaryTime());
 
         for (TeamStateSnapshot team : state.getTeams()) {
-            String[] teamLines = {
-                "--------------------------------------",
-                "         teamNumber: " + team.getTeamNumber(),
-                "          teamColor: " + team.getTeamColor(),
-                "              score: " + team.getScore(),
-                "        penaltyShot: " + team.getPenaltyShotCount(),
-                "        singleShots: " + Integer.toBinaryString(team.getPenaltyShotFlags()),
-                "       coachMessage: " + (team.getCoachMessage() != null ? new String(team.getCoachMessage()) : null),
-                "        coachStatus: " + team.getCoach()
-            };
-            for (String o : teamLines) {
-                g.drawString(o, x, y);
-                y += testFont.getSize() * 1.2;
-            }
+            plotter.write("--------------------------------------");
+            plotter.write("         teamNumber: " + team.getTeamNumber());
+            plotter.write("          teamColor: " + team.getTeamColor());
+            plotter.write("              score: " + team.getScore());
+            plotter.write("        penaltyShot: " + team.getPenaltyShotCount());
+            plotter.write("        singleShots: " + Integer.toBinaryString(team.getPenaltyShotFlags()));
+            plotter.write("       coachMessage: " + (team.getCoachMessage() != null ? new String(team.getCoachMessage()) : null));
+            plotter.write("        coachStatus: " + team.getCoach());
         }
         
-        x = getSizeToWidth(0.35);
+        plotter.setX(getSizeToWidth(0.35));
         for (TeamStateSnapshot team : state.getTeams()) {
-            y = getSizeToHeight(0.2);
+            plotter.setY(getSizeToHeight(0.2));
             for (PlayerStateSnapshot player : team.getPlayers()) {
-                String[] playerLines = {
-                    "            penalty: " + player.penalty,
-                    "secsTillUnpenalised: " + player.secondsTillUnpenalised
-                };
-                for (String o : playerLines) {
-                    g.drawString(o, x, y);
-                    y += testFont.getSize() * 1.2;
-                }
+                plotter.write("            penalty: " + player.penalty);
+                plotter.write("secsTillUnpenalised: " + player.secondsTillUnpenalised);
             }
-            x = getSizeToWidth(0.64);
+            plotter.setX(getSizeToWidth(0.64));
         }
     }
 
