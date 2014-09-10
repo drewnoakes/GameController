@@ -32,15 +32,15 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     private long timeBeforeCurrentPlayMode;
     private long whenCurrentPlayModeBegan;
     private long whenDropIn;
-    private boolean refereeTimeout = false;
-    private boolean leftSideKickoff = true;
-    private boolean testmode = false;
-    private boolean manPause = false;
-    private boolean manPlay = false;
+    private boolean refereeTimeout;
+    private boolean leftSideKickoff;
+    private boolean testmode;
+    private boolean manPause;
+    private boolean manPlay;
     private long manWhenClockChanged;
     private long manTimeOffset;
     private long manRemainingGameTimeOffset;
-    private Period previousPeriod = Period.Normal;
+    @NotNull private Period previousPeriod;
     @NotNull private PlayMode playMode;
     private boolean isFirstHalf;
     @Nullable private TeamColor nextKickOffColor;
@@ -65,7 +65,13 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
         playMode = PlayMode.Initial;
         isFirstHalf = true;
         nextKickOffColor = TeamColor.Blue;
+        refereeTimeout = false;
+        leftSideKickoff = true;
+        testmode = false;
+        manPause = false;
+        manPlay = false;
         period = game.settings().startWithPenalty ? Period.PenaltyShootout : Period.Normal;
+        previousPeriod = Period.Normal;
         splCoachMessageQueue = new ArrayList<SPLCoachMessage>();
     }
 
