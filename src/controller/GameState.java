@@ -45,6 +45,8 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     @NotNull private Period period;
     @Nullable private TeamColor lastDropInColor;
 
+    // TODO move this 'queue' into TeamState -- can it be modelled as a single (most recent) value?
+
     @NotNull public final ArrayList<SPLCoachMessage> splCoachMessageQueue;
 
     public GameState(@NotNull Game game)
@@ -178,7 +180,7 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
                 : game.settings().numberOfPenaltyShotsShort;
 
         int duration = getPeriod() == Period.Timeout
-                ? getSecsRemaining()
+                ? getSecsRemaining() // TODO fix this infinite recursion bug -- should return last computed value (or something else)
                 : getPeriod() == Period.Normal
                     ? game.settings().halfTime
                     : getPeriod() == Period.Overtime
@@ -298,6 +300,8 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     @Override
     public void updateCoachMessages()
     {
+        // TODO move this logic into TeamState and make internal (hidden inside team.getCoachMessage)
+
         int i = 0;
         while (i < splCoachMessageQueue.size()) {
             if (splCoachMessageQueue.get(i).getRemainingTimeToSend() == 0) {

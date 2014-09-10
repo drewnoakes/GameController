@@ -15,7 +15,7 @@ public abstract class LeagueSettings
     /** How many robots of each team may play at one time. */
     public int robotsPlaying;
     /** If the colors change automatically. */
-    public boolean changeColoursEachPeriod;
+    public boolean changeColoursEachPeriod; // TODO unused?
     /** If the clock may stop in certain play modes (Ready, Set) in a play-off game. */
     public boolean playOffTimeStop;
     /** Time in seconds one half is long. */
@@ -43,7 +43,7 @@ public abstract class LeagueSettings
     /** If there can be a penalty-shot retry. */
     public boolean penaltyShotRetries;
     /** If there is a sudden-death. */
-    public boolean suddenDeath;
+    public boolean suddenDeath; // TODO unused?
     /** Time in seconds one penalty shoot is long in sudden-death. */
     public int penaltyShotTimeSuddenDeath;
     /** Number of penalty-shots for each team when a half has 10minutes. */
