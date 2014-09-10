@@ -21,7 +21,7 @@ public enum League
 
     HLAdult((byte)0x13, "HL Adult", "hl_adult", new HLAdult());
 
-    private static Collection<League> allLeagues;
+    private final static Collection<League> allLeagues;
 
     static
     {
