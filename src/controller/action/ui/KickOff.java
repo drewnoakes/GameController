@@ -18,7 +18,7 @@ public class KickOff extends Action
     /**
      * @param side on which side
      */
-    public KickOff(UISide side)
+    public KickOff(@NotNull UISide side)
     {
         this.side = side;
     }

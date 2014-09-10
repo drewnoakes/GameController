@@ -1,5 +1,6 @@
 package controller.ui.controls;
 
+import common.annotations.NotNull;
 import common.annotations.Nullable;
 
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class ImagePanel extends JPanel
         TopCentre
     }
 
+    @NotNull
     private final Mode mode;
     /** The image that is shown in the background. */
     @Nullable
@@ -35,13 +37,13 @@ public class ImagePanel extends JPanel
      *
      * @param image  the {@link Image} to be shown in the background.
      */
-    public ImagePanel(Mode mode, @Nullable Image image)
+    public ImagePanel(@NotNull Mode mode, @Nullable Image image)
     {
         this.mode = mode;
         this.image = image;
     }
 
-    public ImagePanel(Mode mode)
+    public ImagePanel(@NotNull Mode mode)
     {
         this.mode = mode;
     }

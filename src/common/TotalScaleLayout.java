@@ -1,5 +1,7 @@
 package common;
 
+import common.annotations.NotNull;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -17,10 +19,13 @@ import javax.swing.JComponent;
 public class TotalScaleLayout implements LayoutManager
 {
     /** The container to layout. */
+    @NotNull
     private final Container parent;
     /** The containers preferred size. */
+    @NotNull
     private final Dimension preferredSize;
     /** The containers minimum size. */
+    @NotNull
     private final Dimension minimumSize;
     /** List of all components to layout on the container */
     private final LinkedList<TotalScaleComponent> comps = new LinkedList<TotalScaleComponent>();
@@ -30,7 +35,7 @@ public class TotalScaleLayout implements LayoutManager
      * 
      * @param parent     The container to layout.
      */
-    public TotalScaleLayout(Container parent)
+    public TotalScaleLayout(@NotNull Container parent)
     {
         this.parent = parent;
         preferredSize = parent.getPreferredSize();
@@ -47,7 +52,7 @@ public class TotalScaleLayout implements LayoutManager
      * @param height   Height on the container between 0 and 1.
      * @param comp     Component to be added.
      */
-    public void add(double x, double y, double width, double height, JComponent comp)
+    public void add(double x, double y, double width, double height, @NotNull JComponent comp)
     {
         parent.add(comp);
         comps.add(new TotalScaleComponent(x, y, width, height, comp));
@@ -57,7 +62,7 @@ public class TotalScaleLayout implements LayoutManager
      * Not supported because of own add-method.
      */
     @Override
-    public void addLayoutComponent(String name, Component comp) {}
+    public void addLayoutComponent(@NotNull String name, @NotNull Component comp) {}
 
     /**
      * Gets called to remove Component.
@@ -65,7 +70,7 @@ public class TotalScaleLayout implements LayoutManager
      * @param comp      Component to remove.
      */
     @Override
-    public void removeLayoutComponent(Component comp)
+    public void removeLayoutComponent(@NotNull Component comp)
     {
         for (TotalScaleComponent tscomp : comps) {
             if (tscomp.comp == comp) {
@@ -85,7 +90,7 @@ public class TotalScaleLayout implements LayoutManager
      * @return            This layouts preferred size.
      */
     @Override
-    public Dimension preferredLayoutSize(Container parent)
+    public Dimension preferredLayoutSize(@NotNull Container parent)
     {
         return preferredSize;
     }
@@ -100,7 +105,7 @@ public class TotalScaleLayout implements LayoutManager
      * @return            This layouts minimum size.
      */
     @Override
-    public Dimension minimumLayoutSize(Container parent)
+    public Dimension minimumLayoutSize(@NotNull Container parent)
     {
         return minimumSize;
     }
@@ -112,7 +117,7 @@ public class TotalScaleLayout implements LayoutManager
      * @param parent      Container to layout.
      */
     @Override
-    public void layoutContainer(Container parent)
+    public void layoutContainer(@NotNull Container parent)
     {
         Rectangle parentBounds = parent.getBounds();
         for (TotalScaleComponent comp : comps) {
@@ -138,6 +143,7 @@ public class TotalScaleLayout implements LayoutManager
         /** Height on the container between 0 and 1. */
         final double height;
         /** Component to be laid out on the container. */
+        @NotNull
         final Component comp;
         
         /**
@@ -149,7 +155,7 @@ public class TotalScaleLayout implements LayoutManager
         * @param height   Height on the container between 0 and 1.
         * @param comp     Component to be laid out on the container.
         */
-        TotalScaleComponent(double x, double y, double width, double height, Component comp)
+        TotalScaleComponent(double x, double y, double width, double height, @NotNull Component comp)
         {
             this.x = x;
             this.y = y;

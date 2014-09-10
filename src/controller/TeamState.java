@@ -101,12 +101,14 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
         return team.getNumber();
     }
 
+    @NotNull
     @Override
     public String getTeamName()
     {
         return team.getName();
     }
 
+    @NotNull
     @Override
     public TeamColor getTeamColor()
     {
@@ -114,7 +116,7 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
     }
 
     @Override
-    public void setTeamColor(TeamColor color)
+    public void setTeamColor(@NotNull TeamColor color)
     {
         teamColor = color;
     }

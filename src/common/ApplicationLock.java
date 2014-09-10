@@ -1,5 +1,7 @@
 package common;
 
+import common.annotations.NotNull;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,7 +26,7 @@ public class ApplicationLock
      *
      * @param key the key of the lock
      */
-    public ApplicationLock(String key)
+    public ApplicationLock(@NotNull String key)
     {
         // ensure the path ends with system dependent file-separator
         String tmp_dir = System.getProperty("java.io.tmpdir");

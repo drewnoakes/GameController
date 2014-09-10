@@ -85,7 +85,7 @@ public class VisualizerUI
     /**
      * Constructs all elements of the UI and shows it on screen.
      */
-    VisualizerUI(@NotNull VisualizerOptions options)
+    public VisualizerUI(@NotNull VisualizerOptions options)
     {
         this.options = options;
 
@@ -592,7 +592,7 @@ public class VisualizerUI
         return (seconds < 0 ? "-" : "") + String.format("%02d:%02d", displayMinutes, displaySeconds);
     }
 
-    private TeamStateSnapshot getTeam(UISide side)
+    private TeamStateSnapshot getTeam(@NotNull UISide side)
     {
         return side == UISide.Left ? state.getTeam1() : state.getTeam2();
     }

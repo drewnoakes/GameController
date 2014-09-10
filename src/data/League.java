@@ -28,6 +28,7 @@ public enum League
         allLeagues = Collections.unmodifiableCollection(Arrays.asList(SPL, SPLDropIn, HLKid, HLTeen, HLAdult));
     }
 
+    @NotNull
     public static Collection<League> getAllLeagues()
     {
         return allLeagues;
@@ -86,6 +87,7 @@ public enum League
         return directoryName;
     }
 
+    @NotNull
     public LeagueSettings settings()
     {
         return settings;
@@ -93,6 +95,7 @@ public enum League
 
     public byte number() { return number; }
 
+    @NotNull
     public List<Team> teams()
     {
         if (teams != null)

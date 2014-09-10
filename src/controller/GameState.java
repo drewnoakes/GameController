@@ -124,14 +124,14 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
 
     @NotNull
     @Override
-    public WriteableTeamState getTeam(TeamColor teamColor)
+    public WriteableTeamState getTeam(@NotNull TeamColor teamColor)
     {
         return teams.get(teamColor);
     }
 
     @NotNull
     @Override
-    public WriteableTeamState getTeam(UISide side)
+    public WriteableTeamState getTeam(@NotNull UISide side)
     {
         return teams.get(side);
     }
@@ -235,7 +235,7 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     }
     
     @Override
-    public int getRemainingPenaltyTime(ReadOnlyPlayerState player)
+    public int getRemainingPenaltyTime(@NotNull ReadOnlyPlayerState player)
     {
         Penalty penalty = player.getPenalty();
 

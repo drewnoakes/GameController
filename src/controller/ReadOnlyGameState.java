@@ -18,10 +18,10 @@ public interface ReadOnlyGameState
     ReadOnlyTeamState getTeam(int teamNumber);
 
     @NotNull
-    ReadOnlyTeamState getTeam(TeamColor teamColor);
+    ReadOnlyTeamState getTeam(@NotNull TeamColor teamColor);
 
     @NotNull
-    ReadOnlyTeamState getTeam(UISide side);
+    ReadOnlyTeamState getTeam(@NotNull UISide side);
 
     ////////////////////////// CLOCK & TIMING
 
@@ -59,7 +59,7 @@ public interface ReadOnlyGameState
     /**
      * Calculates the remaining time a player is to stay penalized.
      */
-    int getRemainingPenaltyTime(ReadOnlyPlayerState player);
+    int getRemainingPenaltyTime(@NotNull ReadOnlyPlayerState player);
 
     /**
      * Determines the secondary time. Although this is a GUI feature, the secondary time

@@ -52,7 +52,7 @@ public class MessageReceiver<T>
         receiverThread = new ReceiverThread();
     }
 
-    public void addProtocol(ReceivingProtocol<T> protocol)
+    public void addProtocol(@NotNull ReceivingProtocol<T> protocol)
     {
         protocols.add(protocol);
     }

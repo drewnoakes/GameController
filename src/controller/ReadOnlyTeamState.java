@@ -16,9 +16,11 @@ public interface ReadOnlyTeamState
     int getTeamNumber();
 
     /** Gets the name of this team. */
+    @NotNull
     String getTeamName();
 
     /** Gets the colour of this team's uniform. */
+    @NotNull
     TeamColor getTeamColor();
 
     /** Gets the team's current score (number of goals). */

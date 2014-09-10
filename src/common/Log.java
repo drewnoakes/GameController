@@ -72,7 +72,7 @@ public class Log
      *
      * @param s the string to be written in the file.
      */
-    public static void toFile(String s)
+    public static void toFile(@NotNull String s)
     {
         assert(file != null);
 
@@ -93,7 +93,7 @@ public class Log
      * 
      * @param s the string to be written to the error log file.
      */
-    public static void error(String s)
+    public static void error(@NotNull String s)
     {
         System.err.println(s);
         try {
@@ -108,6 +108,7 @@ public class Log
     }
 
     /** Produces a uniformly formatted string representing the current time to be prepended to log file entries. */
+    @NotNull
     private static String createTimestamp()
     {
         return timestampFormat.format(new Date(System.currentTimeMillis()));

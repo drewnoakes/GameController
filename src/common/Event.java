@@ -1,5 +1,7 @@
 package common;
 
+import common.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,14 +14,14 @@ import java.util.List;
  */
 public class Event<T>
 {
-    private List<EventHandler<T>> handlers = new ArrayList<EventHandler<T>>();
+    private final List<EventHandler<T>> handlers = new ArrayList<EventHandler<T>>();
 
     /**
      * Registers the provided handler for future notifications when this event fires.
      *
      * @param handler a handler for this event.
      */
-    public void subscribe(EventHandler<T> handler)
+    public void subscribe(@NotNull EventHandler<T> handler)
     {
         handlers.add(handler);
     }
