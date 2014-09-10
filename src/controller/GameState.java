@@ -237,7 +237,7 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     {
         for (TeamState team : teams) {
             team.setPushCount(0);
-            for (PlayerState player : team) {
+            for (WriteablePlayerState player : team) {
                 if (!player.isCoach() && player.getPenalty() != Penalty.Substitute) {
                     player.setPenalty(Penalty.None);
                     player.setEjected(false);
