@@ -8,6 +8,12 @@ import controller.WriteableTeamState;
 import data.Penalty;
 import data.SPLCoachMessage;
 
+/**
+ * Executed when a new SPL coach message is received.
+ *
+ * @author Sebastian Koralewski
+ * @author Drew Noakes https://drewnoakes.com
+ */
 public class SPLCoachMessageReceived extends Action
 {
     @NotNull private final SPLCoachMessage message;

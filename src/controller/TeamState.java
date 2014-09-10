@@ -7,7 +7,13 @@ import data.*;
 import java.util.*;
 
 /**
- * Models the state of a team at a given moment.
+ * Models the complete state of a team at a given moment.
+ *
+ * <ul>
+ *     <li>Implements both read-only and writeable interfaces.</li>
+ *     <li>Iterable over its players.</li>
+ *     <li>{@link TeamState#clone()} produces an exact copy. This mechanism is used to enable 'undo' functionality.</li>
+ * </ul>
  *
  * @author Michel Bartsch
  * @author Drew Noakes https://drewnoakes.com
@@ -38,6 +44,7 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
     @Nullable private byte[] coachMessage;
     private long timestampCoachMessage;
 
+    /** Initialises a new instance of TeamState. */
     public TeamState(@NotNull Game game, @NotNull Team team, @NotNull TeamColor teamColor)
     {
         this.team = team;
@@ -63,6 +70,7 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
         }
     }
 
+    /** Private copy constructor. */
     private TeamState(@NotNull TeamState source)
     {
         // Note, we don't deep clone the immutable team metadata object
@@ -192,6 +200,9 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
     @Override
     public void setScore(int score)
     {
+        if (score < 0)
+            throw new IllegalArgumentException("Score cannot be negative.");
+
         this.score = score;
     }
 

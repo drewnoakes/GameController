@@ -8,18 +8,41 @@ import data.TeamColor;
 import data.UISide;
 
 /**
+ * A read-only view over a game's state.
+ *
  * @author Drew Noakes https://drewnoakes.com
  */
 public interface ReadOnlyGameState
 {
     ////////////////////////// TEAM LOOKUP
 
+    /**
+     * Gets a read-only view of the team state associated with the specified team number.
+     *
+     * @param teamNumber the team number.
+     * @return the corresponding team, or <code>null</code> if the provided team number
+     *         does not match a team playing in the current game.
+     */
     @Nullable
     ReadOnlyTeamState getTeam(int teamNumber);
 
+    /**
+     * Gets a read-only view of the team with the specified uniform color.
+     *
+     * @param teamColor the uniform color to look up the team by.
+     * @return the team having the specified uniform color.
+     */
     @NotNull
     ReadOnlyTeamState getTeam(@NotNull TeamColor teamColor);
 
+    /**
+     * Gets a read-only view of the team on the specified side of the UI.
+     * <p>
+     * This does not necessarily correspond with the team's side of the field.
+     *
+     * @param side the side of the UI to look up the team by.
+     * @return the team on the specified side of the UI.
+     */
     @NotNull
     ReadOnlyTeamState getTeam(@NotNull UISide side);
 
@@ -142,23 +165,37 @@ public interface ReadOnlyGameState
     /** If true, left side has the kickoff. */
     boolean isLeftSideKickoff();
 
-    /** If true, the testmode has been activated. */
+    /** Gets whether test mode is currently active. */
     boolean isTestMode();
 
-    /** Which team has the next kick off. If <code>null</code>, then the next kick off will be a drop ball. */
+    /**
+     * Gets the color of the team having the next kick off, or <code>null</code> when
+     * no team gets the kick off (ie. a drop ball).
+     */
     @Nullable
     TeamColor getNextKickOffColor();
 
-    /** Color of the team that caused last drop in. If no drop in has occurred yet, will be <code>null</code>. */
+    /**
+     * Gets the color of the team that caused last drop in.
+     * <p>
+     * If no drop in has occurred yet, will be <code>null</code>.
+     */
     @Nullable
     TeamColor getLastDropInColor();
 
+    /**
+     * Gets a random number that uniquely identifies the current game.
+     * <p>
+     * May be used to detect and protect against problems related to multiple game controllers
+     * running on the same network.
+     */
     int getGameId();
 
+    /** Gets whether this game is a play-off (SPL) or knock-out (HL) game. */
     boolean isPlayOff();
 
     ////////////////////////// SPL-SPECIFIC VALUES
 
-    /** If true, the referee set a timeout (SPL only). */
+    /** Gets whether a referee timeout is currently active or not (SPL only). */
     boolean isRefereeTimeoutActive();
 }

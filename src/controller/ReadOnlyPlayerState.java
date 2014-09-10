@@ -4,6 +4,8 @@ import common.annotations.NotNull;
 import data.Penalty;
 
 /**
+ * A read-only view over a player's state.
+ *
  * @author Drew Noakes https://drewnoakes.com
  */
 public interface ReadOnlyPlayerState

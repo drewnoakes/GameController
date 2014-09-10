@@ -9,13 +9,17 @@ import data.*;
 import leagues.LeagueSettings;
 
 /**
- * This class extends the GameState that is send to the robots. It
- * contains all the additional information the GameController needs to
- * represent a state of the game, for example time in millis.
+ * Models the complete state of a game at a given moment in time.
  *
- * There are no synchronized get and set methods because in this architecture.
- * Only actions in their {@link controller.Action#execute} method are
- * allowed to write into this and they are all in the same thread.
+ * <ul>
+ *     <li>Implements both read-only and writeable interfaces.</li>
+ *     <li>{@link GameState#clone()} produces an exact copy. This mechanism is used to enable 'undo' functionality.</li>
+ * </ul>
+ *
+ * Game state modifications are controlled by {@link controller.Game}, and
+ * carried out by instances of {@link controller.Action} via their
+ * {@link controller.Action#execute} method. All other consumers of this
+ * object should receive it via the {@link ReadOnlyGameState} interface.
  *
  * @author Michel Bartsch
  * @author Drew Noakes https://drewnoakes.com
@@ -47,8 +51,10 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
 
     // TODO move this 'queue' into TeamState -- can it be modelled as a single (most recent) value?
 
+    /** Holding area for SQL coach messages while they wait to be sent, according to timing rules. */
     @NotNull public final ArrayList<SPLCoachMessage> splCoachMessageQueue;
 
+    /** Initialises a new GameState instance for a particular game. */
     public GameState(@NotNull Game game)
     {
         this.game = game;
@@ -77,6 +83,7 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
         splCoachMessageQueue = new ArrayList<SPLCoachMessage>();
     }
 
+    /** Private copy constructor. */
     private GameState(@NotNull GameState source)
     {
         // Note, we don't deep clone the game or coach message queues
@@ -304,22 +311,26 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
 
         int i = 0;
         while (i < splCoachMessageQueue.size()) {
-            if (splCoachMessageQueue.get(i).getRemainingTimeToSend() == 0) {
-                WriteableTeamState team = getTeam(splCoachMessageQueue.get(i).teamNumber);
+            SPLCoachMessage message = splCoachMessageQueue.get(i);
+            if (message.getRemainingTimeToSend() == 0) {
+                WriteableTeamState team = getTeam(message.teamNumber);
                 if (team != null) {
-                    byte[] message = splCoachMessageQueue.get(i).message;
+                    byte[] bytes = message.message;
 
                     // All chars after the first zero are zeroed, too
                     int k = 0;
-                    while (k < message.length && message[k] != 0) {
+                    while (k < bytes.length && bytes[k] != 0) {
                         k++;
                     }
-                    while (k < message.length) {
-                        message[k++] = 0;
+                    while (k < bytes.length) {
+                        bytes[k++] = 0;
                     }
 
-                    team.setCoachMessage(message);
-                    Log.toFile("Coach Message Team " + team.getTeamColor() + " " + new String(message));
+                    // Set these bytes on the team state. They will be included in the periodically sent
+                    // game state messages.
+                    team.setCoachMessage(bytes);
+
+                    Log.toFile("Coach Message Team " + team.getTeamColor() + " " + new String(bytes));
                     splCoachMessageQueue.remove(i);
                     break;
                 }

@@ -7,7 +7,7 @@ import data.PlayMode;
 import data.UISide;
 
 /**
- * This action means that a team get kickoff.
+ * Assigns kickoff to a team, indicated by UI side.
  *
  * @author Michel Bartsch
  */

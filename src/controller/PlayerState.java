@@ -6,6 +6,11 @@ import data.Penalty;
 /**
  * Models the state of a player at a given moment.
  *
+ * <ul>
+ *     <li>Implements both read-only and writeable interfaces.</li>
+ *     <li>{@link PlayerState#clone()} produces an exact copy. This mechanism is used to enable 'undo' functionality.</li>
+ * </ul>
+ *
  * @author Michel Bartsch
  * @author Drew Noakes https://drewnoakes.com
  */
@@ -29,6 +34,7 @@ public class PlayerState implements WriteablePlayerState, ReadOnlyPlayerState
         this.penalty = Penalty.None;
     }
 
+    /** Private copy constructor. */
     private PlayerState(@NotNull PlayerState source)
     {
         game = source.game;
