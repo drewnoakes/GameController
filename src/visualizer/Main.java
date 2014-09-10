@@ -89,9 +89,8 @@ public class Main
 
     private static void printUsage()
     {
-        final String HELP = "Usage: java -jar GameController.jar <options>"
+        System.out.println("Usage: java -jar GameController.jar <options>"
                 + "\n  (-h | --help)                   show this help message"
-                + "\n  (-l | --league) <league-dir>    select league (default is spl)";
-        System.out.println(HELP);
+                + "\n  (-l | --league) <league-dir>    select league (default is spl)");
     }
 }
