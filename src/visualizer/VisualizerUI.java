@@ -45,21 +45,9 @@ import data.*;
  */
 public class VisualizerUI
 {
-    // Some constants defining this GUI`s appearance as their names say.
-    // Feel free to change them and see what happens.
-
     private static final boolean IS_OSX = System.getProperty("os.name").contains("OS X");
     private static final boolean IS_APPLE_JAVA = IS_OSX && System.getProperty("java.version").compareTo("1.7") < 0;
-    private static final String WINDOW_TITLE = "Visualizer";
     private static final int DISPLAY_UPDATE_DELAY = 500;
-    private static final String STANDARD_FONT = Font.DIALOG;
-    private static final double STANDARD_FONT_SIZE = 0.08;
-    private static final double STANDARD_FONT_XXL_SIZE = 0.16;
-    private static final double STANDARD_FONT_S_SIZE = 0.05;
-    private static final double TEST_FONT_SIZE = 0.01;
-    private static final String BACKGROUND = "background";
-    private static final String WAITING_FOR_PACKET = "waiting for data packet...";
-
     /** Available screens on the current computer. */
     private static final GraphicsDevice[] devices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 
@@ -89,19 +77,21 @@ public class VisualizerUI
     {
         this.options = options;
 
-        frame = new JFrame(WINDOW_TITLE, devices[IS_OSX && !IS_APPLE_JAVA ? 0 : devices.length - 1].getDefaultConfiguration());
+        frame = new JFrame("Visualizer", devices[IS_OSX && !IS_APPLE_JAVA ? 0 : devices.length - 1].getDefaultConfiguration());
 
         frame.setUndecorated(true);
+
         if (IS_APPLE_JAVA && devices.length != 1) {
             frame.setSize(devices[devices.length-1].getDefaultConfiguration().getBounds().getSize());
         } else {
             devices[IS_OSX && !IS_APPLE_JAVA ? 0 : devices.length-1].setFullScreenWindow(frame);
         }
 
+        String backgroundImagePrefix = Config.CONFIG_PATH + options.getLeague().getDirectoryName() + "/background";
         for (String ext : Config.IMAGE_EXTENSIONS) {
             String path = null;
             try {
-                path = Config.CONFIG_PATH + options.getLeague().getDirectoryName() + "/" + BACKGROUND + "." + ext;
+                path = backgroundImagePrefix + "." + ext;
                 File file = new File(path);
                 if (file.exists())
                     background = ImageIO.read(file);
@@ -110,7 +100,7 @@ public class VisualizerUI
             }
         }
         if (background == null) {
-            Log.error("Unable to load background image: " + Config.CONFIG_PATH + options.getLeague().getDirectoryName() + "/" + BACKGROUND + ".*");
+            Log.error("Unable to load background image: " + backgroundImagePrefix + ".*");
             System.exit(1);
         }
         float scaleFactor = (float)frame.getWidth()/background.getWidth();
@@ -120,12 +110,12 @@ public class VisualizerUI
                 Image.SCALE_SMOOTH);
         background = new BufferedImage((int) (background.getWidth() * scaleFactor), (int) (background.getWidth() * scaleFactor), BufferedImage.TYPE_INT_ARGB);
         background.getGraphics().drawImage(tmp, 0, 0, null);
-        
-        testFont = new Font(Font.MONOSPACED, Font.PLAIN, (int)(TEST_FONT_SIZE*frame.getWidth()));
-        standardFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STANDARD_FONT_SIZE*frame.getWidth()));
-        standardSmallFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STANDARD_FONT_S_SIZE*frame.getWidth()));
-        scoreFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STANDARD_FONT_XXL_SIZE*frame.getWidth()));
-        coachMessageFont = new Font(Font.DIALOG, Font.PLAIN, (int)(0.037*frame.getWidth()));
+
+        testFont = new Font(Font.MONOSPACED, Font.PLAIN, (int)(0.01 * frame.getWidth()));
+        standardFont = new Font(Font.DIALOG, Font.PLAIN, (int)(0.08 * frame.getWidth()));
+        standardSmallFont = new Font(Font.DIALOG, Font.PLAIN, (int)(0.05 * frame.getWidth()));
+        scoreFont = new Font(Font.DIALOG, Font.PLAIN, (int)(0.16 * frame.getWidth()));
+        coachMessageFont = new Font(Font.DIALOG, Font.PLAIN, (int)(0.037 * frame.getWidth()));
 
         frame.addWindowListener(new WindowAdapter()
         {
@@ -230,7 +220,7 @@ public class VisualizerUI
     {
         g.setColor(Color.BLACK);
         g.setFont(testFont);
-        g.drawString(WAITING_FOR_PACKET, (int)(0.2*frame.getWidth()), (int)(0.3*frame.getHeight()));
+        g.drawString("Waiting for data packet...", (int)(0.2*frame.getWidth()), (int)(0.3*frame.getHeight()));
     }
     
     /**
