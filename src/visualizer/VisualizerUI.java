@@ -8,8 +8,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.RenderingHints;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -57,18 +56,18 @@ public class VisualizerUI
     private boolean testmode = false;
     /** The last state received to show. */
     private GameStateSnapshot state = null;
-    /** The background. */
+    private BufferedImage unscaledBackground;
     private BufferedImage background;
 
     private final JFrame frame;
     
     // The fonts used
 
-    private final Font testFont;
-    private final Font standardFont;
-    private final Font standardSmallFont;
-    private final Font scoreFont;
-    private final Font coachMessageFont;
+    private Font testFont;
+    private Font standardFont;
+    private Font standardSmallFont;
+    private Font scoreFont;
+    private Font coachMessageFont;
 
     /**
      * Constructs all elements of the UI and shows it on screen.
@@ -77,16 +76,12 @@ public class VisualizerUI
     {
         this.options = options;
 
-        frame = new JFrame("Visualizer", devices[IS_OSX && !IS_APPLE_JAVA ? 0 : devices.length - 1].getDefaultConfiguration());
+        GraphicsDevice device = devices[IS_OSX && !IS_APPLE_JAVA ? 0 : devices.length - 1];
 
+        frame = new JFrame("Visualizer", device.getDefaultConfiguration());
         frame.setUndecorated(true);
 
-        if (IS_APPLE_JAVA && devices.length != 1) {
-            frame.setSize(devices[devices.length-1].getDefaultConfiguration().getBounds().getSize());
-        } else {
-            devices[IS_OSX && !IS_APPLE_JAVA ? 0 : devices.length-1].setFullScreenWindow(frame);
-        }
-
+        // Load the background image
         String backgroundImagePrefix = Config.CONFIG_PATH + options.getLeague().getDirectoryName() + "/background";
         for (String ext : Config.IMAGE_EXTENSIONS) {
             String path = null;
@@ -94,28 +89,34 @@ public class VisualizerUI
                 path = backgroundImagePrefix + "." + ext;
                 File file = new File(path);
                 if (file.exists())
-                    background = ImageIO.read(file);
+                    unscaledBackground = ImageIO.read(file);
             } catch (IOException e) {
                 Log.error("Error decoding image file: " + path);
             }
         }
-        if (background == null) {
+        if (unscaledBackground == null) {
             Log.error("Unable to load background image: " + backgroundImagePrefix + ".*");
             System.exit(1);
         }
-        float scaleFactor = (float)frame.getWidth()/background.getWidth();
-        Image tmp = (new ImageIcon(background).getImage()).getScaledInstance(
-                (int)(background.getWidth()*scaleFactor),
-                (int)(background.getHeight()*scaleFactor),
-                Image.SCALE_SMOOTH);
-        background = new BufferedImage((int) (background.getWidth() * scaleFactor), (int) (background.getWidth() * scaleFactor), BufferedImage.TYPE_INT_ARGB);
-        background.getGraphics().drawImage(tmp, 0, 0, null);
 
-        testFont = new Font(Font.MONOSPACED, Font.PLAIN, getSizeToWidth(0.01));
-        standardFont = new Font(Font.DIALOG, Font.PLAIN, getSizeToWidth(0.08));
-        standardSmallFont = new Font(Font.DIALOG, Font.PLAIN, getSizeToWidth(0.05));
-        scoreFont = new Font(Font.DIALOG, Font.PLAIN, getSizeToWidth(0.16));
-        coachMessageFont = new Font(Font.DIALOG, Font.PLAIN, getSizeToWidth(0.037));
+        // Set initial size as full-screen
+        if (IS_APPLE_JAVA && devices.length != 1) {
+            frame.setSize(devices[devices.length-1].getDefaultConfiguration().getBounds().getSize());
+        } else {
+            device.setFullScreenWindow(frame);
+        }
+
+        // Handle resize events (ie. projector plugged in, window docked, etc)
+        frame.addComponentListener(new ComponentAdapter()
+        {
+            @Override
+            public void componentResized(ComponentEvent evt)
+            {
+                scaleResources();
+            }
+        });
+
+        scaleResources();
 
         frame.addWindowListener(new WindowAdapter()
         {
@@ -150,6 +151,27 @@ public class VisualizerUI
         };
         displayUpdater.setName("Display Updater");
         displayUpdater.start();
+    }
+
+    /** Scales fonts and images to match the size of the frame. */
+    private void scaleResources()
+    {
+        float scaleFactor = (float)frame.getWidth()/unscaledBackground.getWidth();
+        Image tmp = (new ImageIcon(unscaledBackground).getImage()).getScaledInstance(
+                (int)(unscaledBackground.getWidth()*scaleFactor),
+                (int)(unscaledBackground.getHeight()*scaleFactor),
+                Image.SCALE_SMOOTH);
+        background = new BufferedImage(
+                (int) (unscaledBackground.getWidth() * scaleFactor),
+                (int) (unscaledBackground.getWidth() * scaleFactor),
+                BufferedImage.TYPE_INT_ARGB);
+        background.getGraphics().drawImage(tmp, 0, 0, null);
+
+        testFont = new Font(Font.MONOSPACED, Font.PLAIN, getSizeToWidth(0.01));
+        standardFont = new Font(Font.DIALOG, Font.PLAIN, getSizeToWidth(0.08));
+        standardSmallFont = new Font(Font.DIALOG, Font.PLAIN, getSizeToWidth(0.05));
+        scoreFont = new Font(Font.DIALOG, Font.PLAIN, getSizeToWidth(0.16));
+        coachMessageFont = new Font(Font.DIALOG, Font.PLAIN, getSizeToWidth(0.037));
     }
     
     /**
