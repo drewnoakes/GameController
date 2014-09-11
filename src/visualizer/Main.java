@@ -45,7 +45,6 @@ public class Main
                         public void handle(GameStateSnapshot state) { ui.update(state); }
                     });
             gameStateListener.addProtocol(new GameStateProtocol9(options.getLeague(), -1));
-            gameStateListener.addProtocol(new GameStateProtocol8(options.getLeague()));
             gameStateListener.start();
         } catch (SocketException e) {
             System.err.println("Exception binding listener");
