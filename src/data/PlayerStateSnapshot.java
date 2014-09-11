@@ -9,14 +9,18 @@ import common.annotations.NotNull;
  */
 public class PlayerStateSnapshot
 {
+    /** The uniform number of this player. If the SPL coach, -1. */
+    public final int uniformNumber;
+
     /** The penalty applied to this player. May be {@link data.Penalty#None}. */
     public final Penalty penalty;
 
     /** Estimate of remaining penalty time for player. */
     public final byte secondsTillUnpenalised;
 
-    public PlayerStateSnapshot(@NotNull Penalty penalty, byte secondsTillUnpenalised)
+    public PlayerStateSnapshot(int uniformNumber, @NotNull Penalty penalty, byte secondsTillUnpenalised)
     {
+        this.uniformNumber = uniformNumber;
         this.penalty = penalty;
         this.secondsTillUnpenalised = secondsTillUnpenalised;
     }

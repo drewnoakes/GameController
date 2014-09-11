@@ -171,29 +171,28 @@ public class GameStateProtocol9 extends GameStateProtocol
         if (hasCoach) {
             coachMessage = new byte[SPLCoachMessage.SIZE];
             buffer.get(coachMessage);
-            coach = playerFromBytes(buffer);
+            coach = playerFromBytes(-1, buffer);
         }
 
         List<PlayerStateSnapshot> players = new ArrayList<PlayerStateSnapshot>(league.settings().teamSize);
 
         for (int uniformNumber = 1; uniformNumber <= NUM_PLAYERS_IN_GAME_STATE_MESSAGE; uniformNumber++) {
-            Penalty penalty = Penalty.fromValue(league, buffer.get());
-            byte secondsUntilUnpenalised = buffer.get();
+            PlayerStateSnapshot player = playerFromBytes(uniformNumber, buffer);
             // The buffer potentially contains data for more players than we are interested in -- ignore unused
             if (uniformNumber <= league.settings().teamSize) {
-                players.add(new PlayerStateSnapshot(penalty, secondsUntilUnpenalised));
+                players.add(player);
             }
         }
 
         return new TeamStateSnapshot(teamNumber, teamColor, score, penaltyShot, singleShots, players, coachMessage, coach);
     }
 
-    private PlayerStateSnapshot playerFromBytes(ByteBuffer buffer)
+    private PlayerStateSnapshot playerFromBytes(int uniformNumber, ByteBuffer buffer)
     {
         Penalty penalty = Penalty.fromValue(league, buffer.get());
-        byte secsTillUnpenalised = buffer.get();
+        byte secondsTillUnpenalised = buffer.get();
 
-        return new PlayerStateSnapshot(penalty, secsTillUnpenalised);
+        return new PlayerStateSnapshot(uniformNumber, penalty, secondsTillUnpenalised);
     }
 
     private void writeTeamInfo(@NotNull ByteBuffer buffer, @NotNull ReadOnlyTeamState teamState)
