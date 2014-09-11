@@ -56,7 +56,6 @@ public class VisualizerUI
     private static final double STANDARD_FONT_SIZE = 0.08;
     private static final double STANDARD_FONT_XXL_SIZE = 0.16;
     private static final double STANDARD_FONT_S_SIZE = 0.05;
-    private static final String TEST_FONT = "Lucida Console";
     private static final double TEST_FONT_SIZE = 0.01;
     private static final String BACKGROUND = "background";
     private static final String WAITING_FOR_PACKET = "waiting for data packet...";
@@ -122,7 +121,7 @@ public class VisualizerUI
         background = new BufferedImage((int) (background.getWidth() * scaleFactor), (int) (background.getWidth() * scaleFactor), BufferedImage.TYPE_INT_ARGB);
         background.getGraphics().drawImage(tmp, 0, 0, null);
         
-        testFont = new Font(TEST_FONT, Font.PLAIN, (int)(TEST_FONT_SIZE*frame.getWidth()));
+        testFont = new Font(Font.MONOSPACED, Font.PLAIN, (int)(TEST_FONT_SIZE*frame.getWidth()));
         standardFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STANDARD_FONT_SIZE*frame.getWidth()));
         standardSmallFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STANDARD_FONT_S_SIZE*frame.getWidth()));
         scoreFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(STANDARD_FONT_XXL_SIZE*frame.getWidth()));
