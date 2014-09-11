@@ -127,10 +127,13 @@ public class GameStateProtocol8 extends GameStateProtocol
 
         List<PlayerStateSnapshot> players = new ArrayList<PlayerStateSnapshot>(league.settings().teamSize);
 
-        for (int uniformNumber = 1; uniformNumber <= league.settings().teamSize; uniformNumber++) {
+        for (int uniformNumber = 1; uniformNumber <= NUM_PLAYERS_IN_GAME_STATE_MESSAGE; uniformNumber++) {
             Penalty penalty = Penalty.fromValue(league, buffer.get());
             byte secondsUntilUnpenalised = buffer.get();
-            players.add(new PlayerStateSnapshot(penalty, secondsUntilUnpenalised));
+            // The buffer potentially contains data for more players than we are interested in -- ignore unused
+            if (uniformNumber <= league.settings().teamSize) {
+                players.add(new PlayerStateSnapshot(penalty, secondsUntilUnpenalised));
+            }
         }
 
         return new TeamStateSnapshot(teamNumber, teamColor, score, penaltyShot, singleShots, players, coachMessage, coach);
