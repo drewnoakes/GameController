@@ -300,18 +300,21 @@ public class VisualizerUI
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
         for (int i = 0; i < 2; i++) {
+            BufferedImage logo = logos[i];
+            if (logo == null)
+                continue;
             TeamStateSnapshot team = i == 0 ? state.getTeam1() : state.getTeam2();
             g.setColor(team.getTeamColor().getRgb(options.getLeague()));
             float scaleFactorX = 1f;
             float scaleFactorY = 1f;
-            if (logos[i].getWidth() * 1.2f > logos[i].getHeight()) {
-                scaleFactorY = logos[i].getHeight() / (float)logos[i].getWidth();
+            if (logo.getWidth() * 1.2f > logo.getHeight()) {
+                scaleFactorY = logo.getHeight() / (float)logo.getWidth();
             } else {
-                scaleFactorX = logos[i].getWidth() / (float)logos[i].getHeight();
+                scaleFactorX = logo.getWidth() / (float)logo.getHeight();
             }
             int offsetX = (int)((size - size * scaleFactorX) / 2);
             int offsetY = (int)((size - size * scaleFactorY) / 2);
-            g.drawImage(logos[i],
+            g.drawImage(logo,
                     (i == 1 ? x : frame.getWidth() - x - size) + offsetX,
                     y + offsetY,
                     (int)(scaleFactorX * size),
