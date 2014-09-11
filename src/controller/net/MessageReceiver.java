@@ -50,6 +50,7 @@ public class MessageReceiver<T>
         datagramSocket.bind(new InetSocketAddress(udpPort));
 
         receiverThread = new ReceiverThread();
+        receiverThread.setName("Message Receiver");
     }
 
     public void addProtocol(@NotNull ReceivingProtocol<T> protocol)

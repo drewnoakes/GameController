@@ -158,6 +158,7 @@ public class VisualizerUI
                 }
             }
         };
+        displayUpdater.setName("Display Updater");
         displayUpdater.start();
     }
     
