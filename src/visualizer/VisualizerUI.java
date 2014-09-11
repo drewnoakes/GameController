@@ -111,11 +111,11 @@ public class VisualizerUI
         background = new BufferedImage((int) (background.getWidth() * scaleFactor), (int) (background.getWidth() * scaleFactor), BufferedImage.TYPE_INT_ARGB);
         background.getGraphics().drawImage(tmp, 0, 0, null);
 
-        testFont = new Font(Font.MONOSPACED, Font.PLAIN, (int)(0.01 * frame.getWidth()));
-        standardFont = new Font(Font.DIALOG, Font.PLAIN, (int)(0.08 * frame.getWidth()));
-        standardSmallFont = new Font(Font.DIALOG, Font.PLAIN, (int)(0.05 * frame.getWidth()));
-        scoreFont = new Font(Font.DIALOG, Font.PLAIN, (int)(0.16 * frame.getWidth()));
-        coachMessageFont = new Font(Font.DIALOG, Font.PLAIN, (int)(0.037 * frame.getWidth()));
+        testFont = new Font(Font.MONOSPACED, Font.PLAIN, getSizeToWidth(0.01));
+        standardFont = new Font(Font.DIALOG, Font.PLAIN, getSizeToWidth(0.08));
+        standardSmallFont = new Font(Font.DIALOG, Font.PLAIN, getSizeToWidth(0.05));
+        scoreFont = new Font(Font.DIALOG, Font.PLAIN, getSizeToWidth(0.16));
+        coachMessageFont = new Font(Font.DIALOG, Font.PLAIN, getSizeToWidth(0.037));
 
         frame.addWindowListener(new WindowAdapter()
         {
@@ -220,7 +220,7 @@ public class VisualizerUI
     {
         g.setColor(Color.BLACK);
         g.setFont(testFont);
-        g.drawString("Waiting for data packet...", (int)(0.2*frame.getWidth()), (int)(0.3*frame.getHeight()));
+        g.drawString("Waiting for data packet...", getSizeToWidth(0.2), getSizeToHeight(0.3));
     }
     
     /**
