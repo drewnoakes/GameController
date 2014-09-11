@@ -93,8 +93,8 @@ public class GameStateProtocol8 extends GameStateProtocol
         if (!verifyHeader(buffer))
             return null;
 
-        buffer.get(); // packet number (ignored when decoding)
-        buffer.get(); // players per team (ignored when decoding -- should equal league.settings().teamSize)
+        byte packetNumber = buffer.get();
+        byte playersPerTeam = buffer.get(); // should equal league.settings().teamSize
         PlayMode playMode = PlayMode.fromValue(buffer.get());
         boolean firstHalf = buffer.get() != 0;
         TeamColor nextKickOffColor = TeamColor.fromValue(buffer.get());
@@ -109,7 +109,7 @@ public class GameStateProtocol8 extends GameStateProtocol
 
         return new GameStateSnapshot(
                 playMode, firstHalf, nextKickOffColor, period, lastDropInColor, dropInTime,
-                secsRemaining, team1, team2, secondaryTime, -1);
+                secsRemaining, team1, team2, secondaryTime, -1, league, packetNumber, playersPerTeam, null);
     }
 
     @NotNull

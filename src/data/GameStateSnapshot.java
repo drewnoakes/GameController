@@ -23,13 +23,18 @@ public class GameStateSnapshot
     private final short secsRemaining;
     private final short secondaryTime;
     private final int gameId;
+    @NotNull private final League league;
+    private final byte packetNumber;
+    private final byte playersPerTeam;
+    @Nullable private final Boolean isDropInGame;
     @NotNull public final TeamStateSnapshot team1;
     @NotNull public final TeamStateSnapshot team2;
 
     public GameStateSnapshot(@NotNull PlayMode playMode, boolean firstHalf, @Nullable TeamColor nextKickOffColor,
                              @NotNull Period period, @Nullable TeamColor lastDropInColor, short dropInTime,
                              short secsRemaining, @NotNull TeamStateSnapshot team1, @NotNull TeamStateSnapshot team2,
-                             short secondaryTime, int gameId)
+                             short secondaryTime, int gameId, @NotNull League league, byte packetNumber,
+                             byte playersPerTeam, @Nullable Boolean isDropInGame)
     {
         this.playMode = playMode;
         this.firstHalf = firstHalf;
@@ -42,6 +47,10 @@ public class GameStateSnapshot
         this.team2 = team2;
         this.secondaryTime = secondaryTime;
         this.gameId = gameId;
+        this.league = league;
+        this.packetNumber = packetNumber;
+        this.playersPerTeam = playersPerTeam;
+        this.isDropInGame = isDropInGame;
     }
 
     public Iterable<TeamStateSnapshot> getTeams()
@@ -136,5 +145,36 @@ public class GameStateSnapshot
     public int getGameId()
     {
         return gameId;
+    }
+
+    /** Gets the league this message applies to. */
+    @NotNull
+    public League getLeague()
+    {
+        return league;
+    }
+
+    /** Gets a 8-bit sequence number for the message received from the game controller. */
+    public byte getPacketNumber()
+    {
+        return packetNumber;
+    }
+
+    /** Gets the number of player states per team included in this message. */
+    public byte getPlayersPerTeam()
+    {
+        return playersPerTeam;
+    }
+
+    /**
+     * Gets whether this game is a drop-in (SPL) or play-off (HL) game.
+     * <p>
+     * Only supported in version 9 of the protocol. In snapshots received via earlier protocols, this value
+     * will be <code>null</code>.
+     */
+    @Nullable
+    public Boolean isDropInGame()
+    {
+        return isDropInGame;
     }
 }

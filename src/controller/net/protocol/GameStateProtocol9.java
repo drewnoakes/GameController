@@ -127,24 +127,22 @@ public class GameStateProtocol9 extends GameStateProtocol
         if (!verifyHeader(buffer))
             return null;
 
+        League league = League.findByNumber(buffer.get());
+
         // Ensure the message applies to the current league
         // TODO don't return null, and decode the message according to the advertised league
-        byte leagueNumber = buffer.get();
-        if (leagueNumber != this.league.number())
+        if (league != this.league)
             return null;
 
-        buffer.get(); // packet number (ignored when decoding)
-        buffer.get(); // players per team (ignored when decoding)
-
+        byte packetNumber = buffer.get();
+        byte playersPerTeam = buffer.get();
         int gameId = buffer.getInt();
         PlayMode playMode = PlayMode.fromValue(buffer.get());
         boolean firstHalf = buffer.get() != 0;
         TeamColor nextKickOffColor = TeamColor.fromValue(buffer.get());
         Period period = Period.fromValue(buffer.get());
         TeamColor lastDropInColor = TeamColor.fromValue(buffer.get());
-
-        buffer.get(); // is drop-in/knockout game
-
+        boolean isDropInGame = buffer.get() != 0;
         short dropInTime = buffer.getShort();
         short secsRemaining = buffer.getShort();
         short secondaryTime = buffer.getShort();
@@ -154,7 +152,7 @@ public class GameStateProtocol9 extends GameStateProtocol
 
         return new GameStateSnapshot(
                 playMode, firstHalf, nextKickOffColor, period, lastDropInColor, dropInTime,
-                secsRemaining, team1, team2, secondaryTime, gameId);
+                secsRemaining, team1, team2, secondaryTime, gameId, league, packetNumber, playersPerTeam, isDropInGame);
     }
 
     @NotNull
