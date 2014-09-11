@@ -240,9 +240,13 @@ public class VisualizerUI
      */
     private void drawTestmode(Graphics g)
     {
+        double yMargin = 0.3;
+        double xMargin = 0.08;
+        double xSpacing = (1 - (2*xMargin)) / 3.0;
+
         StringPlotter plotter = new StringPlotter(g, testFont, Color.BLACK, 1.2);
-        plotter.setX(getSizeToWidth(0.08));
-        plotter.setY(getSizeToHeight(0.3));
+        plotter.setX(getSizeToWidth(xMargin));
+        plotter.setY(getSizeToHeight(yMargin));
 
         plotter.write("           playMode: " + state.getPlayMode());
         plotter.write("          firstHalf: " + (state.isFirstHalf() ? "true" : "false"));
@@ -253,25 +257,25 @@ public class VisualizerUI
         plotter.write("      secsRemaining: " + state.getSecsRemaining());
         plotter.write("      secondaryTime: " + state.getSecondaryTime());
 
+        plotter.setX(getSizeToWidth(xMargin + xSpacing));
         for (TeamStateSnapshot team : state.getTeams()) {
-            plotter.write("--------------------------------------");
-            plotter.write("         teamNumber: " + team.getTeamNumber());
-            plotter.write("          teamColor: " + team.getTeamColor());
-            plotter.write("              score: " + team.getScore());
-            plotter.write("        penaltyShot: " + team.getPenaltyShotCount());
-            plotter.write("        singleShots: " + Integer.toBinaryString(team.getPenaltyShotFlags()));
-            plotter.write("       coachMessage: " + (team.getCoachMessage() != null ? new String(team.getCoachMessage()) : null));
-            plotter.write("        coachStatus: " + team.getCoach());
-        }
-        
-        plotter.setX(getSizeToWidth(0.35));
-        for (TeamStateSnapshot team : state.getTeams()) {
-            plotter.setY(getSizeToHeight(0.2));
+            plotter.setY(getSizeToHeight(yMargin));
+            plotter.write("  teamNumber: " + team.getTeamNumber());
+            plotter.write("   teamColor: " + team.getTeamColor());
+            plotter.write("       score: " + team.getScore());
+            plotter.write(" penaltyShot: " + team.getPenaltyShotCount());
+            plotter.write(" singleShots: " + Integer.toBinaryString(team.getPenaltyShotFlags()));
+            plotter.write("coachMessage: " + (team.getCoachMessage() != null ? new String(team.getCoachMessage()) : null));
+            plotter.write(" coachStatus: " + team.getCoach());
+            plotter.write("----------------------------");
             for (PlayerStateSnapshot player : team.getPlayers()) {
-                plotter.write("            penalty: " + player.penalty);
-                plotter.write("secsTillUnpenalised: " + player.secondsTillUnpenalised);
+                plotter.write("      player: " + player.uniformNumber);
+                plotter.write("     penalty: " + player.penalty
+                        + (player.penalty == Penalty.None || player.penalty == Penalty.Substitute
+                            ? ""
+                            : " (" + player.secondsTillUnpenalised + ")"));
             }
-            plotter.setX(getSizeToWidth(0.64));
+            plotter.setX(getSizeToWidth(xMargin + 2*xSpacing));
         }
     }
 
