@@ -320,8 +320,6 @@ public class VisualizerUI
             BufferedImage logo = logos[i];
             if (logo == null)
                 continue;
-            TeamStateSnapshot team = i == 0 ? state.getTeam1() : state.getTeam2();
-            g.setColor(team.getTeamColor().getRgb(options.getLeague()));
             float scaleFactorX = 1f;
             float scaleFactorY = 1f;
             if (logo.getWidth() * 1.2f > logo.getHeight()) {
