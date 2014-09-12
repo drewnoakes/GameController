@@ -285,8 +285,7 @@ public class ControllerUI
                 JProgressBar progressBar = new JProgressBar();
                 progressBar.setMaximum(1000);
                 progressBar.setVisible(false);
-                @SuppressWarnings("MagicConstant")
-                JLabel onlineStatusIcon = new JLabel(lanUnknown, side.toSwingHorizontalAlignment());
+                JLabel onlineStatusIcon = new JLabel(lanUnknown, side == UISide.Left ? SwingConstants.LEFT : SwingConstants.RIGHT);
                 onlineStatusIcon.setVerticalAlignment(SwingConstants.CENTER);
                 Button button = new Button();
                 TotalScaleLayout robotLayout = new TotalScaleLayout(button);
