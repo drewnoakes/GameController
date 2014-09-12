@@ -52,7 +52,7 @@ public class RobotButton extends Action
             game.pushState("Entering Player " + team.getTeamColor() + " " + uniformNumber);
         } else if (game.getLastUserAction() instanceof RobotAction) {
             RobotAction robotAction = (RobotAction)game.getLastUserAction();
-            robotAction.executeForRobot(game, state, team, player, side);
+            robotAction.executeForRobot(game, state, team, player);
         } else if (player.getPenalty() != Penalty.None) {
             // Clear the robot's existing penalty
             player.setPenalty(Penalty.None);

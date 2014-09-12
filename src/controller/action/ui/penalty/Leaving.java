@@ -4,7 +4,6 @@ import common.annotations.NotNull;
 import controller.*;
 import data.PlayMode;
 import data.Penalty;
-import data.UISide;
 
 /**
  * Applies the SPL leaving the field penalty to a robot.
@@ -15,7 +14,7 @@ public class Leaving extends PenaltyAction
 {
     @Override
     public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team,
-                                @NotNull WriteablePlayerState player, @NotNull UISide side)
+                                @NotNull WriteablePlayerState player)
     {
         player.setPenalty(Penalty.SplLeavingTheField);
         player.setWhenPenalized(state.getTime());

@@ -3,7 +3,6 @@ package controller.action.ui.penalty;
 import common.annotations.NotNull;
 import controller.*;
 import data.Penalty;
-import data.UISide;
 
 /**
  * This action means that the substitution player penalty has been selected.
@@ -14,7 +13,7 @@ public class Substitute extends PenaltyAction
 {
     @Override
     public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team,
-                                @NotNull WriteablePlayerState player, @NotNull UISide side)
+                                @NotNull WriteablePlayerState player)
     {
         // Queue any penalty the leaving player has to be picked up by the entering player
         if (player.getPenalty() != Penalty.None) {

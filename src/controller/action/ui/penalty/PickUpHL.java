@@ -3,7 +3,6 @@ package controller.action.ui.penalty;
 import common.annotations.NotNull;
 import controller.*;
 import data.Penalty;
-import data.UISide;
 
 /**
  *
@@ -13,7 +12,7 @@ public class PickUpHL extends PenaltyAction
 {
     @Override
     public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team,
-                                @NotNull WriteablePlayerState player, @NotNull UISide side)
+                                @NotNull WriteablePlayerState player)
     {
         if (player.getPenalty() == Penalty.None) {
             player.setWhenPenalized(state.getTime());

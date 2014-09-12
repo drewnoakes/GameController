@@ -4,7 +4,6 @@ import common.annotations.NotNull;
 import controller.*;
 import data.PlayMode;
 import data.Penalty;
-import data.UISide;
 
 /**
  * This action means that the player pushing penalty has been selected.
@@ -14,7 +13,7 @@ import data.UISide;
 public class Pushing extends PenaltyAction
 {
     @Override
-    public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team, @NotNull WriteablePlayerState player, @NotNull UISide side)
+    public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team, @NotNull WriteablePlayerState player)
     {
         player.setPenalty(Penalty.SplPlayerPushing);
         player.setWhenPenalized(state.getTime());
