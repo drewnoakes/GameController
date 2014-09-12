@@ -121,7 +121,7 @@ public class GameOptionsUI
     {
         frame = new JFrame(WINDOW_TITLE);
         frame.setIconImage(new ImageIcon(Config.ICONS_PATH + "window_icon.png").getImage());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setLayout(new FlowLayout(FlowLayout.CENTER, 0, STANDARD_SPACE));
         // Centre window on user's screen
