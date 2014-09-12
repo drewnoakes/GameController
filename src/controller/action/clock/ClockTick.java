@@ -34,7 +34,7 @@ public class ClockTick extends Action
     /**
      * Gets whether the clock should be running given the current GameState.
      *
-     * @param game
+     * @param game the game being played
      * @param state the game state to consider
      * @return true if the clock should be running, otherwise false
      */

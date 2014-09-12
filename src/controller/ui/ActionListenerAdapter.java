@@ -22,8 +22,8 @@ public class ActionListenerAdapter implements ActionListener
      * This gets called when the button an action is added to was pushed or
      * if the action is called otherwise.
      *
-     * The action`s execute method will not be executed right away but
-     * later in the GUI`s thread.
+     * The action's execute method will not be executed right away but
+     * later in the GUI thread.
      *
      * @param e the event that happened, but this is ignored.
      */

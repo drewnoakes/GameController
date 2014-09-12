@@ -27,9 +27,9 @@ import data.*;
 
 /**
  * The window of the Game Controller Visualizer.
- *
+ * <p>
  * Displays a summary of the game state in a large screen format, targeted at audiences and field referees.
- *
+ * <p>
  * Shows:
  *
  * <ul>
@@ -41,6 +41,7 @@ import data.*;
  * </ul>
  *
  * @author Michel Bartsch
+ * @author Drew Noakes https://drewnoakes.com
  */
 public class VisualizerUI
 {

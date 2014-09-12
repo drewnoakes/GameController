@@ -39,7 +39,7 @@ public class LogInfo
     public League league;
     /* If the teams have kept there team colors during the game. */
     public boolean keepColors = false;
-    /* The teams`s names. */
+    /* The teams' names. */
     public final String[] team = new String[2];
     /* Time of the first ready. */
     public Date start;
