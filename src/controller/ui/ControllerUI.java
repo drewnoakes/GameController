@@ -839,7 +839,7 @@ public class ControllerUI
                                     text += " (Sub)";
                                 } else if (!game.league().isSPLFamily() || penalty != Penalty.SplCoachMotion) {
                                     text += ": " + formatTime(seconds);
-                                    isButtonHighlight = seconds <= UNPEN_HIGHLIGHT_SECONDS && button.getBackground() != COLOR_HIGHLIGHT;
+                                    isButtonHighlight = button.getBackground() != COLOR_HIGHLIGHT;
                                 }
                             } else {
                                 text += ": " + formatTime(seconds) + (pickup ? " (P)" : "");
