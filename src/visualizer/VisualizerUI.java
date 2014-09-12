@@ -70,6 +70,8 @@ public class VisualizerUI
     private Font scoreFont;
     private Font coachMessageFont;
 
+    private boolean mirrorTeams = false;
+
     /**
      * Constructs all elements of the UI and shows it on screen.
      */
@@ -330,7 +332,7 @@ public class VisualizerUI
             int offsetX = (int)((size - size * scaleFactorX) / 2);
             int offsetY = (int)((size - size * scaleFactorY) / 2);
             g.drawImage(logo,
-                    (i == 1 ? x : frame.getWidth() - x - size) + offsetX,
+                    (i == 0 ^ mirrorTeams ? x : frame.getWidth() - x - size) + offsetX,
                     y + offsetY,
                     (int)(scaleFactorX * size),
                     (int)(scaleFactorY * size), null);
@@ -359,7 +361,7 @@ public class VisualizerUI
             drawCenteredString(
                     g,
                     Integer.toString(getTeam(side).getScore()),
-                    side == UISide.Left ? x : frame.getWidth() - x - size,
+                    side == UISide.Left ^ mirrorTeams ? x : frame.getWidth() - x - size,
                     y,
                     size);
         }
@@ -477,7 +479,7 @@ public class VisualizerUI
             TeamStateSnapshot team = i == 0 ? state.getTeam1() : state.getTeam2();
             g.setColor(team.getTeamColor().getRgb(options.getLeague()));
             for (int j = 0; j < team.getPenaltyShotCount(); j++) {
-                int circleX = i == 1 ? x + j * 2 * size : frame.getWidth() - x - (5 - j) * 2 * size - size;
+                int circleX = i == 0 ? x + j * 2 * size : frame.getWidth() - x - (5 - j) * 2 * size - size;
                 if ((team.getPenaltyShotFlags() & (1 << j)) != 0) {
                     g.fillOval(circleX, y, size, size);
                 } else {
@@ -549,7 +551,7 @@ public class VisualizerUI
 
             // Draw the coach label and coach message box
             g.setColor(team.getTeamColor().getRgb(options.getLeague()));
-            if (i == 1) {
+            if (i == 0 ^ mirrorTeams) {
                 g.drawString(row1, getSizeToWidth(0.01), getSizeToHeight(0.92));
                 g.drawString(row2, getSizeToWidth(0.01), getSizeToHeight(0.98));
             } else {
