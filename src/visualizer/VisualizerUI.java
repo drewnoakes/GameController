@@ -1,13 +1,6 @@
 package visualizer;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
@@ -185,6 +178,12 @@ public class VisualizerUI
     {
         testmode = !testmode;
         update(state);
+    }
+
+    /** Toggles the arrangement of the teams in the UI. */
+    public void mirrorTeams()
+    {
+        this.mirrorTeams = !this.mirrorTeams;
     }
     
     /**

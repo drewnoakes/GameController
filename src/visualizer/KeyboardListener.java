@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
  * Binds keyboard events to visualiser actions.
  *
  * @author Michel Bartsch
+ * @author Drew Noakes https://drewnoakes.com
  */
 public class KeyboardListener implements KeyEventDispatcher
 {
@@ -76,6 +77,10 @@ public class KeyboardListener implements KeyEventDispatcher
             case KeyEvent.VK_Q:
                 if (e.isControlDown())
                     Main.exit();
+                break;
+            case KeyEvent.VK_M:
+            case KeyEvent.VK_F:
+                ui.mirrorTeams();
                 break;
             default:
                 return false;
