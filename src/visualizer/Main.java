@@ -4,7 +4,6 @@ import common.Log;
 import controller.Config;
 import controller.net.MessageHandler;
 import controller.net.MessageReceiver;
-import controller.net.protocol.GameStateProtocol8;
 import controller.net.protocol.GameStateProtocol9;
 import data.GameStateSnapshot;
 import data.League;
