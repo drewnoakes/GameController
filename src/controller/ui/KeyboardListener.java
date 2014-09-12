@@ -5,7 +5,6 @@ import controller.Game;
 import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
 import data.TeamColor;
-import data.UISide;
 
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
@@ -82,8 +81,8 @@ public class KeyboardListener implements KeyEventDispatcher
             case KeyEvent.VK_DELETE: action = ActionBoard.testmode; break;
             case KeyEvent.VK_BACK_SPACE: action = ActionBoard.undo[1]; break;
 
-            case KeyEvent.VK_B: action = ActionBoard.out[game.getGameState().getTeam(UISide.Left).getTeamColor() == TeamColor.Blue ? 0 : 1]; break;
-            case KeyEvent.VK_R: action = ActionBoard.out[game.getGameState().getTeam(UISide.Right).getTeamColor() == TeamColor.Red ? 0 : 1]; break;
+            case KeyEvent.VK_B: action = ActionBoard.out.get(TeamColor.Blue); break;
+            case KeyEvent.VK_R: action = ActionBoard.out.get(TeamColor.Red); break;
 
             default:
             {

@@ -45,10 +45,6 @@ public class ControllerUI
     private static final int PLAY_MODE_FONT_SIZE = 12;
 
     private static final String WINDOW_TITLE = "RoboCup Game Controller";
-    private static final String[][] BACKGROUND_SIDE = {{"robot_left_blue.png",
-                                                        "robot_left_red.png"},
-                                                       {"robot_right_blue.png",
-                                                        "robot_right_red.png"}};
     private static final String BACKGROUND_MID = "field.png";
     private static final String BACKGROUND_CLOCK_SMALL = "time_ground_small.png";
     private static final String BACKGROUND_CLOCK = "time_ground.png";
@@ -117,6 +113,7 @@ public class ControllerUI
     // Some attributes used in the GUI components
 
     private double lastScale = 0;
+
     private final ImageIcon clockImgReset;
     private final ImageIcon clockImgPlay;
     private final ImageIcon clockImgPause;
@@ -125,27 +122,26 @@ public class ControllerUI
     private final ImageIcon lanHighLatency;
     private final ImageIcon lanOffline;
     private final ImageIcon lanUnknown;
-    private final ImageIcon[][] backgroundSide;
-    
+
     // All the components of this GUI
     private final PaintableFrame frame;
-
     private final ImagePanel midPanel;
-    private final ImagePanel[] sidePanel;
-    private final JLabel[] nameLabels;
-    private final JButton[] goalDecButton;
-    private final JButton[] goalIncButton;
-    private final JLabel[] goalCountLabels;
-    private final JRadioButton[] kickOffRadioButtons;
-    private final JLabel[] pushLabels;
-    private final JButton[][] robotButtons;
-    private final JLabel[][] robotLabel;
-    private final JProgressBar[][] robotProgressBars;
-    private final JLabel[][] robotOnlineStatus;
+    private final ReadOnlyPair<ImagePanel> sidePanel;
+    private final ReadOnlyPair<JLabel> nameLabels;
+    private final ReadOnlyPair<JButton> goalDecButton;
+    private final ReadOnlyPair<JButton> goalIncButton;
+    private final ReadOnlyPair<JLabel> goalCountLabels;
+    private final ReadOnlyPair<JRadioButton> kickOffRadioButtons;
+    private final JRadioButton kickOffNoneRadioButton;
+    private final ReadOnlyPair<JLabel> pushLabels;
+    private final ReadOnlyPair<JButton[]> robotButtons;
+    private final ReadOnlyPair<JLabel[]> robotLabel;
+    private final ReadOnlyPair<JProgressBar[]> robotProgressBars;
+    private final ReadOnlyPair<JLabel[]> robotOnlineStatus;
     private final JToggleButton refereeTimeoutButton;
-    private final JToggleButton[] timeOutButton;
-    private JButton[] gameStuckButtons;
-    private final JButton[] outButtons;
+    private final ReadOnlyPair<JToggleButton> timeOutButton;
+    private ReadOnlyPair<JButton> gameStuckButtons;
+    private final ReadOnlyPair<JButton> outButtons;
     private final JToggleButton initialPlayModeButton;
     private final JToggleButton readyPlayModeButton;
     private final JToggleButton setPlayModeButton;
@@ -234,64 +230,54 @@ public class ControllerUI
         lanOffline = new ImageIcon(Config.ICONS_PATH+OFFLINE);
         lanUnknown = new ImageIcon(Config.ICONS_PATH+UNKNOWN_ONLINE_STATUS);
 
-        backgroundSide = new ImageIcon[2][2];
-        for (int i=0; i<BACKGROUND_SIDE.length; i++) {
-            for (int j=0; j<BACKGROUND_SIDE[i].length; j++) {
-                backgroundSide[i][j] = new ImageIcon(Config.ICONS_PATH + game.league().getDirectoryName() + "/" + BACKGROUND_SIDE[i][j]);
-            }
-        }
-        
         //Components
-        sidePanel = new ImagePanel[2];
-        for (int i=0; i<2; i++) {
-            sidePanel[i] = new ImagePanel(ImagePanel.Mode.Stretch, backgroundSide[i][i].getImage());
-            sidePanel[i].setOpaque(true);
+        sidePanel = new Pair<ImagePanel>(game.uiOrientation(),
+                new ImagePanel(ImagePanel.Mode.Stretch, getBackgroundImage(UISide.Left)),
+                new ImagePanel(ImagePanel.Mode.Stretch, getBackgroundImage(UISide.Right)));
+        for (ImagePanel panel : sidePanel) {
+            panel.setOpaque(true);
         }
         midPanel = new ImagePanel(ImagePanel.Mode.Stretch, new ImageIcon(Config.ICONS_PATH + BACKGROUND_MID).getImage());
         ImagePanel bottomPanel = new ImagePanel(ImagePanel.Mode.Stretch, new ImageIcon(Config.ICONS_PATH + BACKGROUND_BOTTOM).getImage());
         
         //--side--
         //  score
-        nameLabels = new JLabel[2];
-        goalDecButton = new JButton[2];
-        goalIncButton = new JButton[2];
-        goalCountLabels = new JLabel[2];
-        kickOffRadioButtons = new JRadioButton[3];
+        goalDecButton = new Pair<JButton>(game.uiOrientation(), new Button("-"), new Button("-"));
+        goalIncButton = new Pair<JButton>(game.uiOrientation(), new Button("+"), new Button("+"));
+        nameLabels = new Pair<JLabel>(game.uiOrientation(), new JLabel(), new JLabel());
+        goalCountLabels = new Pair<JLabel>(game.uiOrientation(), new JLabel("0"), new JLabel("0"));
+        pushLabels = new Pair<JLabel>(game.uiOrientation(), new JLabel("0"), new JLabel("0"));
+        kickOffRadioButtons = new Pair<JRadioButton>(game.uiOrientation(), new JRadioButton(KICKOFF), new JRadioButton(KICKOFF));
+        kickOffNoneRadioButton = new JRadioButton();
         ButtonGroup kickOffGroup = new ButtonGroup();
-        pushLabels = new JLabel[2];
-        for (int i=0; i<2; i++) {
-            // TODO make nameLabels,goalIncButton,kickOffRadioButtons,goalCountLabels,pushLabels a ReadOnlyPair<> and enumerate sides
-            UISide side = i == 0 ? UISide.Left : UISide.Right;
-            nameLabels[i] = new JLabel(game.teams().get(side).getName());
-            nameLabels[i].setHorizontalAlignment(JLabel.CENTER);
-            nameLabels[i].setForeground(game.getGameState().getTeam(side).getTeamColor().getRgb(game.league()));
-            goalIncButton[i] = new Button("+");
-            goalDecButton[i] = new Button("-");
-            kickOffRadioButtons[i] = new JRadioButton(KICKOFF);
-            kickOffRadioButtons[i].setOpaque(false);
-            kickOffRadioButtons[i].setHorizontalAlignment(JLabel.CENTER);
-            kickOffGroup.add(kickOffRadioButtons[i]);
-            goalCountLabels[i] = new JLabel("0");
-            goalCountLabels[i].setHorizontalAlignment(JLabel.CENTER);
-            pushLabels[i] = new JLabel("0");
-            pushLabels[i].setHorizontalAlignment(JLabel.CENTER);
-        }
-        kickOffRadioButtons[2] = new JRadioButton();
-        kickOffGroup.add(kickOffRadioButtons[2]);
-        
-        //  robots
-        JPanel[] robotPanels = new JPanel[2];
-        final int teamSize = game.settings().teamSize + (game.settings().isCoachAvailable ? 1 : 0);
-        robotButtons = new JButton[2][teamSize];
-        robotLabel = new JLabel[2][teamSize];
-        robotProgressBars = new JProgressBar[2][teamSize];
-        robotOnlineStatus = new JLabel[2][teamSize];
-        for (int i=0; i<2; i++) {
-            robotPanels[i] = new JPanel();
-            robotPanels[i].setLayout(new GridLayout(robotButtons[i].length, 1, 0, 10));
-            robotPanels[i].setOpaque(false);
+        kickOffGroup.add(kickOffNoneRadioButton);
+        for (UISide side : UISide.both()) {
+            nameLabels.get(side).setText(game.teams().get(side).getName());
+            nameLabels.get(side).setHorizontalAlignment(JLabel.CENTER);
+            nameLabels.get(side).setForeground(game.getGameState().getTeam(side).getTeamColor().getRgb(game.league()));
 
-            for (int j = 0; j < robotButtons[i].length; j++) {
+            JRadioButton kickOffRadioButton = kickOffRadioButtons.get(side);
+            kickOffRadioButton.setOpaque(false);
+            kickOffRadioButton.setHorizontalAlignment(JLabel.CENTER);
+            kickOffGroup.add(kickOffRadioButton);
+
+            goalCountLabels.get(side).setHorizontalAlignment(JLabel.CENTER);
+            pushLabels.get(side).setHorizontalAlignment(JLabel.CENTER);
+        }
+
+        //  robots
+        Pair<JPanel> robotPanels = new Pair<JPanel>(game.uiOrientation(), new JPanel(), new JPanel());
+        final int teamSize = game.settings().teamSize + (game.settings().isCoachAvailable ? 1 : 0);
+        robotButtons = new Pair<JButton[]>(game.uiOrientation(), new JButton[teamSize], new JButton[teamSize]);
+        robotLabel = new Pair<JLabel[]>(game.uiOrientation(), new JLabel[teamSize], new JLabel[teamSize]);
+        robotProgressBars = new Pair<JProgressBar[]>(game.uiOrientation(), new JProgressBar[teamSize], new JProgressBar[teamSize]);
+        robotOnlineStatus = new Pair<JLabel[]>(game.uiOrientation(), new JLabel[teamSize], new JLabel[teamSize]);
+
+        for (UISide side : UISide.both()) {
+            robotPanels.get(side).setLayout(new GridLayout(robotButtons.get(side).length, 1, 0, 10));
+            robotPanels.get(side).setOpaque(false);
+
+            for (int j = 0; j < robotButtons.get(side).length; j++) {
                 JLabel label = new JLabel();
                 label.setHorizontalAlignment(JLabel.CENTER);
                 label.setVerticalAlignment(JLabel.CENTER);
@@ -299,7 +285,8 @@ public class ControllerUI
                 JProgressBar progressBar = new JProgressBar();
                 progressBar.setMaximum(1000);
                 progressBar.setVisible(false);
-                JLabel onlineStatusIcon = new JLabel(lanUnknown, i == 0 ? SwingConstants.LEFT : SwingConstants.RIGHT);
+                @SuppressWarnings("MagicConstant")
+                JLabel onlineStatusIcon = new JLabel(lanUnknown, side.toSwingHorizontalAlignment());
                 onlineStatusIcon.setVerticalAlignment(SwingConstants.CENTER);
                 Button button = new Button();
                 TotalScaleLayout robotLayout = new TotalScaleLayout(button);
@@ -307,26 +294,19 @@ public class ControllerUI
                 robotLayout.add(.1, .2, .8, .5, label);
                 robotLayout.add(.2, .7, .6, .15, progressBar);
                 robotLayout.add(.05, 0, .9, 1, onlineStatusIcon);
-                robotPanels[i].add(button);
+                robotPanels.get(side).add(button);
 
-                robotLabel[i][j] = label;
-                robotButtons[i][j] = button;
-                robotProgressBars[i][j] = progressBar;
-                robotOnlineStatus[i][j] = onlineStatusIcon;
+                robotLabel.get(side)[j] = label;
+                robotButtons.get(side)[j] = button;
+                robotProgressBars.get(side)[j] = progressBar;
+                robotOnlineStatus.get(side)[j] = onlineStatusIcon;
             }
         }
         //  team
-        timeOutButton = new JToggleButton[2];
-        outButtons = new JButton[2];
-        for (int i=0; i<2; i++) {
-            timeOutButton[i] = new ToggleButton(TIMEOUT);
-            outButtons[i] = new JButton(OUT);
-        }
+        timeOutButton = new Pair<JToggleButton>(game.uiOrientation(), new JToggleButton(TIMEOUT), new JToggleButton(TIMEOUT));
+        outButtons = new Pair<JButton>(game.uiOrientation(), new JButton(OUT), new JButton(OUT));
         if (game.league().isSPLFamily()) {
-            gameStuckButtons = new Button[2];
-            for (int i=0; i<2; i++) {
-                gameStuckButtons[i] = new Button();
-            }
+            gameStuckButtons = new Pair<JButton>(game.uiOrientation(), new JButton(OUT), new JButton(OUT));
         }
         
         //--mid--
@@ -438,37 +418,37 @@ public class ControllerUI
         TotalScaleLayout layout = new TotalScaleLayout(frame);
         frame.setLayout(layout);
         
-        layout.add(0, 0, .3, .04, nameLabels[0]);
-        layout.add(.7, 0, .3, .04, nameLabels[1]);
-        layout.add(.01, .05, .08, .07, goalIncButton[0]);
-        layout.add(.91, .05, .08, .07, goalIncButton[1]);
-        layout.add(.01, .13, .08, .06, goalDecButton[0]);
-        layout.add(.91, .13, .08, .06, goalDecButton[1]);
-        layout.add(.17, .05, .12, .04, kickOffRadioButtons[0]);
-        layout.add(.71, .05, .12, .04, kickOffRadioButtons[1]);
-        layout.add(.21, .09, .08, .07, goalCountLabels[0]);
-        layout.add(.71, .09, .08, .07, goalCountLabels[1]);
-        layout.add(.21, .16, .08, .04, pushLabels[0]);
-        layout.add(.71, .16, .08, .04, pushLabels[1]);
-        layout.add(.01, .21, .28, .55, robotPanels[0]);
-        layout.add(.71, .21, .28, .55, robotPanels[1]);
+        layout.add(0, 0, .3, .04, nameLabels.get(UISide.Left));
+        layout.add(.7, 0, .3, .04, nameLabels.get(UISide.Right));
+        layout.add(.01, .05, .08, .07, goalIncButton.get(UISide.Left));
+        layout.add(.91, .05, .08, .07, goalIncButton.get(UISide.Right));
+        layout.add(.01, .13, .08, .06, goalDecButton.get(UISide.Left));
+        layout.add(.91, .13, .08, .06, goalDecButton.get(UISide.Right));
+        layout.add(.17, .05, .12, .04, kickOffRadioButtons.get(UISide.Left));
+        layout.add(.71, .05, .12, .04, kickOffRadioButtons.get(UISide.Right));
+        layout.add(.21, .09, .08, .07, goalCountLabels.get(UISide.Left));
+        layout.add(.71, .09, .08, .07, goalCountLabels.get(UISide.Right));
+        layout.add(.21, .16, .08, .04, pushLabels.get(UISide.Left));
+        layout.add(.71, .16, .08, .04, pushLabels.get(UISide.Right));
+        layout.add(.01, .21, .28, .55, robotPanels.get(UISide.Left));
+        layout.add(.71, .21, .28, .55, robotPanels.get(UISide.Right));
         if (game.league().isSPLFamily() && !game.settings().dropInPlayerMode) {
-            layout.add(.01, .77, .09, .09, timeOutButton[0]);
-            layout.add(.9, .77, .09, .09, timeOutButton[1]);
-            layout.add(.11, .77, .08, .09, gameStuckButtons[0]);
-            layout.add(.81, .77, .08, .09, gameStuckButtons[1]);
-            layout.add(.20, .77, .09, .09, outButtons[0]);
-            layout.add(.71, .77, .09, .09, outButtons[1]);
+            layout.add(.01, .77, .09, .09, timeOutButton.get(UISide.Left));
+            layout.add(.9, .77, .09, .09, timeOutButton.get(UISide.Right));
+            layout.add(.11, .77, .08, .09, gameStuckButtons.get(UISide.Left));
+            layout.add(.81, .77, .08, .09, gameStuckButtons.get(UISide.Right));
+            layout.add(.20, .77, .09, .09, outButtons.get(UISide.Left));
+            layout.add(.71, .77, .09, .09, outButtons.get(UISide.Right));
         } else {
             if (game.league().isSPLFamily()) {
-                layout.add(.01, .77, .135, .09, gameStuckButtons[0]);
-                layout.add(.855, .77, .135, .09, gameStuckButtons[1]);
+                layout.add(.01, .77, .135, .09, gameStuckButtons.get(UISide.Left));
+                layout.add(.855, .77, .135, .09, gameStuckButtons.get(UISide.Right));
             } else {
-                layout.add(.01, .77, .135, .09, timeOutButton[0]);
-                layout.add(.855, .77, .135, .09, timeOutButton[1]);
+                layout.add(.01, .77, .135, .09, timeOutButton.get(UISide.Left));
+                layout.add(.855, .77, .135, .09, timeOutButton.get(UISide.Right));
             }
-            layout.add(.155, .77, .135, .09, outButtons[0]);
-            layout.add(.71, .77, .135, .09, outButtons[1]);
+            layout.add(.155, .77, .135, .09, outButtons.get(UISide.Left));
+            layout.add(.71, .77, .135, .09, outButtons.get(UISide.Right));
         }
         layout.add(.31, .0, .08, .11, clockResetButton);
         layout.add(.4, .012, .195, .10, clockLabel);
@@ -538,23 +518,23 @@ public class ControllerUI
         }
         layout.add(.08, .88, .84, .11, timelinePanel);
         layout.add(.925, .88, .07, .11, cancelUndoButton);
-        layout.add(0, 0, .3, .87, sidePanel[0]);
+        layout.add(0, 0, .3, .87, sidePanel.get(UISide.Left));
         layout.add(.3, 0, .4, .87, midPanel);
-        layout.add(.7, 0, .3, .87, sidePanel[1]);
+        layout.add(.7, 0, .3, .87, sidePanel.get(UISide.Right));
         layout.add(0, .87, 1, .132, bottomPanel);
         
         //--listener--
-        for (int i=0; i<2; i++) {
-            goalDecButton[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.goalDec[i]));
-            goalIncButton[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.goalInc[i]));
-            kickOffRadioButtons[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.kickOff[i]));
-            for (int j=0; j< robotButtons[i].length; j++) {
-                robotButtons[i][j].addActionListener(new ActionListenerAdapter(game, ActionBoard.robotButton[i][j]));
+        for (UISide side : UISide.both()) {
+            goalDecButton.get(side).addActionListener(new ActionListenerAdapter(game, ActionBoard.goalDec.get(side)));
+            goalIncButton.get(side).addActionListener(new ActionListenerAdapter(game, ActionBoard.goalInc.get(side)));
+            kickOffRadioButtons.get(side).addActionListener(new ActionListenerAdapter(game, ActionBoard.kickOff.get(side)));
+            for (int j=0; j< robotButtons.get(side).length; j++) {
+                robotButtons.get(side)[j].addActionListener(new ActionListenerAdapter(game, ActionBoard.robotButton.get(side)[j]));
             }
-            timeOutButton[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.timeOut[i]));
-            outButtons[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.out[i]));
+            timeOutButton.get(side).addActionListener(new ActionListenerAdapter(game, ActionBoard.timeOut.get(side)));
+            outButtons.get(side).addActionListener(new ActionListenerAdapter(game, ActionBoard.out.get(side)));
             if (game.league().isSPLFamily()) {
-                gameStuckButtons[i].addActionListener(new ActionListenerAdapter(game, ActionBoard.stuck[i]));
+                gameStuckButtons.get(side).addActionListener(new ActionListenerAdapter(game, ActionBoard.stuck.get(side)));
             }
         }
         refereeTimeoutButton.addActionListener(new ActionListenerAdapter(game, ActionBoard.refereeTimeout));
@@ -615,6 +595,17 @@ public class ControllerUI
         update(game.getGameState());
 
         frame.setVisible(true);
+    }
+
+    private Image getBackgroundImage(@NotNull UISide side)
+    {
+        String filename = String.format("%s%s/robot_%s_%s.png",
+                Config.ICONS_PATH,
+                game.league().getDirectoryName(),
+                side.toString().toLowerCase(),
+                game.uiOrientation().getColor(side).toString().toLowerCase());
+
+        return new ImageIcon(filename).getImage();
     }
 
     /**
@@ -699,10 +690,8 @@ public class ControllerUI
     
     private void updateHalf(ReadOnlyGameState state)
     {
-        for (int i=0; i<2; i++) {
-            // TODO make nameLabels a ReadOnlyPair<> and enumerate sides
-            UISide side = i == 0 ? UISide.Left : UISide.Right;
-            nameLabels[i].setText(state.getTeam(side).getTeamName());
+        for (UISide side : UISide.both()) {
+            nameLabels.get(side).setText(state.getTeam(side).getTeamName());
         }
         firstHalfPeriodButton.setEnabled(ActionBoard.firstHalf.canExecute(game, state));
         secondHalfPeriodButton.setEnabled(ActionBoard.secondHalf.canExecute(game, state));
@@ -726,12 +715,10 @@ public class ControllerUI
     
     private void updateTeamColors(ReadOnlyGameState state)
     {
-        for (int i=0; i<2; i++) {
-            // TODO make nameLabels/sidePanel a ReadOnlyPair<> and enumerate sides
-            UISide side = i == 0 ? UISide.Left : UISide.Right;
+        for (UISide side : UISide.both()) {
             ReadOnlyTeamState team = state.getTeam(side);
-            nameLabels[i].setForeground(team.getTeamColor().getRgb(game.league()));
-            sidePanel[i].setImage(backgroundSide[i][team.getTeamColor().getValue()].getImage());
+            nameLabels.get(side).setForeground(team.getTeamColor().getRgb(game.league()));
+            sidePanel.get(side).setImage(getBackgroundImage(side));
         }
     }
     
@@ -763,12 +750,10 @@ public class ControllerUI
     
     private void updateGoal(ReadOnlyGameState state)
     {
-        for (int i=0; i<2; i++) {
-            // TODO make nameLabels a ReadOnlyPair<> and enumerate sides
-            UISide side = i == 0 ? UISide.Left : UISide.Right;
-            goalCountLabels[i].setText(Integer.toString(state.getTeam(side).getScore()));
-            goalIncButton[i].setEnabled(ActionBoard.goalInc[i].canExecute(game, state));
-            goalDecButton[i].setVisible(ActionBoard.goalDec[i].canExecute(game, state));
+        for (UISide side : UISide.both()) {
+            goalCountLabels.get(side).setText(Integer.toString(state.getTeam(side).getScore()));
+            goalIncButton.get(side).setEnabled(ActionBoard.goalInc.get(side).canExecute(game, state));
+            goalDecButton.get(side).setVisible(ActionBoard.goalDec.get(side).canExecute(game, state));
         }
     }
     
@@ -776,35 +761,33 @@ public class ControllerUI
     {
         if (state.getNextKickOffColor() == null) {
             // drop ball
-            kickOffRadioButtons[2].setSelected(true);
+            kickOffNoneRadioButton.setSelected(true);
         } else {
-            kickOffRadioButtons[state.getTeam(UISide.Left).getTeamColor() == state.getNextKickOffColor() ? 0 : 1].setSelected(true);
+            kickOffRadioButtons.get(state.getNextKickOffColor()).setSelected(true);
         }
-        for (int i=0; i<2; i++) {
-            kickOffRadioButtons[i].setEnabled(ActionBoard.kickOff[i].canExecute(game, state));
-            if (state.getPeriod() != Period.PenaltyShootout
-                && state.getPreviousPeriod() != Period.PenaltyShootout) {
-                kickOffRadioButtons[i].setText(KICKOFF);
+
+        for (UISide side : UISide.both()) {
+            kickOffRadioButtons.get(side).setEnabled(ActionBoard.kickOff.get(side).canExecute(game, state));
+            if (state.getPeriod() != Period.PenaltyShootout && state.getPreviousPeriod() != Period.PenaltyShootout) {
+                kickOffRadioButtons.get(side).setText(KICKOFF);
             } else {
-                kickOffRadioButtons[i].setText(KICKOFF_PENALTY_SHOOTOUT);
+                kickOffRadioButtons.get(side).setText(KICKOFF_PENALTY_SHOOTOUT);
             }
         }
     }
     
     private void updatePushes(ReadOnlyGameState state)
     {
-        for (int i=0; i<2; i++) {
-            // TODO make nameLabels a ReadOnlyPair<> and enumerate sides
-            UISide side = i == 0 ? UISide.Left : UISide.Right;
+        for (UISide side : UISide.both()) {
             ReadOnlyTeamState team = state.getTeam(side);
             if (state.getPeriod() == Period.PenaltyShootout || state.getPreviousPeriod() == Period.PenaltyShootout) {
-                pushLabels[i].setText((i == 0 && (state.getPlayMode() == PlayMode.Set
+                pushLabels.get(side).setText((side == UISide.Left && (state.getPlayMode() == PlayMode.Set
                         || state.getPlayMode() == PlayMode.Playing) ? SHOT : SHOTS) + ": " + team.getPenaltyShotCount());
             } else {
                 if (game.settings().pushesToEjection == null || game.settings().pushesToEjection.length == 0) {
-                    pushLabels[i].setText("");
+                    pushLabels.get(side).setText("");
                 } else {
-                    pushLabels[i].setText(PUSHES + ": " + team.getPushCount());
+                    pushLabels.get(side).setText(PUSHES + ": " + team.getPushCount());
                 }
             }
         }
@@ -814,15 +797,16 @@ public class ControllerUI
     {
         RobotOnlineStatus[][] onlineStatus = robotWatcher.updateRobotOnlineStatus();
 
-        for (int i = 0; i < robotButtons.length; i++) {
+        for (int i = 0; i < 2; i++) {
+            // TODO remove last usage of 'i' and iterate UISide.both()
             UISide side = i == 0 ? UISide.Left : UISide.Right;
             ReadOnlyTeamState team = state.getTeam(side);
 
-            for (int j = 0; j < robotButtons[i].length; j++) {
+            for (int j = 0; j < robotButtons.get(side).length; j++) {
                 boolean isCoach = j == game.settings().teamSize; // ActionBoard.robotButton[i][j].isCoach();
 
                 ReadOnlyPlayerState player = isCoach ? team.getCoach() : team.getPlayer(j + 1);
-                JButton button = robotButtons[i][j];
+                JButton button = robotButtons.get(side)[j];
 
                 String text = team.getTeamColor() + " " + (j + 1);
                 boolean isButtonEnabled = true;
@@ -872,43 +856,42 @@ public class ControllerUI
                     }
                 }
 
-                isButtonEnabled &= ActionBoard.robotButton[i][j].canExecute(game, state);
+                isButtonEnabled &= ActionBoard.robotButton.get(side)[j].canExecute(game, state);
 
                 button.setEnabled(isButtonEnabled);
                 highlight(button, isButtonHighlight);
-                robotLabel[i][j].setText(text);
-                robotProgressBars[i][j].setVisible(progress != 0);
-                robotProgressBars[i][j].setValue(progress);
+                robotLabel.get(side)[j].setText(text);
+                robotProgressBars.get(side)[j].setVisible(progress != 0);
+                robotProgressBars.get(side)[j].setValue(progress);
 
                 // Set icon to indicate robot's online status
+                // TODO what does 'i' mean to the onlineStatus results? colour? side? something else? make explicit
                 final RobotOnlineStatus status = onlineStatus[i][j];
-                robotOnlineStatus[i][j].setIcon(status == RobotOnlineStatus.ONLINE
-                    ? lanOnline
-                    : status == RobotOnlineStatus.HIGH_LATENCY
+                robotOnlineStatus.get(side)[j].setIcon(status == RobotOnlineStatus.ONLINE
+                        ? lanOnline
+                        : status == RobotOnlineStatus.HIGH_LATENCY
                         ? lanHighLatency
                         : status == RobotOnlineStatus.OFFLINE
-                            ? lanOffline
-                            : lanUnknown);
+                        ? lanOffline
+                        : lanUnknown);
             }
         }
     }
     
     private void updateTimeOut(ReadOnlyGameState state)
     {
-        for (int i=0; i<2; i++) {
-            // TODO make nameLabels a ReadOnlyPair<> and enumerate sides
-            UISide side = i == 0 ? UISide.Left : UISide.Right;
-            ReadOnlyTeamState team = state.getTeam(side);
-            if (!team.isTimeOutActive()) {
-                timeOutButton[i].setSelected(false);
-                highlight(timeOutButton[i], false);
+        for (UISide side : UISide.both()) {
+            JToggleButton button = timeOutButton.get(side);
+            if (!state.getTeam(side).isTimeOutActive()) {
+                button.setSelected(false);
+                highlight(button, false);
             } else {
-                boolean shouldHighlight = (state.getRemainingSeconds(state.getWhenCurrentPlayModeBegan(), game.settings().timeOutTime) < TIMEOUT_HIGHLIGHT_SECONDS)
-                        && (timeOutButton[i].getBackground() != COLOR_HIGHLIGHT);
-                timeOutButton[i].setSelected(!IS_OSX || !shouldHighlight);
-                highlight(timeOutButton[i], shouldHighlight);
+                boolean highlightTime = state.getRemainingSeconds(state.getWhenCurrentPlayModeBegan(), game.settings().timeOutTime) < TIMEOUT_HIGHLIGHT_SECONDS;
+                boolean shouldHighlight = highlightTime && button.getBackground() != COLOR_HIGHLIGHT;
+                button.setSelected(!IS_OSX || !shouldHighlight);
+                highlight(button, shouldHighlight);
             }
-            timeOutButton[i].setEnabled(ActionBoard.timeOut[i].canExecute(game, state));
+            button.setEnabled(ActionBoard.timeOut.get(side).canExecute(game, state));
         }
     }
     
@@ -920,21 +903,19 @@ public class ControllerUI
     
     private void updateGlobalStuck(ReadOnlyGameState state)
     {
-        for (int i=0; i<2; i++) {
-            // TODO make nameLabels a ReadOnlyPair<> and enumerate sides
-            UISide side = i == 0 ? UISide.Left : UISide.Right;
+        for (UISide side : UISide.both()) {
             if (state.getPlayMode() == PlayMode.Playing
                     && state.getRemainingSeconds(state.getWhenCurrentPlayModeBegan(), game.settings().kickoffTime + game.settings().minDurationBeforeStuck) > 0) {
                 if (state.getNextKickOffColor() == state.getTeam(side).getTeamColor()) {
-                    gameStuckButtons[i].setEnabled(true);
-                    gameStuckButtons[i].setText("<font color=#000000>" + KICKOFF_GOAL);
+                    gameStuckButtons.get(side).setEnabled(true);
+                    gameStuckButtons.get(side).setText("<font color=#000000>" + KICKOFF_GOAL);
                 } else {
-                    gameStuckButtons[i].setEnabled(false);
-                    gameStuckButtons[i].setText("<font color=#808080>" + STUCK);
+                    gameStuckButtons.get(side).setEnabled(false);
+                    gameStuckButtons.get(side).setText("<font color=#808080>" + STUCK);
                 }
             } else {
-                gameStuckButtons[i].setEnabled(ActionBoard.stuck[i].canExecute(game, state));
-                gameStuckButtons[i].setText((ActionBoard.stuck[i].canExecute(game, state) ? "<font color=#000000>" : "<font color=#808080>") + STUCK);
+                gameStuckButtons.get(side).setEnabled(ActionBoard.stuck.get(side).canExecute(game, state));
+                gameStuckButtons.get(side).setText((ActionBoard.stuck.get(side).canExecute(game, state) ? "<font color=#000000>" : "<font color=#808080>") + STUCK);
             }
         }
     }
@@ -946,8 +927,8 @@ public class ControllerUI
     
     private void updateOut(ReadOnlyGameState state)
     {
-        for (int i=0; i<2; i++) {
-            outButtons[i].setEnabled(ActionBoard.out[i].canExecute(game, state));
+        for (UISide side : UISide.both()) {
+            outButtons.get(side).setEnabled(ActionBoard.out.get(side).canExecute(game, state));
         }
     }
 
@@ -1075,20 +1056,20 @@ public class ControllerUI
         Font timeoutFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(TIMEOUT_FONT_SIZE * scale));
         Font playModeFont = new Font(STANDARD_FONT, Font.PLAIN, (int)(PLAY_MODE_FONT_SIZE * scale));
 
-        for (int i=0; i<=1; i++) {
-            nameLabels[i].setFont(titleFont);
-            goalIncButton[i].setFont(standardFont);
-            goalDecButton[i].setFont(standardFont);
-            kickOffRadioButtons[i].setFont(standardFont);
-            goalCountLabels[i].setFont(goalsFont);
-            pushLabels[i].setFont(standardFont);
-            for (int j=0; j< robotButtons[i].length; j++) {
-                robotLabel[i][j].setFont(titleFont);
+        for (UISide side : UISide.both()) {
+            nameLabels.get(side).setFont(titleFont);
+            goalIncButton.get(side).setFont(standardFont);
+            goalDecButton.get(side).setFont(standardFont);
+            kickOffRadioButtons.get(side).setFont(standardFont);
+            goalCountLabels.get(side).setFont(goalsFont);
+            pushLabels.get(side).setFont(standardFont);
+            for (int j=0; j< robotButtons.get(side).length; j++) {
+                robotLabel.get(side)[j].setFont(titleFont);
             }
-            timeOutButton[i].setFont(timeoutFont);
-            outButtons[i].setFont(timeoutFont);
+            timeOutButton.get(side).setFont(timeoutFont);
+            outButtons.get(side).setFont(timeoutFont);
             if (game.league().isSPLFamily()) {
-                gameStuckButtons[i].setFont(timeoutFont);
+                gameStuckButtons.get(side).setFont(timeoutFont);
             }
         }
         clockLabel.setFont(timeFont);

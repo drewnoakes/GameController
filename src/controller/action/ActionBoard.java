@@ -6,8 +6,7 @@ import controller.action.ui.*;
 import controller.action.ui.penalty.*;
 import controller.action.ui.period.*;
 import controller.action.ui.playmode.*;
-import data.League;
-import data.UISide;
+import data.*;
 
 /**
  * This class holds global instances of most actions, for when you want to
@@ -33,13 +32,13 @@ public class ActionBoard
     public static CancelUndo cancelUndo;
     public static final int MAX_NUM_UNDOS_AT_ONCE = 8;
     
-    public static final Goal[] goalDec = new Goal[2];
-    public static final Goal[] goalInc = new Goal[2];
-    public static final KickOff[] kickOff = new KickOff[2];
-    public static RobotButton[][] robotButton;
-    public static final TimeOut[] timeOut = new TimeOut[2];
-    public static final GlobalStuck[] stuck = new GlobalStuck[2];
-    public static final Out[] out = new Out[2];
+    public static ReadOnlyPair<Goal> goalDec;
+    public static ReadOnlyPair<Goal> goalInc;
+    public static ReadOnlyPair<KickOff> kickOff;
+    public static ReadOnlyPair<RobotButton[]> robotButton;
+    public static ReadOnlyPair<TimeOut> timeOut;
+    public static ReadOnlyPair<GlobalStuck> stuck;
+    public static ReadOnlyPair<Out> out;
     public static ClockReset clockReset;
     public static ClockPause clockPause;
     public static IncGameClock incGameClock;
@@ -72,8 +71,8 @@ public class ActionBoard
     public static Substitute substitute;
     public static DropBall dropBall;
 
-    public static Manual[][] manualPen;
-    public static Manual[][] manualUnpen;
+    public static ReadOnlyPair<Manual[]> manualPen;
+    public static ReadOnlyPair<Manual[]> manualUnpen;
 
     private ActionBoard() {}
 
@@ -81,7 +80,7 @@ public class ActionBoard
      * This must be called before using actions from this class. It creates
      * all the actions instances.
      */
-    public static void initalise(League league)
+    public static void initalise(League league, UIOrientation uiOrientation)
     {
         clock = new ClockTick();
         
@@ -96,19 +95,18 @@ public class ActionBoard
         // We construct team arrays during initialisation as the league may change between runs
         int robotCount = league.settings().teamSize + (league.settings().isCoachAvailable ? 1 : 0);
 
-        robotButton = new RobotButton[2][robotCount];
+        robotButton = new Pair<RobotButton[]>(uiOrientation, new RobotButton[robotCount], new RobotButton[robotCount]);
+        goalDec = new Pair<Goal>(uiOrientation, new Goal(UISide.Left, -1), new Goal(UISide.Right, -1));
+        goalInc = new Pair<Goal>(uiOrientation, new Goal(UISide.Left, 1), new Goal(UISide.Right, 1));
+        kickOff = new Pair<KickOff>(uiOrientation, new KickOff(UISide.Left), new KickOff(UISide.Right));
+        timeOut = new Pair<TimeOut>(uiOrientation, new TimeOut(UISide.Left), new TimeOut(UISide.Right));
+        stuck = new Pair<GlobalStuck>(uiOrientation, new GlobalStuck(UISide.Left), new GlobalStuck(UISide.Right));
+        out = new Pair<Out>(uiOrientation, new Out(UISide.Left), new Out(UISide.Right));
 
-        for (int i=0; i<2; i++) {
-            UISide side = i == 0 ? UISide.Left : UISide.Right;
-            goalDec[i] = new Goal(side, -1);
-            goalInc[i] = new Goal(side, 1);
-            kickOff[i] = new KickOff(side);
-            for (int j=0; j< robotButton[i].length; j++) {
-                robotButton[i][j] = new RobotButton(league, side, j + 1);
+        for (UISide side : UISide.both()) {
+            for (int j = 0; j < robotButton.get(side).length; j++) {
+                robotButton.get(side)[j] = new RobotButton(league, side, j + 1);
             }
-            timeOut[i] = new TimeOut(side);
-            stuck[i] = new GlobalStuck(side);
-            out[i] = new Out(side);
         }
         
         clockReset = new ClockReset();
@@ -145,13 +143,13 @@ public class ActionBoard
         substitute = new Substitute();
         dropBall = new DropBall();
 
-        manualPen = new Manual[2][robotCount];
-        manualUnpen = new Manual[2][robotCount];
-        for (int i=0; i<2; i++) {
-            UISide side = i == 0 ? UISide.Left : UISide.Right;
-            for (int j=0; j<robotCount; j++) {
-                manualPen[i][j] = new Manual(side, j + 1, false);
-                manualUnpen[i][j] = new Manual(side, j + 1, true);
+        manualPen = new Pair<Manual[]>(uiOrientation, new Manual[robotCount], new Manual[robotCount]);
+        manualUnpen = new Pair<Manual[]>(uiOrientation, new Manual[robotCount], new Manual[robotCount]);
+
+        for (UISide side : UISide.both()) {
+            for (int j = 0; j < robotCount; j++) {
+                manualPen.get(side)[j] = new Manual(side, j + 1, false);
+                manualUnpen.get(side)[j] = new Manual(side, j + 1, true);
             }
         }
     }

@@ -1,5 +1,6 @@
 package data;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,5 +38,10 @@ public enum UISide
     public UISide other()
     {
         return this == Left ? Right : Left;
+    }
+
+    public int toSwingHorizontalAlignment()
+    {
+        return this == Left ? SwingConstants.LEFT : SwingConstants.RIGHT;
     }
 }

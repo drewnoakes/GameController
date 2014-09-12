@@ -91,12 +91,15 @@ public class RobotWatcher
 
         assert(team != null);
 
+        // TODO need a better way of tracking robot online statuses -- it's based off team numbers, not sides
+        UISide side = game.teams().get(UISide.Left).getNumber() == robotMessage.getTeamNumber() ? UISide.Left : UISide.Right;
+
         if (robotMessage.getStatus() == RobotStatus.ManuallyPenalised) {
             if (team.getPlayer(number).getPenalty() == Penalty.None)
-                game.apply(ActionBoard.manualPen[teamIndex][i], ActionTrigger.Network);
+                game.apply(ActionBoard.manualPen.get(side)[i], ActionTrigger.Network);
         } else if (robotMessage.getStatus() == RobotStatus.ManuallyUnpenalised) {
             if (team.getPlayer(number).getPenalty() != Penalty.None)
-                game.apply(ActionBoard.manualUnpen[teamIndex][i], ActionTrigger.Network);
+                game.apply(ActionBoard.manualUnpen.get(side)[i], ActionTrigger.Network);
         }
     }
 
