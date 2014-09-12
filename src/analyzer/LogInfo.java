@@ -77,7 +77,7 @@ public class LogInfo
             if (br != null) {
                 try {
                     br.close();
-                } catch (Exception e) {}
+                } catch (Exception ignored) {}
             }
         }
         Parser.info(this);

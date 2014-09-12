@@ -54,6 +54,7 @@ public class Main
         // Process command line input
         GameOptions options = parseCommandLineArguments(args);
 
+        //noinspection InfiniteLoopStatement
         while (true) {
             // Start a new log file for each game
             Log.initialise();
@@ -220,7 +221,7 @@ public class Main
                         teamNumberBlue = Integer.parseInt(args[++i]);
                         teamNumberRed = Integer.parseInt(args[++i]);
                         continue;
-                    } catch (NumberFormatException e) {}
+                    } catch (NumberFormatException ignored) {}
                 }
             } else if (args[i].equals("-k") || args[i].equals("--kickoff")) {
                 if (hasAnotherArg) {

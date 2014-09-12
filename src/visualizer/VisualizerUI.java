@@ -137,11 +137,12 @@ public class VisualizerUI
             @Override
             public void run() {
                 Interval interval = new Interval(DISPLAY_UPDATE_DELAY);
+                //noinspection InfiniteLoopStatement
                 while (true) {
                     update(state);
                     try {
                         interval.sleep();
-                    } catch (InterruptedException e) {}
+                    } catch (InterruptedException ignored) {}
                 }
             }
         };
