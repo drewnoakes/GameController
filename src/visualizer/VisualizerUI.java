@@ -483,30 +483,6 @@ public class VisualizerUI
     }
     
     /**
-     * This is used to scale sizes depending on the visualizer's width.
-     * 
-     * @param size  A size between 0.0 (nothing) and 1.0 (full visualizer's width).
-     * 
-     * @return A size in pixel.
-     */
-    private int getSizeToWidth(double size)
-    {
-        return (int)(size*frame.getWidth());
-    }
-    
-    /**
-     * This is used to scale sizes depending on the visualizer's height.
-     * 
-     * @param size  A size between 0.0 (nothing) and 1.0 (full visualizer's height).
-     * 
-     * @return A size in pixel.
-     */
-    private int getSizeToHeight(double size)
-    {
-        return (int)(size*frame.getHeight());
-    }
-    
-    /**
      * This simply draws a string horizontal centered on a given position.
      * 
      * @param g     The graphics object to draw on.
@@ -576,6 +552,30 @@ public class VisualizerUI
                 g.drawString(row2, getSizeToWidth(0.99) - g.getFontMetrics().stringWidth(row2), getSizeToHeight(0.98));
             }
         }
+    }
+
+    /**
+     * This is used to scale sizes depending on the visualizer's width.
+     *
+     * @param size  A size between 0.0 (nothing) and 1.0 (full visualizer's width).
+     *
+     * @return A size in pixel.
+     */
+    private int getSizeToWidth(double size)
+    {
+        return (int)(size*frame.getWidth());
+    }
+
+    /**
+     * This is used to scale sizes depending on the visualizer's height.
+     *
+     * @param size  A size between 0.0 (nothing) and 1.0 (full visualizer's height).
+     *
+     * @return A size in pixel.
+     */
+    private int getSizeToHeight(double size)
+    {
+        return (int)(size*frame.getHeight());
     }
 
     /**
