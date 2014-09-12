@@ -27,8 +27,8 @@ public class GameStateSnapshot
     private final byte packetNumber;
     private final byte playersPerTeam;
     @Nullable private final Boolean isDropInGame;
-    @NotNull public final TeamStateSnapshot team1;
-    @NotNull public final TeamStateSnapshot team2;
+    @NotNull private final TeamStateSnapshot team1;
+    @NotNull private final TeamStateSnapshot team2;
 
     public GameStateSnapshot(@NotNull PlayMode playMode, boolean firstHalf, @Nullable TeamColor nextKickOffColor,
                              @NotNull Period period, @Nullable TeamColor lastDropInColor, short dropInTime,
