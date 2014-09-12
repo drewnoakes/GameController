@@ -390,36 +390,42 @@ public class VisualizerUI
      */
     private void drawSecState(Graphics g)
     {
+        // Determine the text to use
+        String text;
+        Period period = this.state.getPeriod();
+        if (period == Period.Normal) {
+            if (this.state.isFirstHalf()) {
+                if (this.state.getPlayMode() == PlayMode.Finished) {
+                    text = "Half Time";
+                } else {
+                    text = "First Half";
+                }
+            } else {
+                if (this.state.getPlayMode() == PlayMode.Initial) {
+                    text = "Half Time";
+                } else {
+                    text = "Second Half";
+                }
+            }
+        } else if (period == Period.Overtime) {
+            text = "Overtime";
+        } else if (period == Period.PenaltyShootout) {
+            text = "Penalty Shootout";
+        } else if (period == Period.Timeout) {
+            text = "Time Out";
+        } else {
+            // Should never reach here
+            Log.error("Invalid period: " + period);
+            text = "";
+        }
+
+        // Draw the text on the UI
         g.setColor(Color.BLACK);
         g.setFont(standardSmallFont);
         int x = getSizeToWidth(0.4);
         int y = getSizeToHeight(0.72);
         int size = getSizeToWidth(0.2);
-        String state;
-        if (this.state.getPeriod() == Period.Normal) {
-            if (this.state.isFirstHalf()) {
-                if (this.state.getPlayMode() == PlayMode.Finished) {
-                    state = "Half Time";
-                } else {
-                    state = "First Half";
-                }
-            } else {
-                if (this.state.getPlayMode() == PlayMode.Initial) {
-                    state = "Half Time";
-                } else {
-                    state = "Second Half";
-                }
-            }
-        } else if (this.state.getPeriod() == Period.Overtime) {
-            state = "Overtime";
-        } else if (this.state.getPeriod() == Period.PenaltyShootout) {
-            state = "Penalty Shootout";
-        } else if (this.state.getPeriod() == Period.Timeout) {
-            state = "Time Out";
-        } else {
-            state = "";
-        }
-        drawCenteredString(g, state, x, y, size);
+        drawCenteredString(g, text, x, y, size);
     }
     
     /**
