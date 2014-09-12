@@ -133,7 +133,7 @@ public class Main
         Log.toFile("Auto color change = " + game.changeColoursEachPeriod());
         Log.toFile("Using broadcast address " + game.broadcastAddress());
 
-        ActionBoard.initalise(game.league(), game.uiOrientation());
+        ActionBoard.initialise(game.league(), game.uiOrientation());
 
         ControllerUI ui = new ControllerUI(game, game.isFullScreen(), robotWatcher, multipleInstanceWatcher);
 

@@ -80,7 +80,7 @@ public class ActionBoard
      * This must be called before using actions from this class. It creates
      * all the actions instances.
      */
-    public static void initalise(League league, UIOrientation uiOrientation)
+    public static void initialise(League league, UIOrientation uiOrientation)
     {
         clock = new ClockTick();
         
