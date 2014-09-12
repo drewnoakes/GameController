@@ -1,5 +1,7 @@
 package data;
 
+import common.annotations.NotNull;
+
 /**
  * Holds the assignment of {@link TeamColor} to {@link UISide}.
  * <p>
@@ -24,12 +26,14 @@ public class UIOrientation
         return isFlipped;
     }
 
-    public UISide getSide(TeamColor color)
+    @NotNull
+    public UISide getSide(@NotNull TeamColor color)
     {
         return (color == TeamColor.Blue) != isFlipped ? UISide.Left : UISide.Right;
     }
 
-    public TeamColor getColor(UISide side)
+    @NotNull
+    public TeamColor getColor(@NotNull UISide side)
     {
         return (side == UISide.Left) != isFlipped ? TeamColor.Blue : TeamColor.Red;
     }

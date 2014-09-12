@@ -7,10 +7,10 @@ import java.util.Iterator;
 public interface ReadOnlyPair<T> extends Iterable<T>
 {
     @NotNull
-    T get(TeamColor color);
+    T get(@NotNull TeamColor color);
 
     @NotNull
-    T get(UISide side);
+    T get(@NotNull UISide side);
 
     @Override
     Iterator<T> iterator();

@@ -1,5 +1,6 @@
 package controller.action;
 
+import common.annotations.NotNull;
 import controller.action.clock.ClockTick;
 import controller.action.net.Manual;
 import controller.action.ui.*;
@@ -80,7 +81,7 @@ public class ActionBoard
      * This must be called before using actions from this class. It creates
      * all the actions instances.
      */
-    public static void initialise(League league, UIOrientation uiOrientation)
+    public static void initialise(@NotNull League league, @NotNull UIOrientation uiOrientation)
     {
         clock = new ClockTick();
         

@@ -31,14 +31,14 @@ public class Pair<T> implements ReadOnlyPair<T>
 
     @Override
     @NotNull
-    public T get(TeamColor color)
+    public T get(@NotNull TeamColor color)
     {
         return get(orientation.getSide(color));
     }
 
     @Override
     @NotNull
-    public T get(UISide side)
+    public T get(@NotNull UISide side)
     {
         return side == UISide.Left ? left : right;
     }
