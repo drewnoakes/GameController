@@ -14,7 +14,7 @@ public class Initial extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.getPlayMode() != PlayMode.Initial) {
+        if (!state.is(PlayMode.Initial)) {
             forceExecute(game, state);
             game.pushState("Initial");
         }

@@ -16,7 +16,7 @@ public class IncGameClock extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return (state.getPlayMode() != PlayMode.Playing && state.getTimeBeforeCurrentPlayMode() >= 1000*60)
+        return (!state.is(PlayMode.Playing) && state.getTimeBeforeCurrentPlayMode() >= 1000*60)
             || state.isTestMode();
     }
 }

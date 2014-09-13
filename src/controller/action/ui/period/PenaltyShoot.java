@@ -16,7 +16,7 @@ public class PenaltyShoot extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.getPeriod() != Period.PenaltyShootout) {
+        if (!state.is(Period.PenaltyShootout)) {
             state.setPeriod(Period.PenaltyShootout);
             // Don't set whenCurrentPlayModeBegan, because it's used to count the pause
             state.setPlayMode(PlayMode.Initial);

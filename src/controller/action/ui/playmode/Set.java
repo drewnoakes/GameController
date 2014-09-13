@@ -33,7 +33,7 @@ public class Set extends Action
 
         if (state.is(Period.PenaltyShootout)) {
             state.setTimeBeforeCurrentPlayMode(0);
-            if (state.getPlayMode() != PlayMode.Initial) {
+            if (!state.is(PlayMode.Initial)) {
                 TeamColor nextKickOffColor = state.getNextKickOffColor();
                 if (nextKickOffColor == null)
                     nextKickOffColor = TeamColor.Blue;
@@ -41,7 +41,7 @@ public class Set extends Action
                 FirstHalf.changeSide(game, state);
             }
 
-            if (state.getPlayMode() != PlayMode.Playing) {
+            if (!state.is(PlayMode.Playing)) {
                 // Increment the kick-off team's penalty shot count
                 WriteableTeamState team = state.getTeam(state.getNextKickOffColor());
                 team.setPenaltyShotCount(team.getPenaltyShotCount() + 1);
@@ -58,7 +58,7 @@ public class Set extends Action
         return state.is(PlayMode.Ready)
             || state.is(PlayMode.Set)
             || (state.is(Period.PenaltyShootout)
-              && (state.getPlayMode() != PlayMode.Playing || game.settings().penaltyShotRetries)
+              && (!state.is(PlayMode.Playing) || game.settings().penaltyShotRetries)
               && !state.isTimeOutActive()
               && !state.isRefereeTimeoutActive())
             || state.isTestMode();

@@ -43,7 +43,7 @@ public class FirstHalf extends Action
         game.uiOrientation().flip();
 
         // If necessary, swap team colors
-        if (state.getPeriod() != Period.PenaltyShootout && game.changeColoursEachPeriod()) {
+        if (!state.is(Period.PenaltyShootout) && game.changeColoursEachPeriod()) {
 
             WriteableTeamState left = state.getTeam(UISide.Left);
             WriteableTeamState right = state.getTeam(UISide.Right);
@@ -53,7 +53,7 @@ public class FirstHalf extends Action
         }
 
         // If necessary, clear the timeout flags of both teams
-        if (game.settings().timeOutPerHalf && state.getPeriod() != Period.PenaltyShootout) {
+        if (game.settings().timeOutPerHalf && !state.is(Period.PenaltyShootout)) {
             state.getTeam(UISide.Left).setTimeOutTaken(false);
             state.getTeam(UISide.Right).setTimeOutTaken(false);
         }

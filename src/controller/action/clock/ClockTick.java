@@ -40,7 +40,7 @@ public class ClockTick extends Action
      */
     public boolean isClockRunning(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        boolean halfNotStarted = state.getTimeBeforeCurrentPlayMode() == 0 && state.getPlayMode() != PlayMode.Playing;
+        boolean halfNotStarted = state.getTimeBeforeCurrentPlayMode() == 0 && !state.is(PlayMode.Playing);
         return
           !(state.is(PlayMode.Initial)
              || state.is(PlayMode.Finished)

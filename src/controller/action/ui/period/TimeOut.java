@@ -52,7 +52,7 @@ public class TimeOut extends Action
             state.setPeriod(state.getPreviousPeriod());
             state.setPreviousPeriod(Period.Timeout);
             team.setTimeOutActive(false);
-            if (state.getPeriod() != Period.PenaltyShootout) {
+            if (!state.is(Period.PenaltyShootout)) {
                 ActionBoard.ready.forceExecute(game, state);
                 game.pushState("End of Timeout " + team.getTeamColor());
             }
@@ -71,7 +71,7 @@ public class TimeOut extends Action
                   state.is(PlayMode.Set))
                 && !team.isTimeOutTaken()
                 && !otherTeam.isTimeOutActive()
-                && state.getPeriod() != Period.Timeout)
+                && !state.is(Period.Timeout))
             || state.isTestMode();
     }
 }

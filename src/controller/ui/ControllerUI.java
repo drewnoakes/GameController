@@ -742,7 +742,7 @@ public class ControllerUI
         }
 
         highlight(finishPlayModeButton,
-                state.getPlayMode() != PlayMode.Finished
+                !state.is(PlayMode.Finished)
                 && state.getSecsRemaining() <= FINISH_HIGHLIGHT_SECONDS
                 && finishPlayModeButton.getBackground() != COLOR_HIGHLIGHT);
     }
@@ -767,7 +767,7 @@ public class ControllerUI
 
         for (UISide side : UISide.both()) {
             kickOffRadioButtons.get(side).setEnabled(ActionBoard.kickOff.get(side).canExecute(game, state));
-            if (state.getPeriod() != Period.PenaltyShootout && state.getPreviousPeriod() != Period.PenaltyShootout) {
+            if (!state.is(Period.PenaltyShootout) && state.getPreviousPeriod() != Period.PenaltyShootout) {
                 kickOffRadioButtons.get(side).setText(KICKOFF);
             } else {
                 kickOffRadioButtons.get(side).setText(KICKOFF_PENALTY_SHOOTOUT);

@@ -42,13 +42,13 @@ public class Manual extends Action
             player.setPenalty(Penalty.Manual);
             player.setWhenPenalized(state.getTime());
 
-            if (state.getPlayMode() != PlayMode.Initial && state.getPlayMode() != PlayMode.Finished) {
+            if (!state.is(PlayMode.Initial) && !state.is(PlayMode.Finished)) {
                 game.pushState("Manually Penalised " + team.getTeamColor() + " " + uniformNumber);
             }
         } else {
             player.setPenalty(Penalty.None);
 
-            if (state.getPlayMode() != PlayMode.Initial && state.getPlayMode() != PlayMode.Finished) {
+            if (!state.is(PlayMode.Initial) && !state.is(PlayMode.Finished)) {
                 game.pushState("Manually Unpenalised " + team.getTeamColor() + " " + uniformNumber);
             }
         }

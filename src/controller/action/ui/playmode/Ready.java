@@ -41,7 +41,7 @@ public class Ready extends Action
             (state.is(PlayMode.Initial)
               && !state.isTimeOutActive()
               && !state.isRefereeTimeoutActive()
-              && state.getPeriod() != Period.PenaltyShootout)
+              && !state.is(Period.PenaltyShootout))
             || state.is(PlayMode.Ready)
             || state.isTestMode();
     }

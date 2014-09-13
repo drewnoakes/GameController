@@ -43,7 +43,7 @@ public class Goal extends Action
         team.setScore(newScore);
 
         if (delta == 1) {
-            if (state.getPeriod() != Period.PenaltyShootout) {
+            if (!state.is(Period.PenaltyShootout)) {
                 state.setNextKickOffColor(team.getTeamColor().other());
                 ActionBoard.ready.forceExecute(game, state);
                 game.pushState("Goal for " + team.getTeamColor());
@@ -62,7 +62,7 @@ public class Goal extends Action
     {
         return (delta == 1
               && state.is(PlayMode.Playing)
-              && (state.getPeriod() != Period.PenaltyShootout || state.getNextKickOffColor() == state.getTeam(side).getTeamColor()))
+              && (!state.is(Period.PenaltyShootout) || state.getNextKickOffColor() == state.getTeam(side).getTeamColor()))
             || state.isTestMode();
     }
 }
