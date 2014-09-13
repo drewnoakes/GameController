@@ -61,7 +61,7 @@ public class Goal extends Action
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
         return (delta == 1
-              && state.getPlayMode() == PlayMode.Playing
+              && state.is(PlayMode.Playing)
               && (state.getPeriod() != Period.PenaltyShootout || state.getNextKickOffColor() == state.getTeam(side).getTeamColor()))
             || state.isTestMode();
     }

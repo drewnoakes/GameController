@@ -34,13 +34,13 @@ public class PenaltyShoot extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.getPeriod() == Period.PenaltyShootout
+        return state.is(Period.PenaltyShootout)
           || state.getPreviousPeriod() == Period.PenaltyShootout
           || (!state.isFirstHalf()
-            && state.getPlayMode() == PlayMode.Finished
+            && state.is(PlayMode.Finished)
             && !(game.settings().overtime
                 && game.isPlayOff()
-                && state.getPeriod() == Period.Normal
+                && state.is(Period.Normal)
                 && state.getTeam(TeamColor.Blue).getScore() == state.getTeam(TeamColor.Red).getScore()
                 && state.getTeam(TeamColor.Blue).getScore() > 0))
           || state.isTestMode();

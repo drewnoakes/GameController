@@ -14,7 +14,7 @@ public class FirstHalf extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (!state.isFirstHalf() || state.getPeriod() == Period.PenaltyShootout) {
+        if (!state.isFirstHalf() || state.is(Period.PenaltyShootout)) {
             state.setFirstHalf(true);
             state.setPeriod(Period.Normal);
             state.setNextKickOffColor(game.initialKickOffColor());
@@ -28,7 +28,7 @@ public class FirstHalf extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return (state.isFirstHalf() && state.getPeriod() == Period.Normal) || state.isTestMode();
+        return (state.isFirstHalf() && state.is(Period.Normal)) || state.isTestMode();
     }
     
     /**

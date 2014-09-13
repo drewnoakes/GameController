@@ -35,6 +35,6 @@ public class Initial extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.getPlayMode() == PlayMode.Initial || state.isTestMode();
+        return state.is(PlayMode.Initial) || state.isTestMode();
     }
 }

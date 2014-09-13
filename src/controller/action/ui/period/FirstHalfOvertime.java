@@ -14,7 +14,7 @@ public class FirstHalfOvertime extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (!state.isFirstHalf() || state.getPeriod() == Period.PenaltyShootout) {
+        if (!state.isFirstHalf() || state.is(Period.PenaltyShootout)) {
             state.setFirstHalf(true);
             state.setPeriod(Period.Overtime);
             state.setNextKickOffColor(game.initialKickOffColor());
@@ -27,11 +27,11 @@ public class FirstHalfOvertime extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return (state.isFirstHalf() && state.getPeriod() == Period.Overtime)
+        return (state.isFirstHalf() && state.is(Period.Overtime))
                 || (game.settings().overtime
                     && game.isPlayOff()
-                    && state.getPeriod() == Period.Normal
-                    && state.getPlayMode() == PlayMode.Finished
+                    && state.is(Period.Normal)
+                    && state.is(PlayMode.Finished)
                     && !state.isFirstHalf()
                     && state.getTeam(TeamColor.Blue).getScore() == state.getTeam(TeamColor.Red).getScore()
                     && state.getTeam(TeamColor.Blue).getScore() > 0)

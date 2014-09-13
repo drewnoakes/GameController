@@ -17,7 +17,7 @@ public class Set extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.getPlayMode() == PlayMode.Set) {
+        if (state.is(PlayMode.Set)) {
             return;
         }
 
@@ -31,7 +31,7 @@ public class Set extends Action
 
         state.setWhenCurrentPlayModeBegan(state.getTime());
 
-        if (state.getPeriod() == Period.PenaltyShootout) {
+        if (state.is(Period.PenaltyShootout)) {
             state.setTimeBeforeCurrentPlayMode(0);
             if (state.getPlayMode() != PlayMode.Initial) {
                 TeamColor nextKickOffColor = state.getNextKickOffColor();
@@ -55,9 +55,9 @@ public class Set extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.getPlayMode() == PlayMode.Ready
-            || state.getPlayMode() == PlayMode.Set
-            || (state.getPeriod() == Period.PenaltyShootout
+        return state.is(PlayMode.Ready)
+            || state.is(PlayMode.Set)
+            || (state.is(Period.PenaltyShootout)
               && (state.getPlayMode() != PlayMode.Playing || game.settings().penaltyShotRetries)
               && !state.isTimeOutActive()
               && !state.isRefereeTimeoutActive())

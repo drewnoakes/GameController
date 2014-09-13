@@ -24,8 +24,8 @@ public class Leaving extends PenaltyAction
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.getPlayMode() == PlayMode.Ready
-            || state.getPlayMode() == PlayMode.Playing
+        return state.is(PlayMode.Ready)
+            || state.is(PlayMode.Playing)
             || state.isTestMode();
     }
 }

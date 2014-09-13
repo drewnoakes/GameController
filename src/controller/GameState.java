@@ -173,11 +173,11 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
                 ? game.settings().numberOfPenaltyShotsLong
                 : game.settings().numberOfPenaltyShotsShort;
 
-        int duration = getPeriod() == Period.Timeout
+        int duration = is(Period.Timeout)
                 ? getSecsRemaining() // TODO fix this infinite recursion bug -- should return last computed value (or something else)
-                : getPeriod() == Period.Normal
+                : is(Period.Normal)
                     ? game.settings().halfTime
-                    : getPeriod() == Period.Overtime
+                    : is(Period.Overtime)
                         ? game.settings().overtimeTime
                         : Math.max(teams.get(UISide.Left).getPenaltyShotCount(), teams.get(UISide.Right).getPenaltyShotCount()) > regularNumberOfPenaltyShots
                             ? game.settings().penaltyShotTimeSuddenDeath
@@ -252,7 +252,7 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
         LeagueSettings leagueSettings = game.settings();
 
         // TODO test this -- seems strange that the penalty should have to start after the current play mode began, when the current play mode is 'ready'
-        if (leagueSettings.returnRobotsInGameStoppages && getPlayMode() == PlayMode.Ready && player.getWhenPenalized() >= getWhenCurrentPlayModeBegan())
+        if (leagueSettings.returnRobotsInGameStoppages && is(PlayMode.Ready) && player.getWhenPenalized() >= getWhenCurrentPlayModeBegan())
             return leagueSettings.readyTime - getSecondsSince(getWhenCurrentPlayModeBegan());
 
         return Math.max(0, getRemainingSeconds(player.getWhenPenalized(), penalty.getDurationSeconds()));
@@ -265,19 +265,19 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
                 ? getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.settings().kickoffTime)
                 : 0;
 
-        if (getPlayMode() == PlayMode.Initial && isTimeOutActive()) {
+        if (is(PlayMode.Initial) && isTimeOutActive()) {
             return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.settings().timeOutTime);
         }
 
-        if (getPlayMode() == PlayMode.Initial && isRefereeTimeoutActive()) {
+        if (is(PlayMode.Initial) && isRefereeTimeoutActive()) {
             return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.settings().refereeTimeout);
         }
 
-        if (getPlayMode() == PlayMode.Ready) {
+        if (is(PlayMode.Ready)) {
             return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.settings().readyTime);
         }
 
-        if (getPlayMode() == PlayMode.Playing && getPeriod() != Period.PenaltyShootout && timeKickOffBlocked >= -timeKickOffBlockedOvertime) {
+        if (is(PlayMode.Playing) && getPeriod() != Period.PenaltyShootout && timeKickOffBlocked >= -timeKickOffBlockedOvertime) {
             return timeKickOffBlocked > 0 ? timeKickOffBlocked : null;
         }
 

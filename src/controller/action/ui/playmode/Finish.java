@@ -14,7 +14,7 @@ public class Finish extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.getPlayMode() == PlayMode.Finished) {
+        if (state.is(PlayMode.Finished)) {
             return;
         }
         if (game.settings().returnRobotsInGameStoppages) {
@@ -30,10 +30,10 @@ public class Finish extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.getPlayMode() == PlayMode.Ready
-            || state.getPlayMode() == PlayMode.Set
-            || state.getPlayMode() == PlayMode.Playing
-            || state.getPlayMode() == PlayMode.Finished
+        return state.is(PlayMode.Ready)
+            || state.is(PlayMode.Set)
+            || state.is(PlayMode.Playing)
+            || state.is(PlayMode.Finished)
             || state.isTestMode();
     }
 }

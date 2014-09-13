@@ -18,7 +18,7 @@ public class Pushing extends PenaltyAction
         player.setPenalty(Penalty.SplPlayerPushing);
         player.setWhenPenalized(state.getTime());
 
-        if (state.getPlayMode() == PlayMode.Playing) {
+        if (state.is(PlayMode.Playing)) {
             team.setPushCount(team.getPushCount() + 1);
             for (int pushes : game.settings().pushesToEjection) {
                 if (team.getPushCount() == pushes) {
@@ -33,8 +33,8 @@ public class Pushing extends PenaltyAction
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.getPlayMode() == PlayMode.Ready
-            || state.getPlayMode() == PlayMode.Playing
+        return state.is(PlayMode.Ready)
+            || state.is(PlayMode.Playing)
             || state.isTestMode();
     }
 }

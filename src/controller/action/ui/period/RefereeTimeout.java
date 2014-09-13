@@ -16,11 +16,11 @@ public class RefereeTimeout extends Action
             state.setPreviousPeriod(state.getPeriod());
             state.setPeriod(Period.Timeout);
             state.setRefereeTimeoutActive(true);
-            if (state.getPlayMode() == PlayMode.Playing) {
+            if (state.is(PlayMode.Playing)) {
                 state.addTimeInCurrentPlayMode();
             }
             if (state.getPreviousPeriod() == Period.PenaltyShootout
-                    && (state.getPlayMode() == PlayMode.Set || state.getPlayMode() == PlayMode.Playing)) {
+                    && (state.is(PlayMode.Set) || state.is(PlayMode.Playing))) {
                 // Decrease the kick-off team's penalty shot count
                 // TODO why do we do this? explain with a comment
                 WriteableTeamState kickOffTeam = state.getTeam(state.getNextKickOffColor());

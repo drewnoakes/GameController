@@ -15,7 +15,7 @@ public class Ready extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.getPlayMode() == PlayMode.Ready) {
+        if (state.is(PlayMode.Ready)) {
             return;
         }
         forceExecute(game, state);
@@ -27,7 +27,7 @@ public class Ready extends Action
         if (game.settings().returnRobotsInGameStoppages) {
             state.resetPenaltyTimes();
         }
-        if (state.getPlayMode() == PlayMode.Playing) {
+        if (state.is(PlayMode.Playing)) {
             state.addTimeInCurrentPlayMode();
         }
         state.setWhenCurrentPlayModeBegan(state.getTime());
@@ -38,11 +38,11 @@ public class Ready extends Action
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
         return
-            (state.getPlayMode() == PlayMode.Initial
+            (state.is(PlayMode.Initial)
               && !state.isTimeOutActive()
               && !state.isRefereeTimeoutActive()
               && state.getPeriod() != Period.PenaltyShootout)
-            || state.getPlayMode() == PlayMode.Ready
+            || state.is(PlayMode.Ready)
             || state.isTestMode();
     }
 }

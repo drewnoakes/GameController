@@ -38,7 +38,7 @@ public class TimeOut extends Action
             if (state.getPreviousPeriod() != Period.PenaltyShootout) {
                 if (game.settings().giveOpponentKickOffOnTimeOut)
                     state.setNextKickOffColor(team.getTeamColor().other());
-            } else if (state.getPlayMode() == PlayMode.Set) {
+            } else if (state.is(PlayMode.Set)) {
                 // Decrease the kick-off team's penalty shot count
                 // TODO why do we do this? explain with a comment
                 WriteableTeamState kickOffTeam = state.getTeam(state.getNextKickOffColor());
@@ -66,9 +66,9 @@ public class TimeOut extends Action
         ReadOnlyTeamState otherTeam = state.getTeam(side.other());
 
         return team.isTimeOutActive()
-            || ((state.getPlayMode() == PlayMode.Initial ||
-                  state.getPlayMode() == PlayMode.Ready ||
-                  state.getPlayMode() == PlayMode.Set)
+            || ((state.is(PlayMode.Initial) ||
+                  state.is(PlayMode.Ready) ||
+                  state.is(PlayMode.Set))
                 && !team.isTimeOutTaken()
                 && !otherTeam.isTimeOutActive()
                 && state.getPeriod() != Period.Timeout)

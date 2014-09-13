@@ -14,7 +14,7 @@ public class Play extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.getPlayMode() == PlayMode.Playing) {
+        if (state.is(PlayMode.Playing)) {
             return;
         }
         if (!game.isPlayOff() && state.getTimeBeforeCurrentPlayMode() != 0) {
@@ -28,8 +28,8 @@ public class Play extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.getPlayMode() == PlayMode.Set
-            || state.getPlayMode() == PlayMode.Playing
+        return state.is(PlayMode.Set)
+            || state.is(PlayMode.Playing)
             || state.isTestMode();
     }
 }

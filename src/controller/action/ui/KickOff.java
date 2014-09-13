@@ -39,9 +39,9 @@ public class KickOff extends Action
     {
         return state.getNextKickOffColor() == state.getTeam(side).getTeamColor()
                 || (game.settings().kickoffChoice
-                    && state.getPeriod() == Period.Normal
+                    && state.is(Period.Normal)
                     && state.isFirstHalf()
-                    && state.getPlayMode() == PlayMode.Initial)
+                    && state.is(PlayMode.Initial))
                 || state.isTestMode();
     }
 }

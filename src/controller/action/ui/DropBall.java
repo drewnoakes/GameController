@@ -24,6 +24,6 @@ public class DropBall extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.getPlayMode() == PlayMode.Playing || state.isTestMode();
+        return state.is(PlayMode.Playing) || state.isTestMode();
     }
 }
