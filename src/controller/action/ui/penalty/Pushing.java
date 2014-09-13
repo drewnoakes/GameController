@@ -33,8 +33,7 @@ public class Pushing extends PenaltyAction
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.is(PlayMode.Ready)
-            || state.is(PlayMode.Playing)
+        return state.is(PlayMode.Ready, PlayMode.Playing)
             || state.isTestMode();
     }
 }

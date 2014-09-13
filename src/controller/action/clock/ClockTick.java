@@ -42,10 +42,8 @@ public class ClockTick extends Action
     {
         boolean halfNotStarted = state.getTimeBeforeCurrentPlayMode() == 0 && !state.is(PlayMode.Playing);
         return
-          !(state.is(PlayMode.Initial)
-             || state.is(PlayMode.Finished)
-             || ((state.is(PlayMode.Ready) || state.is(PlayMode.Set))
-                 && ((game.isPlayOff() && game.settings().playOffTimeStop) || halfNotStarted))
+          !(state.is(PlayMode.Initial, PlayMode.Finished)
+             || (state.is(PlayMode.Ready, PlayMode.Set) && ((game.isPlayOff() && game.settings().playOffTimeStop) || halfNotStarted))
              || state.isManPause())
          || state.isManPlay();
     }

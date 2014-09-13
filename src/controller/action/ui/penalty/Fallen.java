@@ -24,9 +24,7 @@ public class Fallen extends PenaltyAction
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.is(PlayMode.Ready)
-            || state.is(PlayMode.Playing)
-            || state.is(PlayMode.Set)
+        return state.is(PlayMode.Ready, PlayMode.Playing, PlayMode.Set)
             || state.isTestMode();
     }
 }

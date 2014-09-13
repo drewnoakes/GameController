@@ -28,8 +28,7 @@ public class Play extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.is(PlayMode.Set)
-            || state.is(PlayMode.Playing)
+        return state.is(PlayMode.Set, PlayMode.Playing)
             || state.isTestMode();
     }
 }

@@ -30,10 +30,7 @@ public class Finish extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.is(PlayMode.Ready)
-            || state.is(PlayMode.Set)
-            || state.is(PlayMode.Playing)
-            || state.is(PlayMode.Finished)
+        return state.is(PlayMode.Ready, PlayMode.Set, PlayMode.Playing, PlayMode.Finished)
             || state.isTestMode();
     }
 }

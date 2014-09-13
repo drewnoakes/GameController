@@ -55,8 +55,7 @@ public class Set extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.is(PlayMode.Ready)
-            || state.is(PlayMode.Set)
+        return state.is(PlayMode.Ready, PlayMode.Set)
             || (state.is(Period.PenaltyShootout)
               && (!state.is(PlayMode.Playing) || game.settings().penaltyShotRetries)
               && !state.isTimeOutActive()
