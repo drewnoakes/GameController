@@ -149,12 +149,18 @@ public interface ReadOnlyGameState
     @NotNull
     Period getPreviousPeriod();
 
+    /** Gets whether the current period is one from the specified list. */
+    boolean is(@NotNull Period... periods);
+
     /** Whether the game is currently in the first half. Applies to both normal time and overtime. */
     boolean isFirstHalf();
 
     /** Play mode of the game. */
     @NotNull
     PlayMode getPlayMode();
+
+    /** Gets whether the current play mode is one from the specified list. */
+    boolean is(@NotNull PlayMode... playModes);
 
     /** Gets whether the score of both teams are level (equal). */
     boolean areScoresLevel();

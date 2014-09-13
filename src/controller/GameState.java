@@ -445,6 +445,15 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     }
 
     @Override
+    public boolean is(@NotNull PlayMode... playModes)
+    {
+        for (PlayMode p : playModes)
+            if (p == playMode)
+                return true;
+        return false;
+    }
+
+    @Override
     public void setPlayMode(@NotNull PlayMode playMode)
     {
         this.playMode = playMode;
@@ -486,6 +495,15 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     public void setPeriod(@NotNull Period period)
     {
         this.period = period;
+    }
+
+    @Override
+    public boolean is(@NotNull Period... periods)
+    {
+        for (Period p : periods)
+            if (p == period)
+                return true;
+        return false;
     }
 
     @Override
