@@ -779,16 +779,17 @@ public class ControllerUI
     {
         for (UISide side : UISide.both()) {
             ReadOnlyTeamState team = state.getTeam(side);
+            String text;
             if (state.is(Period.PenaltyShootout) || state.getPreviousPeriod() == Period.PenaltyShootout) {
-                pushLabels.get(side).setText((side == UISide.Left && (state.is(PlayMode.Set)
-                        || state.is(PlayMode.Playing)) ? SHOT : SHOTS) + ": " + team.getPenaltyShotCount());
+                // TODO why test whether the side is 'left'?
+                String prefix = side == UISide.Left && state.is(PlayMode.Set, PlayMode.Playing) ? SHOT : SHOTS;
+                text = prefix + ": " + team.getPenaltyShotCount();
             } else {
-                if (game.settings().pushesToEjection == null || game.settings().pushesToEjection.length == 0) {
-                    pushLabels.get(side).setText("");
-                } else {
-                    pushLabels.get(side).setText(PUSHES + ": " + team.getPushCount());
-                }
+                text = game.settings().pushesToEjection == null || game.settings().pushesToEjection.length == 0
+                        ? ""
+                        : PUSHES + ": " + team.getPushCount();
             }
+            pushLabels.get(side).setText(text);
         }
     }
     
