@@ -14,7 +14,7 @@ public class PickUpHL extends PenaltyAction
     public void executeForRobot(@NotNull Game game, @NotNull WriteableGameState state, @NotNull WriteableTeamState team,
                                 @NotNull WriteablePlayerState player)
     {
-        if (player.getPenalty() == Penalty.None) {
+        if (!player.isPenalized()) {
             player.setWhenPenalized(state.getTime());
         }
 

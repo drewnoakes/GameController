@@ -95,10 +95,10 @@ public class RobotWatcher
         UISide side = game.teams().get(UISide.Left).getNumber() == robotMessage.getTeamNumber() ? UISide.Left : UISide.Right;
 
         if (robotMessage.getStatus() == RobotStatus.ManuallyPenalised) {
-            if (team.getPlayer(number).getPenalty() == Penalty.None)
+            if (!team.getPlayer(number).isPenalized())
                 game.apply(ActionBoard.manualPen.get(side)[i], ActionTrigger.Network);
         } else if (robotMessage.getStatus() == RobotStatus.ManuallyUnpenalised) {
-            if (team.getPlayer(number).getPenalty() != Penalty.None)
+            if (team.getPlayer(number).isPenalized())
                 game.apply(ActionBoard.manualUnpen.get(side)[i], ActionTrigger.Network);
         }
     }

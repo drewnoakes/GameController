@@ -17,6 +17,13 @@ public interface ReadOnlyPlayerState
     @NotNull
     Penalty getPenalty();
 
+    /**
+     * Gets whether a penalty applies to this player or not.
+     * <p>
+     * If <code>false</code>, then {@link ReadOnlyPlayerState#getPenalty()} returns {@link Penalty#None}.
+     */
+    boolean isPenalized();
+
     /** Estimate of remaining penalty time for player. */
     int getRemainingPenaltyTime();
 

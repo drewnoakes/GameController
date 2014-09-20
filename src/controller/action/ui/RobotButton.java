@@ -53,7 +53,7 @@ public class RobotButton extends Action
         } else if (game.getLastUserAction() instanceof RobotAction) {
             RobotAction robotAction = (RobotAction)game.getLastUserAction();
             robotAction.executeForRobot(game, state, team, player);
-        } else if (player.getPenalty() != Penalty.None) {
+        } else if (player.isPenalized()) {
             // Clear the robot's existing penalty
             player.setPenalty(Penalty.None);
             game.pushState("Unpenalised " + team.getTeamColor() + " " + uniformNumber);

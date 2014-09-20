@@ -16,7 +16,7 @@ public class Substitute extends PenaltyAction
                                 @NotNull WriteablePlayerState player)
     {
         // Queue any penalty the leaving player has to be picked up by the entering player
-        if (player.getPenalty() != Penalty.None) {
+        if (player.isPenalized()) {
             team.enqueuePenalty(player.getWhenPenalized(), player.getPenalty());
         }
 

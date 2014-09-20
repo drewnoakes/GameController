@@ -825,7 +825,7 @@ public class ControllerUI
                     // Regular player
                     final Penalty penalty = player.getPenalty();
 
-                    if (penalty != Penalty.None) {
+                    if (player.isPenalized()) {
                         // Penalised
                         if (!player.isEjected()) {
                             boolean pickup = game.league().isSPLFamily()

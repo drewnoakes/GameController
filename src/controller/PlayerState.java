@@ -65,6 +65,12 @@ public class PlayerState implements WriteablePlayerState, ReadOnlyPlayerState
     }
 
     @Override
+    public boolean isPenalized()
+    {
+        return penalty != Penalty.None;
+    }
+
+    @Override
     public void setPenalty(@NotNull Penalty penalty)
     {
         this.penalty = penalty;
