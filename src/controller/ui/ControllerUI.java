@@ -246,7 +246,7 @@ public class ControllerUI
         goalIncButton = new Pair<JButton>(game.uiOrientation(), new Button("+"), new Button("+"));
         nameLabels = new Pair<JLabel>(game.uiOrientation(), new JLabel(), new JLabel());
         goalCountLabels = new Pair<JLabel>(game.uiOrientation(), new JLabel("0"), new JLabel("0"));
-        pushLabels = new Pair<JLabel>(game.uiOrientation(), new JLabel("0"), new JLabel("0"));
+        pushLabels = new Pair<JLabel>(game.uiOrientation(), new JLabel(), new JLabel());
         kickOffRadioButtons = new Pair<JRadioButton>(game.uiOrientation(), new JRadioButton(KICKOFF), new JRadioButton(KICKOFF));
         kickOffNoneRadioButton = new JRadioButton();
         ButtonGroup kickOffGroup = new ButtonGroup();
@@ -777,6 +777,10 @@ public class ControllerUI
     
     private void updatePushes(ReadOnlyGameState state)
     {
+        // Only the SPL supports pushes
+        if (!game.league().isSPLFamily())
+            return;
+
         for (UISide side : UISide.both()) {
             ReadOnlyTeamState team = state.getTeam(side);
             String text;
