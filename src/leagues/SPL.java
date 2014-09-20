@@ -20,12 +20,6 @@ public class SPL implements LeagueRules
     }
 
     @Override
-    public boolean isChangeColoursEachPeriod()
-    {
-        return false;
-    }
-
-    @Override
     public boolean isPlayOffTimeStop()
     {
         return true;
@@ -101,12 +95,6 @@ public class SPL implements LeagueRules
     public boolean isPenaltyShotRetries()
     {
         return false;
-    }
-
-    @Override
-    public boolean isSuddenDeath()
-    {
-        return true;
     }
 
     @Override

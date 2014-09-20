@@ -16,9 +16,6 @@ public interface LeagueRules
     /** How many robots of each team may play at one time. */
     public int getRobotsPlaying();
 
-    /** If the colors change automatically. */
-    public boolean isChangeColoursEachPeriod();
-
     /** If the clock may stop in certain play modes (Ready, Set) in a play-off game. */
     public boolean isPlayOffTimeStop();
 
@@ -57,9 +54,6 @@ public interface LeagueRules
 
     /** If there can be a penalty-shot retry. */
     boolean isPenaltyShotRetries();
-
-    /** If there is a sudden-death. */
-    boolean isSuddenDeath();
 
     /** Time in seconds one penalty shoot is long in sudden-death. */
     int getPenaltyShotTimeSuddenDeath();

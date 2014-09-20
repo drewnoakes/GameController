@@ -24,12 +24,6 @@ public abstract class HL implements LeagueRules
     //
 
     @Override
-    public boolean isChangeColoursEachPeriod()
-    {
-        return false;
-    }
-
-    @Override
     public boolean isPlayOffTimeStop()
     {
         return false;
@@ -105,12 +99,6 @@ public abstract class HL implements LeagueRules
     public boolean isPenaltyShotRetries()
     {
         return true;
-    }
-
-    @Override
-    public boolean isSuddenDeath()
-    {
-        return false;
     }
 
     @Override
