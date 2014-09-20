@@ -43,6 +43,6 @@ public class RefereeTimeout extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return !state.is(PlayMode.Finished) && !state.isTimeOutActive();
+        return !state.is(PlayMode.Finished) && !state.isTimeoutActive();
     }
 }

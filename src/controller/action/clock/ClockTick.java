@@ -16,16 +16,16 @@ public class ClockTick extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.is(PlayMode.Ready) && state.getSecondsSince(state.getWhenCurrentPlayModeBegan()) >= game.rules().getReadyTime()) {
+        if (state.is(PlayMode.Ready) && state.getSecondsSince(state.getWhenCurrentPlayModeBegan()) >= game.rules().getReadyPlayModeDurationSeconds()) {
             game.apply(ActionBoard.set, ActionTrigger.Clock);
         } else if (state.is(PlayMode.Finished)) {
             // When in 'finished' state...
             Integer remainingPauseTime = state.getRemainingPauseTime();
             if (remainingPauseTime != null) {
                 // ...transition automatically to the second half, midway through the pause time between periods
-                if (state.isFirstHalf() && remainingPauseTime <= game.rules().getPauseTime() / 2) {
+                if (state.isFirstHalf() && remainingPauseTime <= game.rules().getHalfTimeDurationSeconds() / 2) {
                     game.apply(ActionBoard.secondHalf, ActionTrigger.Clock);
-                } else if (!state.isFirstHalf() && remainingPauseTime <= game.rules().getPausePenaltyShootOutTime() / 2) {
+                } else if (!state.isFirstHalf() && remainingPauseTime <= game.rules().getDurationBeforePenaltyShootoutsStart() / 2) {
                     game.apply(ActionBoard.secondHalf, ActionTrigger.Clock);
                 }
             }

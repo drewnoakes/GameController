@@ -20,13 +20,13 @@ public class HLAdult extends HL
     }
 
     @Override
-    public boolean isStartWithPenalty()
+    public boolean isGameStartedWithPenaltyShots()
     {
         return true;
     }
 
     @Override
-    public int getPenaltyShotTime()
+    public int getPenaltyShotDurationSeconds()
     {
         return (int)(2.5 * 60);
     }

@@ -17,8 +17,8 @@ public class Finish extends Action
         if (state.is(PlayMode.Finished)) {
             return;
         }
-        if (game.rules().isReturnRobotsInGameStoppages()) {
-            state.resetPenaltyTimes();
+        if (game.rules().arePenaltiesClearedDuringStoppages()) {
+            state.setRemainingPenaltyTimesToZero();
         }
         state.addTimeInCurrentPlayMode();
         state.setWhenCurrentPlayModeBegan(state.getTime());

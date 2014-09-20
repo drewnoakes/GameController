@@ -55,13 +55,13 @@ public interface ReadOnlyTeamState
     ////////////////////////// TIMEOUTS
 
     /** Gets whether this team is currently taking a time out. */
-    boolean isTimeOutActive();
+    boolean isTimeoutActive();
 
     /**
      * Gets the number of timeouts taken by the team.
      * May be reset to zero after each half, depending upon the league's rules.
      */
-    boolean isTimeOutTaken();
+    boolean isTimeoutTaken();
 
     ////////////////////////// PENALTY SHOOTOUTS
 

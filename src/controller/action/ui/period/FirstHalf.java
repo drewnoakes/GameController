@@ -53,9 +53,9 @@ public class FirstHalf extends Action
         }
 
         // If necessary, clear the timeout flags of both teams
-        if (game.rules().isTimeOutPerHalf() && !state.is(Period.PenaltyShootout)) {
-            state.getTeam(UISide.Left).setTimeOutTaken(false);
-            state.getTeam(UISide.Right).setTimeOutTaken(false);
+        if (game.rules().isTeamAllowedOnlyOneTimeoutPerHalf() && !state.is(Period.PenaltyShootout)) {
+            state.getTeam(UISide.Left).setTimeoutTaken(false);
+            state.getTeam(UISide.Right).setTimeoutTaken(false);
         }
         
         state.setTimeBeforeCurrentPlayMode(0);

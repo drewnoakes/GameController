@@ -10,92 +10,104 @@ package leagues;
  */
 public interface LeagueRules
 {   
-    /** How many robots are in a team. */
+    /**
+     * Gets the maximum number of robots allowed on a team, including substitutes.
+     * <p>
+     * Robots must have sequential uniform numbers running from one up to this number.
+     */
     public int getTeamSize();
 
-    /** How many robots of each team may play at one time. */
+    /** Gets the maximum number of robots a team may have on the field at any time, excluding substituted players and coaches. */
     public int getRobotsPlaying();
 
     /** If the clock may stop in certain play modes (Ready, Set) in a play-off game. */
     public boolean isPlayOffTimeStop();
 
-    /** Time in seconds one half is long. */
-    int getHalfTime();
-
-    /** Length of the 'ready' play mode, in seconds. */
-    int getReadyTime();
-
-    /** Time in seconds between first and second half. */
-    int getPauseTime();
-
-    /** If left and right side may both have the first kickoff. */
-    boolean isKickoffChoice();
-
-    /** Time in seconds the ball is blocked after kickoff. */
-    int getKickoffTime();
-
-    /** Time in seconds before a global game stuck can be called. */
-    int getMinDurationBeforeStuck();
-
-    /** If there is an overtime before the penalty shoot-out in a play-off game. */
-    boolean isOvertime();
+    /** Gets the duration of each game half, in seconds. */
+    int getNormalHalfDurationSeconds();
 
     /** Time in seconds one overtime half is long. */
-    int getOvertimeTime();
+    int getOvertimeHalfDurationSeconds();
 
-    /** If the game starts with penalty-shots. */
-    boolean isStartWithPenalty();
+    /** Gets the duration of the 'ready' play mode, in seconds. */
+    int getReadyPlayModeDurationSeconds();
 
-    /** Time in seconds between second half and penalty shoot-out. */
-    int getPausePenaltyShootOutTime();
+    /** Gets the duration of the delay between successive halves, both of normal and extra periods. */
+    int getHalfTimeDurationSeconds();
+
+    /** Gets whether the kick off team may be chosen during the 'initial' play mode of the first half of normal time. */
+    boolean isKickOffTeamChoosableAtStartOfGame();
+
+    /**
+     * Gets the number of seconds for which the kick-off taking team have exclusive access to the ball and
+     * centre circle, unless they move the ball sufficiently during this time.
+     */
+    int getKickOffDurationSeconds();
+
+    /** Time in seconds before a global game stuck can be called (SPL only). */
+    int getMinDurationBeforeStuckGameAllowed();
+
+    /** If there is an overtime before the penalty shootout in a play-off game, in case of no winner during normal time. */
+    boolean isOvertimeAllowed();
+
+    /** If the game starts with penalty shootouts directly. */
+    boolean isGameStartedWithPenaltyShots();
+
+    /** Gets the duration of the delay between the last half and penalty shootouts. */
+    int getDurationBeforePenaltyShootoutsStart();
 
     /** Time in seconds one penalty shoot is long. */
-    int getPenaltyShotTime();
+    int getPenaltyShotDurationSeconds();
 
-    /** If there can be a penalty-shot retry. */
-    boolean isPenaltyShotRetries();
+    /** Gets whether a penalty attempt may be retried by returning the play mode to {@link data.PlayMode#Set}. */
+    boolean arePenaltyShotRetriesAllowed();
 
     /** Time in seconds one penalty shoot is long in sudden-death. */
-    int getPenaltyShotTimeSuddenDeath();
+    int getPenaltyShotDurationSecondsInSuddenDeath();
 
-    /** Number of penalty-shots for each team when a half has 10minutes. */
-    int getNumberOfPenaltyShotsShort();
+    /** Gets the number of regular penalty shots in a normal (non-play-off) game. After this number occurs, sudden death commences. */
+    int getNumberOfPenaltyShotsInNormalGame();
 
-    /** Number of penalty-shots for each team after full 10minutes playing. */
-    int getNumberOfPenaltyShotsLong();
+    /** Gets the number of regular penalty shots in a play-off game. After this number occurs, sudden death commences. */
+    int getNumberOfPenaltyShotsInPlayOffGame();
 
-    /** if robots should return from penalties when the game state changes. */
-    boolean isReturnRobotsInGameStoppages();
+    /**
+     * Gets whether robot penalties should be lifted when the game stops (play mode changes to initial/ready/set/finish).
+     * <p>
+     * This causes the remaining penalty time to become zero, and the user must still manually unpenalize the robots
+     * in the UI.
+     */
+    boolean arePenaltiesClearedDuringStoppages();
 
-    /** Time in seconds one team has as timeOut. */
-    int getTimeOutTime();
+    /** Gets the maximum duration of a team's timeout, in seconds. Timeouts may be ended before completion. */
+    int getTimeoutDurationSeconds();
 
-    /** Whether calling a timeout gives the opponent the kickoff or not. */
-    boolean isGiveOpponentKickOffOnTimeOut();
+    /** Whether calling a timeout gives the opponent the subsequent kick off or not. */
+    boolean isKickOffGivenToOpponentAfterTimeout();
 
-    /** Time in seconds of a referee timeout*/
-    int getRefereeTimeout();
+    /** Gets the duration of a referee timeout, in seconds. */
+    int getRefereeTimeoutDurationSeconds();
 
     /** Defines if the option for a referee timeout is available. */
     boolean isRefereeTimeoutAvailable();
 
-    /** One time-out per half? */
-    boolean isTimeOutPerHalf();
+    /** Gets whether each team is allowed only time timeout per game half or not. */
+    boolean isTeamAllowedOnlyOneTimeoutPerHalf();
 
     /** On how many pushes is a robot ejected. */
     int[] getPushesToEjection();
 
-    /** Defines if coach is available. */
+    /** Gets whether a coach may be used in this game (SPL only). */
     boolean isCoachAvailable();
 
-    /** Allowed to compensate for lost time? */
-    boolean isLostTime();
+    /** Gets whether the referee is able to add additional time to account for lost/stoppage time. */
+    boolean isStoppageTimeAllowed();
 
-    /** Whether to support version 7 of the game state protocol. */
-    boolean isSupportGameStateVersion7();
+    /** Gets whether to support legacy version 7 of the {@link controller.net.protocol.GameStateProtocol}. */
+    boolean isLegacyGameStateVersion7Broadcast();
 
-    /** Whether to support version 8 of the game state protocol. */
-    boolean isSupportGameStateVersion8();
+    /** Gets whether to support legacy version 8 of the {@link controller.net.protocol.GameStateProtocol}. */
+    boolean isLegacyGameStateVersion8Broadcast();
 
     /** If true, the drop-in player competition is active. */
     boolean isDropInPlayerMode();

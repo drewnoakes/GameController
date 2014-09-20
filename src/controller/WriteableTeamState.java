@@ -42,7 +42,7 @@ public interface WriteableTeamState extends ReadOnlyTeamState
     ////////////////////////// TIMEOUTS
 
     /** Sets whether a timeout taken by this team is currently active. */
-    void setTimeOutActive(boolean isTimeOutActive);
+    void setTimeoutActive(boolean isTimeoutActive);
 
     /**
      * Sets whether this team has taken a timeout.
@@ -50,7 +50,7 @@ public interface WriteableTeamState extends ReadOnlyTeamState
      * This value is used when a limit to the number of timeouts is required in a given
      * portion of the game. Once the team may take another timeout, this flag is cleared.
      */
-    void setTimeOutTaken(boolean taken);
+    void setTimeoutTaken(boolean taken);
 
     ////////////////////////// PENALTY SHOOTOUTS
 

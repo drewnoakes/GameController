@@ -34,7 +34,7 @@ public class GlobalStuck extends Action
 
         game.apply(ActionBoard.ready, ActionTrigger.User);
 
-        if (state.getRemainingSeconds(state.getWhenCurrentPlayModeBegan(), game.rules().getKickoffTime() + game.rules().getMinDurationBeforeStuck()) > 0) {
+        if (state.getRemainingSeconds(state.getWhenCurrentPlayModeBegan(), game.rules().getKickOffDurationSeconds() + game.rules().getMinDurationBeforeStuckGameAllowed()) > 0) {
             game.pushState("Kickoff Goal " + team.getTeamColor());
         } else {
             game.pushState("Global Game Stuck, Kickoff " + state.getNextKickOffColor());

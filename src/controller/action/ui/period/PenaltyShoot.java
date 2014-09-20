@@ -23,9 +23,9 @@ public class PenaltyShoot extends Action
             state.setTimeBeforeCurrentPlayMode(0);
             state.resetPenalties();
 
-            if (game.rules().isTimeOutPerHalf()) {
-                state.getTeam(TeamColor.Blue).setTimeOutTaken(false);
-                state.getTeam(TeamColor.Red).setTimeOutTaken(false);
+            if (game.rules().isTeamAllowedOnlyOneTimeoutPerHalf()) {
+                state.getTeam(TeamColor.Blue).setTimeoutTaken(false);
+                state.getTeam(TeamColor.Red).setTimeoutTaken(false);
             }
             game.pushState("Penalty Shoot-out");
         }
@@ -38,7 +38,7 @@ public class PenaltyShoot extends Action
           || state.getPreviousPeriod() == Period.PenaltyShootout
           || (!state.isFirstHalf()
             && state.is(PlayMode.Finished)
-            && !(game.rules().isOvertime()
+            && !(game.rules().isOvertimeAllowed()
                 && game.isPlayOff()
                 && state.is(Period.Normal)
                 && state.getTeam(TeamColor.Blue).getScore() == state.getTeam(TeamColor.Red).getScore()

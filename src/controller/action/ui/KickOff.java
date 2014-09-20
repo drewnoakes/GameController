@@ -38,7 +38,7 @@ public class KickOff extends Action
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
         return state.getNextKickOffColor() == state.getTeam(side).getTeamColor()
-                || (game.rules().isKickoffChoice()
+                || (game.rules().isKickOffTeamChoosableAtStartOfGame()
                     && state.is(Period.Normal)
                     && state.isFirstHalf()
                     && state.is(PlayMode.Initial))

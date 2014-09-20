@@ -10,7 +10,7 @@ import data.*;
  *
  * @author Michel Bartsch
  */
-public class TimeOut extends Action
+public class Timeout extends Action
 {
     /** The side calling the timeout. */
     @NotNull private final UISide side;
@@ -18,7 +18,7 @@ public class TimeOut extends Action
     /**
      * @param side the side calling the timeout.
      */
-    public TimeOut(@NotNull UISide side)
+    public Timeout(@NotNull UISide side)
     {
         this.side = side;
     }
@@ -28,15 +28,15 @@ public class TimeOut extends Action
     {
         WriteableTeamState team = state.getTeam(side);
 
-        if (!team.isTimeOutActive()) {
+        if (!team.isTimeoutActive()) {
             // Starting a timeout
             state.setPreviousPeriod(state.getPeriod());
             state.setPeriod(Period.Timeout);
-            team.setTimeOutActive(true);
-            team.setTimeOutTaken(true);
+            team.setTimeoutActive(true);
+            team.setTimeoutTaken(true);
 
             if (state.getPreviousPeriod() != Period.PenaltyShootout) {
-                if (game.rules().isGiveOpponentKickOffOnTimeOut())
+                if (game.rules().isKickOffGivenToOpponentAfterTimeout())
                     state.setNextKickOffColor(team.getTeamColor().other());
             } else if (state.is(PlayMode.Set)) {
                 // Decrease the kick-off team's penalty shot count
@@ -51,7 +51,7 @@ public class TimeOut extends Action
             // Completing a timeout
             state.setPeriod(state.getPreviousPeriod());
             state.setPreviousPeriod(Period.Timeout);
-            team.setTimeOutActive(false);
+            team.setTimeoutActive(false);
             if (!state.is(Period.PenaltyShootout)) {
                 ActionBoard.ready.forceExecute(game, state);
                 game.pushState("End of Timeout " + team.getTeamColor());
@@ -65,12 +65,12 @@ public class TimeOut extends Action
         ReadOnlyTeamState team = state.getTeam(side);
         ReadOnlyTeamState otherTeam = state.getTeam(side.other());
 
-        return team.isTimeOutActive()
+        return team.isTimeoutActive()
             || ((state.is(PlayMode.Initial) ||
                   state.is(PlayMode.Ready) ||
                   state.is(PlayMode.Set))
-                && !team.isTimeOutTaken()
-                && !otherTeam.isTimeOutActive()
+                && !team.isTimeoutTaken()
+                && !otherTeam.isTimeoutActive()
                 && !state.is(Period.Timeout))
             || state.isTestMode();
     }

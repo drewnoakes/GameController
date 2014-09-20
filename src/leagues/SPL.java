@@ -10,7 +10,7 @@ public class SPL implements LeagueRules
     @Override
     public int getTeamSize()
     {
-        return 6; // 5 players, 1 sub
+        return 6; // 5 players, 1 sub (coach counted separately)
     }
 
     @Override
@@ -26,115 +26,117 @@ public class SPL implements LeagueRules
     }
 
     @Override
-    public int getHalfTime()
+    public int getNormalHalfDurationSeconds()
     {
+        // Each half is ten minutes
         return 10*60;
     }
 
     @Override
-    public int getReadyTime()
+    public int getReadyPlayModeDurationSeconds()
     {
         return 45;
     }
 
     @Override
-    public int getPauseTime()
+    public int getHalfTimeDurationSeconds()
     {
+        // Half time is ten minutes
         return 10*60;
     }
 
     @Override
-    public boolean isKickoffChoice()
+    public boolean isKickOffTeamChoosableAtStartOfGame()
     {
         return false;
     }
 
     @Override
-    public int getKickoffTime()
+    public int getKickOffDurationSeconds()
     {
         return 10;
     }
 
     @Override
-    public int getMinDurationBeforeStuck()
+    public int getMinDurationBeforeStuckGameAllowed()
     {
         return 15;
     }
 
     @Override
-    public boolean isOvertime()
+    public boolean isOvertimeAllowed()
     {
         return false;
     }
 
     @Override
-    public int getOvertimeTime()
+    public int getOvertimeHalfDurationSeconds()
     {
-        return 0;
+        throw new RuntimeException("Overtime is not used in the SPL.");
     }
 
     @Override
-    public boolean isStartWithPenalty()
+    public boolean isGameStartedWithPenaltyShots()
     {
         return false;
     }
 
     @Override
-    public int getPausePenaltyShootOutTime()
+    public int getDurationBeforePenaltyShootoutsStart()
     {
         return 5*60;
     }
 
     @Override
-    public int getPenaltyShotTime()
+    public int getPenaltyShotDurationSeconds()
     {
         return 60;
     }
 
     @Override
-    public boolean isPenaltyShotRetries()
+    public boolean arePenaltyShotRetriesAllowed()
     {
         return false;
     }
 
     @Override
-    public int getPenaltyShotTimeSuddenDeath()
+    public int getPenaltyShotDurationSecondsInSuddenDeath()
     {
         return 2*60;
     }
 
     @Override
-    public int getNumberOfPenaltyShotsShort()
+    public int getNumberOfPenaltyShotsInNormalGame()
     {
         return 3;
     }
 
     @Override
-    public int getNumberOfPenaltyShotsLong()
+    public int getNumberOfPenaltyShotsInPlayOffGame()
     {
         return 5;
     }
 
     @Override
-    public boolean isReturnRobotsInGameStoppages()
+    public boolean arePenaltiesClearedDuringStoppages()
     {
         return true;
     }
 
     @Override
-    public int getTimeOutTime()
+    public int getTimeoutDurationSeconds()
     {
         return 5*60;
     }
 
     @Override
-    public boolean isGiveOpponentKickOffOnTimeOut()
+    public boolean isKickOffGivenToOpponentAfterTimeout()
     {
         return true;
     }
 
     @Override
-    public int getRefereeTimeout()
+    public int getRefereeTimeoutDurationSeconds()
     {
         return 10*60;
     }
@@ -146,7 +148,7 @@ public class SPL implements LeagueRules
     }
 
     @Override
-    public boolean isTimeOutPerHalf()
+    public boolean isTeamAllowedOnlyOneTimeoutPerHalf()
     {
         return false;
     }
@@ -164,19 +166,19 @@ public class SPL implements LeagueRules
     }
 
     @Override
-    public boolean isLostTime()
+    public boolean isStoppageTimeAllowed()
     {
         return true;
     }
 
     @Override
-    public boolean isSupportGameStateVersion7()
+    public boolean isLegacyGameStateVersion7Broadcast()
     {
         return false;
     }
 
     @Override
-    public boolean isSupportGameStateVersion8()
+    public boolean isLegacyGameStateVersion8Broadcast()
     {
         return false;
     }

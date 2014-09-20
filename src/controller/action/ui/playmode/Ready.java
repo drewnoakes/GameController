@@ -24,8 +24,8 @@ public class Ready extends Action
 
     public void forceExecute(Game game, WriteableGameState state)
     {
-        if (game.rules().isReturnRobotsInGameStoppages()) {
-            state.resetPenaltyTimes();
+        if (game.rules().arePenaltiesClearedDuringStoppages()) {
+            state.setRemainingPenaltyTimesToZero();
         }
         if (state.is(PlayMode.Playing)) {
             state.addTimeInCurrentPlayMode();
@@ -39,7 +39,7 @@ public class Ready extends Action
     {
         return
             (state.is(PlayMode.Initial)
-              && !state.isTimeOutActive()
+              && !state.isTimeoutActive()
               && !state.isRefereeTimeoutActive()
               && !state.is(Period.PenaltyShootout))
             || state.is(PlayMode.Ready)

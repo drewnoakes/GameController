@@ -84,9 +84,9 @@ public class Main
         try {
             gameStateSender = new GameStateSender(game, game.broadcastAddress());
             gameStateSender.addProtocol(new GameStateProtocol9(game.league(), game.gameId()));
-            if (game.rules().isSupportGameStateVersion8())
+            if (game.rules().isLegacyGameStateVersion8Broadcast())
                 gameStateSender.addProtocol(new GameStateProtocol8(game.league()));
-            if (game.rules().isSupportGameStateVersion7())
+            if (game.rules().isLegacyGameStateVersion7Broadcast())
                 gameStateSender.addProtocol(new GameStateProtocol7(game.league()));
             gameStateSender.start();
 

@@ -21,8 +21,8 @@ public class Set extends Action
             return;
         }
 
-        if (game.rules().isReturnRobotsInGameStoppages()) {
-            state.resetPenaltyTimes();
+        if (game.rules().arePenaltiesClearedDuringStoppages()) {
+            state.setRemainingPenaltyTimesToZero();
         }
 
         if (!game.isPlayOff() && state.getTimeBeforeCurrentPlayMode() != 0) {
@@ -55,11 +55,19 @@ public class Set extends Action
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return state.is(PlayMode.Ready, PlayMode.Set)
-            || (state.is(Period.PenaltyShootout)
-              && (!state.is(PlayMode.Playing) || game.rules().isPenaltyShotRetries())
-              && !state.isTimeOutActive()
-              && !state.isRefereeTimeoutActive())
-            || state.isTestMode();
+        if (state.is(PlayMode.Ready, PlayMode.Set))
+            return true;
+
+        if (state.isTestMode())
+            return true;
+
+        if (state.is(Period.PenaltyShootout))
+        {
+            return (!state.is(PlayMode.Playing) || game.rules().arePenaltyShotRetriesAllowed()) &&
+                   !state.isTimeoutActive() &&
+                   !state.isRefereeTimeoutActive();
+        }
+
+        return false;
     }
 }

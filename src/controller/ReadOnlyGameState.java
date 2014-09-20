@@ -165,8 +165,8 @@ public interface ReadOnlyGameState
     /** Gets whether the score of both teams are level (equal). */
     boolean areScoresLevel();
 
-    /** Gets whether a timeout is currently active for either team. */
-    boolean isTimeOutActive();
+    /** Gets whether a timeout is currently active for either team. Does not include SPL referee timeouts. */
+    boolean isTimeoutActive();
 
     /** Gets whether test mode is currently active. */
     boolean isTestMode();

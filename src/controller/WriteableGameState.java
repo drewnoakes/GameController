@@ -66,12 +66,12 @@ public interface WriteableGameState extends ReadOnlyGameState
 
     /**
      * Clears penalties of all non-coach and non-sub players in both teams, and clears ejected state.
-     * Also calls {@link WriteableGameState#resetPenaltyTimes()}.
+     * Also calls {@link WriteableGameState#setRemainingPenaltyTimesToZero()}.
      */
     void resetPenalties();
 
-    /** Resets the penalized-at-time of all players to 0. Does not unpenalize them. */
-    void resetPenaltyTimes();
+    /** Resets the penalized-at-time of all players to 0. Does not remove any assigned penalties however. */
+    void setRemainingPenaltyTimesToZero();
 
     ////////////////////////// PLAY MODE, PERIOD & HALF
 

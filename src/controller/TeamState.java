@@ -38,8 +38,8 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
     private int penaltyShotCount;
     private short penaltyShotFlags;
     private int pushCount;
-    private boolean isTimeOutActive;
-    private boolean isTimeOutTaken;
+    private boolean isTimeoutActive;
+    private boolean isTimeoutTaken;
 
     /** The last coach message (only used in SPL). */
     @Nullable private byte[] coachMessage;
@@ -93,8 +93,8 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
         penaltyShotCount = source.penaltyShotCount;
         penaltyShotFlags = source.penaltyShotFlags;
         pushCount = source.pushCount;
-        isTimeOutActive = source.isTimeOutActive;
-        isTimeOutTaken = source.isTimeOutTaken;
+        isTimeoutActive = source.isTimeoutActive;
+        isTimeoutTaken = source.isTimeoutTaken;
         coachMessage = source.coachMessage;
         pendingSplCoachMessage = source.pendingSplCoachMessage;
         lastCoachMessageReceiveTimeMillis = source.lastCoachMessageReceiveTimeMillis;
@@ -169,27 +169,27 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
     ////////////////////////// TIMEOUTS //////////////////////////
 
     @Override
-    public boolean isTimeOutActive()
+    public boolean isTimeoutActive()
     {
-        return isTimeOutActive;
+        return isTimeoutActive;
     }
 
     @Override
-    public void setTimeOutActive(boolean isTimeOutActive)
+    public void setTimeoutActive(boolean isTimeoutActive)
     {
-        this.isTimeOutActive = isTimeOutActive;
+        this.isTimeoutActive = isTimeoutActive;
     }
 
     @Override
-    public boolean isTimeOutTaken()
+    public boolean isTimeoutTaken()
     {
-        return isTimeOutTaken;
+        return isTimeoutTaken;
     }
 
     @Override
-    public void setTimeOutTaken(boolean taken)
+    public void setTimeoutTaken(boolean taken)
     {
-        this.isTimeOutTaken = taken;
+        this.isTimeoutTaken = taken;
     }
 
     ////////////////////////// SCORE //////////////////////////

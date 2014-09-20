@@ -28,7 +28,7 @@ public class FirstHalfOvertime extends Action
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
         return (state.isFirstHalf() && state.is(Period.Overtime))
-                || (game.rules().isOvertime()
+                || (game.rules().isOvertimeAllowed()
                     && game.isPlayOff()
                     && state.is(Period.Normal)
                     && state.is(PlayMode.Finished)

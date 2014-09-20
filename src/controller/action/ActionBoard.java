@@ -37,7 +37,7 @@ public class ActionBoard
     public static ReadOnlyPair<Goal> goalInc;
     public static ReadOnlyPair<KickOff> kickOff;
     public static ReadOnlyPair<RobotButton[]> robotButton;
-    public static ReadOnlyPair<TimeOut> timeOut;
+    public static ReadOnlyPair<Timeout> timeout;
     public static ReadOnlyPair<GlobalStuck> stuck;
     public static ReadOnlyPair<Out> out;
     public static ClockReset clockReset;
@@ -100,7 +100,7 @@ public class ActionBoard
         goalDec = new Pair<Goal>(uiOrientation, new Goal(UISide.Left, -1), new Goal(UISide.Right, -1));
         goalInc = new Pair<Goal>(uiOrientation, new Goal(UISide.Left, 1), new Goal(UISide.Right, 1));
         kickOff = new Pair<KickOff>(uiOrientation, new KickOff(UISide.Left), new KickOff(UISide.Right));
-        timeOut = new Pair<TimeOut>(uiOrientation, new TimeOut(UISide.Left), new TimeOut(UISide.Right));
+        timeout = new Pair<Timeout>(uiOrientation, new Timeout(UISide.Left), new Timeout(UISide.Right));
         stuck = new Pair<GlobalStuck>(uiOrientation, new GlobalStuck(UISide.Left), new GlobalStuck(UISide.Right));
         out = new Pair<Out>(uiOrientation, new Out(UISide.Left), new Out(UISide.Right));
 
