@@ -23,4 +23,11 @@ public class Service extends PenaltyAction
             game.pushState("Additional Request for Service " + team.getTeamColor() + " " + player.getUniformNumber());
         }
     }
+
+    @Override
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
+    {
+        // Service is always available
+        return true;
+    }
 }

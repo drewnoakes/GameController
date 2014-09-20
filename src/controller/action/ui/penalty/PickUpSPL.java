@@ -22,4 +22,11 @@ public class PickUpSPL extends PenaltyAction
         player.setPenalty(Penalty.SplRequestForPickup);
         game.pushState("Request for PickUp " + team.getTeamColor() + " " + player.getUniformNumber());
     }
+
+    @Override
+    public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
+    {
+        // Pick up is always available
+        return true;
+    }
 }
