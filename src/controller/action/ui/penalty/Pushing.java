@@ -20,7 +20,7 @@ public class Pushing extends PenaltyAction
 
         if (state.is(PlayMode.Playing)) {
             team.setPushCount(team.getPushCount() + 1);
-            for (int pushes : game.settings().pushesToEjection) {
+            for (int pushes : game.rules().getPushesToEjection()) {
                 if (team.getPushCount() == pushes) {
                     player.setEjected(true);
                 }

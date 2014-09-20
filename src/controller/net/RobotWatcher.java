@@ -7,7 +7,6 @@ import controller.action.ActionBoard;
 import controller.action.ActionTrigger;
 import data.League;
 import data.RobotMessage;
-import data.Penalty;
 import data.UISide;
 
 /**
@@ -36,7 +35,7 @@ public class RobotWatcher
 
     public RobotWatcher(@NotNull League league)
     {
-        robotCount = league.settings().teamSize + (league.settings().isCoachAvailable ? 1 : 0);
+        robotCount = league.rules().getTeamSize() + (league.rules().isCoachAvailable() ? 1 : 0);
         robotLastStatus = new RobotStatus[2][robotCount];
         status = new RobotOnlineStatus[2][robotCount];
         robotLastHeardTime = new long[2][robotCount];
@@ -75,7 +74,7 @@ public class RobotWatcher
 
         int number = robotMessage.getUniformNumber();
 
-        if (number <= 0 || number > game.settings().teamSize)
+        if (number <= 0 || number > game.rules().getTeamSize())
             return;
 
         int i = number - 1;
@@ -108,7 +107,7 @@ public class RobotWatcher
         int teamIndex = getTeamIndex(game, teamNumber);
 
         if (teamIndex != -1)
-            robotLastHeardTime[teamIndex][game.settings().teamSize] = System.currentTimeMillis();
+            robotLastHeardTime[teamIndex][game.rules().getTeamSize()] = System.currentTimeMillis();
     }
 
     /**

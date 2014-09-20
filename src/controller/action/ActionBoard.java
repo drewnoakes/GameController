@@ -94,7 +94,7 @@ public class ActionBoard
         cancelUndo = new CancelUndo();
 
         // We construct team arrays during initialisation as the league may change between runs
-        int robotCount = league.settings().teamSize + (league.settings().isCoachAvailable ? 1 : 0);
+        int robotCount = league.rules().getTeamSize() + (league.rules().isCoachAvailable() ? 1 : 0);
 
         robotButton = new Pair<RobotButton[]>(uiOrientation, new RobotButton[robotCount], new RobotButton[robotCount]);
         goalDec = new Pair<Goal>(uiOrientation, new Goal(UISide.Left, -1), new Goal(UISide.Right, -1));

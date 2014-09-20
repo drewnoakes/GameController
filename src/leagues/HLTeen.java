@@ -1,21 +1,21 @@
 package leagues;
 
 /**
- * This class sets attributes given by the humanoid-league rules.
+ * Models rules specific to Teen-Size Humanoid League.
  *
  * @author Michel-Zen
  */
 public class HLTeen extends HL
 {
-    public HLTeen()
+    @Override
+    public int getTeamSize()
     {
-//        /** The league´s name this rules are for. */
-//        leagueName = "HL Teen";
-//        /** The league´s directory name with its teams and icons. */
-//        leagueDirectory = "hl_teen";
-        /** How many robots are in a team. */
-        teamSize = 4;
-        /** How many robots of each team may play at one time. */
-        robotsPlaying = 2;
+        return 4; // 2 players, 2 subs
+    }
+
+    @Override
+    public int getRobotsPlaying()
+    {
+        return 2;
     }
 }

@@ -21,7 +21,7 @@ public class Set extends Action
             return;
         }
 
-        if (game.settings().returnRobotsInGameStoppages) {
+        if (game.rules().isReturnRobotsInGameStoppages()) {
             state.resetPenaltyTimes();
         }
 
@@ -57,7 +57,7 @@ public class Set extends Action
     {
         return state.is(PlayMode.Ready, PlayMode.Set)
             || (state.is(Period.PenaltyShootout)
-              && (!state.is(PlayMode.Playing) || game.settings().penaltyShotRetries)
+              && (!state.is(PlayMode.Playing) || game.rules().isPenaltyShotRetries())
               && !state.isTimeOutActive()
               && !state.isRefereeTimeoutActive())
             || state.isTestMode();

@@ -24,7 +24,7 @@ public class Ready extends Action
 
     public void forceExecute(Game game, WriteableGameState state)
     {
-        if (game.settings().returnRobotsInGameStoppages) {
+        if (game.rules().isReturnRobotsInGameStoppages()) {
             state.resetPenaltyTimes();
         }
         if (state.is(PlayMode.Playing)) {

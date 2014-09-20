@@ -102,7 +102,7 @@ public class GameStateProtocol9 extends GameStateProtocol
         buffer.put(getVersionNumber());
         buffer.put(league.number());
         buffer.put(nextPacketNumber);
-        buffer.put((byte)league.settings().teamSize);
+        buffer.put((byte)league.rules().getTeamSize());
         buffer.putInt(gameId);
         buffer.put(state.getPlayMode().getValue());
         buffer.put(state.isFirstHalf() ? (byte)1 : 0);
@@ -174,12 +174,12 @@ public class GameStateProtocol9 extends GameStateProtocol
             coach = playerFromBytes(-1, buffer);
         }
 
-        List<PlayerStateSnapshot> players = new ArrayList<PlayerStateSnapshot>(league.settings().teamSize);
+        List<PlayerStateSnapshot> players = new ArrayList<PlayerStateSnapshot>(league.rules().getTeamSize());
 
         for (int uniformNumber = 1; uniformNumber <= NUM_PLAYERS_IN_GAME_STATE_MESSAGE; uniformNumber++) {
             PlayerStateSnapshot player = playerFromBytes(uniformNumber, buffer);
             // The buffer potentially contains data for more players than we are interested in -- ignore unused
-            if (uniformNumber <= league.settings().teamSize) {
+            if (uniformNumber <= league.rules().getTeamSize()) {
                 players.add(player);
             }
         }

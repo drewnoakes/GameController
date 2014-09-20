@@ -1,25 +1,33 @@
 package leagues;
 
 /**
- * This class sets attributes given by the humanoid-league rules.
+ * Models rules specific to the Adult-Size Humanoid league.
  *
  * @author Michel-Zen
  */
 public class HLAdult extends HL
 {
-    public HLAdult()
+    @Override
+    public int getTeamSize()
     {
-//        /** The league´s name this rules are for. */
-//        leagueName = "HL Adult";
-//        /** The league´s directory name with its teams and icons. */
-//        leagueDirectory = "hl_adult";
-        /** How many robots are in a team. */
-        teamSize = 2;
-        /** How many robots of each team may play at one time. */
-        robotsPlaying = 1;
-        /** If the game starts with penalty-shoots. */
-        startWithPenalty = true;
-        /** Time in seconds one penalty shoot is long. */
-        penaltyShotTime = (int)(2.5*60);
+        return 2; // 1 player, 1 sub
+    }
+
+    @Override
+    public int getRobotsPlaying()
+    {
+        return 1;
+    }
+
+    @Override
+    public boolean isStartWithPenalty()
+    {
+        return true;
+    }
+
+    @Override
+    public int getPenaltyShotTime()
+    {
+        return (int)(2.5 * 60);
     }
 }

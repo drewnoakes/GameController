@@ -36,7 +36,7 @@ public class TimeOut extends Action
             team.setTimeOutTaken(true);
 
             if (state.getPreviousPeriod() != Period.PenaltyShootout) {
-                if (game.settings().giveOpponentKickOffOnTimeOut)
+                if (game.rules().isGiveOpponentKickOffOnTimeOut())
                     state.setNextKickOffColor(team.getTeamColor().other());
             } else if (state.is(PlayMode.Set)) {
                 // Decrease the kick-off team's penalty shot count

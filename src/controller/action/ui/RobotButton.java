@@ -68,7 +68,7 @@ public class RobotButton extends Action
 
         ReadOnlyTeamState team = state.getTeam(side);
 
-        boolean isCoach = uniformNumber == game.settings().teamSize + 1;
+        boolean isCoach = uniformNumber == game.rules().getTeamSize() + 1;
         ReadOnlyPlayerState player = isCoach ? team.getCoach() : team.getPlayer(uniformNumber);
 
         if (player.isEjected())
@@ -80,7 +80,7 @@ public class RobotButton extends Action
         return (!(lastUIAction instanceof PenaltyAction)
                    && penalty != Penalty.None
                    && (state.getRemainingPenaltyTime(player) == 0 || game.league().isHLFamily())
-                   && (penalty != Penalty.Substitute || team.getNumberOfRobotsInPlay() < game.settings().robotsPlaying)
+                   && (penalty != Penalty.Substitute || team.getNumberOfRobotsInPlay() < game.rules().getRobotsPlaying())
                    && !isCoach())
                || (lastUIAction instanceof PickUpHL
                    && penalty != Penalty.Service
@@ -108,6 +108,6 @@ public class RobotButton extends Action
     
     public boolean isCoach()
     {
-        return league.settings().isCoachAvailable && uniformNumber == league.settings().teamSize;
+        return league.rules().isCoachAvailable() && uniformNumber == league.rules().getTeamSize();
     }
 }

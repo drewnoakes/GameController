@@ -84,9 +84,9 @@ public class Main
         try {
             gameStateSender = new GameStateSender(game, game.broadcastAddress());
             gameStateSender.addProtocol(new GameStateProtocol9(game.league(), game.gameId()));
-            if (game.settings().supportGameStateVersion8)
+            if (game.rules().isSupportGameStateVersion8())
                 gameStateSender.addProtocol(new GameStateProtocol8(game.league()));
-            if (game.settings().supportGameStateVersion7)
+            if (game.rules().isSupportGameStateVersion7())
                 gameStateSender.addProtocol(new GameStateProtocol7(game.league()));
             gameStateSender.start();
 
@@ -104,7 +104,7 @@ public class Main
 
             multipleInstanceWatcher = new MultipleInstanceWatcher(game.league(), game.gameId());
 
-            if (game.league().isSPLFamily() && game.settings().isCoachAvailable) {
+            if (game.league().isSPLFamily() && game.rules().isCoachAvailable()) {
                 splReceiver = new MessageReceiver<SPLCoachMessage>(
                         Config.SPL_COACH_MESSAGE_PORT,
                         500,

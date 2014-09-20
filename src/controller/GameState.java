@@ -3,7 +3,7 @@ package controller;
 import common.annotations.NotNull;
 import common.annotations.Nullable;
 import data.*;
-import leagues.LeagueSettings;
+import leagues.LeagueRules;
 
 /**
  * Models the complete state of a game at a given moment in time.
@@ -57,7 +57,7 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
 
         for (TeamState team : teams) {
             // Set extra players as substitutes
-            for (int uniformNumber = game.settings().robotsPlaying + 1; uniformNumber <= team.getPlayerCount(); uniformNumber++)
+            for (int uniformNumber = game.rules().getRobotsPlaying() + 1; uniformNumber <= team.getPlayerCount(); uniformNumber++)
                 team.getPlayer(uniformNumber).setPenalty(Penalty.Substitute);
         }
 
@@ -68,7 +68,7 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
         isTestMode = false;
         manPause = false;
         manPlay = false;
-        period = game.settings().startWithPenalty ? Period.PenaltyShootout : Period.Normal;
+        period = game.rules().isStartWithPenalty() ? Period.PenaltyShootout : Period.Normal;
         previousPeriod = Period.Normal;
     }
 
@@ -170,22 +170,22 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     public int getSecsRemaining()
     {
         int regularNumberOfPenaltyShots = game.isPlayOff()
-                ? game.settings().numberOfPenaltyShotsLong
-                : game.settings().numberOfPenaltyShotsShort;
+                ? game.rules().getNumberOfPenaltyShotsLong()
+                : game.rules().getNumberOfPenaltyShotsShort();
 
         int duration = is(Period.Timeout)
                 ? getSecsRemaining() // TODO fix this infinite recursion bug -- should return last computed value (or something else)
                 : is(Period.Normal)
-                    ? game.settings().halfTime
+                    ? game.rules().getHalfTime()
                     : is(Period.Overtime)
-                        ? game.settings().overtimeTime
+                        ? game.rules().getOvertimeTime()
                         : Math.max(teams.get(UISide.Left).getPenaltyShotCount(), teams.get(UISide.Right).getPenaltyShotCount()) > regularNumberOfPenaltyShots
-                            ? game.settings().penaltyShotTimeSuddenDeath
-                            : game.settings().penaltyShotTime;
+                            ? game.rules().getPenaltyShotTimeSuddenDeath()
+                            : game.rules().getPenaltyShotTime();
 
         int timePlayed = playMode == PlayMode.Initial// during timeouts
                 || (playMode == PlayMode.Ready || playMode == PlayMode.Set)
-                && (game.isPlayOff() && game.settings().playOffTimeStop || getTimeBeforeCurrentPlayMode() == 0)
+                && (game.isPlayOff() && game.rules().isPlayOffTimeStop() || getTimeBeforeCurrentPlayMode() == 0)
                 || playMode == PlayMode.Finished
             ? (int) ((getTimeBeforeCurrentPlayMode() + getManRemainingGameTimeOffset() + (isManPlay() ? System.currentTimeMillis() - getManWhenClockChanged() : 0)) / 1000)
             : getSecondsSince(getWhenCurrentPlayModeBegan() - getTimeBeforeCurrentPlayMode() - getManRemainingGameTimeOffset());
@@ -198,13 +198,13 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     {
         if (period == Period.Normal
                 && (playMode == PlayMode.Initial && !isFirstHalf && !isTimeOutActive() || playMode == PlayMode.Finished && isFirstHalf)) {
-            return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.settings().pauseTime);
+            return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.rules().getPauseTime());
         }
 
-        if (game.settings().pausePenaltyShootOutTime != 0 && game.isPlayOff() && areScoresLevel()
+        if (game.rules().getPausePenaltyShootOutTime() != 0 && game.isPlayOff() && areScoresLevel()
                 && (playMode == PlayMode.Initial && period == Period.PenaltyShootout && !isTimeOutActive()
                 || playMode == PlayMode.Finished && !isFirstHalf)) {
-            return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.settings().pausePenaltyShootOutTime);
+            return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.rules().getPausePenaltyShootOutTime());
         }
 
         return null;
@@ -249,11 +249,11 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
 
         assert(penalty.getDurationSeconds() != -1);
 
-        LeagueSettings leagueSettings = game.settings();
+        LeagueRules rules = game.rules();
 
         // TODO test this -- seems strange that the penalty should have to start after the current play mode began, when the current play mode is 'ready'
-        if (leagueSettings.returnRobotsInGameStoppages && is(PlayMode.Ready) && player.getWhenPenalized() >= getWhenCurrentPlayModeBegan())
-            return leagueSettings.readyTime - getSecondsSince(getWhenCurrentPlayModeBegan());
+        if (rules.isReturnRobotsInGameStoppages() && is(PlayMode.Ready) && player.getWhenPenalized() >= getWhenCurrentPlayModeBegan())
+            return rules.getReadyTime() - getSecondsSince(getWhenCurrentPlayModeBegan());
 
         return Math.max(0, getRemainingSeconds(player.getWhenPenalized(), penalty.getDurationSeconds()));
     }
@@ -262,19 +262,19 @@ public class GameState implements WriteableGameState, ReadOnlyGameState
     public Integer getSecondaryTime(int timeKickOffBlockedOvertime)
     {
         int timeKickOffBlocked = getNextKickOffColor() != null
-                ? getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.settings().kickoffTime)
+                ? getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.rules().getKickoffTime())
                 : 0;
 
         if (is(PlayMode.Initial) && isTimeOutActive()) {
-            return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.settings().timeOutTime);
+            return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.rules().getTimeOutTime());
         }
 
         if (is(PlayMode.Initial) && isRefereeTimeoutActive()) {
-            return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.settings().refereeTimeout);
+            return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.rules().getRefereeTimeout());
         }
 
         if (is(PlayMode.Ready)) {
-            return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.settings().readyTime);
+            return getRemainingSeconds(getWhenCurrentPlayModeBegan(), game.rules().getReadyTime());
         }
 
         if (is(PlayMode.Playing) && getPeriod() != Period.PenaltyShootout && timeKickOffBlocked >= -timeKickOffBlockedOvertime) {

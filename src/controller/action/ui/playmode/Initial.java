@@ -25,7 +25,7 @@ public class Initial extends Action
      */
     public void forceExecute(Game game, @NotNull WriteableGameState state)
     {
-        if (game.settings().returnRobotsInGameStoppages) {
+        if (game.rules().isReturnRobotsInGameStoppages()) {
             state.resetPenaltyTimes();
         }
         state.setWhenCurrentPlayModeBegan(state.getTime());

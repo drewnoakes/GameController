@@ -1,16 +1,19 @@
 package leagues;
 
+/**
+ * Models rules specific to the Kid-Size Humanoid League.
+ */
 public class HLKid extends HL
 {
-    public HLKid()
+    @Override
+    public int getTeamSize()
     {
-//        /** The league´s name this rules are for. */
-//        leagueName = "HL Kid";
-//        /** The league´s directory name with its teams and icons. */
-//        leagueDirectory = "hl_kid";
-        /** How many robots are in a team. */
-        teamSize = 6; // 4 players + 2 subs
-        /** How many robots of each team may play at one time. */
-        robotsPlaying = 4;
+        return 6; // 4 players, 2 subs
+    }
+
+    @Override
+    public int getRobotsPlaying()
+    {
+        return 4;
     }
 }

@@ -64,15 +64,15 @@ public enum League
     private final byte number;
     private final String name;
     private final String directoryName;
-    private final LeagueSettings settings;
+    private final LeagueRules rules;
     private List<Team> teams;
 
-    private League(byte number, @NotNull String name, @NotNull String directoryName, @NotNull LeagueSettings settings)
+    private League(byte number, @NotNull String name, @NotNull String directoryName, @NotNull LeagueRules rules)
     {
         this.number = number;
         this.name = name;
         this.directoryName = directoryName;
-        this.settings = settings;
+        this.rules = rules;
     }
 
     @NotNull
@@ -87,10 +87,11 @@ public enum League
         return directoryName;
     }
 
+    /** Gets the set of game rules applicable to this league. */
     @NotNull
-    public LeagueSettings settings()
+    public LeagueRules rules()
     {
-        return settings;
+        return rules;
     }
 
     public byte number() { return number; }

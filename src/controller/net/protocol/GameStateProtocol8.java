@@ -69,7 +69,7 @@ public class GameStateProtocol8 extends GameStateProtocol
 
         buffer.put(getVersionNumber());
         buffer.put(nextPacketNumber);
-        buffer.put((byte)league.settings().teamSize);
+        buffer.put((byte)league.rules().getTeamSize());
         buffer.put(state.getPlayMode().getValue());
         buffer.put(state.isFirstHalf() ? (byte)1 : 0);
         buffer.put(state.getNextKickOffColor() == null ? 2 : state.getNextKickOffColor().getValue());
@@ -94,7 +94,7 @@ public class GameStateProtocol8 extends GameStateProtocol
             return null;
 
         byte packetNumber = buffer.get();
-        byte playersPerTeam = buffer.get(); // should equal league.settings().teamSize
+        byte playersPerTeam = buffer.get(); // should equal league.rules().teamSize
         PlayMode playMode = PlayMode.fromValue(buffer.get());
         boolean firstHalf = buffer.get() != 0;
         TeamColor nextKickOffColor = TeamColor.fromValue(buffer.get());
@@ -125,12 +125,12 @@ public class GameStateProtocol8 extends GameStateProtocol
         buffer.get(coachMessage);
         PlayerStateSnapshot coach = playerFromBytes(-1, buffer);
 
-        List<PlayerStateSnapshot> players = new ArrayList<PlayerStateSnapshot>(league.settings().teamSize);
+        List<PlayerStateSnapshot> players = new ArrayList<PlayerStateSnapshot>(league.rules().getTeamSize());
 
         for (int uniformNumber = 1; uniformNumber <= NUM_PLAYERS_IN_GAME_STATE_MESSAGE; uniformNumber++) {
             PlayerStateSnapshot player = playerFromBytes(uniformNumber, buffer);
             // The buffer potentially contains data for more players than we are interested in -- ignore unused
-            if (uniformNumber <= league.settings().teamSize) {
+            if (uniformNumber <= league.rules().getTeamSize()) {
                 players.add(player);
             }
         }
@@ -154,7 +154,7 @@ public class GameStateProtocol8 extends GameStateProtocol
         buffer.put((byte)teamState.getPenaltyShotCount());
         buffer.putShort(teamState.getPenaltyShotFlags());
 
-        if (league.settings().isCoachAvailable) {
+        if (league.rules().isCoachAvailable()) {
             buffer.put(teamState.getCoachMessage());
             writePlayerInfo(buffer, teamState.getCoach());
         } else {

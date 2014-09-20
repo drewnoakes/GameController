@@ -16,7 +16,7 @@ public class TeammatePushing extends PenaltyAction
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return game.settings().dropInPlayerMode && state.is(PlayMode.Ready, PlayMode.Playing)
+        return game.rules().isDropInPlayerMode() && state.is(PlayMode.Ready, PlayMode.Playing)
                 || state.isTestMode();
     }
 }

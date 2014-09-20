@@ -6,7 +6,7 @@ import common.annotations.NotNull;
 import common.annotations.Nullable;
 import controller.action.ActionTrigger;
 import data.*;
-import leagues.LeagueSettings;
+import leagues.LeagueRules;
 
 import java.util.Random;
 import java.util.Stack;
@@ -78,16 +78,18 @@ public class Game
         pushState(teams.get(UISide.Left).getName() + " vs " + teams.get(UISide.Right).getName());
     }
 
+    /** Gets the league this game is being played in. */
     @NotNull
     public League league()
     {
         return league;
     }
 
+    /** Gets the set of game rules applicable to the league this game is being played in. */
     @NotNull
-    public LeagueSettings settings()
+    public LeagueRules rules()
     {
-        return league.settings();
+        return league.rules();
     }
 
     public boolean isPlayOff()

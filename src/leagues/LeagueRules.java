@@ -1,77 +1,108 @@
 package leagues;
 
 /**
- * This class holds attributes defining rules.
+ * Models game rules specific to a particular league.
+ * <p>
+ * This data is read-only. Implementations should be immutable.
  *
  * @author Michel Bartsch
  * @author Drew Noakes https://drewnoakes.com
  */
-public abstract class LeagueSettings
+public interface LeagueRules
 {   
-    protected LeagueSettings() {}
-
     /** How many robots are in a team. */
-    public int teamSize;
+    public int getTeamSize();
+
     /** How many robots of each team may play at one time. */
-    public int robotsPlaying;
+    public int getRobotsPlaying();
+
     /** If the colors change automatically. */
-    public boolean changeColoursEachPeriod; // TODO unused?
+    public boolean isChangeColoursEachPeriod();
+
     /** If the clock may stop in certain play modes (Ready, Set) in a play-off game. */
-    public boolean playOffTimeStop;
+    public boolean isPlayOffTimeStop();
+
     /** Time in seconds one half is long. */
-    public int halfTime;
+    int getHalfTime();
+
     /** Length of the 'ready' play mode, in seconds. */
-    public int readyTime;
+    int getReadyTime();
+
     /** Time in seconds between first and second half. */
-    public int pauseTime;
+    int getPauseTime();
+
     /** If left and right side may both have the first kickoff. */
-    public boolean kickoffChoice;
+    boolean isKickoffChoice();
+
     /** Time in seconds the ball is blocked after kickoff. */
-    public int kickoffTime;
+    int getKickoffTime();
+
     /** Time in seconds before a global game stuck can be called. */
-    public int minDurationBeforeStuck;
+    int getMinDurationBeforeStuck();
+
     /** If there is an overtime before the penalty shoot-out in a play-off game. */
-    public boolean overtime;
+    boolean isOvertime();
+
     /** Time in seconds one overtime half is long. */
-    public int overtimeTime;
+    int getOvertimeTime();
+
     /** If the game starts with penalty-shots. */
-    public boolean startWithPenalty;
+    boolean isStartWithPenalty();
+
     /** Time in seconds between second half and penalty shoot-out. */
-    public int pausePenaltyShootOutTime;
+    int getPausePenaltyShootOutTime();
+
     /** Time in seconds one penalty shoot is long. */
-    public int penaltyShotTime;
+    int getPenaltyShotTime();
+
     /** If there can be a penalty-shot retry. */
-    public boolean penaltyShotRetries;
+    boolean isPenaltyShotRetries();
+
     /** If there is a sudden-death. */
-    public boolean suddenDeath; // TODO unused?
+    boolean isSuddenDeath();
+
     /** Time in seconds one penalty shoot is long in sudden-death. */
-    public int penaltyShotTimeSuddenDeath;
+    int getPenaltyShotTimeSuddenDeath();
+
     /** Number of penalty-shots for each team when a half has 10minutes. */
-    public int numberOfPenaltyShotsShort;
+    int getNumberOfPenaltyShotsShort();
+
     /** Number of penalty-shots for each team after full 10minutes playing. */
-    public int numberOfPenaltyShotsLong;
+    int getNumberOfPenaltyShotsLong();
+
     /** if robots should return from penalties when the game state changes. */
-    public boolean returnRobotsInGameStoppages;
+    boolean isReturnRobotsInGameStoppages();
+
     /** Time in seconds one team has as timeOut. */
-    public int timeOutTime;
+    int getTimeOutTime();
+
     /** Whether calling a timeout gives the opponent the kickoff or not. */
-    public boolean giveOpponentKickOffOnTimeOut;
+    boolean isGiveOpponentKickOffOnTimeOut();
+
     /** Time in seconds of a referee timeout*/
-    public int refereeTimeout;
-    /** Defines if the option for a referee timeout is available. */ 
-    public boolean isRefereeTimeoutAvailable;
+    int getRefereeTimeout();
+
+    /** Defines if the option for a referee timeout is available. */
+    boolean isRefereeTimeoutAvailable();
+
     /** One time-out per half? */
-    public boolean timeOutPerHalf;
+    boolean isTimeOutPerHalf();
+
     /** On how many pushes is a robot ejected. */
-    public int[] pushesToEjection;
+    int[] getPushesToEjection();
+
     /** Defines if coach is available. */
-    public boolean isCoachAvailable;
+    boolean isCoachAvailable();
+
     /** Allowed to compensate for lost time? */
-    public boolean lostTime;
+    boolean isLostTime();
+
     /** Whether to support version 7 of the game state protocol. */
-    public boolean supportGameStateVersion7;
+    boolean isSupportGameStateVersion7();
+
     /** Whether to support version 8 of the game state protocol. */
-    public boolean supportGameStateVersion8;
-    /** If true, the drop-in player competition is active*/
-    public boolean dropInPlayerMode;
+    boolean isSupportGameStateVersion8();
+
+    /** If true, the drop-in player competition is active. */
+    boolean isDropInPlayerMode();
 }

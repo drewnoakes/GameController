@@ -1,71 +1,205 @@
 package leagues;
 
 /**
- * This class sets attributes given by the humanoid-league rules.
+ * Base class for rules specific to the Humanoid Leagues.
  *
  * @author Michel-Zen
+ * @author Drew Noakes https://drewnoakes.com
  */
-public abstract class HL extends LeagueSettings
+public abstract class HL implements LeagueRules
 {
-    HL()
+    //
+    // Values that differ across all humanoid leagues.
+    //
+
+    @Override
+    public abstract int getTeamSize();
+
+    @Override
+    public abstract int getRobotsPlaying();
+
+    //
+    // Sensible defaults for all Humanoid Leagues (Kid Size, Teen Size, Adult Size).
+    // These may be overridden in subclasses however.
+    //
+
+    @Override
+    public boolean isChangeColoursEachPeriod()
     {
-        /** If the colors change automatically. */
-        changeColoursEachPeriod = false;
-        /** If the clock may stop in certain play modes (Ready, Set) in a play-off game. */
-        playOffTimeStop = false;
-        /** Time in seconds one half is long. */
-        halfTime = 10*60;
-        /** Length of the 'ready' play mode, in seconds. */
-        readyTime = 30;
-        /** Time in seconds between first and second half. */
-        pauseTime = 5*60;
-        /** If left and right side may both have the first kickoff. */
-        kickoffChoice = true;
-        /** Time in seconds the ball is blocked after kickoff. */
-        kickoffTime = 10;
-        /** Time in seconds before a global game stuck can be called. */
-        minDurationBeforeStuck = 30;
-        /** If there is an overtime before penalty-shoot in a play-off game. */
-        overtime = true;
-        /** Time in seconds one overtime half is long. */
-        overtimeTime = 5*60;
-        /** If the game starts with penalty-shoots. */
-        startWithPenalty = false;
-        /** Time in seconds between second half and penalty shoot. */
-        pausePenaltyShootOutTime = 0;
-        /** If there can be a penalty-shoot retry. */
-        penaltyShotRetries = true;
-        /** Time in seconds one penalty shoot is long. */
-        penaltyShotTime = 1*60;
-        /** If there is a sudden-death. */
-        suddenDeath = false;
-        /** Time in seconds one penalty shoot is long in sudden-death. */
-        penaltyShotTimeSuddenDeath = 2*60; // does not matter
-        /** Number of penalty-shoots for each team when a half has 10minutes. */
-        numberOfPenaltyShotsShort = 5;
-        /** Number of penalty-shoots for each team after full 10minutes playing. */
-        numberOfPenaltyShotsLong = 5;
-        /** if robots should return from penalties when the game state changes. */
-        returnRobotsInGameStoppages = false;
-        /** Time in seconds one team has as timeOut. */
-        timeOutTime = 2*60;
-        /** Whether calling a timeout gives the opponent the kickoff or not. */
-        giveOpponentKickOffOnTimeOut = false;
-        /** One time-out per half? */
-        timeOutPerHalf = true;
-        /** On how many pushes is a robot ejected. */
-        pushesToEjection = new int[] {};
-        /** Defines if the option for a referee timeout is available */
-        isRefereeTimeoutAvailable = false;
-        /** Defines if coach is available. */
-        isCoachAvailable = false;
-        /** Allowed to compensate for lost time? */
-        lostTime = false;
-        /** Whether to support version 7 of the game state protocol. */
-        supportGameStateVersion7 = true;
-        /** Whether to support version 8 of the game state protocol. */
-        supportGameStateVersion8 = true;
-        /** If true, the drop-in player competition is active*/
-        dropInPlayerMode = false;
+        return false;
+    }
+
+    @Override
+    public boolean isPlayOffTimeStop()
+    {
+        return false;
+    }
+
+    @Override
+    public int getHalfTime()
+    {
+        return 10*60;
+    }
+
+    @Override
+    public int getReadyTime()
+    {
+        return 30;
+    }
+
+    @Override
+    public int getPauseTime()
+    {
+        return 5*60;
+    }
+
+    @Override
+    public boolean isKickoffChoice()
+    {
+        return true;
+    }
+
+    @Override
+    public int getKickoffTime()
+    {
+        return 10;
+    }
+
+    @Override
+    public int getMinDurationBeforeStuck()
+    {
+        return 30;
+    }
+
+    @Override
+    public boolean isOvertime()
+    {
+        return true;
+    }
+
+    @Override
+    public int getOvertimeTime()
+    {
+        return 5*60;
+    }
+
+    @Override
+    public boolean isStartWithPenalty()
+    {
+        return false;
+    }
+
+    @Override
+    public int getPausePenaltyShootOutTime()
+    {
+        return 0;
+    }
+
+    @Override
+    public int getPenaltyShotTime()
+    {
+        return 60;
+    }
+
+    @Override
+    public boolean isPenaltyShotRetries()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isSuddenDeath()
+    {
+        return false;
+    }
+
+    @Override
+    public int getPenaltyShotTimeSuddenDeath()
+    {
+        return 2*60; // does not matter
+    }
+
+    @Override
+    public int getNumberOfPenaltyShotsShort()
+    {
+        return 5;
+    }
+
+    @Override
+    public int getNumberOfPenaltyShotsLong()
+    {
+        return 5;
+    }
+
+    @Override
+    public boolean isReturnRobotsInGameStoppages()
+    {
+        return false;
+    }
+
+    @Override
+    public int getTimeOutTime()
+    {
+        return 2*60;
+    }
+
+    @Override
+    public boolean isGiveOpponentKickOffOnTimeOut()
+    {
+        return false;
+    }
+
+    @Override
+    public int getRefereeTimeout()
+    {
+        return 0;
+    }
+
+    @Override
+    public boolean isRefereeTimeoutAvailable()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isTimeOutPerHalf()
+    {
+        return true;
+    }
+
+    @Override
+    public int[] getPushesToEjection()
+    {
+        return new int[0];
+    }
+
+    @Override
+    public boolean isCoachAvailable()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isLostTime()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isSupportGameStateVersion7()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isSupportGameStateVersion8()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isDropInPlayerMode()
+    {
+        return false;
     }
 }

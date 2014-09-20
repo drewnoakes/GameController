@@ -336,7 +336,7 @@ public class GameOptionsUI
             // Populate team combo box
             List<Team> teams = league.teams();
             teamCombos.get(side).removeAllItems();
-            if (league.settings().dropInPlayerMode) {
+            if (league.rules().isDropInPlayerMode()) {
                 // In SPL drop in games, there are only two teams (red and blue), plus we add team 0 (invisibles).
                 assert(teams.size() == 3);
                 teamCombos.get(side).addItem(teams.get(0));

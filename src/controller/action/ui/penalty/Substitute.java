@@ -28,6 +28,6 @@ public class Substitute extends PenaltyAction
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return game.settings().teamSize > game.settings().robotsPlaying;
+        return game.rules().getTeamSize() > game.rules().getRobotsPlaying();
     }
 }

@@ -19,6 +19,6 @@ public class CoachMotion extends PenaltyAction
     @Override
     public boolean canExecute(@NotNull Game game, @NotNull ReadOnlyGameState state)
     {
-        return game.settings().isCoachAvailable;
+        return game.rules().isCoachAvailable();
     }
 }

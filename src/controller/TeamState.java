@@ -56,9 +56,9 @@ public class TeamState implements WriteableTeamState, ReadOnlyTeamState, Iterabl
 
         League league = game.league();
 
-        List<PlayerState> players = new ArrayList<PlayerState>(league.settings().teamSize);
+        List<PlayerState> players = new ArrayList<PlayerState>(league.rules().getTeamSize());
 
-        for (int uniformNumber = 1; uniformNumber <= league.settings().teamSize; uniformNumber++) {
+        for (int uniformNumber = 1; uniformNumber <= league.rules().getTeamSize(); uniformNumber++) {
             players.add(new PlayerState(game, uniformNumber, false));
         }
 

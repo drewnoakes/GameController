@@ -16,16 +16,16 @@ public class ClockTick extends Action
     @Override
     public void execute(@NotNull Game game, @NotNull WriteableGameState state)
     {
-        if (state.is(PlayMode.Ready) && state.getSecondsSince(state.getWhenCurrentPlayModeBegan()) >= game.settings().readyTime) {
+        if (state.is(PlayMode.Ready) && state.getSecondsSince(state.getWhenCurrentPlayModeBegan()) >= game.rules().getReadyTime()) {
             game.apply(ActionBoard.set, ActionTrigger.Clock);
         } else if (state.is(PlayMode.Finished)) {
             // When in 'finished' state...
             Integer remainingPauseTime = state.getRemainingPauseTime();
             if (remainingPauseTime != null) {
                 // ...transition automatically to the second half, midway through the pause time between periods
-                if (state.isFirstHalf() && remainingPauseTime <= game.settings().pauseTime / 2) {
+                if (state.isFirstHalf() && remainingPauseTime <= game.rules().getPauseTime() / 2) {
                     game.apply(ActionBoard.secondHalf, ActionTrigger.Clock);
-                } else if (!state.isFirstHalf() && remainingPauseTime <= game.settings().pausePenaltyShootOutTime / 2) {
+                } else if (!state.isFirstHalf() && remainingPauseTime <= game.rules().getPausePenaltyShootOutTime() / 2) {
                     game.apply(ActionBoard.secondHalf, ActionTrigger.Clock);
                 }
             }
@@ -44,7 +44,7 @@ public class ClockTick extends Action
         boolean halfNotStarted = state.getTimeBeforeCurrentPlayMode() == 0 && !state.is(PlayMode.Playing);
         return
           !(state.is(PlayMode.Initial, PlayMode.Finished)
-             || (state.is(PlayMode.Ready, PlayMode.Set) && ((game.isPlayOff() && game.settings().playOffTimeStop) || halfNotStarted))
+             || (state.is(PlayMode.Ready, PlayMode.Set) && ((game.isPlayOff() && game.rules().isPlayOffTimeStop()) || halfNotStarted))
              || state.isManPause())
          || state.isManPlay();
     }
